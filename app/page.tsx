@@ -15,7 +15,13 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Briefcase, School, ShieldCheck } from "lucide-react";
+import {
+  GraduationCap,
+  Briefcase,
+  School,
+  ShieldCheck,
+  Pill,
+} from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import { Loader2, LogIn } from "lucide-react";
@@ -95,14 +101,20 @@ export default function Home() {
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
       {/* Background Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-purple-900/70 z-0" />
+      <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-emerald-200 to-cyan-200 opacity-90" />
+
+      {/* ชั้นที่ 2: เพิ่มความนุ่มนวลด้วย blur และ overlay */}
+      <div className="absolute inset-0 backdrop-blur-md bg-white/30 mix-blend-overlay" />
 
       <div className="container relative z-10 mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center">
-          <div className="mb-8 text-center text-white">
-            <h1 className="text-4xl font-bold mb-2">ระบบสหกิจศึกษา</h1>
-            <p className="text-white/80 text-lg">
-              คณะเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์
+          <div className="mb-8 text-center text-green-700">
+            <div className="flex items-center justify-center gap-2">
+              <Pill className="h-8 w-8" />
+              <h1 className="text-4xl font-bold mb-2">ระบบฝึกงาน</h1>
+            </div>
+            <p className="text-green-700/80 text-lg">
+              สำนักเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์
             </p>
           </div>
 
@@ -120,28 +132,31 @@ export default function Home() {
                   <TabsList className="grid grid-cols-4 mb-4 border-b-2 border-gray-200 ">
                     <TabsTrigger
                       value="student"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
                       <GraduationCap className="w-4 h-4 text-blue-600" />
                       <span className="hidden sm:inline">นักศึกษา</span>
                     </TabsTrigger>
+
                     <TabsTrigger
                       value="mentor"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 data-[state=active]:bg-green-100 data-[state=active]:text-green-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
                       <Briefcase className="w-4 h-4 text-green-600" />
                       <span className="hidden sm:inline">แหล่งฝึก</span>
                     </TabsTrigger>
+
                     <TabsTrigger
                       value="advisor"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
                       <School className="w-4 h-4 text-purple-600" />
                       <span className="hidden sm:inline">อาจารย์</span>
                     </TabsTrigger>
+
                     <TabsTrigger
                       value="admin"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 data-[state=active]:bg-red-100 data-[state=active]:text-red-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
                       <ShieldCheck className="w-4 h-4 text-red-600" />
                       <span className="hidden sm:inline">แอดมิน</span>
@@ -210,7 +225,7 @@ export default function Home() {
             <CardFooter className="text-center text-sm">
               <span className="mx-auto">
                 พบปัญหาการเข้าสู่ระบบ?{" "}
-                <Link href="#" className="text-blue-600 hover:underline">
+                <Link href="#" className="text-green-600 hover:underline">
                   ติดต่อผู้ดูแลระบบ
                 </Link>
               </span>

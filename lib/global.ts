@@ -77,3 +77,30 @@ export const provinces = [
   "อุทัยธานี",
   "อุบลราชธานี",
 ];
+
+export const companyType = [
+  {
+    value: "ssj",
+    label: "คุ้มครองผู้บริโภค (สสจ)",
+  },
+  {
+    value: "care",
+    label: "ปฐมภูมิ (Primary care)",
+  },
+  {
+    value: "pharmacy",
+    label: "ร้านขายยา",
+  },
+  {
+    value: "hospital",
+    label: "โรงพยาบาล",
+  },
+  {
+    value: "factory",
+    label: "โรงงานเภสัชกรรม",
+  },
+  {
+    value: "other",
+    label: "อื่นๆ",
+  },
+];

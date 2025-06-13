@@ -42,8 +42,8 @@ export async function POST(request: Request) {
 
     const data = await sql(
       `INSERT INTO user_company 
-      (username, password_hash, name, business_type, location, establish_year, total_employees, joined_year, website, contact_name, contact_position, contact_email, contact_phone, contact_address) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      (username, password_hash, name, business_type, location, establish_year, total_employees, joined_year, website, contact_name, contact_position, contact_email, contact_phone, contact_address, detail) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING *`,
       [
         body.username,
@@ -60,6 +60,7 @@ export async function POST(request: Request) {
         body.contactEmail || null,
         body.contactPhone || null,
         body.contactAddress || null,
+        body.detail || null,
       ]
     );
     return NextResponse.json({

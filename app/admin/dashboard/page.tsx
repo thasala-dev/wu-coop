@@ -9,14 +9,14 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BuildingIcon, FileSpreadsheetIcon } from "lucide-react";
-import AdminSidebar from "@/components/admin-sidebar";
+import Sidebar from "@/components/sidebar";
 
 export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <AdminSidebar activePage="dashboard" />
+          <Sidebar activePage="dashboard" userType="admin" />
 
           <div className="md:col-span-4">
             <Tabs defaultValue="overview">

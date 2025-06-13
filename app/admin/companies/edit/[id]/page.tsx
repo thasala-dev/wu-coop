@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { ArrowLeft, Edit, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { provinces, companyType } from "@/lib/global";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
@@ -32,13 +32,13 @@ const formSchema = z.object({
   contactEmail: z.string(),
   contactPhone: z.string().min(1, "กรุณากรอกเบอร์โทรศัพท์ผู้ประสานงาน"),
   contactAddress: z.string(),
-
-  username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
-  password: z.string().min(1, "กรุณากรอกรหัสผ่าน"),
 });
 
-export default function Page({ params }: { params: { id: string } }) {
-  const [loading, setLoading] = useState(false);
+export default function Page() {
+  const [loading, setLoading] = useState(true);
+  const params = useParams();
+  const id = params?.id as string;
+
   const { toast } = useToast();
   const router = useRouter();
   const {
@@ -46,6 +46,7 @@ export default function Page({ params }: { params: { id: string } }) {
     handleSubmit,
     formState: { errors },
     setError,
+    setValue,
   } = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,15 +63,57 @@ export default function Page({ params }: { params: { id: string } }) {
       contactEmail: "",
       contactPhone: "",
       contactAddress: "",
-      username: "",
-      password: "",
     },
   });
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    const response = await fetch(`/api/company/${id}`);
+    if (!response.ok) {
+      toast({
+        title: "ไม่สามารถโหลดข้อมูลได้",
+        description: "เกิดข้อผิดพลาดในการดึงข้อมูล",
+        variant: "destructive",
+      });
+      return;
+    }
+    const data = await response.json();
+    setLoading(false);
+    if (data.success) {
+      console.log(data);
+
+      const company = data.data;
+      setValue("name", company.name);
+      setValue("businessType", company.business_type);
+      setValue("detail", company.detail || "");
+      setValue("location", company.location);
+      setValue("establishYear", company.establish_year || "");
+      setValue("totalEmployees", company.total_employees || "");
+      setValue("joinedYear", company.joined_year || "");
+      setValue("website", company.website || "");
+      setValue("contactName", company.contact_name);
+      setValue("contactPosition", company.contact_position);
+      setValue("contactEmail", company.contact_email || "");
+      setValue("contactPhone", company.contact_phone);
+      setValue("contactAddress", company.contact_address || "");
+    } else {
+      toast({
+        title: "ไม่พบข้อมูล",
+        description: data.message || "เกิดข้อผิดพลาด",
+        variant: "destructive",
+      });
+    }
+  }
+
   async function onSubmit(values: any) {
+    values.username = values.studentId;
+    values.password = values.studentId;
     setLoading(true);
-    const response = await fetch("/api/company", {
-      method: "POST",
+    const response = await fetch(`/api/company/${id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -97,11 +140,11 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="companies" userType="admin" />
           {loading && <Loading />}
-          <div className="md:col-span-3 space-y-6">
+          <div className="md:col-span-4 space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <Button
                 variant="ghost"
@@ -118,11 +161,11 @@ export default function Page({ params }: { params: { id: string } }) {
                   แหล่งฝึกงาน
                 </a>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-gray-900">เพิ่มแหล่งฝึกงาน</span>
+                <span className="text-gray-900">แก้ไขแหล่งฝึกงาน</span>
               </div>
             </div>
 
-            <Card className="border-none shadow-sm bg-white overflow-hidden rounded-lg">
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <CardContent className="p-0">
                   <div className="p-6 relative">
@@ -202,6 +245,7 @@ export default function Page({ params }: { params: { id: string } }) {
                               </p>
                             )}
                           </div>
+
                           <div className="sm:col-span-4">
                             <label>สถานที่</label>
                             <select
@@ -413,52 +457,6 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.contactAddress && (
                               <p className="text-sm text-red-600">
                                 {errors.contactAddress.message}
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="sm:col-span-12">
-                            <div className="font-semibold tracking-tight text-lg">
-                              ข้อมูลผู้ใช้งาน
-                            </div>
-                          </div>
-                          <div className="sm:col-span-6">
-                            <label>Username</label>
-                            <input
-                              id="username"
-                              type="text"
-                              {...register("username")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.username
-                                  ? "border-red-600  border-2"
-                                  : "")
-                              }
-                              placeholder="กรุณากรอกชื่อผู้ใช้งาน"
-                            />
-                            {errors.username && (
-                              <p className="text-sm text-red-600">
-                                {errors.username.message}
-                              </p>
-                            )}
-                          </div>
-                          <div className="sm:col-span-6">
-                            <label>Password</label>
-                            <input
-                              id="password"
-                              type="password"
-                              {...register("password")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.password
-                                  ? "border-red-600  border-2"
-                                  : "")
-                              }
-                              placeholder="กรุณากรอกรหัสผ่าน"
-                            />
-                            {errors.password && (
-                              <p className="text-sm text-red-600">
-                                {errors.password.message}
                               </p>
                             )}
                           </div>

@@ -12,6 +12,8 @@ import {
   UserIcon,
   HelpCircle,
   MessageSquare,
+  Zap,
+  Pill,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -47,16 +49,6 @@ export function Navbar({
 
   const headerColor = headerColors[userType];
 
-  // กำหนดชื่อระบบตามประเภทผู้ใช้
-  const systemNames = {
-    student: "ระบบสหกิจศึกษา (นักศึกษา)",
-    advisor: "ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)",
-    mentor: "ระบบสหกิจศึกษา (พี่เลี้ยง)",
-    admin: "ระบบสหกิจศึกษา (ผู้ดูแลระบบ)",
-  };
-
-  const systemName = systemNames[userType];
-
   // กำหนดตัวอักษรแรกของ Avatar
   const getInitials = (name: string) => {
     return name
@@ -77,27 +69,21 @@ export function Navbar({
   if (!user) return null;
 
   return (
-    <header className={`${headerColor} shadow-md sticky top-0 z-50`}>
+    <header className={`${headerColor} shadow-md sticky top-0 z-50 `}>
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link
             href={`/${userType}/dashboard`}
             className="flex items-center gap-2"
           >
-            <Bell className="h-7 w-7 text-white" />
+            <Pill className="h-7 w-7 text-white" />
             {/* <img src="/logo.svg" alt="Logo" className="h-7 w-7 text-white" /> */}
-            <h1 className="text-xl font-bold text-white">{systemName}</h1>
+            <h1 className="text-xl font-bold text-white hidden md:block">
+              ระบบฝึกงาน สำนักเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์
+            </h1>
           </Link>
 
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/20"
-            >
-              <HelpCircle className="h-5 w-5" />
-            </Button>
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
