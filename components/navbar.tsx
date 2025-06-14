@@ -68,6 +68,8 @@ export function Navbar({
   if (!mounted) return null;
   if (!user) return null;
 
+  console.log("Current User:", user);
+
   return (
     <header className={`${headerColor} shadow-md sticky top-0 z-50 `}>
       <div className="container mx-auto px-4 py-3">
@@ -76,10 +78,12 @@ export function Navbar({
             href={`/${userType}/dashboard`}
             className="flex items-center gap-2"
           >
-            <Pill className="h-7 w-7 text-white" />
-            {/* <img src="/logo.svg" alt="Logo" className="h-7 w-7 text-white" /> */}
-            <h1 className="text-xl font-bold text-white hidden md:block">
-              ระบบฝึกงาน สำนักเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์
+            <img src="/icon.png" alt="Logo" className="h-8 w-8 text-white" />
+            <h1 className="text-xl font-bold text-white flex items-center gap-2">
+              ระบบฝึกงาน{" "}
+              <span className="hidden md:block">
+                สำนักเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์
+              </span>
             </h1>
           </Link>
 
@@ -146,7 +150,9 @@ export function Navbar({
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden md:block text-left">
-                    <div className="font-medium">{user?.fullname}</div>
+                    <div className="font-medium">
+                      {user.role == "mentor" ? user?.name : user?.fullname}
+                    </div>
                     {/* {user && (
                       <div className="text-xs opacity-90">{userRole}</div>
                     )} */}

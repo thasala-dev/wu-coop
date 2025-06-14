@@ -41,8 +41,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
+import Loading from "@/components/loading";
 
 export default function AdminCalendar() {
+  const [loading, setLoading] = useState(false);
   const [calendars, setCalendars] = useState<any>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
 
@@ -239,6 +241,7 @@ export default function AdminCalendar() {
   }
 
   async function fetchCalendar() {
+    setLoading(true);
     const response = await fetch("/api/calendar", {
       method: "GET",
       headers: {
@@ -256,6 +259,7 @@ export default function AdminCalendar() {
       console.log("Fetched calendars:", data.data);
       // statsData[0].value = data.data.length;
     }
+    setLoading(false);
   }
 
   return (
@@ -263,7 +267,7 @@ export default function AdminCalendar() {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdminSidebar activePage="calendar" />
-
+          {loading && <Loading />}
           <div className="md:col-span-4">
             {/* Term Selector */}
             <Card className="mb-6">

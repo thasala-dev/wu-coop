@@ -110,7 +110,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center">
           <div className="mb-8 text-center text-green-700">
             <div className="flex items-center justify-center gap-2">
-              <Pill className="h-8 w-8" />
+              <img src="/icon.png" alt="Logo" className="h-8 w-8 text-white" />
               <h1 className="text-4xl font-bold mb-2">ระบบฝึกงาน</h1>
             </div>
             <p className="text-green-700/80 text-lg">

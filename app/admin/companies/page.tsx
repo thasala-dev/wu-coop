@@ -221,15 +221,9 @@ export default function CompaniesPage() {
                         >
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-3">
-                              <Avatar className="h-10 w-10 rounded-md border border-gray-200">
-                                <AvatarImage
-                                  src={company.logo}
-                                  alt={company.name}
-                                />
-                                <AvatarFallback className="rounded-md bg-gray-100 text-gray-600">
-                                  {company.name.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
+                              <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md flex items-center justify-center">
+                                <BuildingIcon className="h-6 w-6 text-gray-500" />
+                              </div>
                               <div>
                                 <Link
                                   href={`/admin/companies/${company.id}`}

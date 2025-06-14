@@ -85,7 +85,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       toast({
         title: "เข้าสู่ระบบสำเร็จ",
-        description: `ยินดีต้อนรับ ${data.data.fullname}`,
+        description: `ยินดีต้อนรับ ${
+          role == "mentor" ? data.data.name : data.data.fullname
+        }`,
         variant: "success",
       });
 

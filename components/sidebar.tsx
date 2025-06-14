@@ -17,6 +17,11 @@ import {
   User,
   Activity,
   FileText,
+  School,
+  Briefcase,
+  Pill,
+  ShieldCheck,
+  MapPinIcon,
 } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,10 +38,10 @@ export function Sidebar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const menuTitles = {
-    student: "เมนูนักศึกษา",
-    advisor: "เมนูอาจารย์ที่ปรึกษา",
-    mentor: "เมนูแหล่งฝึกงาน",
-    admin: "เมนูผู้ดูแลระบบ",
+    student: "เมนูสำหรับนักศึกษา",
+    advisor: "เมนูสำหรับอาจารย์",
+    mentor: "เมนูสำหรับแหล่งฝึกงาน",
+    admin: "เมนูสำหรับผู้ดูแลระบบ",
   };
 
   const colors = {
@@ -48,9 +53,9 @@ export function Sidebar({
 
   const menuIcons = {
     student: <GraduationCap className="h-5 w-5 text-blue-600" />,
-    advisor: <User className="h-5 w-5 text-purple-600" />,
-    mentor: <Building className="h-5 w-5 text-green-600" />,
-    admin: <Shield className="h-5 w-5 text-red-600" />,
+    advisor: <School className="h-5 w-5 text-purple-600" />,
+    mentor: <Briefcase className="h-5 w-5 text-green-600" />,
+    admin: <ShieldCheck className="h-5 w-5 text-red-600" />,
   };
 
   const menuItems = {
@@ -86,8 +91,64 @@ export function Sidebar({
         icon: Calendar,
       },
     ],
-    advisor: [],
-    mentor: [],
+    advisor: [
+      {
+        href: "/advisor/dashboard",
+        page: "dashboard",
+        label: "หน้าหลัก",
+        icon: LayoutDashboard,
+      },
+      {
+        href: "/advisor/students",
+        page: "students",
+        label: "นักศึกษาในความดูแล",
+        icon: Users,
+      },
+      {
+        href: "/advisor/visits",
+        page: "visits",
+        label: "การนิเทศน์",
+        icon: MapPinIcon,
+      },
+      {
+        href: "/advisor/evaluations",
+        page: "evaluations",
+        label: "ประเมินผลนักศึกษา",
+        icon: FileText,
+      },
+      {
+        href: "/advisor/schedule",
+        page: "schedule",
+        label: "ตารางนัดหมาย",
+        icon: Calendar,
+      },
+    ],
+    mentor: [
+      {
+        href: "/mentor/dashboard",
+        page: "dashboard",
+        label: "หน้าหลัก",
+        icon: LayoutDashboard,
+      },
+      {
+        href: "/mentor/students",
+        page: "students",
+        label: "นักศึกษาในความดูแล",
+        icon: Users,
+      },
+      {
+        href: "/mentor/evaluations",
+        page: "evaluations",
+        label: "ประเมินผลนักศึกษา",
+        icon: FileText,
+      },
+      {
+        href: "/mentor/schedule",
+        page: "schedule",
+        label: "ตารางนัดหมาย",
+        icon: Calendar,
+      },
+    ],
     admin: [
       {
         label: "แดชบอร์ด",
@@ -112,6 +173,12 @@ export function Sidebar({
         href: "/admin/students",
         icon: Users,
         page: "students",
+      },
+      {
+        label: "อาจารย์ที่ปรึกษา",
+        href: "/admin/advisors",
+        icon: School,
+        page: "advisors",
       },
       {
         label: "จับคู่นักศึกษา-บริษัท",
@@ -154,9 +221,13 @@ export function Sidebar({
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="h-screen border-r border-gray-200 bg-white hidden md:block">
-        <Card className="h-full border-0 rounded-none shadow-none">
-          <CardHeader className={`border-0 py-4 bg-${colors[userType]}-50`}>
+      <div className="hidden md:block">
+        <Card
+          className={`bg-white shadow-none border-${colors[userType]}-100 shadow-sm`}
+        >
+          <CardHeader
+            className={`border-0 py-4 bg-${colors[userType]}-50 rounded-t-lg`}
+          >
             <div className="flex items-center gap-2">
               {menuIcons[userType]}
               <CardTitle
@@ -174,7 +245,7 @@ export function Sidebar({
 
       {/* Mobile Header */}
       <div
-        className={`md:hidden flex items-center justify-between px-4 py-3 bg-${colors[userType]}-50 border-b border-${colors[userType]}-100`}
+        className={`md:hidden flex items-center justify-between px-4 py-3 bg-${colors[userType]}-50 border border-${colors[userType]}-100 rounded-lg shadow-sm`}
       >
         <div className="flex items-center gap-2">
           {menuIcons[userType]}
