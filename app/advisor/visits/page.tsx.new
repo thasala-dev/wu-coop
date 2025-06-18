@@ -29,58 +29,16 @@ import { useAuth } from "@/contexts/auth-context"
 import { useToast } from "@/hooks/use-toast"
 import { formatVisitDateTime, getVisitStatusInfo, getVisitTypeText } from "@/lib/advisor-visits"
 
-// Type definitions
-interface Student {
-  id: number;
-  name: string;
-  studentId: string;
-  major: string;
-}
-
-interface Company {
-  id: number;
-  name: string;
-  address: string;
-  location: string;
-  contact: string;
-  phone: string;
-  email: string;
-}
-
-interface Visit {
-  id: number;
-  advisor_id: number;
-  visit_date: string;
-  visit_time_start: string;
-  visit_time_end: string;
-  calendar_id: number;
-  company_id: number;
-  visit_type: 'onsite' | 'online';
-  status: 'upcoming' | 'completed' | 'cancelled';
-  transportation?: string;
-  distance?: number;
-  students: Student[];
-  company: Company;
-  reports?: any[];
-}
-
-interface Calendar {
-  id: number;
-  semester: string;
-  year: string;
-  active_id: number;
-}
-
 export default function AdvisorVisits() {
   const { user } = useAuth()
   const { toast } = useToast()
   
   // State for visits data
-  const [visits, setVisits] = useState<Visit[]>([])
-  const [calendars, setCalendars] = useState<Calendar[]>([])
-  const [selectedCalendarId, setSelectedCalendarId] = useState<string>("")
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [searchTerm, setSearchTerm] = useState<string>("")
+  const [visits, setVisits] = useState([])
+  const [calendars, setCalendars] = useState([])
+  const [selectedCalendarId, setSelectedCalendarId] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState("")
   
   // Get current date and month/year for calendar
   const currentDate = new Date()
@@ -159,15 +117,15 @@ export default function AdvisorVisits() {
       try {
         const response = await fetch('/api/calendar')
         const data = await response.json()
-
+        
         if (data.success) {
           setCalendars(data.data)
           // Set the active calendar as the default selected calendar
           const activeCalendar = data.data.find(cal => cal.active_id === 1)
           if (activeCalendar) {
-            setSelectedCalendarId(activeCalendar.id.toString()) // แก้ไขให้เป็น string
+            setSelectedCalendarId(activeCalendar.id)
           } else if (data.data.length > 0) {
-            setSelectedCalendarId(data.data[0].id.toString()) // แก้ไขให้เป็น string
+            setSelectedCalendarId(data.data[0].id)
           }
         } else {
           toast({
@@ -260,7 +218,21 @@ export default function AdvisorVisits() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-
+      <header className="bg-white shadow">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)</h1>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-600">{user?.fullname}</span>
+              <Link href="/">
+                <Button variant="outline" size="sm">
+                  ออกจากระบบ
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
@@ -662,7 +634,7 @@ export default function AdvisorVisits() {
                                       </TableCell>
                                       <TableCell>{visit.company.name}</TableCell>
                                       <TableCell>
-                                        {visit.reports && Array.isArray(visit.reports) && visit.reports.length > 0 ? (
+                                        {visit.reports ? (
                                           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
                                             ดี
                                           </Badge>
