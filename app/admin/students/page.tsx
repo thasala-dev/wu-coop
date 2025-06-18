@@ -618,12 +618,14 @@ export default function AdminStudentsPage() {
 
                               <div className="mt-4 space-y-1 text-sm text-gray-600">
                                 <p>
-                                  <span className="text-gray-500">คณะ:</span>{" "}
-                                  {student.faculty}
+                                  <span className="text-gray-500">
+                                    สาขาวิชา:
+                                  </span>{" "}
+                                  {student.major}
                                 </p>
                                 <p>
                                   <span className="text-gray-500">ชั้นปี:</span>{" "}
-                                  {student.year}
+                                  {student.std_year}
                                 </p>
                                 <p>
                                   <span className="text-gray-500">
@@ -742,7 +744,7 @@ export default function AdminStudentsPage() {
                                 {student.faculty}
                               </TableCell>
                               <TableCell className="text-sm">
-                                {student.year}
+                                {student.major}
                               </TableCell>
                               <TableCell className="text-sm">
                                 {student.gpa}

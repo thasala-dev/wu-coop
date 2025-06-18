@@ -35,6 +35,9 @@ import {
   DownloadIcon,
   ClockIcon,
   CalendarIcon,
+  Eye,
+  Edit,
+  Trash2,
 } from "lucide-react";
 import AdminSidebar from "@/components/admin-sidebar";
 import { Input } from "@/components/ui/input";
@@ -42,6 +45,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import Loading from "@/components/loading";
+import Sidebar from "@/components/sidebar";
 
 export default function AdminCalendar() {
   const [loading, setLoading] = useState(false);
@@ -266,7 +270,7 @@ export default function AdminCalendar() {
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          <AdminSidebar activePage="calendar" />
+          <Sidebar activePage="calendar" userType="admin" />
           {loading && <Loading />}
           <div className="md:col-span-4">
             {/* Term Selector */}
@@ -343,8 +347,8 @@ export default function AdminCalendar() {
                               )}
                             </p>
                             <div className="flex justify-between mt-2 text-sm">
-                              <span>นักศึกษา: {cal.total_student || 0}</span>
-                              <span>บริษัท: {cal.total_company || 0}</span>
+                              <span>นักศึกษา: {cal.total_intern || 0}</span>
+                              <span>บริษัท: {cal.total_regist || 0}</span>
                             </div>
                           </CardContent>
                         </Card>
@@ -397,22 +401,26 @@ export default function AdminCalendar() {
                             <TableCell>
                               {getStatusBadge(cal.status_id || 1)}
                             </TableCell>
-                            <TableCell>{cal.total_student || 0}</TableCell>
-                            <TableCell>{cal.total_company || 0}</TableCell>
+                            <TableCell>{cal.total_intern || 0}</TableCell>
+                            <TableCell>{cal.total_regist || 0}</TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-2">
                                 <Link href={`/admin/calendar/${cal.id}`}>
                                   <Button variant="outline" size="sm">
-                                    ดูข้อมูล
+                                    <Eye className="h-3.5 w-3.5" />
                                   </Button>
                                 </Link>
                                 <Link href={`/admin/calendar/edit/${cal.id}`}>
                                   <Button variant="outline" size="sm">
-                                    แก้ไข
+                                    <Edit className="h-3.5 w-3.5" />
                                   </Button>
                                 </Link>
-                                <Button variant="ghost" size="sm">
-                                  ลบ
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  className="bg-red-600 hover:bg-red-700 text-white"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
                               </div>
                             </TableCell>
@@ -483,7 +491,7 @@ export default function AdminCalendar() {
                                 value={cal.id}
                                 onClick={() => setCalendarSelected(cal.id)}
                               >
-                                {cal.name} {cal.semester}/{cal.year}
+                                {cal.name} ({cal.semester}/{cal.year})
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -546,10 +554,14 @@ export default function AdminCalendar() {
                                 <TableCell className="text-right">
                                   <div className="flex justify-end gap-2">
                                     <Button variant="outline" size="sm">
-                                      แก้ไข
+                                      <Edit className="h-3.5 w-3.5" />
                                     </Button>
-                                    <Button variant="ghost" size="sm">
-                                      ลบ
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      className="bg-red-600 hover:bg-red-700 text-white"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
                                     </Button>
                                   </div>
                                 </TableCell>

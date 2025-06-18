@@ -1,8 +1,14 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+"use client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   BuildingIcon,
   MapPinIcon,
@@ -19,17 +25,140 @@ import {
   XCircleIcon,
   ClockIcon,
   DownloadIcon,
-} from "lucide-react"
-import AdminSidebar from "@/components/admin-sidebar"
-import Link from "next/link"
+  PlusIcon,
+} from "lucide-react";
+import AdminSidebar from "@/components/admin-sidebar";
+import Link from "next/link";
+import * as React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import Sidebar from "@/components/sidebar";
+import Loading from "@/components/loading";
+import { useToast } from "@/hooks/use-toast";
+import { companyType } from "@/lib/global";
 
-interface CompanyPageProps {
-  params: {
-    id: string
+export default function CompanyPage() {
+  const [loading, setLoading] = useState(true);
+  const params = useParams();
+  const param_id = params?.id as string;
+  const { toast } = useToast();
+
+  const [data, setData] = useState<any>(null);
+  const [calendar, setCalendar] = useState<any[]>([]);
+  const [regist, setRegist] = useState<any[]>([]);
+
+  const router = useRouter();
+
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({
+    id: "",
+    calendarId: "",
+    companyId: "",
+    total: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<any>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOpen(false);
+    const response = await fetch("/api/admin/regist_company", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    console.log("Form Data:", form);
+    const data = await response.json();
+    setLoading(false);
+    if (data.success) {
+      toast({
+        title: "ดำเนินการสำเร็จ",
+        description: data.message || "เกิดข้อผิดพลาด",
+        variant: "success",
+      });
+      fetchData();
+    } else {
+      toast({
+        title: "ดำเนินการไม่สำเร็จ",
+        description: data.message || "เกิดข้อผิดพลาด",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAdd = () => {
+    setOpen(true);
+    setForm({
+      id: "",
+      calendarId: "",
+      companyId: param_id,
+      total: "",
+    });
+  };
+
+  async function handleEdit(id: string) {
+    setOpen(true);
+    setForm({
+      id: id,
+      calendarId: "12345",
+      companyId: param_id,
+      total: "10",
+    });
   }
-}
 
-export default function CompanyPage({ params }: CompanyPageProps) {
+  useEffect(() => {
+    if (param_id) {
+      fetchData();
+    }
+  }, [param_id]);
+
+  async function fetchData() {
+    setLoading(true);
+    const response = await fetch(`/api/admin/company/${param_id}`);
+    if (!response.ok) {
+      toast({
+        title: "ไม่สามารถโหลดข้อมูลได้",
+        description: "เกิดข้อผิดพลาดในการดึงข้อมูล",
+        variant: "destructive",
+      });
+      return;
+    }
+    const res = await response.json();
+    if (!res) {
+      toast({
+        title: "ไม่พบข้อมูลบริษัท",
+        description: "ไม่พบข้อมูลสำหรับบริษัทที่ระบุ",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setData(res.data);
+    setCalendar(res.calendar);
+    setRegist(res.regist);
+
+    console.log("Company Data:", res.calendar);
+
+    setLoading(false);
+  }
+
   // Mock data for company with ID 2
   const company = {
     id: "2",
@@ -51,7 +180,7 @@ export default function CompanyPage({ params }: CompanyPageProps) {
     establishedYear: 1992,
     employeeCount: 250,
     cooperationSince: 2018,
-  }
+  };
 
   // Mock data for students in this company
   const students = [
@@ -81,7 +210,7 @@ export default function CompanyPage({ params }: CompanyPageProps) {
       position: "ผู้ช่วยวิจัยและพัฒนา",
       mentor: "ภก.ประเสริฐ นวัตกรรม",
     },
-  ]
+  ];
 
   // Mock data for history
   const history = [
@@ -89,21 +218,31 @@ export default function CompanyPage({ params }: CompanyPageProps) {
       year: "2565",
       studentCount: 3,
       completedCount: 3,
-      students: ["นายวิชัย เรียนดี (เภสัชกรรมคลินิก)", "นางสาวสุดา ตั้งใจ (เภสัชกรรมอุตสาหการ)", "นายภาคิน พัฒนา (เภสัชกรรมคลินิก)"],
+      students: [
+        "นายวิชัย เรียนดี (เภสัชกรรมคลินิก)",
+        "นางสาวสุดา ตั้งใจ (เภสัชกรรมอุตสาหการ)",
+        "นายภาคิน พัฒนา (เภสัชกรรมคลินิก)",
+      ],
     },
     {
       year: "2564",
       studentCount: 2,
       completedCount: 2,
-      students: ["นางสาวพิมพ์ใจ ใฝ่รู้ (เภสัชกรรมคลินิก)", "นายสมศักดิ์ ศึกษาดี (เภสัชกรรมอุตสาหการ)"],
+      students: [
+        "นางสาวพิมพ์ใจ ใฝ่รู้ (เภสัชกรรมคลินิก)",
+        "นายสมศักดิ์ ศึกษาดี (เภสัชกรรมอุตสาหการ)",
+      ],
     },
     {
       year: "2563",
       studentCount: 2,
       completedCount: 2,
-      students: ["นายธนา รักการค้า (เภสัชกรรมคลินิก)", "นางสาวกมลา วิจัยดี (เภสัชกรรมอุตสาหการ)"],
+      students: [
+        "นายธนา รักการค้า (เภสัชกรรมคลินิก)",
+        "นางสาวกมลา วิจัยดี (เภสัชกรรมอุตสาหการ)",
+      ],
     },
-  ]
+  ];
 
   // Mock data for documents
   const documents = [
@@ -139,48 +278,53 @@ export default function CompanyPage({ params }: CompanyPageProps) {
       uploadDate: "10 ตุลาคม 2565",
       status: "archived",
     },
-  ]
+  ];
 
   // Function to render status badge
-  const renderStatusBadge = (status: string) => {
+  const renderStatusBadge = (status: number) => {
     switch (status) {
-      case "active":
+      case 1:
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
             <CheckCircleIcon className="h-3 w-3 mr-1" /> ใช้งาน
           </Badge>
-        )
-      case "inactive":
+        );
+      case 2:
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
             <XCircleIcon className="h-3 w-3 mr-1" /> ไม่ใช้งาน
           </Badge>
-        )
-      case "pending":
+        );
+      case 0:
         return (
           <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
             <ClockIcon className="h-3 w-3 mr-1" /> รอดำเนินการ
           </Badge>
-        )
+        );
       default:
-        return <Badge>{status}</Badge>
+        return <Badge>{status}</Badge>;
     }
-  }
+  };
 
   return (
     <div className="container mx-auto py-6">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <AdminSidebar activePage="companies" />
-
+        <Sidebar activePage="companies" userType="admin" />
+        {loading && <Loading />}
         <div className="md:col-span-4 space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Link href="/admin/companies" className="text-gray-500 hover:text-gray-700">
+              <Link
+                href="/admin/companies"
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <ArrowLeftIcon className="h-5 w-5" />
               </Link>
               <h1 className="text-2xl font-bold">รายละเอียดบริษัท</h1>
             </div>
-            <Button>
+            <Button
+              onClick={() => router.push(`/admin/companies/edit/${param_id}`)}
+            >
               <PencilIcon className="h-4 w-4 mr-2" />
               แก้ไขข้อมูล
             </Button>
@@ -191,26 +335,30 @@ export default function CompanyPage({ params }: CompanyPageProps) {
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-4">
                   <Avatar className="h-16 w-16 rounded-md border border-gray-200">
-                    <AvatarImage src={company.logo} alt={company.name} />
+                    <AvatarImage src={data?.image} alt={data?.name} />
                     <AvatarFallback className="rounded-md bg-gray-100 text-gray-600">
-                      {company.name.charAt(0)}
+                      <BuildingIcon className="h-6 w-6 text-gray-500" />
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-xl">{company.name}</CardTitle>
+                    <CardTitle className="text-xl">{data?.name}</CardTitle>
                     <CardDescription className="flex items-center gap-2 mt-1">
                       <BuildingIcon className="h-4 w-4 text-gray-500" />
-                      <span>{company.industry}</span>
+                      <span>
+                        {companyType.find(
+                          (t) => t.value === data?.business_type
+                        )?.label || "-"}
+                      </span>
                       <span className="mx-1">•</span>
                       <MapPinIcon className="h-4 w-4 text-gray-500" />
-                      <span>{company.location}</span>
+                      <span>{data?.location}</span>
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="mt-2">{renderStatusBadge(company.status)}</div>
-                <p className="mt-4 text-gray-700">{company.description}</p>
+                <div className="mt-2">{renderStatusBadge(data?.status_id)}</div>
+                <p className="mt-4 text-gray-700">{data?.detail}</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                   <div>
@@ -219,25 +367,37 @@ export default function CompanyPage({ params }: CompanyPageProps) {
                       <li className="flex items-start gap-2 text-sm">
                         <BuildingIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">ปีที่ก่อตั้ง:</span> {company.establishedYear}
+                          <span className="text-gray-500">ปีที่ก่อตั้ง:</span>{" "}
+                          {data?.establish_year || (
+                            <i className="text-gray-600">ไม่ระบุ</i>
+                          )}
                         </div>
                       </li>
                       <li className="flex items-start gap-2 text-sm">
                         <UsersIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">จำนวนพนักงาน:</span> {company.employeeCount} คน
+                          <span className="text-gray-500">จำนวนพนักงาน:</span>{" "}
+                          {data?.total_employees} คน
                         </div>
                       </li>
                       <li className="flex items-start gap-2 text-sm">
                         <CalendarIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">เริ่มร่วมโครงการสหกิจศึกษา:</span> {company.cooperationSince}
+                          <span className="text-gray-500">
+                            เริ่มร่วมโครงการสหกิจศึกษา:
+                          </span>{" "}
+                          {data?.joined_year || (
+                            <i className="text-gray-600">ไม่ระบุ</i>
+                          )}
                         </div>
                       </li>
                       <li className="flex items-start gap-2 text-sm">
                         <UsersIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">รับนักศึกษาสูงสุด:</span> {company.studentCapacity} คน
+                          <span className="text-gray-500">
+                            รับนักศึกษาสูงสุด:
+                          </span>{" "}
+                          {data?.joined_year || 0} คน
                         </div>
                       </li>
                       <li className="flex items-start gap-2 text-sm">
@@ -245,12 +405,14 @@ export default function CompanyPage({ params }: CompanyPageProps) {
                         <div>
                           <span className="text-gray-500">เว็บไซต์:</span>{" "}
                           <a
-                            href={company.website}
+                            href={data?.website}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline"
                           >
-                            {company.website}
+                            {data?.website || (
+                              <i className="text-gray-600">ไม่ระบุ</i>
+                            )}
                           </a>
                         </div>
                       </li>
@@ -263,21 +425,28 @@ export default function CompanyPage({ params }: CompanyPageProps) {
                       <li className="flex items-start gap-2 text-sm">
                         <UsersIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">ผู้ประสานงาน:</span> {company.contactPerson}
+                          <span className="text-gray-500">ผู้ประสานงาน:</span>{" "}
+                          {data?.contact_name}
                         </div>
                       </li>
                       <li className="flex items-start gap-2 text-sm">
                         <ClipboardIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">ตำแหน่ง:</span> {company.contactPosition}
+                          <span className="text-gray-500">ตำแหน่ง:</span>{" "}
+                          {data?.contact_position}
                         </div>
                       </li>
                       <li className="flex items-start gap-2 text-sm">
                         <MailIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
                           <span className="text-gray-500">อีเมล:</span>{" "}
-                          <a href={`mailto:${company.contactEmail}`} className="text-blue-600 hover:underline">
-                            {company.contactEmail}
+                          <a
+                            href={`mailto:${data?.contact_email}`}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {data?.contact_email || (
+                              <i className="text-gray-600">ไม่ระบุ</i>
+                            )}
                           </a>
                         </div>
                       </li>
@@ -285,15 +454,21 @@ export default function CompanyPage({ params }: CompanyPageProps) {
                         <PhoneIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
                           <span className="text-gray-500">โทรศัพท์:</span>{" "}
-                          <a href={`tel:${company.contactPhone}`} className="text-blue-600 hover:underline">
-                            {company.contactPhone}
+                          <a
+                            href={`tel:${data?.contact_phone}`}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {data?.contact_phone}
                           </a>
                         </div>
                       </li>
                       <li className="flex items-start gap-2 text-sm">
                         <MapPinIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">ที่อยู่:</span> {company.address}
+                          <span className="text-gray-500">ที่อยู่:</span>{" "}
+                          {data?.contact_address || (
+                            <i className="text-gray-600">ไม่ระบุ</i>
+                          )}
                         </div>
                       </li>
                     </ul>
@@ -317,18 +492,33 @@ export default function CompanyPage({ params }: CompanyPageProps) {
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div
                       className="bg-green-600 h-2.5 rounded-full"
-                      style={{ width: `${(company.activeStudents / company.studentCapacity) * 100}%` }}
+                      style={{
+                        width: `${
+                          (company.activeStudents / company.studentCapacity) *
+                          100
+                        }%`,
+                      }}
                     ></div>
                   </div>
 
                   <div className="pt-4 border-t">
                     <h4 className="font-medium mb-2">ประวัติการรับนักศึกษา</h4>
                     <div className="space-y-3">
-                      {history.map((item) => (
-                        <div key={item.year} className="flex justify-between items-center text-sm">
-                          <span>ปีการศึกษา {item.year}</span>
+                      {regist.length === 0 && (
+                        <div className="text-gray-500 text-sm text-center py-4">
+                          - ไม่มีข้อมูลการรับนักศึกษา -
+                        </div>
+                      )}
+                      {regist.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex justify-between items-center text-sm"
+                        >
+                          <span>
+                            {item.name} ({item.semester}/{item.year})
+                          </span>
                           <span className="font-medium">
-                            {item.completedCount}/{item.studentCount} คน
+                            {item.reg_total || 0}/{item.total} คน
                           </span>
                         </div>
                       ))}
@@ -341,16 +531,22 @@ export default function CompanyPage({ params }: CompanyPageProps) {
 
           <Tabs defaultValue="students">
             <TabsList>
-              <TabsTrigger value="students">นักศึกษาปัจจุบัน ({students.length})</TabsTrigger>
-              <TabsTrigger value="history">ประวัติการรับนักศึกษา</TabsTrigger>
-              <TabsTrigger value="documents">เอกสาร ({documents.length})</TabsTrigger>
+              <TabsTrigger value="students">
+                นักศึกษาปัจจุบัน ({students.length})
+              </TabsTrigger>
+              <TabsTrigger value="history">บันทึกการรับนักศึกษา</TabsTrigger>
+              <TabsTrigger value="documents">
+                เอกสาร ({documents.length})
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="students" className="mt-4">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle>นักศึกษาที่ฝึกงานอยู่ในปัจจุบัน</CardTitle>
-                  <CardDescription>รายชื่อนักศึกษาที่กำลังฝึกงานอยู่ที่บริษัทนี้</CardDescription>
+                  <CardDescription>
+                    รายชื่อนักศึกษาที่กำลังฝึกงานอยู่ที่บริษัทนี้
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
@@ -367,36 +563,55 @@ export default function CompanyPage({ params }: CompanyPageProps) {
                       </thead>
                       <tbody>
                         {students.map((student) => (
-                          <tr key={student.id} className="border-b hover:bg-gray-50">
+                          <tr
+                            key={student.id}
+                            className="border-b hover:bg-gray-50"
+                          >
                             <td className="py-3 px-4">
                               <div className="flex items-center gap-3">
                                 <Avatar className="h-8 w-8">
-                                  <AvatarImage src={student.avatar} alt={student.name} />
-                                  <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                                  <AvatarImage
+                                    src={student.avatar}
+                                    alt={student.name}
+                                  />
+                                  <AvatarFallback>
+                                    {student.name.charAt(0)}
+                                  </AvatarFallback>
                                 </Avatar>
                                 <div>
-                                  <div className="font-medium">{student.name}</div>
-                                  <div className="text-sm text-gray-500">{student.studentId}</div>
+                                  <div className="font-medium">
+                                    {student.name}
+                                  </div>
+                                  <div className="text-sm text-gray-500">
+                                    {student.studentId}
+                                  </div>
                                 </div>
                               </div>
                             </td>
                             <td className="py-3 px-4">
                               <div>
                                 <div>{student.faculty}</div>
-                                <div className="text-sm text-gray-500">{student.major}</div>
+                                <div className="text-sm text-gray-500">
+                                  {student.major}
+                                </div>
                               </div>
                             </td>
                             <td className="py-3 px-4">{student.position}</td>
                             <td className="py-3 px-4">{student.mentor}</td>
                             <td className="py-3 px-4">
                               <div>
-                                <div className="text-sm">{student.startDate}</div>
-                                <div className="text-sm">ถึง {student.endDate}</div>
+                                <div className="text-sm">
+                                  {student.startDate}
+                                </div>
+                                <div className="text-sm">
+                                  ถึง {student.endDate}
+                                </div>
                               </div>
                             </td>
                             <td className="py-3 px-4">
                               <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                                <CheckCircleIcon className="h-3 w-3 mr-1" /> กำลังฝึกงาน
+                                <CheckCircleIcon className="h-3 w-3 mr-1" />{" "}
+                                กำลังฝึกงาน
                               </Badge>
                             </td>
                           </tr>
@@ -411,30 +626,110 @@ export default function CompanyPage({ params }: CompanyPageProps) {
             <TabsContent value="history" className="mt-4">
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle>ประวัติการรับนักศึกษา</CardTitle>
-                  <CardDescription>ข้อมูลการรับนักศึกษาในปีการศึกษาที่ผ่านมา</CardDescription>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>บันทึกการรับนักศึกษา</CardTitle>
+                      <CardDescription>
+                        ข้อมูลการรับนักศึกษาในปีการศึกษาที่ผ่านมา
+                      </CardDescription>
+                    </div>
+
+                    <Button onClick={() => handleAdd()}>
+                      <PlusIcon className="h-4 w-4 mr-2" />
+                      เพิ่มรอบการรับนักศึกษา
+                    </Button>
+                  </div>
                 </CardHeader>
+
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>เพิ่มรอบการรับนักศึกษา</DialogTitle>
+                      <DialogDescription>
+                        กรอกข้อมูลรอบการรับนักศึกษาใหม่
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          รอบการฝึกงาน
+                        </label>
+                        <select
+                          name="calendarId"
+                          value={form.calendarId}
+                          onChange={handleChange}
+                          required
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm py-2 px-3"
+                        >
+                          <option value="" disabled>
+                            เลือกรอบการฝึกงาน
+                          </option>
+                          {calendar?.length > 0 &&
+                            calendar.map((item: any) => (
+                              <option key={item.id} value={item.id}>
+                                {item.name} ({item.semester}/{item.year})
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          จำนวนนักศึกษา
+                        </label>
+                        <Input
+                          name="total"
+                          type="number"
+                          value={form.total}
+                          onChange={handleChange}
+                          placeholder="เช่น 3"
+                          required
+                        />
+                      </div>
+
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button type="button" variant="outline">
+                            ยกเลิก
+                          </Button>
+                        </DialogClose>
+                        <Button type="submit">บันทึก</Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+
                 <CardContent>
                   <div className="space-y-6">
-                    {history.map((item) => (
-                      <div key={item.year} className="border-b pb-4 last:border-0">
-                        <h3 className="font-medium text-lg">ปีการศึกษา {item.year}</h3>
+                    {regist.length === 0 && (
+                      <div className="text-gray-500 text-sm text-center py-4">
+                        - ไม่มีข้อมูลการรับนักศึกษา -
+                      </div>
+                    )}
+                    {regist.map((item) => (
+                      <div key={item.id} className="border-t pt-4">
+                        <h3 className="font-medium text-lg">{item.name}</h3>
+                        <div className="text-sm text-gray-500">
+                          ภาคการศึกษา {item.semester} / {item.year}
+                        </div>
+
                         <div className="flex items-center gap-4 mt-2 text-sm">
                           <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-                            จำนวนนักศึกษา: {item.studentCount} คน
+                            จำนวนนักศึกษา: {item.total} คน
                           </div>
                           <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full">
-                            สำเร็จการฝึกงาน: {item.completedCount} คน
+                            สำเร็จการฝึกงาน: {item.total} คน
                           </div>
                         </div>
                         <div className="mt-3">
-                          <h4 className="text-gray-500 mb-1">รายชื่อนักศึกษา:</h4>
+                          <h4 className="text-gray-500 mb-1">
+                            รายชื่อนักศึกษา:
+                          </h4>
                           <ul className="list-disc list-inside space-y-1">
-                            {item.students.map((student, index) => (
+                            {/* {item.students.map((student, index) => (
                               <li key={index} className="text-sm">
                                 {student}
                               </li>
-                            ))}
+                            ))} */}
                           </ul>
                         </div>
                       </div>
@@ -448,7 +743,9 @@ export default function CompanyPage({ params }: CompanyPageProps) {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle>เอกสารที่เกี่ยวข้อง</CardTitle>
-                  <CardDescription>เอกสารสำคัญที่เกี่ยวข้องกับบริษัทและการฝึกงาน</CardDescription>
+                  <CardDescription>
+                    เอกสารสำคัญที่เกี่ยวข้องกับบริษัทและการฝึกงาน
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
@@ -465,7 +762,10 @@ export default function CompanyPage({ params }: CompanyPageProps) {
                       </thead>
                       <tbody>
                         {documents.map((doc) => (
-                          <tr key={doc.id} className="border-b hover:bg-gray-50">
+                          <tr
+                            key={doc.id}
+                            className="border-b hover:bg-gray-50"
+                          >
                             <td className="py-3 px-4">
                               <div className="flex items-center gap-2">
                                 <FileTextIcon className="h-4 w-4 text-gray-500" />
@@ -479,14 +779,19 @@ export default function CompanyPage({ params }: CompanyPageProps) {
                             <td className="py-3 px-4">{doc.uploadDate}</td>
                             <td className="py-3 px-4">
                               {doc.status === "active" ? (
-                                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">ใช้งาน</Badge>
+                                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                                  ใช้งาน
+                                </Badge>
                               ) : (
-                                <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">เก็บถาวร</Badge>
+                                <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+                                  เก็บถาวร
+                                </Badge>
                               )}
                             </td>
                             <td className="py-3 px-4">
                               <Button variant="ghost" size="sm">
-                                <DownloadIcon className="h-4 w-4 mr-1" /> ดาวน์โหลด
+                                <DownloadIcon className="h-4 w-4 mr-1" />{" "}
+                                ดาวน์โหลด
                               </Button>
                             </td>
                           </tr>
@@ -501,5 +806,5 @@ export default function CompanyPage({ params }: CompanyPageProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

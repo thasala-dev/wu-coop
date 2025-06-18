@@ -4,7 +4,14 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql("SELECT * FROM user_company");
+    const data = await sql(
+      `SELECT company.*,
+      (select total from regist_company where calendar_id = cal.id AND company_id = company.id) as total_regist,
+      (select count(*) from regist_intern where calendar_id = cal.id AND company_id = company.id) as total_intern
+      FROM user_company company
+      LEFT JOIN calendar cal ON cal.active_id = 1
+      ORDER BY company.name DESC`
+    );
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",

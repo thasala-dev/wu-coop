@@ -18,6 +18,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useParams } from "next/navigation";
+import Sidebar from "@/components/sidebar";
+import Loading from "@/components/loading";
 
 const formSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อสถานประกอบการ"),
@@ -29,12 +31,18 @@ const formSchema = z.object({
 });
 
 export default function Page() {
+  const [loading, setLoading] = useState(false);
   const params = useParams();
   const id = params?.id as string;
 
   const { toast } = useToast();
   const router = useRouter();
-  const years = ["2568", "2569", "2570"];
+  const years = Array.from(
+    {
+      length: new Date().getFullYear() + 544 - 2564 + 1,
+    },
+    (_, i) => (2564 + i).toString()
+  );
   const {
     register,
     handleSubmit,
@@ -58,6 +66,7 @@ export default function Page() {
   }, []);
 
   async function fetchStudentData() {
+    setLoading(true);
     const response = await fetch(`/api/calendar/${id}`);
     if (!response.ok) {
       toast({
@@ -82,6 +91,7 @@ export default function Page() {
         variant: "destructive",
       });
     }
+    setLoading(false);
   }
 
   async function onSubmit(values: any) {
@@ -117,8 +127,8 @@ export default function Page() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <AdminSidebar activePage="calendar" />
-
+          <Sidebar activePage="calendar" userType="admin" />
+          {loading && <Loading />}
           <div className="md:col-span-4 space-y-6">
             <div className="flex items-center gap-3 mb-2">
               <Button

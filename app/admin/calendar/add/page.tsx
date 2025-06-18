@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import Sidebar from "@/components/sidebar";
 
 const formSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อสถานประกอบการ"),
@@ -82,7 +83,7 @@ export default function Page({ params }: any) {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <AdminSidebar activePage="calendar" />
+          <Sidebar activePage="calendar" userType="admin" />
 
           <div className="md:col-span-4 space-y-6">
             <div className="flex items-center gap-3 mb-2">

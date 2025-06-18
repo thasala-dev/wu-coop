@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,14 +11,46 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BuildingIcon, FileSpreadsheetIcon } from "lucide-react";
 import Sidebar from "@/components/sidebar";
+import { useEffect, useState } from "react";
+import Loading from "@/components/loading";
 
 export default function AdminDashboard() {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any>({
+    currentCalendar: null,
+    data: [],
+  });
+  useEffect(() => {
+    fetchData();
+  }, []);
+  async function fetchData() {
+    setLoading(true);
+    const response = await fetch("/api/admin/dashboard", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const res = await response.json();
+    if (res.success) {
+      setData({
+        currentCalendar: res.currentCalendar,
+        data: res.data,
+      });
+      setLoading(false);
+    }
+    console.log("Dashboard Data:", data);
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="dashboard" userType="admin" />
-
+          {loading && <Loading />}
           <div className="md:col-span-4">
             <Tabs defaultValue="overview">
               <TabsList className="mb-4">
@@ -31,26 +64,43 @@ export default function AdminDashboard() {
                   <Card>
                     <CardHeader className="pb-2">
                       <CardTitle className="text-lg">รอบปัจจุบัน</CardTitle>
-                      <CardDescription>ภาคการศึกษาที่ 1/2567</CardDescription>
+                      <CardDescription>
+                        ภาคการศึกษาที่ {data.currentCalendar?.semester}/
+                        {data.currentCalendar?.year}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="text-3xl font-bold text-blue-600">
-                        1/2567
+                        {data.currentCalendar?.name}
                       </div>
                       <p className="text-sm text-gray-500 mt-1">
-                        1 มิ.ย. - 30 ก.ย. 2567
+                        {new Date(
+                          data.currentCalendar?.start_date
+                        ).toLocaleDateString("th-TH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
+                        -{" "}
+                        {new Date(
+                          data.currentCalendar?.end_date
+                        ).toLocaleDateString("th-TH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </p>
                       <div className="mt-4 pt-4 border-t flex justify-between text-sm">
                         <div>
                           <div className="font-medium">นักศึกษา</div>
                           <div className="text-2xl font-bold text-gray-900">
-                            142
+                            {data.currentCalendar?.total_intern}
                           </div>
                         </div>
                         <div>
                           <div className="font-medium">บริษัท</div>
                           <div className="text-2xl font-bold text-gray-900">
-                            38
+                            {data.currentCalendar?.total_regist}
                           </div>
                         </div>
                       </div>
@@ -278,7 +328,6 @@ export default function AdminDashboard() {
                         จัดการรอบสหกิจศึกษาทั้งหมด
                       </CardDescription>
                     </div>
-                    <Button>+ สร้างรอบใหม่</Button>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">

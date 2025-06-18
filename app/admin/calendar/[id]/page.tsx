@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import AdminSidebar from "@/components/admin-sidebar";
 import Link from "next/link";
+import Sidebar from "@/components/sidebar";
 
 interface CompanyPageProps {
   params: {
@@ -186,8 +187,7 @@ export default function CompanyPage({ params }: any) {
   return (
     <div className="container mx-auto py-6">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <AdminSidebar activePage="companies" />
-
+        <Sidebar activePage="calendar" userType="admin" />
         <div className="md:col-span-4 space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">

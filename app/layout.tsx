@@ -13,9 +13,9 @@ const sarabun = Sarabun({
 });
 
 export const metadata = {
-  title: "ระบบสหกิจศึกษา",
-  description: "ระบบสหกิจศึกษาสำหรับนักศึกษา อาจารย์ที่ปรึกษา และผู้ดูแลระบบ",
-  generator: "v0.dev",
+  title: "ระบบฝึกงาน สำนักเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์",
+  description: "ระบบฝึกงาน สำนักเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์",
+  generator: "thasala.dev",
 };
 
 export default function RootLayout({

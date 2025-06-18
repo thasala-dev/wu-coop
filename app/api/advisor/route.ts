@@ -4,13 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
-      `SELECT id,name,semester,year,start_date,end_date,status_id,active_id,
-      (select count(*) from regist_company where calendar_id = calendar.id) as total_regist,
-      (select count(*) from regist_intern where calendar_id = calendar.id) as total_intern
-      FROM calendar 
-      order BY start_date DESC`
-    );
+    const data = await sql(`SELECT * FROM user_advisor ORDER BY id DESC`);
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
@@ -28,19 +22,22 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
+    const check = await sql("SELECT * FROM user_advisor WHERE username = $1", [
+      body.username,
+    ]);
+    if (check.length > 0) {
+      return NextResponse.json(
+        { success: false, message: "Username นี้มีอยู่แล้ว" },
+        { status: 400 }
+      );
+    }
+
     const data = await sql(
-      `INSERT INTO calendar 
-      (name, semester, year, start_date, end_date, status_id) 
-      VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO user_advisor 
+      (username, password_hash, fullname, image) 
+      VALUES ($1, $2, $3, $4)
       RETURNING *`,
-      [
-        body.name,
-        body.semester,
-        body.year,
-        body.startDate,
-        body.endDate,
-        body.statusId || 0,
-      ]
+      [body.username, body.password, body.fullname, body.image || null]
     );
     return NextResponse.json({
       success: true,

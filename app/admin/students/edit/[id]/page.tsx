@@ -21,13 +21,19 @@ const formSchema = z.object({
     .string()
     .regex(/^\d{10}$/, "กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง")
     .optional(),
-  faculty: z.string().min(1, "กรุณาเลือกคณะ").optional(),
-  major: z.string().min(1, "กรุณาเลือกสาขา").optional(),
-  stdYear: z.string().min(1, "กรุณาเลือกชั้นปี").optional(),
-  address: z.string().min(1, "กรุณากรอกที่อยู่").optional(),
-  statusId: z.string().min(1, "กรุณาเลือกสถานะ").optional(),
-  gpa: z.string().min(1, "กรุณากรอกเกรดเฉลี่ย").optional(),
+  // faculty: z.string().min(1, "กรุณาเลือกคณะ").optional(),
+  major: z.string(),
+  stdYear: z.string().min(1, "กรุณาเลือกชั้นปี"),
+  address: z.string().min(1, "กรุณากรอกที่อยู่"),
+  gpa: z.string(),
 });
+
+const years = Array.from(
+  {
+    length: new Date().getFullYear() + 544 - 2564 + 1,
+  },
+  (_, i) => (2564 + i).toString()
+);
 
 export default function Page() {
   const params = useParams();
@@ -46,6 +52,13 @@ export default function Page() {
     defaultValues: {
       fullname: "",
       studentId: "",
+      email: "",
+      mobile: "",
+      faculty: "",
+      major: "",
+      stdYear: "",
+      address: "",
+      gpa: "",
     },
   });
 
@@ -67,6 +80,13 @@ export default function Page() {
     if (data.success) {
       setValue("fullname", data.data.fullname);
       setValue("studentId", data.data.student_id);
+      setValue("email", data.data.email || "");
+      setValue("mobile", data.data.mobile || "");
+      setValue("faculty", data.data.faculty || "");
+      setValue("major", data.data.major || "");
+      setValue("stdYear", data.data.std_year || "");
+      setValue("address", data.data.address || "");
+      setValue("gpa", data.data.gpa || "");
     } else {
       toast({
         title: "ไม่พบข้อมูลนักศึกษา",
@@ -78,7 +98,8 @@ export default function Page() {
 
   async function onSubmit(values: any) {
     values.username = values.studentId;
-    values.password = values.studentId;
+
+    console.log("Submitting form with values:", values);
 
     const response = await fetch(`/api/student/${id}`, {
       method: "PUT",
@@ -176,6 +197,135 @@ export default function Page() {
                             {errors.studentId && (
                               <p className="text-sm text-red-600">
                                 {errors.studentId.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-6">
+                            <label>E-mail</label>
+                            <input
+                              id="email"
+                              type="text"
+                              {...register("email")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.email ? "border-red-600  border-2" : "")
+                              }
+                              placeholder="กรุณากรอกอีเมล"
+                            />
+                            {errors.email && (
+                              <p className="text-sm text-red-600">
+                                {errors.email.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-6">
+                            <label>เบอร์โทรศัพท์</label>
+                            <input
+                              id="mobile"
+                              type="text"
+                              {...register("mobile")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.mobile
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกเบอร์โทรศัพท์"
+                            />
+                            {errors.mobile && (
+                              <p className="text-sm text-red-600">
+                                {errors.mobile.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-6">
+                            <label>สาขาวิชา</label>
+                            <select
+                              id="major"
+                              {...register("major")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.major ? "border-red-600  border-2" : "")
+                              }
+                            >
+                              <option value="" disabled>
+                                เลือกสาขาวิชา
+                              </option>
+                              <option value="SCI">สาย SCI</option>
+                              <option value="CARE">สาย CARE</option>
+                            </select>
+
+                            {errors.major && (
+                              <p className="text-sm text-red-600">
+                                {errors.major.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-3">
+                            <label>กลุ่มรหัสนักศึกษา</label>
+                            <select
+                              id="stdYear"
+                              {...register("stdYear")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.stdYear
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                            >
+                              <option value="" disabled>
+                                เลือกกลุ่มรหัสนักศึกษา
+                              </option>
+                              {years.map((y) => (
+                                <option key={y} value={y}>
+                                  {y}
+                                </option>
+                              ))}
+                            </select>
+
+                            {errors.stdYear && (
+                              <p className="text-sm text-red-600">
+                                {errors.stdYear.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-3">
+                            <label>GPA</label>
+                            <input
+                              id="gpa"
+                              type="text"
+                              {...register("gpa")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.gpa ? "border-red-600  border-2" : "")
+                              }
+                              placeholder="กรุณากรอก GPA (เกรดเฉลี่ย)"
+                            />
+                            {errors.gpa && (
+                              <p className="text-sm text-red-600">
+                                {errors.gpa.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-12">
+                            <label>ที่อยู่ที่ติดต่อได้</label>
+                            <input
+                              id="address"
+                              type="text"
+                              {...register("address")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.address
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกที่อยู่ที่ติดต่อได้"
+                            />
+                            {errors.address && (
+                              <p className="text-sm text-red-600">
+                                {errors.address.message}
                               </p>
                             )}
                           </div>

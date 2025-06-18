@@ -9,22 +9,9 @@ export async function POST(request: Request) {
     const { username, password, role } = body;
     let users = <any>[];
     if (role === "admin") {
-      if (username !== "admin" || password !== passwordAdmin) {
-        return NextResponse.json(
-          { success: false, message: "รหัสผ่านไม่ถูกต้อง" },
-          { status: 401 }
-        );
-      }
-
-      return NextResponse.json({
-        success: true,
-        message: "เข้าสู่ระบบสำเร็จ",
-        data: {
-          username: "admin",
-          role: "admin",
-          fullname: "ผู้ดูแลระบบ",
-        },
-      });
+      users = await sql("SELECT * FROM user_admin WHERE username = $1", [
+        username,
+      ]);
     } else if (role === "mentor") {
       users = await sql("SELECT * FROM user_company WHERE username = $1", [
         username,
@@ -62,7 +49,39 @@ export async function POST(request: Request) {
     delete sanitizedUser.password;
 
     // Update last login
-    sanitizedUser.lastLogin = new Date().toISOString();
+
+    await sql(
+      "INSERT INTO log (title, user_id, user_role) VALUES ($1, $2, $3)",
+      [
+        `${role === "mentor" ? user.name : user.fullname} ได้เข้าสู่ระบบสำเร็จ`,
+        user.id,
+        role,
+      ]
+    );
+
+    const lastLogin = new Date().toISOString();
+    if (role === "admin") {
+      await sql("UPDATE user_admin SET last_login = $1 WHERE username = $2", [
+        lastLogin,
+        username,
+      ]);
+    } else if (role === "mentor") {
+      await sql("UPDATE user_company SET last_login = $1 WHERE username = $2", [
+        lastLogin,
+        username,
+      ]);
+    } else if (role === "advisor") {
+      await sql("UPDATE user_advisor SET last_login = $1 WHERE username = $2", [
+        lastLogin,
+        username,
+      ]);
+    } else if (role === "student") {
+      await sql("UPDATE user_student SET last_login = $1 WHERE username = $2", [
+        lastLogin,
+        username,
+      ]);
+    }
+    sanitizedUser.lastLogin = lastLogin;
     sanitizedUser.role = role;
 
     return NextResponse.json({

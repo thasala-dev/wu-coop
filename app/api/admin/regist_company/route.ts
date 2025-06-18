@@ -4,13 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
-      `SELECT id,name,semester,year,start_date,end_date,status_id,active_id,
-      (select count(*) from regist_company where calendar_id = calendar.id) as total_regist,
-      (select count(*) from regist_intern where calendar_id = calendar.id) as total_intern
-      FROM calendar 
-      order BY start_date DESC`
-    );
+    const data = await sql("SELECT * FROM regist_company");
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
@@ -28,19 +22,24 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
+
+    const check = await sql(
+      "SELECT * FROM regist_company WHERE calendar_id = $1 AND company_id = $2",
+      [body.calendarId, body.companyId]
+    );
+    if (check.length > 0) {
+      return NextResponse.json(
+        { success: false, message: "ข้อมูลนี้มีอยู่แล้ว" },
+        { status: 400 }
+      );
+    }
+
     const data = await sql(
-      `INSERT INTO calendar 
-      (name, semester, year, start_date, end_date, status_id) 
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING *`,
-      [
-        body.name,
-        body.semester,
-        body.year,
-        body.startDate,
-        body.endDate,
-        body.statusId || 0,
-      ]
+      `INSERT INTO regist_company 
+        (calendar_id,company_id,total)
+        VALUES ($1, $2, $3)
+        RETURNING *`,
+      [body.calendarId, body.companyId, body.total]
     );
     return NextResponse.json({
       success: true,

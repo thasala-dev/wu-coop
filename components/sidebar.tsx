@@ -52,10 +52,10 @@ export function Sidebar({
   };
 
   const menuIcons = {
-    student: <GraduationCap className="h-5 w-5 text-blue-600" />,
-    advisor: <School className="h-5 w-5 text-purple-600" />,
-    mentor: <Briefcase className="h-5 w-5 text-green-600" />,
-    admin: <ShieldCheck className="h-5 w-5 text-red-600" />,
+    student: <GraduationCap className="h-5 w-5 text-white" />,
+    advisor: <School className="h-5 w-5 text-white" />,
+    mentor: <Briefcase className="h-5 w-5 text-white" />,
+    admin: <ShieldCheck className="h-5 w-5 text-white" />,
   };
 
   const menuItems = {
@@ -175,7 +175,7 @@ export function Sidebar({
         page: "students",
       },
       {
-        label: "อาจารย์ที่ปรึกษา",
+        label: "อาจารย์นิเทศ",
         href: "/admin/advisors",
         icon: School,
         page: "advisors",
@@ -191,6 +191,18 @@ export function Sidebar({
         href: "/admin/reports",
         icon: BarChart,
         page: "reports",
+      },
+      {
+        label: "ผู้ดูแลระบบ",
+        href: "/admin/admins",
+        icon: Shield,
+        page: "admins",
+      },
+      {
+        label: "Logs",
+        href: "/admin/logs",
+        icon: FileText,
+        page: "logs",
       },
       {
         label: "ตั้งค่าระบบ",
@@ -215,6 +227,11 @@ export function Sidebar({
       >
         <Icon className="h-5 w-5" />
         <span>{label}</span>
+        {activePage === page && (
+          <div
+            className={`ml-auto w-1.5 h-5 bg-${colors[userType]}-600 rounded-full`}
+          ></div>
+        )}
       </Link>
     ));
 
@@ -226,17 +243,18 @@ export function Sidebar({
           className={`bg-white shadow-none border-${colors[userType]}-100 shadow-sm`}
         >
           <CardHeader
-            className={`border-0 py-4 bg-${colors[userType]}-50 rounded-t-lg`}
+            className={`bg-gradient-to-r from-${colors[userType]}-600 to-${colors[userType]}-700 p-4 rounded-t-lg`}
           >
             <div className="flex items-center gap-2">
-              {menuIcons[userType]}
               <CardTitle
-                className={`text-${colors[userType]}-700 text-lg font-bold`}
+                className={`text-lg flex items-center gap-2 text-white`}
               >
-                {menuTitles[userType]}
+                {menuIcons[userType]}
+                <span>{menuTitles[userType]}</span>
               </CardTitle>
             </div>
           </CardHeader>
+
           <CardContent className="p-3">
             <nav className="space-y-1">{renderMenu()}</nav>
           </CardContent>

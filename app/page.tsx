@@ -75,9 +75,6 @@ export default function Home() {
   };
 
   async function onSubmit(values: LoginFormData) {
-    console.log("Login Role:", role);
-    console.log("Login Data:", values);
-
     const success = await login(values.username, values.password, role);
 
     if (success) {

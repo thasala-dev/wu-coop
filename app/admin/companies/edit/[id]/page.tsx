@@ -109,8 +109,6 @@ export default function Page() {
   }
 
   async function onSubmit(values: any) {
-    values.username = values.studentId;
-    values.password = values.studentId;
     setLoading(true);
     const response = await fetch(`/api/company/${id}`, {
       method: "PUT",

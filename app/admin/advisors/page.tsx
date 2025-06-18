@@ -19,15 +19,10 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  BuildingIcon,
-  MapPinIcon,
-  UsersIcon,
   PlusIcon,
   SearchIcon,
   FilterIcon,
-  MoreHorizontalIcon,
   CheckCircleIcon,
   XCircleIcon,
   ClockIcon,
@@ -35,16 +30,16 @@ import {
   Edit,
   Eye,
 } from "lucide-react";
-import AdminSidebar from "@/components/admin-sidebar";
 import Link from "next/link";
-import { companyType } from "@/lib/global";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
+import CustomAvatar from "@/components/avatar";
 
 export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
   const [filterData, setFilterData] = useState<any>([]);
+  const [search, setSearch] = useState("");
   const [role, setRole] = useState("all");
   useEffect(() => {
     fetchData();
@@ -63,7 +58,7 @@ export default function CompaniesPage() {
   }, [data, role]);
 
   async function fetchData() {
-    const response = await fetch("/api/company", {
+    const response = await fetch("/api/advisor", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -106,7 +101,7 @@ export default function CompaniesPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Sidebar activePage="companies" userType="admin" />
+        <Sidebar activePage="advisors" userType="admin" />
         {loading && <Loading />}
 
         <div className="md:col-span-4 space-y-4">
@@ -116,16 +111,16 @@ export default function CompaniesPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <CardTitle className="text-xl">
-                      จัดการข้อมูลแหล่งฝึกงาน
+                      จัดการข้อมูลอาจารย์นิเทศ
                     </CardTitle>
                     <CardDescription>
-                      รายชื่อแหล่งฝึกงานที่ร่วมโครงการสหกิจศึกษาทั้งหมด
+                      รายชื่ออาจารย์นิเทศที่ร่วมทั้งหมด
                     </CardDescription>
                   </div>
-                  <a href={`/admin/companies/add`}>
+                  <a href={`/admin/advisors/add`}>
                     <Button>
                       <PlusIcon className="h-4 w-4 mr-2" />
-                      สร้างรอบใหม่
+                      สร้างบัญชีใหม่
                     </Button>
                   </a>
                 </div>
@@ -135,43 +130,49 @@ export default function CompaniesPage() {
                 <div className="flex flex-col sm:flex-row gap-4 mb-4">
                   <div className="relative flex-grow">
                     <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-                    <Input placeholder="ค้นหาแหล่งฝึกงาน.." className="pl-8" />
-                  </div>
-                  <div className="flex gap-2">
-                    <Select defaultValue="all">
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="สถานะ" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">ทั้งหมด</SelectItem>
-                        <SelectItem value="active">ใช้งาน</SelectItem>
-                        <SelectItem value="inactive">ไม่ใช้งาน</SelectItem>
-                        <SelectItem value="pending">รอดำเนินการ</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select defaultValue="all">
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="ประเภทแหล่งฝึก" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">ทั้งหมด</SelectItem>
-                        <SelectItem value="tech">เทคโนโลยีสารสนเทศ</SelectItem>
-                        <SelectItem value="pharma">เภสัชกรรม</SelectItem>
-                        <SelectItem value="energy">พลังงาน</SelectItem>
-                        <SelectItem value="food">
-                          อาหารและเครื่องดื่ม
-                        </SelectItem>
-                        <SelectItem value="logistics">โลจิสติกส์</SelectItem>
-                        <SelectItem value="marketing">การตลาด</SelectItem>
-                        <SelectItem value="construction">ก่อสร้าง</SelectItem>
-                        <SelectItem value="medical">
-                          การแพทย์และสุขภาพ
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button variant="outline" size="icon">
-                      <FilterIcon className="h-4 w-4" />
-                    </Button>
+                    <Input
+                      placeholder="ค้นหาชื่ออาจารย์.."
+                      className="pl-8"
+                      value={search}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSearch(value);
+                        if (value.trim() === "") {
+                          setFilterData(
+                            role === "all"
+                              ? data
+                              : data.filter((item: any) => {
+                                  if (role === "active")
+                                    return item.status_id === 1;
+                                  if (role === "inactive")
+                                    return item.status_id === 2;
+                                  if (role === "pending")
+                                    return item.status_id === 0;
+                                  return true;
+                                })
+                          );
+                        } else {
+                          setFilterData(
+                            (role === "all"
+                              ? data
+                              : data.filter((item: any) => {
+                                  if (role === "active")
+                                    return item.status_id === 1;
+                                  if (role === "inactive")
+                                    return item.status_id === 2;
+                                  if (role === "pending")
+                                    return item.status_id === 0;
+                                  return true;
+                                })
+                            ).filter((item: any) =>
+                              item.fullname
+                                ?.toLowerCase()
+                                .includes(value.toLowerCase())
+                            )
+                          );
+                        }
+                      }}
+                    />
                   </div>
                 </div>
                 <TabsList>
@@ -192,91 +193,73 @@ export default function CompaniesPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left py-3 px-4">แหล่งฝึกงาน</th>
-                        <th className="text-left py-3 px-4">ประเภทแหล่งฝึก</th>
-                        <th className="text-left py-3 px-4">ที่ตั้ง</th>
-                        <th className="text-left py-3 px-4">นักศึกษา</th>
-                        <th className="text-left py-3 px-4">สถานะ</th>
-                        <th className="text-left py-3 px-4"></th>
+                        <th className="text-center py-3 px-4">อาจารย์นิเทศ</th>
+                        <th className="text-center py-3 px-4">สถานะ</th>
+                        <th className="text-center py-3 px-4">ใช้งานล่าสุด</th>
+                        <th className="text-center py-3 px-4"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {filterData.length === 0 && (
                         <tr>
-                          <td colSpan={6} className="text-center py-4">
-                            <p className="text-gray-500">
-                              ไม่พบข้อมูลแหล่งฝึกงาน
-                            </p>
+                          <td colSpan={6} className="text-center py-5">
+                            <i className="text-gray-300 py-4">ไม่พบข้อมูล</i>
                           </td>
                         </tr>
                       )}
-                      {filterData.map((company: any) => (
+                      {filterData.map((item: any) => (
                         <tr
-                          key={company.id}
+                          key={item.id}
                           className="border-b hover:bg-gray-50 last:border-b-0"
                         >
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-3">
-                              <Avatar className="h-12 w-12 rounded-md border border-gray-200">
-                                <AvatarImage
-                                  src={company.image}
-                                  alt={company.name}
-                                />
-                                <AvatarFallback className="rounded-md bg-gray-100 text-gray-600">
-                                  <BuildingIcon className="h-6 w-6 text-gray-500" />
-                                </AvatarFallback>
-                              </Avatar>
+                              <CustomAvatar
+                                id={`advisor${item.username}`}
+                                image={item.image}
+                                size="12"
+                              />
                               <div>
-                                <Link
-                                  href={`/admin/companies/${company.id}`}
-                                  className="font-medium hover:underline"
-                                >
-                                  {company.name}
-                                </Link>
+                                <div>{item.fullname}</div>
                                 <div className="text-sm text-gray-500">
-                                  {company.contact_name}
+                                  Username: {item.username}
                                 </div>
                               </div>
                             </div>
                           </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-1">
-                              <BuildingIcon className="h-4 w-4 text-gray-500" />
-                              <span>
-                                {companyType.find(
-                                  (t) => t.value === company.business_type
-                                )?.label || "-"}
-                              </span>
-                            </div>
+
+                          <td className="py-3 px-4 text-center">
+                            {renderStatusBadge(String(item.status_id))}
                           </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-1">
-                              <MapPinIcon className="h-4 w-4 text-gray-500" />
-                              <span>{company.location}</span>
-                            </div>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-1">
-                              <UsersIcon className="h-4 w-4 text-gray-500" />
-                              <span>
-                                {company.total_intern || 0} /
-                                {company.total_regist || 0}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="py-3 px-4">
-                            {renderStatusBadge(String(company.status_id))}
+                          <td className="py-3 px-4 text-center">
+                            {
+                              <div className="text-sm text-gray-500">
+                                {item.last_login ? (
+                                  new Date(item.last_login).toLocaleString(
+                                    "th-TH",
+                                    {
+                                      year: "numeric",
+                                      month: "2-digit",
+                                      day: "2-digit",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      second: "2-digit",
+                                    }
+                                  )
+                                ) : (
+                                  <i>ไม่เคยใช้งาน</i>
+                                )}
+                              </div>
+                            }
                           </td>
                           <td className="py-3 px-4 text-right">
                             <div className="flex justify-end gap-2">
-                              <Link href={`/admin/companies/${company.id}`}>
+                              <Link href={`/admin/advisors/${item.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Eye className="h-3.5 w-3.5" />
                                 </Button>
                               </Link>
-                              <Link
-                                href={`/admin/companies/edit/${company.id}`}
-                              >
+                              <Link href={`/admin/advisors/edit/${item.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-3.5 w-3.5" />
                                 </Button>
