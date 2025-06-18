@@ -1,12 +1,31 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { LinkIcon, SearchIcon, UserIcon, BuildingIcon } from "lucide-react"
-import AdminSidebar from "@/components/admin-sidebar"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { LinkIcon, SearchIcon, UserIcon, BuildingIcon } from "lucide-react";
+import AdminSidebar from "@/components/admin-sidebar";
 
 export default function AdminMatching() {
   // Mock data for co-op terms
@@ -35,7 +54,7 @@ export default function AdminMatching() {
       shortName: "2/2566",
       status: "completed",
     },
-  ]
+  ];
 
   // Mock data for companies
   const companies = [
@@ -54,7 +73,11 @@ export default function AdminMatching() {
       location: "นนทบุรี",
       mentors: [
         { id: 3, name: "นายวิทยา เชี่ยวชาญ", position: "Network Engineer" },
-        { id: 4, name: "นางสาวรัตนา ผู้ชำนาญ", position: "System Administrator" },
+        {
+          id: 4,
+          name: "นางสาวรัตนา ผู้ชำนาญ",
+          position: "System Administrator",
+        },
       ],
     },
     {
@@ -89,34 +112,60 @@ export default function AdminMatching() {
       name: "บริษัท อิเล็กทรอนิกส์ จำกัด",
       location: "ชลบุรี",
       mentors: [
-        { id: 11, name: "นายสุรศักดิ์ เทคนิคดี", position: "Electronics Engineer" },
+        {
+          id: 11,
+          name: "นายสุรศักดิ์ เทคนิคดี",
+          position: "Electronics Engineer",
+        },
         { id: 12, name: "นางสาวไพลิน อุปกรณ์", position: "Quality Control" },
       ],
     },
-  ]
+  ];
 
   // Function to get status badge
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">กำลังดำเนินการ</Badge>
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            กำลังดำเนินการ
+          </Badge>
+        );
       case "upcoming":
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">กำลังจะมาถึง</Badge>
+        return (
+          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+            กำลังจะมาถึง
+          </Badge>
+        );
       case "completed":
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">เสร็จสิ้น</Badge>
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            เสร็จสิ้น
+          </Badge>
+        );
       case "planning":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">วางแผน</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            วางแผน
+          </Badge>
+        );
       default:
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">ไม่ระบุ</Badge>
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            ไม่ระบุ
+          </Badge>
+        );
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (ผู้ดูแลระบบ)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (ผู้ดูแลระบบ)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผู้ดูแลระบบ</span>
               <Link href="/">
@@ -129,7 +178,7 @@ export default function AdminMatching() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdminSidebar activePage="matching" />
 
@@ -140,7 +189,9 @@ export default function AdminMatching() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <CardTitle className="text-xl">รอบสหกิจศึกษา</CardTitle>
-                    <CardDescription>เลือกรอบสหกิจศึกษาที่ต้องการจัดการการจับคู่</CardDescription>
+                    <CardDescription>
+                      เลือกรอบสหกิจศึกษาที่ต้องการจัดการการจับคู่
+                    </CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -149,11 +200,17 @@ export default function AdminMatching() {
                   {coopTerms.map((term) => (
                     <Card
                       key={term.id}
-                      className={`cursor-pointer hover:border-blue-300 transition-colors ${term.status === "active" ? "border-blue-500 bg-blue-50" : ""}`}
+                      className={`cursor-pointer hover:border-blue-300 transition-colors ${
+                        term.status === "active"
+                          ? "border-blue-500 bg-blue-50"
+                          : ""
+                      }`}
                     >
                       <CardHeader className="pb-2">
                         <div className="flex justify-between items-start">
-                          <CardTitle className="text-lg">{term.shortName}</CardTitle>
+                          <CardTitle className="text-lg">
+                            {term.shortName}
+                          </CardTitle>
                           {getStatusBadge(term.status)}
                         </div>
                       </CardHeader>
@@ -175,7 +232,9 @@ export default function AdminMatching() {
               <CardHeader>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle className="text-xl">จัดการการจับคู่นักศึกษากับบริษัท</CardTitle>
+                    <CardTitle className="text-xl">
+                      จัดการการจับคู่นักศึกษากับบริษัท
+                    </CardTitle>
                     <CardDescription>ภาคการศึกษาที่ 1/2567</CardDescription>
                   </div>
                   <Button>เริ่มการจับคู่อัตโนมัติ</Button>
@@ -187,7 +246,9 @@ export default function AdminMatching() {
                     <TabsList>
                       <TabsTrigger value="pending">รอจับคู่ (24)</TabsTrigger>
                       <TabsTrigger value="matched">จับคู่แล้ว (96)</TabsTrigger>
-                      <TabsTrigger value="rejected">ไม่ผ่านการคัดเลือก (12)</TabsTrigger>
+                      <TabsTrigger value="rejected">
+                        ไม่ผ่านการคัดเลือก (12)
+                      </TabsTrigger>
                     </TabsList>
 
                     <div className="flex gap-2 w-full md:w-auto">
@@ -217,7 +278,9 @@ export default function AdminMatching() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">ทุกสาขาวิชา</SelectItem>
-                          <SelectItem value="cs">วิศวกรรมคอมพิวเตอร์</SelectItem>
+                          <SelectItem value="cs">
+                            วิศวกรรมคอมพิวเตอร์
+                          </SelectItem>
                           <SelectItem value="ee">วิศวกรรมไฟฟ้า</SelectItem>
                           <SelectItem value="ie">วิศวกรรมอุตสาหการ</SelectItem>
                           <SelectItem value="me">วิศวกรรมเครื่องกล</SelectItem>
@@ -236,7 +299,9 @@ export default function AdminMatching() {
                           <TableHead>บริษัทที่ต้องการ</TableHead>
                           <TableHead>พี่เลี้ยง</TableHead>
                           <TableHead>GPA</TableHead>
-                          <TableHead className="text-right">การดำเนินการ</TableHead>
+                          <TableHead className="text-right">
+                            การดำเนินการ
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -251,7 +316,10 @@ export default function AdminMatching() {
                               </SelectTrigger>
                               <SelectContent>
                                 {companies.map((company) => (
-                                  <SelectItem key={company.id} value={`company-${company.id}`}>
+                                  <SelectItem
+                                    key={company.id}
+                                    value={`company-${company.id}`}
+                                  >
                                     {company.name}
                                   </SelectItem>
                                 ))}
@@ -264,10 +332,18 @@ export default function AdminMatching() {
                                 <SelectValue placeholder="เลือกพี่เลี้ยง" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="mentor-1">นางสาวปรียา มากความรู้</SelectItem>
-                                <SelectItem value="mentor-2">นายสมศักดิ์ เชี่ยวชาญ</SelectItem>
-                                <SelectItem value="mentor-5">นายธนา ชำนาญโค้ด</SelectItem>
-                                <SelectItem value="mentor-6">นางสาวพิมพ์ใจ รักการสอน</SelectItem>
+                                <SelectItem value="mentor-1">
+                                  นางสาวปรียา มากความรู้
+                                </SelectItem>
+                                <SelectItem value="mentor-2">
+                                  นายสมศักดิ์ เชี่ยวชาญ
+                                </SelectItem>
+                                <SelectItem value="mentor-5">
+                                  นายธนา ชำนาญโค้ด
+                                </SelectItem>
+                                <SelectItem value="mentor-6">
+                                  นางสาวพิมพ์ใจ รักการสอน
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </TableCell>
@@ -295,7 +371,10 @@ export default function AdminMatching() {
                               </SelectTrigger>
                               <SelectContent>
                                 {companies.map((company) => (
-                                  <SelectItem key={company.id} value={`company-${company.id}`}>
+                                  <SelectItem
+                                    key={company.id}
+                                    value={`company-${company.id}`}
+                                  >
                                     {company.name}
                                   </SelectItem>
                                 ))}
@@ -308,10 +387,18 @@ export default function AdminMatching() {
                                 <SelectValue placeholder="เลือกพี่เลี้ยง" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="mentor-3">นายวิทยา เชี่ยวชาญ</SelectItem>
-                                <SelectItem value="mentor-4">นางสาวรัตนา ผู้ชำนาญ</SelectItem>
-                                <SelectItem value="mentor-7">นายปัญญา วิเคราะห์เก่ง</SelectItem>
-                                <SelectItem value="mentor-8">นางสาวมีนา ชำนาญข้อมูล</SelectItem>
+                                <SelectItem value="mentor-3">
+                                  นายวิทยา เชี่ยวชาญ
+                                </SelectItem>
+                                <SelectItem value="mentor-4">
+                                  นางสาวรัตนา ผู้ชำนาญ
+                                </SelectItem>
+                                <SelectItem value="mentor-7">
+                                  นายปัญญา วิเคราะห์เก่ง
+                                </SelectItem>
+                                <SelectItem value="mentor-8">
+                                  นางสาวมีนา ชำนาญข้อมูล
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </TableCell>
@@ -339,7 +426,10 @@ export default function AdminMatching() {
                               </SelectTrigger>
                               <SelectContent>
                                 {companies.map((company) => (
-                                  <SelectItem key={company.id} value={`company-${company.id}`}>
+                                  <SelectItem
+                                    key={company.id}
+                                    value={`company-${company.id}`}
+                                  >
                                     {company.name}
                                   </SelectItem>
                                 ))}
@@ -352,10 +442,18 @@ export default function AdminMatching() {
                                 <SelectValue placeholder="เลือกพี่เลี้ยง" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="mentor-9">นายพลัง นวัตกรรม</SelectItem>
-                                <SelectItem value="mentor-10">นางสาวพลอย พลังงาน</SelectItem>
-                                <SelectItem value="mentor-11">นายสุรศักดิ์ เทคนิคดี</SelectItem>
-                                <SelectItem value="mentor-12">นางสาวไพลิน อุปกรณ์</SelectItem>
+                                <SelectItem value="mentor-9">
+                                  นายพลัง นวัตกรรม
+                                </SelectItem>
+                                <SelectItem value="mentor-10">
+                                  นางสาวพลอย พลังงาน
+                                </SelectItem>
+                                <SelectItem value="mentor-11">
+                                  นายสุรศักดิ์ เทคนิคดี
+                                </SelectItem>
+                                <SelectItem value="mentor-12">
+                                  นางสาวไพลิน อุปกรณ์
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </TableCell>
@@ -386,7 +484,9 @@ export default function AdminMatching() {
                           <TableHead>บริษัทที่จับคู่</TableHead>
                           <TableHead>พี่เลี้ยง</TableHead>
                           <TableHead>วันที่จับคู่</TableHead>
-                          <TableHead className="text-right">การดำเนินการ</TableHead>
+                          <TableHead className="text-right">
+                            การดำเนินการ
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -487,7 +587,9 @@ export default function AdminMatching() {
                           <TableHead>สาขาวิชา</TableHead>
                           <TableHead>บริษัทที่ไม่ผ่าน</TableHead>
                           <TableHead>เหตุผล</TableHead>
-                          <TableHead className="text-right">การดำเนินการ</TableHead>
+                          <TableHead className="text-right">
+                            การดำเนินการ
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -496,7 +598,9 @@ export default function AdminMatching() {
                           <TableCell>นายอนุชา ช้าเรียน</TableCell>
                           <TableCell>วิศวกรรมคอมพิวเตอร์</TableCell>
                           <TableCell>บริษัท เทคโนโลยีดิจิทัล จำกัด</TableCell>
-                          <TableCell>ทักษะการเขียนโปรแกรมไม่ตรงตามที่ต้องการ</TableCell>
+                          <TableCell>
+                            ทักษะการเขียนโปรแกรมไม่ตรงตามที่ต้องการ
+                          </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
                               <Button size="sm">
@@ -537,5 +641,5 @@ export default function AdminMatching() {
         </div>
       </main>
     </div>
-  )
+  );
 }

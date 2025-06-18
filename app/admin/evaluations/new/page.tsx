@@ -1,14 +1,25 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { PlusIcon, GripVertical, Trash2Icon, ArrowLeftIcon } from "lucide-react"
-import AdminSidebar from "@/components/admin-sidebar"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import {
+  PlusIcon,
+  GripVertical,
+  Trash2Icon,
+  ArrowLeftIcon,
+} from "lucide-react";
+import AdminSidebar from "@/components/admin-sidebar";
 
 export default function NewEvaluation() {
   return (
@@ -16,7 +27,9 @@ export default function NewEvaluation() {
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (ผู้ดูแลระบบ)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (ผู้ดูแลระบบ)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผู้ดูแลระบบ</span>
               <Link href="/">
@@ -29,7 +42,7 @@ export default function NewEvaluation() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdminSidebar activePage="evaluations" />
 
@@ -43,7 +56,9 @@ export default function NewEvaluation() {
               </Link>
               <div>
                 <h1 className="text-2xl font-bold">สร้างแบบประเมินใหม่</h1>
-                <p className="text-gray-500">กรอกข้อมูลและสร้างหัวข้อการประเมิน</p>
+                <p className="text-gray-500">
+                  กรอกข้อมูลและสร้างหัวข้อการประเมิน
+                </p>
               </div>
             </div>
 
@@ -60,7 +75,11 @@ export default function NewEvaluation() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="description">คำอธิบาย</Label>
-                      <Textarea id="description" placeholder="ระบุคำอธิบายแบบประเมิน" rows={3} />
+                      <Textarea
+                        id="description"
+                        placeholder="ระบุคำอธิบายแบบประเมิน"
+                        rows={3}
+                      />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -77,16 +96,22 @@ export default function NewEvaluation() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="evaluation-target">เป้าหมายการประเมิน</Label>
+                        <Label htmlFor="evaluation-target">
+                          เป้าหมายการประเมิน
+                        </Label>
                         <Select>
                           <SelectTrigger id="evaluation-target">
                             <SelectValue placeholder="เลือกเป้าหมาย" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="student">นักศึกษา</SelectItem>
-                            <SelectItem value="company">สถานประกอบการ</SelectItem>
+                            <SelectItem value="company">
+                              สถานประกอบการ
+                            </SelectItem>
                             <SelectItem value="report">รายงาน</SelectItem>
-                            <SelectItem value="presentation">การนำเสนอ</SelectItem>
+                            <SelectItem value="presentation">
+                              การนำเสนอ
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -114,7 +139,11 @@ export default function NewEvaluation() {
                           <GripVertical className="h-5 w-5 text-gray-400 mr-2 cursor-move" />
                           <span className="font-medium">หัวข้อที่ 1</span>
                         </div>
-                        <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-500 hover:bg-red-50">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-500 hover:text-red-500 hover:bg-red-50"
+                        >
                           <Trash2Icon className="h-4 w-4" />
                         </Button>
                       </div>
@@ -128,7 +157,9 @@ export default function NewEvaluation() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="item-1-description">คำอธิบาย (ถ้ามี)</Label>
+                          <Label htmlFor="item-1-description">
+                            คำอธิบาย (ถ้ามี)
+                          </Label>
                           <Textarea
                             id="item-1-description"
                             placeholder="ระบุคำอธิบายเพิ่มเติม"
@@ -138,7 +169,10 @@ export default function NewEvaluation() {
                         </div>
                         <div className="space-y-2">
                           <Label>ประเภทคำตอบ</Label>
-                          <RadioGroup defaultValue="rating" className="flex flex-col space-y-1">
+                          <RadioGroup
+                            defaultValue="rating"
+                            className="flex flex-col space-y-1"
+                          >
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem value="rating" id="rating-1" />
                               <Label htmlFor="rating-1">{"คะแนน (1-5)"}</Label>
@@ -167,7 +201,11 @@ export default function NewEvaluation() {
                           <GripVertical className="h-5 w-5 text-gray-400 mr-2 cursor-move" />
                           <span className="font-medium">หัวข้อที่ 2</span>
                         </div>
-                        <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-500 hover:bg-red-50">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-500 hover:text-red-500 hover:bg-red-50"
+                        >
                           <Trash2Icon className="h-4 w-4" />
                         </Button>
                       </div>
@@ -181,7 +219,9 @@ export default function NewEvaluation() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="item-2-description">คำอธิบาย (ถ้ามี)</Label>
+                          <Label htmlFor="item-2-description">
+                            คำอธิบาย (ถ้ามี)
+                          </Label>
                           <Textarea
                             id="item-2-description"
                             placeholder="ระบุคำอธิบายเพิ่มเติม"
@@ -191,7 +231,10 @@ export default function NewEvaluation() {
                         </div>
                         <div className="space-y-2">
                           <Label>ประเภทคำตอบ</Label>
-                          <RadioGroup defaultValue="rating" className="flex flex-col space-y-1">
+                          <RadioGroup
+                            defaultValue="rating"
+                            className="flex flex-col space-y-1"
+                          >
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem value="rating" id="rating-2" />
                               <Label htmlFor="rating-2">{"คะแนน (1-5)"}</Label>
@@ -220,7 +263,11 @@ export default function NewEvaluation() {
                           <GripVertical className="h-5 w-5 text-gray-400 mr-2 cursor-move" />
                           <span className="font-medium">หัวข้อที่ 3</span>
                         </div>
-                        <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-500 hover:bg-red-50">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-500 hover:text-red-500 hover:bg-red-50"
+                        >
                           <Trash2Icon className="h-4 w-4" />
                         </Button>
                       </div>
@@ -234,7 +281,9 @@ export default function NewEvaluation() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="item-3-description">คำอธิบาย (ถ้ามี)</Label>
+                          <Label htmlFor="item-3-description">
+                            คำอธิบาย (ถ้ามี)
+                          </Label>
                           <Textarea
                             id="item-3-description"
                             placeholder="ระบุคำอธิบายเพิ่มเติม"
@@ -244,7 +293,10 @@ export default function NewEvaluation() {
                         </div>
                         <div className="space-y-2">
                           <Label>ประเภทคำตอบ</Label>
-                          <RadioGroup defaultValue="rating" className="flex flex-col space-y-1">
+                          <RadioGroup
+                            defaultValue="rating"
+                            className="flex flex-col space-y-1"
+                          >
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem value="rating" id="rating-3" />
                               <Label htmlFor="rating-3">{"คะแนน (1-5)"}</Label>
@@ -276,10 +328,14 @@ export default function NewEvaluation() {
                   </CardHeader>
                   <CardContent>
                     <div className="border rounded-lg p-4 bg-gray-50">
-                      <h3 className="font-medium text-lg mb-4">แบบประเมินใหม่</h3>
+                      <h3 className="font-medium text-lg mb-4">
+                        แบบประเมินใหม่
+                      </h3>
                       <div className="space-y-6">
                         <div>
-                          <h4 className="font-medium mb-1">1. ความรู้ความสามารถทางวิชาการ</h4>
+                          <h4 className="font-medium mb-1">
+                            1. ความรู้ความสามารถทางวิชาการ
+                          </h4>
                           <p className="text-sm text-gray-500 mb-2">
                             ประเมินความรู้ความสามารถทางวิชาการที่นักศึกษานำมาประยุกต์ใช้ในการปฏิบัติงาน
                           </p>
@@ -300,7 +356,9 @@ export default function NewEvaluation() {
                         </div>
 
                         <div>
-                          <h4 className="font-medium mb-1">2. ความรับผิดชอบและการตรงต่อเวลา</h4>
+                          <h4 className="font-medium mb-1">
+                            2. ความรับผิดชอบและการตรงต่อเวลา
+                          </h4>
                           <p className="text-sm text-gray-500 mb-2">
                             ประเมินความรับผิดชอบในงานที่ได้รับมอบหมายและการตรงต่อเวลาในการปฏิบัติงาน
                           </p>
@@ -321,7 +379,9 @@ export default function NewEvaluation() {
                         </div>
 
                         <div>
-                          <h4 className="font-medium mb-1">3. ความคิดริเริ่มสร้างสรรค์และการแก้ไขปัญหา</h4>
+                          <h4 className="font-medium mb-1">
+                            3. ความคิดริเริ่มสร้างสรรค์และการแก้ไขปัญหา
+                          </h4>
                           <p className="text-sm text-gray-500 mb-2">
                             ประเมินความสามารถในการคิดริเริ่มสร้างสรรค์และการแก้ไขปัญหาเฉพาะหน้า
                           </p>
@@ -357,5 +417,5 @@ export default function NewEvaluation() {
         </div>
       </main>
     </div>
-  )
+  );
 }

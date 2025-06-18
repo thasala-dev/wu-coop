@@ -1,17 +1,37 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarIcon, ClockIcon, MapPinIcon, UserIcon, BuildingIcon, ArrowLeftIcon } from "lucide-react"
-import AdvisorSidebar from "@/components/advisor-sidebar"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  CalendarIcon,
+  ClockIcon,
+  MapPinIcon,
+  UserIcon,
+  BuildingIcon,
+  ArrowLeftIcon,
+} from "lucide-react";
+import AdvisorSidebar from "@/components/advisor-sidebar";
 
 export default function RecordVisit({ params }: { params: { id: string } }) {
-  const visitId = params.id
+  const visitId = params.id;
 
   // Mock data for the visit
   const visit = {
@@ -27,7 +47,8 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
     company: {
       id: 1,
       name: "บริษัท เทคโนโลยีดิจิทัล จำกัด",
-      address: "อาคารดิจิทัล ชั้น 15 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพมหานคร 10400",
+      address:
+        "อาคารดิจิทัล ชั้น 15 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพมหานคร 10400",
       location: "กรุงเทพมหานคร",
     },
     mentor: {
@@ -41,7 +62,7 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
     distance: "15 กม.",
     transportation: "รถยนต์ส่วนตัว",
     term: "1/2567",
-  }
+  };
 
   // Mock data for evaluation criteria
   const evaluationCriteria = [
@@ -53,14 +74,16 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
     { id: "communication", name: "การสื่อสาร" },
     { id: "problem_solving", name: "การแก้ไขปัญหา" },
     { id: "discipline", name: "ระเบียบวินัย" },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผศ.ดร. วิชาญ นักสอน</span>
               <Link href="/">
@@ -73,7 +96,7 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdvisorSidebar activePage="visits" />
 
@@ -88,8 +111,12 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                     </Button>
                   </Link>
                 </div>
-                <CardTitle className="text-xl">บันทึกการนิเทศนักศึกษา</CardTitle>
-                <CardDescription>บันทึกผลการนิเทศและประเมินนักศึกษา</CardDescription>
+                <CardTitle className="text-xl">
+                  บันทึกการนิเทศนักศึกษา
+                </CardTitle>
+                <CardDescription>
+                  บันทึกผลการนิเทศและประเมินนักศึกษา
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
@@ -147,20 +174,37 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                     <TabsContent value="evaluation">
                       <div className="space-y-6">
                         <div className="space-y-4">
-                          <h3 className="text-lg font-medium">การประเมินผลการปฏิบัติงาน</h3>
+                          <h3 className="text-lg font-medium">
+                            การประเมินผลการปฏิบัติงาน
+                          </h3>
                           <p className="text-sm text-gray-600">
-                            ประเมินผลการปฏิบัติงานของนักศึกษาในแต่ละด้าน โดยให้คะแนน 1-5 (1 = ต้องปรับปรุง, 5 = ดีเยี่ยม)
+                            ประเมินผลการปฏิบัติงานของนักศึกษาในแต่ละด้าน
+                            โดยให้คะแนน 1-5 (1 = ต้องปรับปรุง, 5 = ดีเยี่ยม)
                           </p>
 
                           <div className="space-y-4">
                             {evaluationCriteria.map((criteria) => (
                               <div key={criteria.id} className="space-y-2">
-                                <Label htmlFor={criteria.id}>{criteria.name}</Label>
-                                <RadioGroup id={criteria.id} className="flex space-x-2">
+                                <Label htmlFor={criteria.id}>
+                                  {criteria.name}
+                                </Label>
+                                <RadioGroup
+                                  id={criteria.id}
+                                  className="flex space-x-2"
+                                >
                                   {[1, 2, 3, 4, 5].map((score) => (
-                                    <div key={score} className="flex flex-col items-center">
-                                      <RadioGroupItem value={score.toString()} id={`${criteria.id}-${score}`} />
-                                      <Label htmlFor={`${criteria.id}-${score}`} className="text-xs mt-1 font-normal">
+                                    <div
+                                      key={score}
+                                      className="flex flex-col items-center"
+                                    >
+                                      <RadioGroupItem
+                                        value={score.toString()}
+                                        id={`${criteria.id}-${score}`}
+                                      />
+                                      <Label
+                                        htmlFor={`${criteria.id}-${score}`}
+                                        className="text-xs mt-1 font-normal"
+                                      >
                                         {score}
                                       </Label>
                                     </div>
@@ -172,11 +216,15 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                         </div>
 
                         <div className="space-y-4">
-                          <h3 className="text-lg font-medium">ความคิดเห็นและข้อเสนอแนะ</h3>
+                          <h3 className="text-lg font-medium">
+                            ความคิดเห็นและข้อเสนอแนะ
+                          </h3>
 
                           <div className="space-y-4">
                             <div className="space-y-2">
-                              <Label htmlFor="strengths">จุดเด่นของนักศึกษา</Label>
+                              <Label htmlFor="strengths">
+                                จุดเด่นของนักศึกษา
+                              </Label>
                               <Textarea
                                 id="strengths"
                                 placeholder="ระบุจุดเด่นและความสามารถพิเศษของนักศึกษา"
@@ -185,7 +233,9 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                             </div>
 
                             <div className="space-y-2">
-                              <Label htmlFor="improvements">จุดที่ควรปรับปรุง</Label>
+                              <Label htmlFor="improvements">
+                                จุดที่ควรปรับปรุง
+                              </Label>
                               <Textarea
                                 id="improvements"
                                 placeholder="ระบุจุดที่นักศึกษาควรปรับปรุงและพัฒนา"
@@ -194,7 +244,9 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                             </div>
 
                             <div className="space-y-2">
-                              <Label htmlFor="recommendations">ข้อเสนอแนะเพิ่มเติม</Label>
+                              <Label htmlFor="recommendations">
+                                ข้อเสนอแนะเพิ่มเติม
+                              </Label>
                               <Textarea
                                 id="recommendations"
                                 placeholder="ข้อเสนอแนะเพิ่มเติมสำหรับนักศึกษา"
@@ -205,21 +257,33 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                         </div>
 
                         <div className="space-y-4">
-                          <h3 className="text-lg font-medium">สรุปผลการประเมิน</h3>
+                          <h3 className="text-lg font-medium">
+                            สรุปผลการประเมิน
+                          </h3>
 
                           <div className="space-y-4">
                             <div className="space-y-2">
-                              <Label htmlFor="overall-rating">ผลการประเมินโดยรวม</Label>
+                              <Label htmlFor="overall-rating">
+                                ผลการประเมินโดยรวม
+                              </Label>
                               <Select>
                                 <SelectTrigger id="overall-rating">
                                   <SelectValue placeholder="เลือกผลการประเมิน" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="excellent">ดีเยี่ยม</SelectItem>
+                                  <SelectItem value="excellent">
+                                    ดีเยี่ยม
+                                  </SelectItem>
                                   <SelectItem value="good">ดี</SelectItem>
-                                  <SelectItem value="satisfactory">พอใช้</SelectItem>
-                                  <SelectItem value="needs_improvement">ต้องปรับปรุง</SelectItem>
-                                  <SelectItem value="unsatisfactory">ไม่ผ่าน</SelectItem>
+                                  <SelectItem value="satisfactory">
+                                    พอใช้
+                                  </SelectItem>
+                                  <SelectItem value="needs_improvement">
+                                    ต้องปรับปรุง
+                                  </SelectItem>
+                                  <SelectItem value="unsatisfactory">
+                                    ไม่ผ่าน
+                                  </SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
@@ -240,11 +304,15 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                     <TabsContent value="interview">
                       <div className="space-y-6">
                         <div className="space-y-4">
-                          <h3 className="text-lg font-medium">บันทึกการสัมภาษณ์นักศึกษา</h3>
+                          <h3 className="text-lg font-medium">
+                            บันทึกการสัมภาษณ์นักศึกษา
+                          </h3>
 
                           <div className="space-y-4">
                             <div className="space-y-2">
-                              <Label htmlFor="student-interview">การสัมภาษณ์นักศึกษา</Label>
+                              <Label htmlFor="student-interview">
+                                การสัมภาษณ์นักศึกษา
+                              </Label>
                               <Textarea
                                 id="student-interview"
                                 placeholder="บันทึกการสัมภาษณ์และความคิดเห็นของนักศึกษา"
@@ -253,7 +321,9 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                             </div>
 
                             <div className="space-y-2">
-                              <Label htmlFor="mentor-interview">การสัมภาษณ์พี่เลี้ยง</Label>
+                              <Label htmlFor="mentor-interview">
+                                การสัมภาษณ์พี่เลี้ยง
+                              </Label>
                               <Textarea
                                 id="mentor-interview"
                                 placeholder="บันทึกการสัมภาษณ์และความคิดเห็นของพี่เลี้ยง"
@@ -262,7 +332,9 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                             </div>
 
                             <div className="space-y-2">
-                              <Label htmlFor="work-environment">สภาพแวดล้อมการทำงาน</Label>
+                              <Label htmlFor="work-environment">
+                                สภาพแวดล้อมการทำงาน
+                              </Label>
                               <Textarea
                                 id="work-environment"
                                 placeholder="บันทึกข้อมูลเกี่ยวกับสภาพแวดล้อมการทำงานของนักศึกษา"
@@ -271,7 +343,9 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                             </div>
 
                             <div className="space-y-2">
-                              <Label htmlFor="assigned-tasks">งานที่ได้รับมอบหมาย</Label>
+                              <Label htmlFor="assigned-tasks">
+                                งานที่ได้รับมอบหมาย
+                              </Label>
                               <Textarea
                                 id="assigned-tasks"
                                 placeholder="บันทึกข้อมูลเกี่ยวกับงานที่นักศึกษาได้รับมอบหมาย"
@@ -286,32 +360,54 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                     <TabsContent value="photos">
                       <div className="space-y-6">
                         <div className="space-y-4">
-                          <h3 className="text-lg font-medium">ภาพถ่ายการนิเทศ</h3>
+                          <h3 className="text-lg font-medium">
+                            ภาพถ่ายการนิเทศ
+                          </h3>
                           <p className="text-sm text-gray-600">
-                            อัพโหลดภาพถ่ายการนิเทศ เช่น ภาพถ่ายร่วมกับนักศึกษาและพี่เลี้ยง, ภาพสถานที่ทำงาน, ภาพการปฏิบัติงานของนักศึกษา
+                            อัพโหลดภาพถ่ายการนิเทศ เช่น
+                            ภาพถ่ายร่วมกับนักศึกษาและพี่เลี้ยง, ภาพสถานที่ทำงาน,
+                            ภาพการปฏิบัติงานของนักศึกษา
                           </p>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="photo-1">ภาพถ่ายที่ 1</Label>
-                              <Input id="photo-1" type="file" accept="image/*" />
+                              <Input
+                                id="photo-1"
+                                type="file"
+                                accept="image/*"
+                              />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="photo-2">ภาพถ่ายที่ 2</Label>
-                              <Input id="photo-2" type="file" accept="image/*" />
+                              <Input
+                                id="photo-2"
+                                type="file"
+                                accept="image/*"
+                              />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="photo-3">ภาพถ่ายที่ 3</Label>
-                              <Input id="photo-3" type="file" accept="image/*" />
+                              <Input
+                                id="photo-3"
+                                type="file"
+                                accept="image/*"
+                              />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="photo-4">ภาพถ่ายที่ 4</Label>
-                              <Input id="photo-4" type="file" accept="image/*" />
+                              <Input
+                                id="photo-4"
+                                type="file"
+                                accept="image/*"
+                              />
                             </div>
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor="photo-description">คำอธิบายภาพถ่าย</Label>
+                            <Label htmlFor="photo-description">
+                              คำอธิบายภาพถ่าย
+                            </Label>
                             <Textarea
                               id="photo-description"
                               placeholder="อธิบายรายละเอียดเกี่ยวกับภาพถ่ายที่อัพโหลด"
@@ -338,5 +434,5 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
         </div>
       </main>
     </div>
-  )
+  );
 }

@@ -1,13 +1,25 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   PlusIcon,
   SearchIcon,
@@ -29,8 +41,8 @@ import {
   VideoIcon,
   CarIcon,
   FilterIcon,
-} from "lucide-react"
-import AdvisorSidebar from "@/components/advisor-sidebar"
+} from "lucide-react";
+import AdvisorSidebar from "@/components/advisor-sidebar";
 
 export default function AdvisorSchedule() {
   // Mock data for appointments
@@ -90,12 +102,12 @@ export default function AdvisorSchedule() {
       status: "completed",
       description: "นิเทศนักศึกษาครั้งที่ 1 ประจำภาคการศึกษา 1/2567",
     },
-  ]
+  ];
 
   // Mock data for calendar
-  const currentMonth = "มิถุนายน 2567"
-  const calendarDays = Array.from({ length: 30 }, (_, i) => i + 1)
-  const daysOfWeek = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"]
+  const currentMonth = "มิถุนายน 2567";
+  const calendarDays = Array.from({ length: 30 }, (_, i) => i + 1);
+  const daysOfWeek = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
   // Mock data for students
   const students = [
@@ -134,7 +146,7 @@ export default function AdvisorSchedule() {
       company: "โรงพยาบาลรามาธิบดี",
       location: "กรุงเทพมหานคร",
     },
-  ]
+  ];
 
   // Function to get appointment type badge
   const getAppointmentTypeBadge = (type: string) => {
@@ -145,62 +157,80 @@ export default function AdvisorSchedule() {
             <CarIcon className="h-3 w-3 mr-1" />
             {type}
           </Badge>
-        )
+        );
       case "ออนไลน์":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
             <VideoIcon className="h-3 w-3 mr-1" />
             {type}
           </Badge>
-        )
+        );
       default:
-        return <Badge>{type}</Badge>
+        return <Badge>{type}</Badge>;
     }
-  }
+  };
 
   // Function to get appointment status badge
   const getAppointmentStatusBadge = (status: string) => {
     switch (status) {
       case "upcoming":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">กำลังจะมาถึง</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            กำลังจะมาถึง
+          </Badge>
+        );
       case "completed":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">เสร็จสิ้น</Badge>
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            เสร็จสิ้น
+          </Badge>
+        );
       case "cancelled":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">ยกเลิก</Badge>
+        return (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            ยกเลิก
+          </Badge>
+        );
       default:
-        return <Badge>ไม่ระบุ</Badge>
+        return <Badge>ไม่ระบุ</Badge>;
     }
-  }
+  };
 
   // Function to get calendar day class based on appointments
   const getCalendarDayClass = (day: number) => {
     // Check if there are appointments on this day
     const hasAppointment = appointments.some((appointment) => {
-      const appointmentDay = Number.parseInt(appointment.date.split(" ")[0])
-      return appointmentDay === day && appointment.date.includes("มิถุนายน 2567")
-    })
+      const appointmentDay = Number.parseInt(appointment.date.split(" ")[0]);
+      return (
+        appointmentDay === day && appointment.date.includes("มิถุนายน 2567")
+      );
+    });
 
     if (hasAppointment) {
-      return "bg-blue-50 border-blue-200"
+      return "bg-blue-50 border-blue-200";
     }
 
-    return ""
-  }
+    return "";
+  };
 
   // Function to get appointments for a specific day
   const getAppointmentsForDay = (day: number) => {
     return appointments.filter((appointment) => {
-      const appointmentDay = Number.parseInt(appointment.date.split(" ")[0])
-      return appointmentDay === day && appointment.date.includes("มิถุนายน 2567")
-    })
-  }
+      const appointmentDay = Number.parseInt(appointment.date.split(" ")[0]);
+      return (
+        appointmentDay === day && appointment.date.includes("มิถุนายน 2567")
+      );
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผศ.ดร. วิชาญ นักสอน</span>
               <Link href="/">
@@ -213,7 +243,7 @@ export default function AdvisorSchedule() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdvisorSidebar activePage="schedule" />
 
@@ -221,8 +251,12 @@ export default function AdvisorSchedule() {
             <Card className="mb-6">
               <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <CardTitle className="text-xl">ตารางนัดหมายและการนิเทศ</CardTitle>
-                  <CardDescription>จัดการตารางนัดหมายและการนิเทศนักศึกษา</CardDescription>
+                  <CardTitle className="text-xl">
+                    ตารางนัดหมายและการนิเทศ
+                  </CardTitle>
+                  <CardDescription>
+                    จัดการตารางนัดหมายและการนิเทศนักศึกษา
+                  </CardDescription>
                 </div>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -234,12 +268,19 @@ export default function AdvisorSchedule() {
                   <DialogContent className="sm:max-w-[600px]">
                     <DialogHeader>
                       <DialogTitle>สร้างการนัดหมายใหม่</DialogTitle>
-                      <DialogDescription>กรอกข้อมูลเพื่อสร้างการนัดหมายหรือการนิเทศนักศึกษา</DialogDescription>
+                      <DialogDescription>
+                        กรอกข้อมูลเพื่อสร้างการนัดหมายหรือการนิเทศนักศึกษา
+                      </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                       <div className="space-y-2">
-                        <Label htmlFor="appointment-title">หัวข้อการนัดหมาย</Label>
-                        <Input id="appointment-title" placeholder="เช่น นิเทศนักศึกษา - นายสมชาย ใจดี" />
+                        <Label htmlFor="appointment-title">
+                          หัวข้อการนัดหมาย
+                        </Label>
+                        <Input
+                          id="appointment-title"
+                          placeholder="เช่น นิเทศนักศึกษา - นายสมชาย ใจดี"
+                        />
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -247,7 +288,11 @@ export default function AdvisorSchedule() {
                           <Label htmlFor="appointment-date">วันที่</Label>
                           <div className="relative">
                             <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                            <Input id="appointment-date" type="date" className="pl-10" />
+                            <Input
+                              id="appointment-date"
+                              type="date"
+                              className="pl-10"
+                            />
                           </div>
                         </div>
                         <div className="space-y-2">
@@ -255,18 +300,28 @@ export default function AdvisorSchedule() {
                           <div className="grid grid-cols-2 gap-2">
                             <div className="relative">
                               <ClockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                              <Input id="appointment-time-start" type="time" className="pl-10" />
+                              <Input
+                                id="appointment-time-start"
+                                type="time"
+                                className="pl-10"
+                              />
                             </div>
                             <div className="relative">
                               <ClockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                              <Input id="appointment-time-end" type="time" className="pl-10" />
+                              <Input
+                                id="appointment-time-end"
+                                type="time"
+                                className="pl-10"
+                              />
                             </div>
                           </div>
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="appointment-type">ประเภทการนัดหมาย</Label>
+                        <Label htmlFor="appointment-type">
+                          ประเภทการนัดหมาย
+                        </Label>
                         <Select>
                           <SelectTrigger id="appointment-type">
                             <SelectValue placeholder="เลือกประเภทการนัดหมาย" />
@@ -279,8 +334,13 @@ export default function AdvisorSchedule() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="appointment-location">สถานที่/ลิงก์การประชุม</Label>
-                        <Input id="appointment-location" placeholder="ระบุสถานที่หรือลิงก์การประชุมออนไลน์" />
+                        <Label htmlFor="appointment-location">
+                          สถานที่/ลิงก์การประชุม
+                        </Label>
+                        <Input
+                          id="appointment-location"
+                          placeholder="ระบุสถานที่หรือลิงก์การประชุมออนไลน์"
+                        />
                       </div>
 
                       <div className="space-y-2">
@@ -288,7 +348,10 @@ export default function AdvisorSchedule() {
                         <div className="border rounded-md p-4 max-h-[200px] overflow-y-auto">
                           <div className="space-y-4">
                             {students.map((student) => (
-                              <div key={student.id} className="flex items-start space-x-3">
+                              <div
+                                key={student.id}
+                                className="flex items-start space-x-3"
+                              >
                                 <Checkbox id={`student-${student.id}`} />
                                 <div className="grid gap-1.5 leading-none">
                                   <label
@@ -308,7 +371,9 @@ export default function AdvisorSchedule() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="appointment-description">รายละเอียด</Label>
+                        <Label htmlFor="appointment-description">
+                          รายละเอียด
+                        </Label>
                         <Textarea
                           id="appointment-description"
                           placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับการนัดหมาย"
@@ -353,7 +418,9 @@ export default function AdvisorSchedule() {
                           <Button variant="outline" size="sm">
                             <ChevronLeftIcon className="h-4 w-4" />
                           </Button>
-                          <h3 className="text-lg font-medium">{currentMonth}</h3>
+                          <h3 className="text-lg font-medium">
+                            {currentMonth}
+                          </h3>
                           <Button variant="outline" size="sm">
                             <ChevronRightIcon className="h-4 w-4" />
                           </Button>
@@ -367,32 +434,46 @@ export default function AdvisorSchedule() {
 
                       <div className="grid grid-cols-7 gap-1">
                         {daysOfWeek.map((day, index) => (
-                          <div key={index} className="text-center font-medium py-2 text-sm">
+                          <div
+                            key={index}
+                            className="text-center font-medium py-2 text-sm"
+                          >
                             {day}
                           </div>
                         ))}
 
                         {/* Empty cells for days before the 1st of the month (assuming June 2024 starts on Saturday) */}
                         {Array.from({ length: 5 }).map((_, index) => (
-                          <div key={`empty-${index}`} className="h-24 border rounded-md bg-gray-50"></div>
+                          <div
+                            key={`empty-${index}`}
+                            className="h-24 border rounded-md bg-gray-50"
+                          ></div>
                         ))}
 
                         {calendarDays.map((day) => (
                           <div
                             key={day}
-                            className={`h-24 border rounded-md p-1 hover:bg-gray-50 ${getCalendarDayClass(day)}`}
+                            className={`h-24 border rounded-md p-1 hover:bg-gray-50 ${getCalendarDayClass(
+                              day
+                            )}`}
                           >
                             <div className="font-medium text-sm">{day}</div>
-                            {getAppointmentsForDay(day).map((appointment, index) => (
-                              <Link href={`/advisor/schedule/${appointment.id}`} key={index}>
-                                <div className="mt-1 p-1 text-xs bg-blue-100 text-blue-800 rounded truncate">
-                                  {appointment.time.split(" - ")[0]}{" "}
-                                  {appointment.title.length > 20
-                                    ? appointment.title.substring(0, 20) + "..."
-                                    : appointment.title}
-                                </div>
-                              </Link>
-                            ))}
+                            {getAppointmentsForDay(day).map(
+                              (appointment, index) => (
+                                <Link
+                                  href={`/advisor/schedule/${appointment.id}`}
+                                  key={index}
+                                >
+                                  <div className="mt-1 p-1 text-xs bg-blue-100 text-blue-800 rounded truncate">
+                                    {appointment.time.split(" - ")[0]}{" "}
+                                    {appointment.title.length > 20
+                                      ? appointment.title.substring(0, 20) +
+                                        "..."
+                                      : appointment.title}
+                                  </div>
+                                </Link>
+                              )
+                            )}
                           </div>
                         ))}
                       </div>
@@ -402,17 +483,26 @@ export default function AdvisorSchedule() {
                   <TabsContent value="list">
                     <div className="space-y-6">
                       <div>
-                        <h3 className="text-lg font-medium mb-4">การนัดหมายที่กำลังจะมาถึง</h3>
+                        <h3 className="text-lg font-medium mb-4">
+                          การนัดหมายที่กำลังจะมาถึง
+                        </h3>
                         <div className="space-y-4">
                           {appointments
-                            .filter((appointment) => appointment.status === "upcoming")
+                            .filter(
+                              (appointment) => appointment.status === "upcoming"
+                            )
                             .map((appointment) => (
-                              <Link href={`/advisor/schedule/${appointment.id}`} key={appointment.id}>
+                              <Link
+                                href={`/advisor/schedule/${appointment.id}`}
+                                key={appointment.id}
+                              >
                                 <Card className="hover:border-blue-300 transition-colors">
                                   <CardContent className="p-4">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between">
                                       <div>
-                                        <h4 className="font-medium">{appointment.title}</h4>
+                                        <h4 className="font-medium">
+                                          {appointment.title}
+                                        </h4>
                                         <div className="flex flex-wrap gap-2 mt-2">
                                           <div className="flex items-center text-sm text-gray-500">
                                             <CalendarIcon className="h-4 w-4 mr-1" />
@@ -429,10 +519,14 @@ export default function AdvisorSchedule() {
                                         </div>
                                       </div>
                                       <div className="mt-2 md:mt-0 flex flex-wrap gap-2">
-                                        {getAppointmentTypeBadge(appointment.type)}
+                                        {getAppointmentTypeBadge(
+                                          appointment.type
+                                        )}
                                         <div className="flex items-center">
                                           <UsersIcon className="h-4 w-4 mr-1 text-gray-500" />
-                                          <span className="text-sm">{appointment.students.length} คน</span>
+                                          <span className="text-sm">
+                                            {appointment.students.length} คน
+                                          </span>
                                         </div>
                                       </div>
                                     </div>
@@ -444,17 +538,27 @@ export default function AdvisorSchedule() {
                       </div>
 
                       <div>
-                        <h3 className="text-lg font-medium mb-4">การนัดหมายที่ผ่านมาแล้ว</h3>
+                        <h3 className="text-lg font-medium mb-4">
+                          การนัดหมายที่ผ่านมาแล้ว
+                        </h3>
                         <div className="space-y-4">
                           {appointments
-                            .filter((appointment) => appointment.status === "completed")
+                            .filter(
+                              (appointment) =>
+                                appointment.status === "completed"
+                            )
                             .map((appointment) => (
-                              <Link href={`/advisor/schedule/${appointment.id}`} key={appointment.id}>
+                              <Link
+                                href={`/advisor/schedule/${appointment.id}`}
+                                key={appointment.id}
+                              >
                                 <Card className="hover:border-blue-300 transition-colors">
                                   <CardContent className="p-4">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between">
                                       <div>
-                                        <h4 className="font-medium">{appointment.title}</h4>
+                                        <h4 className="font-medium">
+                                          {appointment.title}
+                                        </h4>
                                         <div className="flex flex-wrap gap-2 mt-2">
                                           <div className="flex items-center text-sm text-gray-500">
                                             <CalendarIcon className="h-4 w-4 mr-1" />
@@ -471,8 +575,12 @@ export default function AdvisorSchedule() {
                                         </div>
                                       </div>
                                       <div className="mt-2 md:mt-0 flex flex-wrap gap-2">
-                                        {getAppointmentTypeBadge(appointment.type)}
-                                        {getAppointmentStatusBadge(appointment.status)}
+                                        {getAppointmentTypeBadge(
+                                          appointment.type
+                                        )}
+                                        {getAppointmentStatusBadge(
+                                          appointment.status
+                                        )}
                                       </div>
                                     </div>
                                   </CardContent>
@@ -490,5 +598,5 @@ export default function AdvisorSchedule() {
         </div>
       </main>
     </div>
-  )
+  );
 }

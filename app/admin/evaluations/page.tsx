@@ -1,10 +1,22 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { PlusIcon, FileEditIcon, EyeIcon, TrashIcon, ClipboardCheckIcon } from "lucide-react"
-import AdminSidebar from "@/components/admin-sidebar"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  PlusIcon,
+  FileEditIcon,
+  EyeIcon,
+  TrashIcon,
+  ClipboardCheckIcon,
+} from "lucide-react";
+import AdminSidebar from "@/components/admin-sidebar";
 
 export default function AdminEvaluations() {
   return (
@@ -12,7 +24,9 @@ export default function AdminEvaluations() {
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (ผู้ดูแลระบบ)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (ผู้ดูแลระบบ)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผู้ดูแลระบบ</span>
               <Link href="/">
@@ -25,7 +39,7 @@ export default function AdminEvaluations() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdminSidebar activePage="evaluations" />
 
@@ -55,7 +69,9 @@ export default function AdminEvaluations() {
                 <Card>
                   <CardHeader>
                     <CardTitle>แบบประเมินทั้งหมด</CardTitle>
-                    <CardDescription>รายการแบบประเมินทั้งหมดในระบบ</CardDescription>
+                    <CardDescription>
+                      รายการแบบประเมินทั้งหมดในระบบ
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -68,17 +84,27 @@ export default function AdminEvaluations() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-medium">แบบประเมินผลการปฏิบัติงานนักศึกษาสหกิจศึกษา</h3>
-                                <Badge variant="outline" className="bg-blue-50 text-blue-700 hover:bg-blue-50">
+                                <h3 className="font-medium">
+                                  แบบประเมินผลการปฏิบัติงานนักศึกษาสหกิจศึกษา
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-blue-50 text-blue-700 hover:bg-blue-50"
+                                >
                                   พี่เลี้ยง
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับพี่เลี้ยงประเมินนักศึกษา • {"10 หัวข้อการประเมิน"}
+                                สำหรับพี่เลี้ยงประเมินนักศึกษา •{" "}
+                                {"10 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs text-gray-500">แก้ไขล่าสุด: 15 พ.ค. 2567</span>
-                                <span className="text-xs text-gray-500">ใช้งาน: 38 ครั้ง</span>
+                                <span className="text-xs text-gray-500">
+                                  แก้ไขล่าสุด: 15 พ.ค. 2567
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ใช้งาน: 38 ครั้ง
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -111,17 +137,27 @@ export default function AdminEvaluations() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-medium">แบบประเมินรายงานสหกิจศึกษา</h3>
-                                <Badge variant="outline" className="bg-green-50 text-green-700 hover:bg-green-50">
+                                <h3 className="font-medium">
+                                  แบบประเมินรายงานสหกิจศึกษา
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-green-50 text-green-700 hover:bg-green-50"
+                                >
                                   อาจารย์
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับอาจารย์ประเมินรายงาน • {"8 หัวข้อการประเมิน"}
+                                สำหรับอาจารย์ประเมินรายงาน •{" "}
+                                {"8 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs text-gray-500">แก้ไขล่าสุด: 10 พ.ค. 2567</span>
-                                <span className="text-xs text-gray-500">ใช้งาน: 25 ครั้ง</span>
+                                <span className="text-xs text-gray-500">
+                                  แก้ไขล่าสุด: 10 พ.ค. 2567
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ใช้งาน: 25 ครั้ง
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -154,17 +190,27 @@ export default function AdminEvaluations() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-medium">แบบประเมินตนเองของนักศึกษา</h3>
-                                <Badge variant="outline" className="bg-purple-50 text-purple-700 hover:bg-purple-50">
+                                <h3 className="font-medium">
+                                  แบบประเมินตนเองของนักศึกษา
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-purple-50 text-purple-700 hover:bg-purple-50"
+                                >
                                   นักศึกษา
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับนักศึกษาประเมินตนเอง • {"12 หัวข้อการประเมิน"}
+                                สำหรับนักศึกษาประเมินตนเอง •{" "}
+                                {"12 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs text-gray-500">แก้ไขล่าสุด: 5 พ.ค. 2567</span>
-                                <span className="text-xs text-gray-500">ใช้งาน: 142 ครั้ง</span>
+                                <span className="text-xs text-gray-500">
+                                  แก้ไขล่าสุด: 5 พ.ค. 2567
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ใช้งาน: 142 ครั้ง
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -197,17 +243,27 @@ export default function AdminEvaluations() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-medium">แบบประเมินสถานประกอบการ</h3>
-                                <Badge variant="outline" className="bg-orange-50 text-orange-700 hover:bg-orange-50">
+                                <h3 className="font-medium">
+                                  แบบประเมินสถานประกอบการ
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-orange-50 text-orange-700 hover:bg-orange-50"
+                                >
                                   นักศึกษา
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับนักศึกษาประเมินสถานประกอบการ • {"8 หัวข้อการประเมิน"}
+                                สำหรับนักศึกษาประเมินสถานประกอบการ •{" "}
+                                {"8 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs text-gray-500">แก้ไขล่าสุด: 1 พ.ค. 2567</span>
-                                <span className="text-xs text-gray-500">ใช้งาน: 118 ครั้ง</span>
+                                <span className="text-xs text-gray-500">
+                                  แก้ไขล่าสุด: 1 พ.ค. 2567
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ใช้งาน: 118 ครั้ง
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -239,7 +295,9 @@ export default function AdminEvaluations() {
                 <Card>
                   <CardHeader>
                     <CardTitle>แบบประเมินสำหรับนักศึกษา</CardTitle>
-                    <CardDescription>แบบประเมินที่นักศึกษาต้องทำ</CardDescription>
+                    <CardDescription>
+                      แบบประเมินที่นักศึกษาต้องทำ
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -252,17 +310,27 @@ export default function AdminEvaluations() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-medium">แบบประเมินตนเองของนักศึกษา</h3>
-                                <Badge variant="outline" className="bg-purple-50 text-purple-700 hover:bg-purple-50">
+                                <h3 className="font-medium">
+                                  แบบประเมินตนเองของนักศึกษา
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-purple-50 text-purple-700 hover:bg-purple-50"
+                                >
                                   นักศึกษา
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับนักศึกษาประเมินตนเอง • {"12 หัวข้อการประเมิน"}
+                                สำหรับนักศึกษาประเมินตนเอง •{" "}
+                                {"12 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs text-gray-500">แก้ไขล่าสุด: 5 พ.ค. 2567</span>
-                                <span className="text-xs text-gray-500">ใช้งาน: 142 ครั้ง</span>
+                                <span className="text-xs text-gray-500">
+                                  แก้ไขล่าสุด: 5 พ.ค. 2567
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ใช้งาน: 142 ครั้ง
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -295,17 +363,27 @@ export default function AdminEvaluations() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-medium">แบบประเมินสถานประกอบการ</h3>
-                                <Badge variant="outline" className="bg-orange-50 text-orange-700 hover:bg-orange-50">
+                                <h3 className="font-medium">
+                                  แบบประเมินสถานประกอบการ
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-orange-50 text-orange-700 hover:bg-orange-50"
+                                >
                                   นักศึกษา
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับนักศึกษาประเมินสถานประกอบการ • {"8 หัวข้อการประเมิน"}
+                                สำหรับนักศึกษาประเมินสถานประกอบการ •{" "}
+                                {"8 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs text-gray-500">แก้ไขล่าสุด: 1 พ.ค. 2567</span>
-                                <span className="text-xs text-gray-500">ใช้งาน: 118 ครั้ง</span>
+                                <span className="text-xs text-gray-500">
+                                  แก้ไขล่าสุด: 1 พ.ค. 2567
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ใช้งาน: 118 ครั้ง
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -337,7 +415,9 @@ export default function AdminEvaluations() {
                 <Card>
                   <CardHeader>
                     <CardTitle>แบบประเมินสำหรับอาจารย์</CardTitle>
-                    <CardDescription>แบบประเมินที่อาจารย์ต้องทำ</CardDescription>
+                    <CardDescription>
+                      แบบประเมินที่อาจารย์ต้องทำ
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -350,17 +430,27 @@ export default function AdminEvaluations() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-medium">แบบประเมินรายงานสหกิจศึกษา</h3>
-                                <Badge variant="outline" className="bg-green-50 text-green-700 hover:bg-green-50">
+                                <h3 className="font-medium">
+                                  แบบประเมินรายงานสหกิจศึกษา
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-green-50 text-green-700 hover:bg-green-50"
+                                >
                                   อาจารย์
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับอาจารย์ประเมินรายงาน • {"8 หัวข้อการประเมิน"}
+                                สำหรับอาจารย์ประเมินรายงาน •{" "}
+                                {"8 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs text-gray-500">แก้ไขล่าสุด: 10 พ.ค. 2567</span>
-                                <span className="text-xs text-gray-500">ใช้งาน: 25 ครั้ง</span>
+                                <span className="text-xs text-gray-500">
+                                  แก้ไขล่าสุด: 10 พ.ค. 2567
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ใช้งาน: 25 ครั้ง
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -392,7 +482,9 @@ export default function AdminEvaluations() {
                 <Card>
                   <CardHeader>
                     <CardTitle>แบบประเมินสำหรับพี่เลี้ยง</CardTitle>
-                    <CardDescription>แบบประเมินที่พี่เลี้ยงต้องทำ</CardDescription>
+                    <CardDescription>
+                      แบบประเมินที่พี่เลี้ยงต้องทำ
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -405,17 +497,27 @@ export default function AdminEvaluations() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <h3 className="font-medium">แบบประเมินผลการปฏิบัติงานนักศึกษาสหกิจศึกษา</h3>
-                                <Badge variant="outline" className="bg-blue-50 text-blue-700 hover:bg-blue-50">
+                                <h3 className="font-medium">
+                                  แบบประเมินผลการปฏิบัติงานนักศึกษาสหกิจศึกษา
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-blue-50 text-blue-700 hover:bg-blue-50"
+                                >
                                   พี่เลี้ยง
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับพี่เลี้ยงประเมินนักศึกษา • {"10 หัวข้อการประเมิน"}
+                                สำหรับพี่เลี้ยงประเมินนักศึกษา •{" "}
+                                {"10 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
-                                <span className="text-xs text-gray-500">แก้ไขล่าสุด: 15 พ.ค. 2567</span>
-                                <span className="text-xs text-gray-500">ใช้งาน: 38 ครั้ง</span>
+                                <span className="text-xs text-gray-500">
+                                  แก้ไขล่าสุด: 15 พ.ค. 2567
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  ใช้งาน: 38 ครั้ง
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -447,5 +549,5 @@ export default function AdminEvaluations() {
         </div>
       </main>
     </div>
-  )
+  );
 }

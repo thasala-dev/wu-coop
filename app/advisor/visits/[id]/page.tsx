@@ -1,7 +1,13 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   CalendarIcon,
   MapPinIcon,
@@ -12,11 +18,11 @@ import {
   MailIcon,
   ArrowLeftIcon,
   ClipboardIcon,
-} from "lucide-react"
-import AdvisorSidebar from "@/components/advisor-sidebar"
+} from "lucide-react";
+import AdvisorSidebar from "@/components/advisor-sidebar";
 
 export default function VisitDetails({ params }: { params: { id: string } }) {
-  const visitId = params.id
+  const visitId = params.id;
 
   // Mock data for the visit
   const visit = {
@@ -34,7 +40,8 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
     company: {
       id: 1,
       name: "บริษัท เทคโนโลยีดิจิทัล จำกัด",
-      address: "อาคารดิจิทัล ชั้น 15 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพมหานคร 10400",
+      address:
+        "อาคารดิจิทัล ชั้น 15 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพมหานคร 10400",
       location: "กรุงเทพมหานคร",
       phone: "02-123-4567",
       email: "contact@digitaltech.co.th",
@@ -51,16 +58,19 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
     distance: "15 กม.",
     transportation: "รถยนต์ส่วนตัว",
     term: "1/2567",
-    objectives: "ติดตามความก้าวหน้าการปฏิบัติงานของนักศึกษา และประเมินผลการปฏิบัติงานร่วมกับพี่เลี้ยง",
+    objectives:
+      "ติดตามความก้าวหน้าการปฏิบัติงานของนักศึกษา และประเมินผลการปฏิบัติงานร่วมกับพี่เลี้ยง",
     notes: "นัดหมายผ่านทางอีเมลและโทรศัพท์กับพี่เลี้ยงเรียบร้อยแล้ว",
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผศ.ดร. วิชาญ นักสอน</span>
               <Link href="/">
@@ -73,7 +83,7 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdvisorSidebar activePage="visits" />
 
@@ -90,8 +100,12 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle className="text-xl">รายละเอียดการนิเทศ</CardTitle>
-                    <CardDescription>ข้อมูลการนิเทศนักศึกษา ณ สถานประกอบการ</CardDescription>
+                    <CardTitle className="text-xl">
+                      รายละเอียดการนิเทศ
+                    </CardTitle>
+                    <CardDescription>
+                      ข้อมูลการนิเทศนักศึกษา ณ สถานประกอบการ
+                    </CardDescription>
                   </div>
                   <div className="flex gap-2">
                     <Link href={`/advisor/visits/edit/${visitId}`}>
@@ -117,13 +131,17 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                           <CalendarIcon className="h-6 w-6 text-purple-600" />
                         </div>
                         <div>
-                          <div className="text-sm text-purple-600 font-medium">กำหนดการนิเทศ</div>
+                          <div className="text-sm text-purple-600 font-medium">
+                            กำหนดการนิเทศ
+                          </div>
                           <div className="text-lg font-medium">
                             {visit.date} • {visit.time}
                           </div>
                         </div>
                       </div>
-                      <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">กำลังจะถึง</Badge>
+                      <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+                        กำลังจะถึง
+                      </Badge>
                     </div>
                   </div>
 
@@ -138,8 +156,12 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                       <CardContent>
                         <div className="space-y-3">
                           <div>
-                            <div className="font-medium">{visit.student.name}</div>
-                            <div className="text-sm text-gray-500">รหัสนักศึกษา: {visit.student.studentId}</div>
+                            <div className="font-medium">
+                              {visit.student.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              รหัสนักศึกษา: {visit.student.studentId}
+                            </div>
                           </div>
                           <div className="text-sm">
                             <div>สาขาวิชา: {visit.student.major}</div>
@@ -166,8 +188,12 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                       <CardContent>
                         <div className="space-y-3">
                           <div>
-                            <div className="font-medium">{visit.company.name}</div>
-                            <div className="text-sm text-gray-500">{visit.company.location}</div>
+                            <div className="font-medium">
+                              {visit.company.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {visit.company.location}
+                            </div>
                           </div>
                           <div className="text-sm">
                             <div className="flex items-start gap-1">
@@ -199,8 +225,12 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                       <CardContent>
                         <div className="space-y-3">
                           <div>
-                            <div className="font-medium">{visit.mentor.name}</div>
-                            <div className="text-sm text-gray-500">{visit.mentor.position}</div>
+                            <div className="font-medium">
+                              {visit.mentor.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {visit.mentor.position}
+                            </div>
                           </div>
                           <div className="text-sm">
                             <div className="flex items-center gap-1 mt-1">
@@ -226,15 +256,19 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                       <CardContent>
                         <div className="space-y-3">
                           <div>
-                            <div className="font-medium">ระยะทาง: {visit.distance}</div>
-                            <div className="text-sm text-gray-500">การเดินทาง: {visit.transportation}</div>
+                            <div className="font-medium">
+                              ระยะทาง: {visit.distance}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              การเดินทาง: {visit.transportation}
+                            </div>
                           </div>
                           <div className="text-sm">
                             <div className="flex items-start gap-1">
                               <MapPinIcon className="h-3.5 w-3.5 text-gray-500 mt-0.5" />
                               <a
                                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                                  visit.company.address,
+                                  visit.company.address
                                 )}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -251,12 +285,16 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
 
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">รายละเอียดการนิเทศ</CardTitle>
+                      <CardTitle className="text-lg">
+                        รายละเอียดการนิเทศ
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
                         <div>
-                          <div className="font-medium">วัตถุประสงค์การนิเทศ</div>
+                          <div className="font-medium">
+                            วัตถุประสงค์การนิเทศ
+                          </div>
                           <p className="text-sm mt-1">{visit.objectives}</p>
                         </div>
                         {visit.notes && (
@@ -275,5 +313,5 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
         </div>
       </main>
     </div>
-  )
+  );
 }

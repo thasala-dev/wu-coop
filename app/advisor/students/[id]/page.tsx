@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   ArrowLeft,
   Building,
@@ -11,17 +11,30 @@ import {
   CheckCircle,
   Edit,
   Car,
-} from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Progress } from "@/components/ui/progress"
-import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
-import AdvisorSidebar from "@/components/advisor-sidebar"
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import AdvisorSidebar from "@/components/advisor-sidebar";
 
 // Mock data for a single student
 const studentData = {
@@ -129,7 +142,8 @@ const studentData = {
       date: "15/07/2023",
       score: 85,
       maxScore: 100,
-      feedback: "นักศึกษามีความตั้งใจในการทำงาน มีความรับผิดชอบดี แต่ควรพัฒนาทักษะการสื่อสารให้มากขึ้น",
+      feedback:
+        "นักศึกษามีความตั้งใจในการทำงาน มีความรับผิดชอบดี แต่ควรพัฒนาทักษะการสื่อสารให้มากขึ้น",
     },
     final: {
       date: "",
@@ -139,82 +153,86 @@ const studentData = {
     },
   },
   progress: 65,
-}
+};
 
 // Function to render status badge
 const renderStatusBadge = (status: string) => {
   switch (status) {
     case "active":
-      return <Badge className="bg-green-500">ปกติ</Badge>
+      return <Badge className="bg-green-500">ปกติ</Badge>;
     case "warning":
-      return <Badge className="bg-yellow-500">ต้องติดตาม</Badge>
+      return <Badge className="bg-yellow-500">ต้องติดตาม</Badge>;
     case "issue":
-      return <Badge className="bg-red-500">มีปัญหา</Badge>
+      return <Badge className="bg-red-500">มีปัญหา</Badge>;
     default:
-      return <Badge>ไม่ระบุ</Badge>
+      return <Badge>ไม่ระบุ</Badge>;
   }
-}
+};
 
 // Function to render visit status
 const renderVisitStatus = (status: string) => {
   switch (status) {
     case "completed":
-      return <Badge className="bg-green-500">เสร็จสิ้น</Badge>
+      return <Badge className="bg-green-500">เสร็จสิ้น</Badge>;
     case "scheduled":
-      return <Badge className="bg-blue-500">กำหนดการ</Badge>
+      return <Badge className="bg-blue-500">กำหนดการ</Badge>;
     case "cancelled":
-      return <Badge className="bg-red-500">ยกเลิก</Badge>
+      return <Badge className="bg-red-500">ยกเลิก</Badge>;
     default:
-      return <Badge>ไม่ระบุ</Badge>
+      return <Badge>ไม่ระบุ</Badge>;
   }
-}
+};
 
 // Function to render report status
 const renderReportStatus = (status: string) => {
   switch (status) {
     case "graded":
-      return <Badge className="bg-green-500">ตรวจแล้ว</Badge>
+      return <Badge className="bg-green-500">ตรวจแล้ว</Badge>;
     case "submitted":
-      return <Badge className="bg-blue-500">ส่งแล้ว</Badge>
+      return <Badge className="bg-blue-500">ส่งแล้ว</Badge>;
     case "pending":
-      return <Badge className="bg-yellow-500">รอส่ง</Badge>
+      return <Badge className="bg-yellow-500">รอส่ง</Badge>;
     case "late":
-      return <Badge className="bg-red-500">เลยกำหนด</Badge>
+      return <Badge className="bg-red-500">เลยกำหนด</Badge>;
     default:
-      return <Badge>ไม่ระบุ</Badge>
+      return <Badge>ไม่ระบุ</Badge>;
   }
-}
+};
 
 // Function to render issue status
 const renderIssueStatus = (status: string) => {
   switch (status) {
     case "resolved":
-      return <Badge className="bg-green-500">แก้ไขแล้ว</Badge>
+      return <Badge className="bg-green-500">แก้ไขแล้ว</Badge>;
     case "pending":
-      return <Badge className="bg-yellow-500">อยู่ระหว่างดำเนินการ</Badge>
+      return <Badge className="bg-yellow-500">อยู่ระหว่างดำเนินการ</Badge>;
     case "critical":
-      return <Badge className="bg-red-500">วิกฤติ</Badge>
+      return <Badge className="bg-red-500">วิกฤติ</Badge>;
     default:
-      return <Badge>ไม่ระบุ</Badge>
+      return <Badge>ไม่ระบุ</Badge>;
   }
-}
+};
 
 export default function StudentDetailPage() {
-  const router = useRouter()
-  const params = useParams()
-  const studentId = params.id
+  const router = useRouter();
+  const params = useParams();
+  const studentId = params.id;
 
   // In a real application, you would fetch the student data based on the ID
-  const student = studentData
+  const student = studentData;
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div className="container mx-auto p-2">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <AdvisorSidebar activePage="students" />
 
         <div className="md:col-span-3">
           <div className="mb-6">
-            <Button variant="ghost" onClick={() => router.back()} className="mb-4">
+            <Button
+              variant="ghost"
+              onClick={() => router.back()}
+              className="mb-4"
+            >
               <ArrowLeft className="mr-2 h-4 w-4" />
               กลับไปหน้ารายการนักศึกษา
             </Button>
@@ -224,14 +242,18 @@ export default function StudentDetailPage() {
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                   <Avatar className="h-24 w-24">
                     <AvatarImage src={student.avatar} alt={student.name} />
-                    <AvatarFallback>{student.name.substring(0, 2)}</AvatarFallback>
+                    <AvatarFallback>
+                      {student.name.substring(0, 2)}
+                    </AvatarFallback>
                   </Avatar>
 
                   <div className="flex-1">
                     <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
                       <div>
                         <h1 className="text-2xl font-bold">{student.name}</h1>
-                        <p className="text-gray-500">รหัสนักศึกษา: {student.studentId}</p>
+                        <p className="text-gray-500">
+                          รหัสนักศึกษา: {student.studentId}
+                        </p>
                       </div>
                       <div className="mt-2 md:mt-0 flex items-center gap-2">
                         {renderStatusBadge(student.status)}
@@ -265,8 +287,12 @@ export default function StudentDetailPage() {
 
                     <div className="mt-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">ความก้าวหน้าโดยรวม</span>
-                        <span className="text-sm font-medium">{student.progress}%</span>
+                        <span className="text-sm font-medium">
+                          ความก้าวหน้าโดยรวม
+                        </span>
+                        <span className="text-sm font-medium">
+                          {student.progress}%
+                        </span>
                       </div>
                       <Progress value={student.progress} className="h-2" />
                     </div>
@@ -294,39 +320,56 @@ export default function StudentDetailPage() {
                   <CardContent>
                     <div className="space-y-4">
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">ชื่อ-นามสกุล</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          ชื่อ-นามสกุล
+                        </h3>
                         <p>{student.name}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">รหัสนักศึกษา</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          รหัสนักศึกษา
+                        </h3>
                         <p>{student.studentId}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">คณะ/สาขา</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          คณะ/สาขา
+                        </h3>
                         <p>
                           {student.faculty} / {student.major}
                         </p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">ชั้นปี</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          ชั้นปี
+                        </h3>
                         <p>{student.year}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">เบอร์โทรศัพท์</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          เบอร์โทรศัพท์
+                        </h3>
                         <p>{student.phone}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">อีเมล</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          อีเมล
+                        </h3>
                         <p>{student.email}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">ที่อยู่</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          ที่อยู่
+                        </h3>
                         <p>{student.address}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">ผู้ติดต่อฉุกเฉิน</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          ผู้ติดต่อฉุกเฉิน
+                        </h3>
                         <p>
-                          {student.emergencyContact.name} ({student.emergencyContact.relation})
+                          {student.emergencyContact.name} (
+                          {student.emergencyContact.relation})
                         </p>
                         <p>{student.emergencyContact.phone}</p>
                       </div>
@@ -341,32 +384,48 @@ export default function StudentDetailPage() {
                   <CardContent>
                     <div className="space-y-4">
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">ชื่อสถานประกอบการ</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          ชื่อสถานประกอบการ
+                        </h3>
                         <p>{student.company}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">ตำแหน่ง</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          ตำแหน่ง
+                        </h3>
                         <p>{student.position}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">แผนก/ฝ่าย</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          แผนก/ฝ่าย
+                        </h3>
                         <p>{student.department}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">สถานที่ตั้ง</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          สถานที่ตั้ง
+                        </h3>
                         <p>{student.location}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">ระยะเวลาฝึกงาน</h3>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          ระยะเวลาฝึกงาน
+                        </h3>
                         <p>
                           {student.startDate} - {student.endDate}
                         </p>
                       </div>
                       <div className="pt-4 border-t">
-                        <h3 className="text-sm font-medium text-gray-500 mb-2">ข้อมูลพี่เลี้ยง</h3>
+                        <h3 className="text-sm font-medium text-gray-500 mb-2">
+                          ข้อมูลพี่เลี้ยง
+                        </h3>
                         <p className="font-medium">{student.mentor.name}</p>
-                        <p className="text-sm text-gray-500">{student.mentor.position}</p>
-                        <p className="text-sm mt-1">โทร: {student.mentor.phone}</p>
+                        <p className="text-sm text-gray-500">
+                          {student.mentor.position}
+                        </p>
+                        <p className="text-sm mt-1">
+                          โทร: {student.mentor.phone}
+                        </p>
                         <p className="text-sm">อีเมล: {student.mentor.email}</p>
                       </div>
                     </div>
@@ -384,11 +443,16 @@ export default function StudentDetailPage() {
                           .filter((visit) => visit.status === "completed")
                           .slice(-1)
                           .map((visit) => (
-                            <div key={visit.id} className="flex flex-col md:flex-row md:items-center justify-between">
+                            <div
+                              key={visit.id}
+                              className="flex flex-col md:flex-row md:items-center justify-between"
+                            >
                               <div>
                                 <div className="flex items-center gap-2 mb-2">
                                   <Calendar className="h-4 w-4 text-gray-500" />
-                                  <span className="font-medium">วันที่: {visit.date}</span>
+                                  <span className="font-medium">
+                                    วันที่: {visit.date}
+                                  </span>
                                   <Badge variant="outline">{visit.type}</Badge>
                                 </div>
                                 <p className="text-gray-700">{visit.notes}</p>
@@ -410,7 +474,10 @@ export default function StudentDetailPage() {
                               .filter((visit) => visit.status === "scheduled")
                               .slice(0, 1)
                               .map((visit) => (
-                                <div key={visit.id} className="flex items-center gap-2">
+                                <div
+                                  key={visit.id}
+                                  className="flex items-center gap-2"
+                                >
                                   <Calendar className="h-4 w-4 text-gray-500" />
                                   <span>{visit.date}</span>
                                   <Badge variant="outline">{visit.type}</Badge>
@@ -419,7 +486,9 @@ export default function StudentDetailPage() {
                           </div>
 
                           <div className="mt-4 flex gap-2">
-                            <Link href={`/advisor/schedule?action=new&student=${student.id}`}>
+                            <Link
+                              href={`/advisor/schedule?action=new&student=${student.id}`}
+                            >
                               <Button>
                                 <Car className="mr-2 h-4 w-4" />
                                 วางแผนนิเทศ
@@ -431,7 +500,9 @@ export default function StudentDetailPage() {
                     ) : (
                       <div className="text-center py-4">
                         <p className="text-gray-500 mb-4">ยังไม่มีการนิเทศ</p>
-                        <Link href={`/advisor/schedule?action=new&student=${student.id}`}>
+                        <Link
+                          href={`/advisor/schedule?action=new&student=${student.id}`}
+                        >
                           <Button>
                             <Car className="mr-2 h-4 w-4" />
                             วางแผนนิเทศ
@@ -448,11 +519,15 @@ export default function StudentDetailPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>ประวัติการนิเทศ</CardTitle>
-                  <CardDescription>รายการนิเทศทั้งหมดของนักศึกษา</CardDescription>
+                  <CardDescription>
+                    รายการนิเทศทั้งหมดของนักศึกษา
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex justify-end mb-4">
-                    <Link href={`/advisor/schedule?action=new&student=${student.id}`}>
+                    <Link
+                      href={`/advisor/schedule?action=new&student=${student.id}`}
+                    >
                       <Button>
                         <Car className="mr-2 h-4 w-4" />
                         วางแผนนิเทศ
@@ -475,8 +550,12 @@ export default function StudentDetailPage() {
                         <TableRow key={visit.id}>
                           <TableCell>{visit.date}</TableCell>
                           <TableCell>{visit.type}</TableCell>
-                          <TableCell>{renderVisitStatus(visit.status)}</TableCell>
-                          <TableCell className="max-w-xs truncate">{visit.notes || "-"}</TableCell>
+                          <TableCell>
+                            {renderVisitStatus(visit.status)}
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate">
+                            {visit.notes || "-"}
+                          </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
                               <Link href={`/advisor/visits/${visit.id}`}>
@@ -485,7 +564,9 @@ export default function StudentDetailPage() {
                                 </Button>
                               </Link>
                               {visit.status === "scheduled" && (
-                                <Link href={`/advisor/visits/record/${visit.id}`}>
+                                <Link
+                                  href={`/advisor/visits/record/${visit.id}`}
+                                >
                                   <Button size="sm">บันทึกการนิเทศ</Button>
                                 </Link>
                               )}
@@ -503,7 +584,9 @@ export default function StudentDetailPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>รายงานของนักศึกษา</CardTitle>
-                  <CardDescription>รายงานทั้งหมดที่นักศึกษาต้องส่ง</CardDescription>
+                  <CardDescription>
+                    รายงานทั้งหมดที่นักศึกษาต้องส่ง
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -523,11 +606,15 @@ export default function StudentDetailPage() {
                           <TableCell>{report.title}</TableCell>
                           <TableCell>{report.dueDate}</TableCell>
                           <TableCell>{report.submittedDate || "-"}</TableCell>
-                          <TableCell>{renderReportStatus(report.status)}</TableCell>
+                          <TableCell>
+                            {renderReportStatus(report.status)}
+                          </TableCell>
                           <TableCell>{report.grade || "-"}</TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
-                              {report.status === "submitted" && <Button size="sm">ตรวจรายงาน</Button>}
+                              {report.status === "submitted" && (
+                                <Button size="sm">ตรวจรายงาน</Button>
+                              )}
                               {report.status === "graded" && (
                                 <Button variant="outline" size="sm">
                                   ดูรายละเอียด
@@ -547,7 +634,9 @@ export default function StudentDetailPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>ปัญหาและการติดตาม</CardTitle>
-                  <CardDescription>ปัญหาและประเด็นที่ต้องติดตามของนักศึกษา</CardDescription>
+                  <CardDescription>
+                    ปัญหาและประเด็นที่ต้องติดตามของนักศึกษา
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex justify-end mb-4">
@@ -568,7 +657,9 @@ export default function StudentDetailPage() {
                                   <h3 className="font-medium">{issue.title}</h3>
                                   {renderIssueStatus(issue.status)}
                                 </div>
-                                <p className="text-sm text-gray-500">บันทึกเมื่อ: {issue.date}</p>
+                                <p className="text-sm text-gray-500">
+                                  บันทึกเมื่อ: {issue.date}
+                                </p>
                               </div>
                               <div className="mt-2 md:mt-0">
                                 <Button variant="outline" size="sm">
@@ -578,13 +669,17 @@ export default function StudentDetailPage() {
                             </div>
 
                             <div className="mt-2">
-                              <h4 className="text-sm font-medium text-gray-500">รายละเอียด</h4>
+                              <h4 className="text-sm font-medium text-gray-500">
+                                รายละเอียด
+                              </h4>
                               <p className="mt-1">{issue.description}</p>
                             </div>
 
                             {issue.resolution && (
                               <div className="mt-4 pt-4 border-t">
-                                <h4 className="text-sm font-medium text-gray-500">การแก้ไข</h4>
+                                <h4 className="text-sm font-medium text-gray-500">
+                                  การแก้ไข
+                                </h4>
                                 <p className="mt-1">{issue.resolution}</p>
                               </div>
                             )}
@@ -596,7 +691,9 @@ export default function StudentDetailPage() {
                     <div className="text-center py-8">
                       <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
                       <h3 className="text-lg font-medium mb-2">ไม่พบปัญหา</h3>
-                      <p className="text-gray-500">นักศึกษาไม่มีปัญหาหรือประเด็นที่ต้องติดตามในขณะนี้</p>
+                      <p className="text-gray-500">
+                        นักศึกษาไม่มีปัญหาหรือประเด็นที่ต้องติดตามในขณะนี้
+                      </p>
                     </div>
                   )}
                 </CardContent>
@@ -607,68 +704,103 @@ export default function StudentDetailPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>การประเมินผล</CardTitle>
-                  <CardDescription>ผลการประเมินนักศึกษาระหว่างการฝึกงาน</CardDescription>
+                  <CardDescription>
+                    ผลการประเมินนักศึกษาระหว่างการฝึกงาน
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-medium mb-4">การประเมินกลางภาค</h3>
+                      <h3 className="text-lg font-medium mb-4">
+                        การประเมินกลางภาค
+                      </h3>
                       {student.evaluations.midterm.date ? (
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm">วันที่ประเมิน: {student.evaluations.midterm.date}</span>
+                            <span className="text-sm">
+                              วันที่ประเมิน: {student.evaluations.midterm.date}
+                            </span>
                             <span className="font-medium">
-                              {student.evaluations.midterm.score}/{student.evaluations.midterm.maxScore} คะแนน
+                              {student.evaluations.midterm.score}/
+                              {student.evaluations.midterm.maxScore} คะแนน
                             </span>
                           </div>
                           <Progress
-                            value={(student.evaluations.midterm.score / student.evaluations.midterm.maxScore) * 100}
+                            value={
+                              (student.evaluations.midterm.score /
+                                student.evaluations.midterm.maxScore) *
+                              100
+                            }
                             className="h-2 mb-4"
                           />
                           <div className="mt-4">
-                            <h4 className="text-sm font-medium text-gray-500 mb-2">ข้อเสนอแนะ</h4>
+                            <h4 className="text-sm font-medium text-gray-500 mb-2">
+                              ข้อเสนอแนะ
+                            </h4>
                             <p>{student.evaluations.midterm.feedback}</p>
                           </div>
                           <div className="mt-4">
-                            <Button variant="outline">ดูรายละเอียดการประเมิน</Button>
+                            <Button variant="outline">
+                              ดูรายละเอียดการประเมิน
+                            </Button>
                           </div>
                         </div>
                       ) : (
                         <div className="text-center py-6 bg-gray-50 rounded-lg">
                           <Clock className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                          <p className="text-gray-500">ยังไม่มีการประเมินกลางภาค</p>
+                          <p className="text-gray-500">
+                            ยังไม่มีการประเมินกลางภาค
+                          </p>
                           <Button className="mt-4">ทำการประเมิน</Button>
                         </div>
                       )}
                     </div>
 
                     <div className="pt-6 border-t">
-                      <h3 className="text-lg font-medium mb-4">การประเมินปลายภาค</h3>
+                      <h3 className="text-lg font-medium mb-4">
+                        การประเมินปลายภาค
+                      </h3>
                       {student.evaluations.final.date ? (
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm">วันที่ประเมิน: {student.evaluations.final.date}</span>
+                            <span className="text-sm">
+                              วันที่ประเมิน: {student.evaluations.final.date}
+                            </span>
                             <span className="font-medium">
-                              {student.evaluations.final.score}/{student.evaluations.final.maxScore} คะแนน
+                              {student.evaluations.final.score}/
+                              {student.evaluations.final.maxScore} คะแนน
                             </span>
                           </div>
                           <Progress
-                            value={(student.evaluations.final.score / student.evaluations.final.maxScore) * 100}
+                            value={
+                              (student.evaluations.final.score /
+                                student.evaluations.final.maxScore) *
+                              100
+                            }
                             className="h-2 mb-4"
                           />
                           <div className="mt-4">
-                            <h4 className="text-sm font-medium text-gray-500 mb-2">ข้อเสนอแนะ</h4>
+                            <h4 className="text-sm font-medium text-gray-500 mb-2">
+                              ข้อเสนอแนะ
+                            </h4>
                             <p>{student.evaluations.final.feedback}</p>
                           </div>
                           <div className="mt-4">
-                            <Button variant="outline">ดูรายละเอียดการประเมิน</Button>
+                            <Button variant="outline">
+                              ดูรายละเอียดการประเมิน
+                            </Button>
                           </div>
                         </div>
                       ) : (
                         <div className="text-center py-6 bg-gray-50 rounded-lg">
                           <Clock className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                          <p className="text-gray-500">ยังไม่มีการประเมินปลายภาค</p>
-                          <Button className="mt-4" disabled={!student.evaluations.midterm.date}>
+                          <p className="text-gray-500">
+                            ยังไม่มีการประเมินปลายภาค
+                          </p>
+                          <Button
+                            className="mt-4"
+                            disabled={!student.evaluations.midterm.date}
+                          >
                             ทำการประเมิน
                           </Button>
                         </div>
@@ -682,5 +814,5 @@ export default function StudentDetailPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

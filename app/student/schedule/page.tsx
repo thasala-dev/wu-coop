@@ -1,8 +1,14 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import {
   SearchIcon,
   ChevronLeftIcon,
@@ -14,8 +20,8 @@ import {
   VideoIcon,
   CarIcon,
   FilterIcon,
-} from "lucide-react"
-import StudentSidebar from "@/components/student-sidebar"
+} from "lucide-react";
+import StudentSidebar from "@/components/student-sidebar";
 
 export default function StudentSchedulePage() {
   // Mock data for appointments
@@ -29,7 +35,8 @@ export default function StudentSchedulePage() {
       location: "บริษัท เทคโนโลยี จำกัด (ห้องประชุมชั้น 3)",
       advisor: "ผศ.ดร.สมชาย ใจดี",
       status: "upcoming",
-      description: "การนิเทศครั้งแรกเพื่อพูดคุยเกี่ยวกับการปรับตัวและงานที่ได้รับมอบหมาย",
+      description:
+        "การนิเทศครั้งแรกเพื่อพูดคุยเกี่ยวกับการปรับตัวและงานที่ได้รับมอบหมาย",
     },
     {
       id: 2,
@@ -75,12 +82,12 @@ export default function StudentSchedulePage() {
       status: "completed",
       description: "การประชุมออนไลน์เพื่อแนะนำการเขียนรายงาน",
     },
-  ]
+  ];
 
   // Mock data for calendar
-  const currentMonth = "มิถุนายน 2567"
-  const calendarDays = Array.from({ length: 30 }, (_, i) => i + 1)
-  const daysOfWeek = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"]
+  const currentMonth = "มิถุนายน 2567";
+  const calendarDays = Array.from({ length: 30 }, (_, i) => i + 1);
+  const daysOfWeek = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
   // Function to get appointment type badge
   const getAppointmentTypeBadge = (type: string) => {
@@ -91,61 +98,75 @@ export default function StudentSchedulePage() {
             <CarIcon className="h-3 w-3 mr-1" />
             {type}
           </Badge>
-        )
+        );
       case "ออนไลน์":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
             <VideoIcon className="h-3 w-3 mr-1" />
             {type}
           </Badge>
-        )
+        );
       default:
-        return <Badge>{type}</Badge>
+        return <Badge>{type}</Badge>;
     }
-  }
+  };
 
   // Function to get appointment status badge
   const getAppointmentStatusBadge = (status: string) => {
     switch (status) {
       case "upcoming":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">กำลังจะมาถึง</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            กำลังจะมาถึง
+          </Badge>
+        );
       case "completed":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">เสร็จสิ้น</Badge>
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            เสร็จสิ้น
+          </Badge>
+        );
       case "cancelled":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">ยกเลิก</Badge>
+        return (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            ยกเลิก
+          </Badge>
+        );
       default:
-        return <Badge>ไม่ระบุ</Badge>
+        return <Badge>ไม่ระบุ</Badge>;
     }
-  }
+  };
 
   // Function to get calendar day class based on appointments
   const getCalendarDayClass = (day: number) => {
     // Check if there are appointments on this day
     const hasAppointment = appointments.some((appointment) => {
-      const appointmentDay = Number.parseInt(appointment.date.split(" ")[0])
-      return appointmentDay === day && appointment.date.includes("มิถุนายน 2567")
-    })
+      const appointmentDay = Number.parseInt(appointment.date.split(" ")[0]);
+      return (
+        appointmentDay === day && appointment.date.includes("มิถุนายน 2567")
+      );
+    });
 
     if (hasAppointment) {
-      return "bg-blue-50 border-blue-200"
+      return "bg-blue-50 border-blue-200";
     }
 
-    return ""
-  }
+    return "";
+  };
 
   // Function to get appointments for a specific day
   const getAppointmentsForDay = (day: number) => {
     return appointments.filter((appointment) => {
-      const appointmentDay = Number.parseInt(appointment.date.split(" ")[0])
-      return appointmentDay === day && appointment.date.includes("มิถุนายน 2567")
-    })
-  }
+      const appointmentDay = Number.parseInt(appointment.date.split(" ")[0]);
+      return (
+        appointmentDay === day && appointment.date.includes("มิถุนายน 2567")
+      );
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
-
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <StudentSidebar activePage="schedule" />
 
@@ -153,12 +174,17 @@ export default function StudentSchedulePage() {
             <Card className="mb-6">
               <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <CardTitle className="text-xl">ตารางนัดหมายการนิเทศ</CardTitle>
-                  <CardDescription>ดูและจัดการตารางนัดหมายการนิเทศของคุณ</CardDescription>
+                  <CardTitle className="text-xl">
+                    ตารางนัดหมายการนิเทศ
+                  </CardTitle>
+                  <CardDescription>
+                    ดูและจัดการตารางนัดหมายการนิเทศของคุณ
+                  </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-                    นัดหมายที่กำลังจะมาถึง: {appointments.filter((a) => a.status === "upcoming").length}
+                    นัดหมายที่กำลังจะมาถึง:{" "}
+                    {appointments.filter((a) => a.status === "upcoming").length}
                   </Badge>
                 </div>
               </CardHeader>
@@ -192,7 +218,9 @@ export default function StudentSchedulePage() {
                           <Button variant="outline" size="sm">
                             <ChevronLeftIcon className="h-4 w-4" />
                           </Button>
-                          <h3 className="text-lg font-medium">{currentMonth}</h3>
+                          <h3 className="text-lg font-medium">
+                            {currentMonth}
+                          </h3>
                           <Button variant="outline" size="sm">
                             <ChevronRightIcon className="h-4 w-4" />
                           </Button>
@@ -206,32 +234,46 @@ export default function StudentSchedulePage() {
 
                       <div className="grid grid-cols-7 gap-1">
                         {daysOfWeek.map((day, index) => (
-                          <div key={index} className="text-center font-medium py-2 text-sm">
+                          <div
+                            key={index}
+                            className="text-center font-medium py-2 text-sm"
+                          >
                             {day}
                           </div>
                         ))}
 
                         {/* Empty cells for days before the 1st of the month (assuming June 2024 starts on Saturday) */}
                         {Array.from({ length: 5 }).map((_, index) => (
-                          <div key={`empty-${index}`} className="h-24 border rounded-md bg-gray-50"></div>
+                          <div
+                            key={`empty-${index}`}
+                            className="h-24 border rounded-md bg-gray-50"
+                          ></div>
                         ))}
 
                         {calendarDays.map((day) => (
                           <div
                             key={day}
-                            className={`h-24 border rounded-md p-1 hover:bg-gray-50 ${getCalendarDayClass(day)}`}
+                            className={`h-24 border rounded-md p-1 hover:bg-gray-50 ${getCalendarDayClass(
+                              day
+                            )}`}
                           >
                             <div className="font-medium text-sm">{day}</div>
-                            {getAppointmentsForDay(day).map((appointment, index) => (
-                              <Link href={`/student/schedule/${appointment.id}`} key={index}>
-                                <div className="mt-1 p-1 text-xs bg-blue-100 text-blue-800 rounded truncate">
-                                  {appointment.time.split(" - ")[0]}{" "}
-                                  {appointment.title.length > 20
-                                    ? appointment.title.substring(0, 20) + "..."
-                                    : appointment.title}
-                                </div>
-                              </Link>
-                            ))}
+                            {getAppointmentsForDay(day).map(
+                              (appointment, index) => (
+                                <Link
+                                  href={`/student/schedule/${appointment.id}`}
+                                  key={index}
+                                >
+                                  <div className="mt-1 p-1 text-xs bg-blue-100 text-blue-800 rounded truncate">
+                                    {appointment.time.split(" - ")[0]}{" "}
+                                    {appointment.title.length > 20
+                                      ? appointment.title.substring(0, 20) +
+                                        "..."
+                                      : appointment.title}
+                                  </div>
+                                </Link>
+                              )
+                            )}
                           </div>
                         ))}
                       </div>
@@ -241,17 +283,26 @@ export default function StudentSchedulePage() {
                   <TabsContent value="list">
                     <div className="space-y-6">
                       <div>
-                        <h3 className="text-lg font-medium mb-4">การนัดหมายที่กำลังจะมาถึง</h3>
+                        <h3 className="text-lg font-medium mb-4">
+                          การนัดหมายที่กำลังจะมาถึง
+                        </h3>
                         <div className="space-y-4">
                           {appointments
-                            .filter((appointment) => appointment.status === "upcoming")
+                            .filter(
+                              (appointment) => appointment.status === "upcoming"
+                            )
                             .map((appointment) => (
-                              <Link href={`/student/schedule/${appointment.id}`} key={appointment.id}>
+                              <Link
+                                href={`/student/schedule/${appointment.id}`}
+                                key={appointment.id}
+                              >
                                 <Card className="hover:border-blue-300 transition-colors">
                                   <CardContent className="p-4">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between">
                                       <div>
-                                        <h4 className="font-medium">{appointment.title}</h4>
+                                        <h4 className="font-medium">
+                                          {appointment.title}
+                                        </h4>
                                         <div className="flex flex-wrap gap-2 mt-2">
                                           <div className="flex items-center text-sm text-gray-500">
                                             <CalendarIcon className="h-4 w-4 mr-1" />
@@ -268,10 +319,14 @@ export default function StudentSchedulePage() {
                                         </div>
                                       </div>
                                       <div className="mt-2 md:mt-0 flex flex-wrap gap-2">
-                                        {getAppointmentTypeBadge(appointment.type)}
+                                        {getAppointmentTypeBadge(
+                                          appointment.type
+                                        )}
                                         <div className="flex items-center">
                                           <UsersIcon className="h-4 w-4 mr-1 text-gray-500" />
-                                          <span className="text-sm">อาจารย์: {appointment.advisor}</span>
+                                          <span className="text-sm">
+                                            อาจารย์: {appointment.advisor}
+                                          </span>
                                         </div>
                                       </div>
                                     </div>
@@ -283,17 +338,27 @@ export default function StudentSchedulePage() {
                       </div>
 
                       <div>
-                        <h3 className="text-lg font-medium mb-4">การนัดหมายที่ผ่านมาแล้ว</h3>
+                        <h3 className="text-lg font-medium mb-4">
+                          การนัดหมายที่ผ่านมาแล้ว
+                        </h3>
                         <div className="space-y-4">
                           {appointments
-                            .filter((appointment) => appointment.status === "completed")
+                            .filter(
+                              (appointment) =>
+                                appointment.status === "completed"
+                            )
                             .map((appointment) => (
-                              <Link href={`/student/schedule/${appointment.id}`} key={appointment.id}>
+                              <Link
+                                href={`/student/schedule/${appointment.id}`}
+                                key={appointment.id}
+                              >
                                 <Card className="hover:border-blue-300 transition-colors">
                                   <CardContent className="p-4">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between">
                                       <div>
-                                        <h4 className="font-medium">{appointment.title}</h4>
+                                        <h4 className="font-medium">
+                                          {appointment.title}
+                                        </h4>
                                         <div className="flex flex-wrap gap-2 mt-2">
                                           <div className="flex items-center text-sm text-gray-500">
                                             <CalendarIcon className="h-4 w-4 mr-1" />
@@ -310,8 +375,12 @@ export default function StudentSchedulePage() {
                                         </div>
                                       </div>
                                       <div className="mt-2 md:mt-0 flex flex-wrap gap-2">
-                                        {getAppointmentTypeBadge(appointment.type)}
-                                        {getAppointmentStatusBadge(appointment.status)}
+                                        {getAppointmentTypeBadge(
+                                          appointment.type
+                                        )}
+                                        {getAppointmentStatusBadge(
+                                          appointment.status
+                                        )}
                                       </div>
                                     </div>
                                   </CardContent>
@@ -329,5 +398,5 @@ export default function StudentSchedulePage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

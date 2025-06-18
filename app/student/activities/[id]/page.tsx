@@ -2,9 +2,24 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, ClockIcon, TagIcon, FileIcon, ArrowLeftIcon, PencilIcon, AlertTriangle } from "lucide-react";
+import {
+  CalendarIcon,
+  ClockIcon,
+  TagIcon,
+  FileIcon,
+  ArrowLeftIcon,
+  PencilIcon,
+  AlertTriangle,
+} from "lucide-react";
 import StudentSidebar from "@/components/student-sidebar";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
@@ -49,34 +64,40 @@ interface Activity {
 export default function ActivityDetail({ params }: { params: { id: string } }) {
   const activityId = params.id;
   const { toast } = useToast();
-  
+
   const [activity, setActivity] = useState<Activity | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Format file size
   const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
   };
-  
+
   // Format date
-  const formatDate = (dateString: string, formatStr: string = "d MMMM yyyy"): string => {
+  const formatDate = (
+    dateString: string,
+    formatStr: string = "d MMMM yyyy"
+  ): string => {
     try {
-      const date = typeof dateString === 'string' ? parseISO(dateString) : new Date(dateString);
+      const date =
+        typeof dateString === "string"
+          ? parseISO(dateString)
+          : new Date(dateString);
       return format(date, formatStr, { locale: th });
     } catch (error) {
       console.error("Date formatting error:", error);
       return dateString;
     }
   };
-  
+
   // Format datetime
   const formatDateTime = (dateString: string): string => {
     return formatDate(dateString, "d MMMM yyyy HH:mm");
   };
-  
+
   // Get badge style for category
   const getCategoryBadgeStyle = (color: string) => {
     switch (color) {
@@ -94,16 +115,16 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
         return "bg-gray-100 text-gray-800 hover:bg-gray-100";
     }
   };
-  
+
   // Fetch activity data
   const fetchActivity = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`/api/student-activities/${activityId}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setActivity(data.data);
       } else {
@@ -126,32 +147,34 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
       setLoading(false);
     }
   };
-  
+
   // Download file
   const handleDownloadFile = (file: ActivityFile) => {
     const fileUrl = `/uploads/activities/${activityId}/${file.filename}`;
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = fileUrl;
     link.download = file.originalFilename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
-  
+
   // Fetch activity on component mount
   useEffect(() => {
     fetchActivity();
   }, [activityId]);
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Toaster />
       {loading && <Loading />}
-      
+
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (นักศึกษา)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (นักศึกษา)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>
               <Link href="/">
@@ -164,8 +187,8 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <main className="container mx-auto p-2">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <StudentSidebar activePage="activities" />
 
           <div className="md:col-span-3">
@@ -173,7 +196,9 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
               {error ? (
                 <CardContent className="flex flex-col items-center justify-center p-12">
                   <AlertTriangle className="h-12 w-12 text-orange-500 mb-4" />
-                  <h2 className="text-xl font-semibold mb-2">ไม่พบข้อมูลกิจกรรม</h2>
+                  <h2 className="text-xl font-semibold mb-2">
+                    ไม่พบข้อมูลกิจกรรม
+                  </h2>
                   <p className="text-gray-500 mb-6">{error}</p>
                   <Link href="/student/activities">
                     <Button>กลับไปหน้ากิจกรรม</Button>
@@ -191,14 +216,20 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
                           </Button>
                         </Link>
                       </div>
-                      <CardTitle className="text-xl">{activity.title}</CardTitle>
+                      <CardTitle className="text-xl">
+                        {activity.title}
+                      </CardTitle>
                       <CardDescription>
                         <div className="flex flex-wrap items-center gap-3 mt-2">
                           <div className="flex items-center gap-1">
                             <CalendarIcon className="h-4 w-4 text-gray-500" />
                             <span>{formatDate(activity.activityDate)}</span>
                           </div>
-                          <Badge className={getCategoryBadgeStyle(activity.category.color)}>
+                          <Badge
+                            className={getCategoryBadgeStyle(
+                              activity.category.color
+                            )}
+                          >
                             {activity.category.name}
                           </Badge>
                         </div>
@@ -216,7 +247,9 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
                   <CardContent>
                     <div className="space-y-6">
                       <div>
-                        <h3 className="text-lg font-medium mb-2">รายละเอียดกิจกรรม</h3>
+                        <h3 className="text-lg font-medium mb-2">
+                          รายละเอียดกิจกรรม
+                        </h3>
                         <div className="whitespace-pre-line text-gray-700 bg-gray-50 p-4 rounded-md border">
                           {activity.description}
                         </div>
@@ -224,7 +257,9 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
 
                       {activity.learning && (
                         <div>
-                          <h3 className="text-lg font-medium mb-2">สิ่งที่ได้เรียนรู้</h3>
+                          <h3 className="text-lg font-medium mb-2">
+                            สิ่งที่ได้เรียนรู้
+                          </h3>
                           <div className="whitespace-pre-line text-gray-700 bg-gray-50 p-4 rounded-md border">
                             {activity.learning}
                           </div>
@@ -233,7 +268,9 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
 
                       {activity.problems && (
                         <div>
-                          <h3 className="text-lg font-medium mb-2">ปัญหาและอุปสรรค</h3>
+                          <h3 className="text-lg font-medium mb-2">
+                            ปัญหาและอุปสรรค
+                          </h3>
                           <div className="whitespace-pre-line text-gray-700 bg-gray-50 p-4 rounded-md border">
                             {activity.problems}
                           </div>
@@ -242,7 +279,9 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
 
                       {activity.solutions && (
                         <div>
-                          <h3 className="text-lg font-medium mb-2">แนวทางการแก้ไขปัญหา</h3>
+                          <h3 className="text-lg font-medium mb-2">
+                            แนวทางการแก้ไขปัญหา
+                          </h3>
                           <div className="whitespace-pre-line text-gray-700 bg-gray-50 p-4 rounded-md border">
                             {activity.solutions}
                           </div>
@@ -254,7 +293,11 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
                           <h3 className="text-lg font-medium mb-2">แท็ก</h3>
                           <div className="flex flex-wrap gap-2">
                             {activity.tags.map((tag, index) => (
-                              <Badge key={index} variant="outline" className="flex items-center gap-1">
+                              <Badge
+                                key={index}
+                                variant="outline"
+                                className="flex items-center gap-1"
+                              >
                                 <TagIcon className="h-3 w-3" />
                                 {tag}
                               </Badge>
@@ -268,12 +311,19 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
                           <h3 className="text-lg font-medium mb-2">ไฟล์แนบ</h3>
                           <div className="space-y-2">
                             {activity.files.map((file) => (
-                              <div key={file.id} className="flex items-center gap-2 p-2 border rounded-md bg-gray-50">
+                              <div
+                                key={file.id}
+                                className="flex items-center gap-2 p-2 border rounded-md bg-gray-50"
+                              >
                                 <FileIcon className="h-4 w-4 text-blue-500" />
-                                <span className="flex-grow">{file.originalFilename}</span>
-                                <span className="text-sm text-gray-500">{formatFileSize(file.fileSize)}</span>
-                                <Button 
-                                  variant="ghost" 
+                                <span className="flex-grow">
+                                  {file.originalFilename}
+                                </span>
+                                <span className="text-sm text-gray-500">
+                                  {formatFileSize(file.fileSize)}
+                                </span>
+                                <Button
+                                  variant="ghost"
                                   size="sm"
                                   onClick={() => handleDownloadFile(file)}
                                 >
@@ -288,12 +338,16 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
                       <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t">
                         <div className="flex items-center gap-1">
                           <ClockIcon className="h-4 w-4" />
-                          <span>สร้างเมื่อ: {formatDateTime(activity.createdAt)}</span>
+                          <span>
+                            สร้างเมื่อ: {formatDateTime(activity.createdAt)}
+                          </span>
                         </div>
                         {activity.updatedAt && (
                           <div className="flex items-center gap-1">
                             <ClockIcon className="h-4 w-4" />
-                            <span>แก้ไขล่าสุด: {formatDateTime(activity.updatedAt)}</span>
+                            <span>
+                              แก้ไขล่าสุด: {formatDateTime(activity.updatedAt)}
+                            </span>
                           </div>
                         )}
                       </div>

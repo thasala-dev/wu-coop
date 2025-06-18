@@ -1,15 +1,33 @@
-// pages/api/deleteFile.ts
 import fs from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
-  const fileName = searchParams.get("fileName");
+  let fileName = searchParams.get("fileName");
 
   if (!fileName || typeof fileName !== "string") {
     return NextResponse.json(
       { success: false, message: "Missing or invalid fileName." },
+      { status: 400 }
+    );
+  }
+
+  // Remove leading /uploads/ if exists
+  if (fileName.startsWith("/uploads/")) {
+    fileName = fileName.substring("/uploads/".length);
+  }
+  // Remove leading slash if exists
+  if (fileName.startsWith("/")) {
+    fileName = fileName.substring(1);
+  }
+  // Prevent path traversal (../)
+  if (fileName.includes("..")) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Invalid fileName (path traversal not allowed).",
+      },
       { status: 400 }
     );
   }

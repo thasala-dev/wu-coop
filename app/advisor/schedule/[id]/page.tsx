@@ -1,10 +1,17 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft,
   Calendar,
@@ -17,10 +24,14 @@ import {
   Trash2,
   CheckCircle,
   AlertCircle,
-} from "lucide-react"
-import AdvisorSidebar from "@/components/advisor-sidebar"
+} from "lucide-react";
+import AdvisorSidebar from "@/components/advisor-sidebar";
 
-export default function AppointmentDetailPage({ params }: { params: { id: string } }) {
+export default function AppointmentDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // Mock data for a single appointment
   const appointment = {
     id: 1,
@@ -34,7 +45,8 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
     meetingId: "",
     meetingPassword: "",
     status: "upcoming",
-    description: "นิเทศนักศึกษาครั้งที่ 1 ประจำภาคการศึกษา 1/2567 เพื่อติดตามความก้าวหน้าในการฝึกงาน",
+    description:
+      "นิเทศนักศึกษาครั้งที่ 1 ประจำภาคการศึกษา 1/2567 เพื่อติดตามความก้าวหน้าในการฝึกงาน",
     transportation: "รถยนต์ส่วนตัว",
     distance: "15 กิโลเมตร",
     students: [
@@ -103,8 +115,9 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
         size: "125 KB",
       },
     ],
-    notes: "นักศึกษามีความตั้งใจในการฝึกงาน พี่เลี้ยงให้ความเห็นว่านักศึกษาปรับตัวได้ดี มีความรับผิดชอบ แต่ควรพัฒนาทักษะการสื่อสารให้มากขึ้น",
-  }
+    notes:
+      "นักศึกษามีความตั้งใจในการฝึกงาน พี่เลี้ยงให้ความเห็นว่านักศึกษาปรับตัวได้ดี มีความรับผิดชอบ แต่ควรพัฒนาทักษะการสื่อสารให้มากขึ้น",
+  };
 
   // Function to render appointment type badge
   const renderAppointmentTypeBadge = (type: string) => {
@@ -115,18 +128,18 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
             <Car className="h-3 w-3 mr-1" />
             {type}
           </Badge>
-        )
+        );
       case "ออนไลน์":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
             <Video className="h-3 w-3 mr-1" />
             {type}
           </Badge>
-        )
+        );
       default:
-        return <Badge>{type}</Badge>
+        return <Badge>{type}</Badge>;
     }
-  }
+  };
 
   // Function to render appointment status badge
   const renderAppointmentStatusBadge = (status: string) => {
@@ -137,32 +150,34 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
             <Calendar className="h-3 w-3 mr-1" />
             กำลังจะมาถึง
           </Badge>
-        )
+        );
       case "completed":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
             <CheckCircle className="h-3 w-3 mr-1" />
             เสร็จสิ้น
           </Badge>
-        )
+        );
       case "cancelled":
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
             <AlertCircle className="h-3 w-3 mr-1" />
             ยกเลิก
           </Badge>
-        )
+        );
       default:
-        return <Badge>ไม่ระบุ</Badge>
+        return <Badge>ไม่ระบุ</Badge>;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผศ.ดร. วิชาญ นักสอน</span>
               <Link href="/">
@@ -175,7 +190,7 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdvisorSidebar activePage="schedule" />
 
@@ -192,7 +207,9 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                 <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                      <CardTitle className="text-xl">{appointment.title}</CardTitle>
+                      <CardTitle className="text-xl">
+                        {appointment.title}
+                      </CardTitle>
                       <CardDescription>รายละเอียดการนัดหมาย</CardDescription>
                     </div>
                     <div className="flex gap-2">
@@ -204,7 +221,9 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h3 className="text-lg font-medium mb-4">ข้อมูลการนัดหมาย</h3>
+                      <h3 className="text-lg font-medium mb-4">
+                        ข้อมูลการนัดหมาย
+                      </h3>
                       <div className="space-y-4">
                         <div className="flex items-start gap-2">
                           <Calendar className="h-5 w-5 text-gray-500 mt-0.5" />
@@ -226,7 +245,9 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                             <h4 className="font-medium">สถานที่</h4>
                             <p>{appointment.location}</p>
                             {appointment.locationDetail && (
-                              <p className="text-sm text-gray-500">{appointment.locationDetail}</p>
+                              <p className="text-sm text-gray-500">
+                                {appointment.locationDetail}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -236,34 +257,40 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                             <div>
                               <h4 className="font-medium">การเดินทาง</h4>
                               <p>{appointment.transportation}</p>
-                              <p className="text-sm text-gray-500">ระยะทาง: {appointment.distance}</p>
-                            </div>
-                          </div>
-                        )}
-                        {appointment.type === "ออนไลน์" && appointment.meetingLink && (
-                          <div className="flex items-start gap-2">
-                            <Video className="h-5 w-5 text-gray-500 mt-0.5" />
-                            <div>
-                              <h4 className="font-medium">ข้อมูลการประชุมออนไลน์</h4>
-                              <p>
-                                <a
-                                  href={appointment.meetingLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 hover:underline"
-                                >
-                                  เข้าร่วมการประชุม
-                                </a>
+                              <p className="text-sm text-gray-500">
+                                ระยะทาง: {appointment.distance}
                               </p>
-                              {appointment.meetingId && (
-                                <p className="text-sm text-gray-500">
-                                  Meeting ID: {appointment.meetingId}
-                                  {appointment.meetingPassword && ` | Passcode: ${appointment.meetingPassword}`}
-                                </p>
-                              )}
                             </div>
                           </div>
                         )}
+                        {appointment.type === "ออนไลน์" &&
+                          appointment.meetingLink && (
+                            <div className="flex items-start gap-2">
+                              <Video className="h-5 w-5 text-gray-500 mt-0.5" />
+                              <div>
+                                <h4 className="font-medium">
+                                  ข้อมูลการประชุมออนไลน์
+                                </h4>
+                                <p>
+                                  <a
+                                    href={appointment.meetingLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline"
+                                  >
+                                    เข้าร่วมการประชุม
+                                  </a>
+                                </p>
+                                {appointment.meetingId && (
+                                  <p className="text-sm text-gray-500">
+                                    Meeting ID: {appointment.meetingId}
+                                    {appointment.meetingPassword &&
+                                      ` | Passcode: ${appointment.meetingPassword}`}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          )}
                       </div>
                     </div>
 
@@ -273,10 +300,18 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                         <div>
                           <h4 className="font-medium mb-2">นักศึกษา</h4>
                           {appointment.students.map((student) => (
-                            <div key={student.id} className="flex items-center gap-3 mb-2">
+                            <div
+                              key={student.id}
+                              className="flex items-center gap-3 mb-2"
+                            >
                               <Avatar className="h-8 w-8">
-                                <AvatarImage src={student.avatar} alt={student.name} />
-                                <AvatarFallback>{student.name.substring(0, 2)}</AvatarFallback>
+                                <AvatarImage
+                                  src={student.avatar}
+                                  alt={student.name}
+                                />
+                                <AvatarFallback>
+                                  {student.name.substring(0, 2)}
+                                </AvatarFallback>
                               </Avatar>
                               <div>
                                 <p className="font-medium">{student.name}</p>
@@ -291,14 +326,26 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                         <div>
                           <h4 className="font-medium mb-2">ผู้เข้าร่วมอื่นๆ</h4>
                           {appointment.participants.map((participant) => (
-                            <div key={participant.id} className="flex items-center gap-3 mb-2">
+                            <div
+                              key={participant.id}
+                              className="flex items-center gap-3 mb-2"
+                            >
                               <Avatar className="h-8 w-8">
-                                <AvatarImage src={participant.avatar} alt={participant.name} />
-                                <AvatarFallback>{participant.name.substring(0, 2)}</AvatarFallback>
+                                <AvatarImage
+                                  src={participant.avatar}
+                                  alt={participant.name}
+                                />
+                                <AvatarFallback>
+                                  {participant.name.substring(0, 2)}
+                                </AvatarFallback>
                               </Avatar>
                               <div>
-                                <p className="font-medium">{participant.name}</p>
-                                <p className="text-sm text-gray-500">{participant.role}</p>
+                                <p className="font-medium">
+                                  {participant.name}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  {participant.role}
+                                </p>
                               </div>
                             </div>
                           ))}
@@ -310,7 +357,9 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                   <Separator className="my-6" />
 
                   <div>
-                    <h3 className="text-lg font-medium mb-4">รายละเอียดเพิ่มเติม</h3>
+                    <h3 className="text-lg font-medium mb-4">
+                      รายละเอียดเพิ่มเติม
+                    </h3>
                     <p className="mb-4">{appointment.description}</p>
                   </div>
 
@@ -331,9 +380,13 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                             <div>
                               <div className="flex flex-col md:flex-row md:items-center justify-between">
                                 <h4 className="font-medium">{item.title}</h4>
-                                <span className="text-sm text-gray-500">{item.time}</span>
+                                <span className="text-sm text-gray-500">
+                                  {item.time}
+                                </span>
                               </div>
-                              <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {item.description}
+                              </p>
                             </div>
                           </div>
                         ))}
@@ -342,13 +395,17 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                     <TabsContent value="documents" className="mt-4">
                       <div className="space-y-4">
                         {appointment.documents.map((document) => (
-                          <div key={document.id} className="flex items-center justify-between p-3 border rounded-md">
+                          <div
+                            key={document.id}
+                            className="flex items-center justify-between p-3 border rounded-md"
+                          >
                             <div className="flex items-center gap-3">
                               <FileText className="h-5 w-5 text-blue-500" />
                               <div>
                                 <p className="font-medium">{document.name}</p>
                                 <p className="text-sm text-gray-500">
-                                  {document.type.toUpperCase()} • {document.size}
+                                  {document.type.toUpperCase()} •{" "}
+                                  {document.size}
                                 </p>
                               </div>
                             </div>
@@ -361,7 +418,10 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                     </TabsContent>
                     <TabsContent value="notes" className="mt-4">
                       <div className="p-4 border rounded-md bg-gray-50">
-                        <p>{appointment.notes || "ยังไม่มีบันทึกสำหรับการนัดหมายนี้"}</p>
+                        <p>
+                          {appointment.notes ||
+                            "ยังไม่มีบันทึกสำหรับการนัดหมายนี้"}
+                        </p>
                       </div>
                     </TabsContent>
                   </Tabs>
@@ -382,11 +442,12 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
                         แก้ไข
                       </Button>
                     )}
-                    {appointment.status === "upcoming" && appointment.type === "ลงพื้นที่" && (
-                      <Link href={`/advisor/visits/record/${appointment.id}`}>
-                        <Button>บันทึกการนิเทศ</Button>
-                      </Link>
-                    )}
+                    {appointment.status === "upcoming" &&
+                      appointment.type === "ลงพื้นที่" && (
+                        <Link href={`/advisor/visits/record/${appointment.id}`}>
+                          <Button>บันทึกการนิเทศ</Button>
+                        </Link>
+                      )}
                   </div>
                 </CardFooter>
               </Card>
@@ -395,5 +456,5 @@ export default function AppointmentDetailPage({ params }: { params: { id: string
         </div>
       </main>
     </div>
-  )
+  );
 }

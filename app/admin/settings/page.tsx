@@ -1,23 +1,37 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import AdminSidebar from "@/components/admin-sidebar"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import AdminSidebar from "@/components/admin-sidebar";
 
 export default function SettingsPage() {
   return (
     <div className="container mx-auto py-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <AdminSidebar activePage="settings" />
 
         <div className="md:col-span-3">
           <div className="mb-6">
             <h1 className="text-2xl font-bold">ตั้งค่าระบบ</h1>
-            <p className="text-gray-500">จัดการการตั้งค่าต่างๆ ของระบบสหกิจศึกษา</p>
+            <p className="text-gray-500">
+              จัดการการตั้งค่าต่างๆ ของระบบสหกิจศึกษา
+            </p>
           </div>
 
           <Tabs defaultValue="general">
@@ -32,7 +46,9 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>ตั้งค่าทั่วไป</CardTitle>
-                  <CardDescription>จัดการการตั้งค่าทั่วไปของระบบ</CardDescription>
+                  <CardDescription>
+                    จัดการการตั้งค่าทั่วไปของระบบ
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
@@ -40,16 +56,25 @@ export default function SettingsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="institution-name">ชื่อสถาบัน</Label>
-                        <Input id="institution-name" defaultValue="มหาวิทยาลัยเทคโนโลยีสุรนารี" />
+                        <Input
+                          id="institution-name"
+                          defaultValue="มหาวิทยาลัยเทคโนโลยีสุรนารี"
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="department-name">ชื่อคณะ/สาขา</Label>
-                        <Input id="department-name" defaultValue="สำนักวิชาเภสัชศาสตร์" />
+                        <Input
+                          id="department-name"
+                          defaultValue="สำนักวิชาเภสัชศาสตร์"
+                        />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="address">ที่อยู่</Label>
-                      <Input id="address" defaultValue="111 ถ.มหาวิทยาลัย ต.สุรนารี อ.เมือง จ.นครราชสีมา 30000" />
+                      <Input
+                        id="address"
+                        defaultValue="111 ถ.มหาวิทยาลัย ต.สุรนารี อ.เมือง จ.นครราชสีมา 30000"
+                      />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -58,7 +83,11 @@ export default function SettingsPage() {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">อีเมล</Label>
-                        <Input id="email" type="email" defaultValue="coop@sut.ac.th" />
+                        <Input
+                          id="email"
+                          type="email"
+                          defaultValue="coop@sut.ac.th"
+                        />
                       </div>
                     </div>
                   </div>
@@ -70,14 +99,18 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Label htmlFor="maintenance-mode">โหมดบำรุงรักษา</Label>
-                        <p className="text-sm text-gray-500">เปิดใช้งานโหมดบำรุงรักษาเพื่อปิดการเข้าถึงระบบชั่วคราว</p>
+                        <p className="text-sm text-gray-500">
+                          เปิดใช้งานโหมดบำรุงรักษาเพื่อปิดการเข้าถึงระบบชั่วคราว
+                        </p>
                       </div>
                       <Switch id="maintenance-mode" />
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
                         <Label htmlFor="debug-mode">โหมดดีบัก</Label>
-                        <p className="text-sm text-gray-500">เปิดใช้งานโหมดดีบักเพื่อบันทึกข้อมูลการใช้งานโดยละเอียด</p>
+                        <p className="text-sm text-gray-500">
+                          เปิดใช้งานโหมดดีบักเพื่อบันทึกข้อมูลการใช้งานโดยละเอียด
+                        </p>
                       </div>
                       <Switch id="debug-mode" />
                     </div>
@@ -106,22 +139,32 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>ตั้งค่าผู้ใช้งาน</CardTitle>
-                  <CardDescription>จัดการการตั้งค่าเกี่ยวกับผู้ใช้งานในระบบ</CardDescription>
+                  <CardDescription>
+                    จัดการการตั้งค่าเกี่ยวกับผู้ใช้งานในระบบ
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium">การลงทะเบียน</h3>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="allow-registration">อนุญาตให้ลงทะเบียน</Label>
-                        <p className="text-sm text-gray-500">อนุญาตให้ผู้ใช้ใหม่ลงทะเบียนเข้าใช้งานระบบ</p>
+                        <Label htmlFor="allow-registration">
+                          อนุญาตให้ลงทะเบียน
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          อนุญาตให้ผู้ใช้ใหม่ลงทะเบียนเข้าใช้งานระบบ
+                        </p>
                       </div>
                       <Switch id="allow-registration" defaultChecked />
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="require-approval">ต้องการการอนุมัติ</Label>
-                        <p className="text-sm text-gray-500">ผู้ใช้ใหม่ต้องได้รับการอนุมัติก่อนเข้าใช้งานระบบ</p>
+                        <Label htmlFor="require-approval">
+                          ต้องการการอนุมัติ
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          ผู้ใช้ใหม่ต้องได้รับการอนุมัติก่อนเข้าใช้งานระบบ
+                        </p>
                       </div>
                       <Switch id="require-approval" defaultChecked />
                     </div>
@@ -132,7 +175,9 @@ export default function SettingsPage() {
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium">นโยบายรหัสผ่าน</h3>
                     <div className="space-y-2">
-                      <Label htmlFor="min-password-length">ความยาวรหัสผ่านขั้นต่ำ</Label>
+                      <Label htmlFor="min-password-length">
+                        ความยาวรหัสผ่านขั้นต่ำ
+                      </Label>
                       <Select defaultValue="8">
                         <SelectTrigger id="min-password-length">
                           <SelectValue placeholder="เลือกความยาว" />
@@ -147,15 +192,21 @@ export default function SettingsPage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="require-special-char">ต้องมีอักขระพิเศษ</Label>
-                        <p className="text-sm text-gray-500">รหัสผ่านต้องมีอักขระพิเศษอย่างน้อย 1 ตัว</p>
+                        <Label htmlFor="require-special-char">
+                          ต้องมีอักขระพิเศษ
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          รหัสผ่านต้องมีอักขระพิเศษอย่างน้อย 1 ตัว
+                        </p>
                       </div>
                       <Switch id="require-special-char" defaultChecked />
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
                         <Label htmlFor="require-number">ต้องมีตัวเลข</Label>
-                        <p className="text-sm text-gray-500">รหัสผ่านต้องมีตัวเลขอย่างน้อย 1 ตัว</p>
+                        <p className="text-sm text-gray-500">
+                          รหัสผ่านต้องมีตัวเลขอย่างน้อย 1 ตัว
+                        </p>
                       </div>
                       <Switch id="require-number" defaultChecked />
                     </div>
@@ -186,25 +237,39 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>ตั้งค่าการแจ้งเตือน</CardTitle>
-                  <CardDescription>จัดการการตั้งค่าการแจ้งเตือนในระบบ</CardDescription>
+                  <CardDescription>
+                    จัดการการตั้งค่าการแจ้งเตือนในระบบ
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-medium">การแจ้งเตือนทางอีเมล</h3>
+                    <h3 className="text-lg font-medium">
+                      การแจ้งเตือนทางอีเมล
+                    </h3>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="email-notifications">เปิดใช้งานการแจ้งเตือนทางอีเมล</Label>
-                        <p className="text-sm text-gray-500">ส่งการแจ้งเตือนทางอีเมลเมื่อมีกิจกรรมสำคัญ</p>
+                        <Label htmlFor="email-notifications">
+                          เปิดใช้งานการแจ้งเตือนทางอีเมล
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          ส่งการแจ้งเตือนทางอีเมลเมื่อมีกิจกรรมสำคัญ
+                        </p>
                       </div>
                       <Switch id="email-notifications" defaultChecked />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email-sender">อีเมลผู้ส่ง</Label>
-                      <Input id="email-sender" defaultValue="noreply@sut.ac.th" />
+                      <Input
+                        id="email-sender"
+                        defaultValue="noreply@sut.ac.th"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email-sender-name">ชื่อผู้ส่ง</Label>
-                      <Input id="email-sender-name" defaultValue="ระบบสหกิจศึกษา มหาวิทยาลัยเทคโนโลยีสุรนารี" />
+                      <Input
+                        id="email-sender-name"
+                        defaultValue="ระบบสหกิจศึกษา มหาวิทยาลัยเทคโนโลยีสุรนารี"
+                      />
                     </div>
                   </div>
 
@@ -215,28 +280,40 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Label htmlFor="notify-new-report">รายงานใหม่</Label>
-                        <p className="text-sm text-gray-500">แจ้งเตือนเมื่อมีการส่งรายงานใหม่</p>
+                        <p className="text-sm text-gray-500">
+                          แจ้งเตือนเมื่อมีการส่งรายงานใหม่
+                        </p>
                       </div>
                       <Switch id="notify-new-report" defaultChecked />
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="notify-new-appointment">การนัดหมายใหม่</Label>
-                        <p className="text-sm text-gray-500">แจ้งเตือนเมื่อมีการสร้างการนัดหมายใหม่</p>
+                        <Label htmlFor="notify-new-appointment">
+                          การนัดหมายใหม่
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          แจ้งเตือนเมื่อมีการสร้างการนัดหมายใหม่
+                        </p>
                       </div>
                       <Switch id="notify-new-appointment" defaultChecked />
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="notify-status-change">การเปลี่ยนสถานะ</Label>
-                        <p className="text-sm text-gray-500">แจ้งเตือนเมื่อมีการเปลี่ยนสถานะของนักศึกษา</p>
+                        <Label htmlFor="notify-status-change">
+                          การเปลี่ยนสถานะ
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          แจ้งเตือนเมื่อมีการเปลี่ยนสถานะของนักศึกษา
+                        </p>
                       </div>
                       <Switch id="notify-status-change" defaultChecked />
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
                         <Label htmlFor="notify-deadline">กำหนดส่งงาน</Label>
-                        <p className="text-sm text-gray-500">แจ้งเตือนเมื่อใกล้ถึงกำหนดส่งงาน</p>
+                        <p className="text-sm text-gray-500">
+                          แจ้งเตือนเมื่อใกล้ถึงกำหนดส่งงาน
+                        </p>
                       </div>
                       <Switch id="notify-deadline" defaultChecked />
                     </div>
@@ -253,14 +330,18 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>ตั้งค่าปฏิทิน</CardTitle>
-                  <CardDescription>จัดการการตั้งค่าปฏิทินและกำหนดการต่างๆ</CardDescription>
+                  <CardDescription>
+                    จัดการการตั้งค่าปฏิทินและกำหนดการต่างๆ
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium">ปีการศึกษา</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="current-academic-year">ปีการศึกษาปัจจุบัน</Label>
+                        <Label htmlFor="current-academic-year">
+                          ปีการศึกษาปัจจุบัน
+                        </Label>
                         <Select defaultValue="2566">
                           <SelectTrigger id="current-academic-year">
                             <SelectValue placeholder="เลือกปีการศึกษา" />
@@ -273,7 +354,9 @@ export default function SettingsPage() {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="current-semester">ภาคการศึกษาปัจจุบัน</Label>
+                        <Label htmlFor="current-semester">
+                          ภาคการศึกษาปัจจุบัน
+                        </Label>
                         <Select defaultValue="1">
                           <SelectTrigger id="current-semester">
                             <SelectValue placeholder="เลือกภาคการศึกษา" />
@@ -294,32 +377,64 @@ export default function SettingsPage() {
                     <h3 className="text-lg font-medium">กำหนดการสำคัญ</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="registration-start">วันเริ่มลงทะเบียนสหกิจศึกษา</Label>
-                        <Input id="registration-start" type="date" defaultValue="2023-06-01" />
+                        <Label htmlFor="registration-start">
+                          วันเริ่มลงทะเบียนสหกิจศึกษา
+                        </Label>
+                        <Input
+                          id="registration-start"
+                          type="date"
+                          defaultValue="2023-06-01"
+                        />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="registration-end">วันสิ้นสุดลงทะเบียนสหกิจศึกษา</Label>
-                        <Input id="registration-end" type="date" defaultValue="2023-06-15" />
+                        <Label htmlFor="registration-end">
+                          วันสิ้นสุดลงทะเบียนสหกิจศึกษา
+                        </Label>
+                        <Input
+                          id="registration-end"
+                          type="date"
+                          defaultValue="2023-06-15"
+                        />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="coop-start">วันเริ่มสหกิจศึกษา</Label>
-                        <Input id="coop-start" type="date" defaultValue="2023-08-01" />
+                        <Input
+                          id="coop-start"
+                          type="date"
+                          defaultValue="2023-08-01"
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="coop-end">วันสิ้นสุดสหกิจศึกษา</Label>
-                        <Input id="coop-end" type="date" defaultValue="2023-12-01" />
+                        <Input
+                          id="coop-end"
+                          type="date"
+                          defaultValue="2023-12-01"
+                        />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="report-deadline">กำหนดส่งรายงานฉบับสมบูรณ์</Label>
-                        <Input id="report-deadline" type="date" defaultValue="2023-11-15" />
+                        <Label htmlFor="report-deadline">
+                          กำหนดส่งรายงานฉบับสมบูรณ์
+                        </Label>
+                        <Input
+                          id="report-deadline"
+                          type="date"
+                          defaultValue="2023-11-15"
+                        />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="presentation-date">วันนำเสนอผลงาน</Label>
-                        <Input id="presentation-date" type="date" defaultValue="2023-12-15" />
+                        <Label htmlFor="presentation-date">
+                          วันนำเสนอผลงาน
+                        </Label>
+                        <Input
+                          id="presentation-date"
+                          type="date"
+                          defaultValue="2023-12-15"
+                        />
                       </div>
                     </div>
                   </div>
@@ -329,7 +444,9 @@ export default function SettingsPage() {
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium">การแสดงผลปฏิทิน</h3>
                     <div className="space-y-2">
-                      <Label htmlFor="default-calendar-view">มุมมองปฏิทินเริ่มต้น</Label>
+                      <Label htmlFor="default-calendar-view">
+                        มุมมองปฏิทินเริ่มต้น
+                      </Label>
                       <Select defaultValue="month">
                         <SelectTrigger id="default-calendar-view">
                           <SelectValue placeholder="เลือกมุมมอง" />
@@ -343,15 +460,23 @@ export default function SettingsPage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="show-weekends">แสดงวันหยุดสุดสัปดาห์</Label>
-                        <p className="text-sm text-gray-500">แสดงวันเสาร์และวันอาทิตย์ในมุมมองปฏิทิน</p>
+                        <Label htmlFor="show-weekends">
+                          แสดงวันหยุดสุดสัปดาห์
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          แสดงวันเสาร์และวันอาทิตย์ในมุมมองปฏิทิน
+                        </p>
                       </div>
                       <Switch id="show-weekends" defaultChecked />
                     </div>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label htmlFor="show-holidays">แสดงวันหยุดนักขัตฤกษ์</Label>
-                        <p className="text-sm text-gray-500">แสดงวันหยุดนักขัตฤกษ์ในมุมมองปฏิทิน</p>
+                        <Label htmlFor="show-holidays">
+                          แสดงวันหยุดนักขัตฤกษ์
+                        </Label>
+                        <p className="text-sm text-gray-500">
+                          แสดงวันหยุดนักขัตฤกษ์ในมุมมองปฏิทิน
+                        </p>
                       </div>
                       <Switch id="show-holidays" defaultChecked />
                     </div>
@@ -367,5 +492,5 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

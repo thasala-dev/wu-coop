@@ -1,13 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  ArrowLeft,
-  Edit,
-  ChevronRight,
-  UploadCloud, // Keep this for the upload button
-  Trash2, // Keep this for the delete button
-} from "lucide-react";
+import { ArrowLeft, Edit, ChevronRight, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -113,16 +107,9 @@ export default function Page() {
   };
 
   const handleImageDeleteClick = async () => {
-    // This is for explicitly deleting the image without uploading a new one.
-    // The actual deletion from server will happen in onSubmit if initialImageUrl is different from final image.
-    setSelectedFile(null); // Clear selected file if any
-    setCurrentImageUrl(""); // Clear the displayed image
-    setValue("image", ""); // Clear the form value for image
-    toast({
-      title: "รูปภาพถูกลบ (ชั่วคราว)",
-      description: "รูปภาพจะถูกลบออกจากเซิร์ฟเวอร์เมื่อบันทึกข้อมูล",
-      variant: "info",
-    });
+    setSelectedFile(null);
+    setCurrentImageUrl("");
+    setValue("image", "");
   };
 
   // --- Handler สำหรับการส่งฟอร์มหลัก ---
@@ -134,10 +121,8 @@ export default function Page() {
     let hasDeleteError = false;
 
     try {
-      // 1. Handle Image Upload if a new file is selected
       if (selectedFile) {
-        console.log("Attempting to upload new file...");
-        const uploadResult = await callUploadApi(selectedFile);
+        const uploadResult = await callUploadApi(selectedFile, "advisors");
         if (uploadResult.filePath) {
           finalImageUrl = uploadResult.filePath;
           setSelectedFile(null);
@@ -148,34 +133,26 @@ export default function Page() {
         }
       }
 
-      // If there's an upload error, we might want to stop here or proceed without image update
       if (hasUploadError) {
         setLoading(false);
         return; // Stop form submission if image upload failed
       }
 
-      // 2. Handle Old Image Deletion if image changed or was cleared
-      // Only delete if there was an initial image AND it's different from the final image
-      // (meaning a new one was uploaded, or it was explicitly cleared by handleImageDeleteClick)
       if (initialImageUrl && initialImageUrl !== finalImageUrl) {
-        const fileNameToDelete = initialImageUrl.split("/").pop();
-        if (fileNameToDelete) {
-          try {
-            const deleteResult = await callDeleteApi(fileNameToDelete);
-            if (deleteResult.message.includes("success")) {
-            } else {
-              hasDeleteError = true;
-            }
-          } catch (deleteError) {
+        try {
+          const deleteResult = await callDeleteApi(initialImageUrl);
+          if (deleteResult.message.includes("success")) {
+          } else {
             hasDeleteError = true;
-            console.error("Error deleting old image:", deleteError);
-            toast({
-              title: "เกิดข้อผิดพลาดในการลบรูปภาพเก่า",
-              description:
-                "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อลบรูปภาพเก่าได้",
-              variant: "warning",
-            });
           }
+        } catch (deleteError) {
+          hasDeleteError = true;
+          console.error("Error deleting old image:", deleteError);
+          toast({
+            title: "เกิดข้อผิดพลาดในการลบรูปภาพเก่า",
+            description: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อลบรูปภาพเก่าได้",
+            variant: "destructive",
+          });
         }
       }
 

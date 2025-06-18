@@ -1,10 +1,23 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarIcon, FileTextIcon, BriefcaseIcon, UserIcon, BookOpenIcon, ClipboardListIcon } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  CalendarIcon,
+  FileTextIcon,
+  BriefcaseIcon,
+  UserIcon,
+  BookOpenIcon,
+  ClipboardListIcon,
+} from "lucide-react";
 
 export default function Profile() {
   return (
@@ -25,8 +38,8 @@ export default function Profile() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <main className="container mx-auto p-2">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="md:col-span-1">
             <Card>
               <CardHeader>
@@ -34,7 +47,10 @@ export default function Profile() {
               </CardHeader>
               <CardContent>
                 <nav className="space-y-2">
-                  <Link href="/dashboard" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
+                  >
                     <BookOpenIcon className="h-4 w-4" />
                     <span>หน้าหลัก</span>
                   </Link>
@@ -45,7 +61,10 @@ export default function Profile() {
                     <UserIcon className="h-4 w-4" />
                     <span>ข้อมูลส่วนตัว</span>
                   </Link>
-                  <Link href="/dashboard/jobs" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                  <Link
+                    href="/dashboard/jobs"
+                    className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
+                  >
                     <BriefcaseIcon className="h-4 w-4" />
                     <span>ตำแหน่งงาน</span>
                   </Link>
@@ -56,11 +75,17 @@ export default function Profile() {
                     <FileTextIcon className="h-4 w-4" />
                     <span>เอกสาร</span>
                   </Link>
-                  <Link href="/dashboard/schedule" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                  <Link
+                    href="/dashboard/schedule"
+                    className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
+                  >
                     <CalendarIcon className="h-4 w-4" />
                     <span>ตารางนัดหมาย</span>
                   </Link>
-                  <Link href="/dashboard/reports" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                  <Link
+                    href="/dashboard/reports"
+                    className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md"
+                  >
                     <ClipboardListIcon className="h-4 w-4" />
                     <span>รายงานผล</span>
                   </Link>
@@ -110,22 +135,38 @@ export default function Profile() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="studentId">รหัสนักศึกษา</Label>
-                              <Input id="studentId" defaultValue="6412345678" readOnly />
+                              <Input
+                                id="studentId"
+                                defaultValue="6412345678"
+                                readOnly
+                              />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="faculty">คณะ</Label>
-                              <Input id="faculty" defaultValue="วิศวกรรมศาสตร์" readOnly />
+                              <Input
+                                id="faculty"
+                                defaultValue="วิศวกรรมศาสตร์"
+                                readOnly
+                              />
                             </div>
                           </div>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="major">สาขาวิชา</Label>
-                              <Input id="major" defaultValue="วิศวกรรมคอมพิวเตอร์" readOnly />
+                              <Input
+                                id="major"
+                                defaultValue="วิศวกรรมคอมพิวเตอร์"
+                                readOnly
+                              />
                             </div>
                             <div className="space-y-2">
                               <Label htmlFor="advisor">อาจารย์ที่ปรึกษา</Label>
-                              <Input id="advisor" defaultValue="ผศ.ดร. วิชาญ นักสอน" readOnly />
+                              <Input
+                                id="advisor"
+                                defaultValue="ผศ.ดร. วิชาญ นักสอน"
+                                readOnly
+                              />
                             </div>
                           </div>
                         </div>
@@ -137,7 +178,11 @@ export default function Profile() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="email">อีเมล</Label>
-                            <Input id="email" type="email" defaultValue="somchai.j@university.ac.th" />
+                            <Input
+                              id="email"
+                              type="email"
+                              defaultValue="somchai.j@university.ac.th"
+                            />
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="phone">เบอร์โทรศัพท์</Label>
@@ -156,7 +201,10 @@ export default function Profile() {
 
                         <div className="space-y-2">
                           <Label htmlFor="emergency">ผู้ติดต่อฉุกเฉิน</Label>
-                          <Input id="emergency" defaultValue="นางสมศรี ใจดี (มารดา) - 0898765432" />
+                          <Input
+                            id="emergency"
+                            defaultValue="นางสมศรี ใจดี (มารดา) - 0898765432"
+                          />
                         </div>
                       </div>
 
@@ -177,13 +225,17 @@ export default function Profile() {
                             <Input id="gpa" defaultValue="3.45" />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="credits">หน่วยกิตที่ลงทะเบียนแล้ว</Label>
+                            <Label htmlFor="credits">
+                              หน่วยกิตที่ลงทะเบียนแล้ว
+                            </Label>
                             <Input id="credits" defaultValue="120" />
                           </div>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="courses">วิชาที่ผ่านการเรียนแล้ว (ที่เกี่ยวข้องกับสหกิจศึกษา)</Label>
+                          <Label htmlFor="courses">
+                            วิชาที่ผ่านการเรียนแล้ว (ที่เกี่ยวข้องกับสหกิจศึกษา)
+                          </Label>
                           <textarea
                             id="courses"
                             className="w-full p-2 border rounded-md min-h-[100px]"
@@ -204,11 +256,19 @@ export default function Profile() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                               <Label htmlFor="highSchool">โรงเรียนมัธยม</Label>
-                              <Input id="highSchool" defaultValue="โรงเรียนวิทยาศาสตร์จุฬาภรณราชวิทยาลัย" />
+                              <Input
+                                id="highSchool"
+                                defaultValue="โรงเรียนวิทยาศาสตร์จุฬาภรณราชวิทยาลัย"
+                              />
                             </div>
                             <div className="space-y-2">
-                              <Label htmlFor="highSchoolProgram">แผนการเรียน</Label>
-                              <Input id="highSchoolProgram" defaultValue="วิทยาศาสตร์-คณิตศาสตร์" />
+                              <Label htmlFor="highSchoolProgram">
+                                แผนการเรียน
+                              </Label>
+                              <Input
+                                id="highSchoolProgram"
+                                defaultValue="วิทยาศาสตร์-คณิตศาสตร์"
+                              />
                             </div>
                           </div>
 
@@ -218,7 +278,9 @@ export default function Profile() {
                               <Input id="highSchoolGPA" defaultValue="3.85" />
                             </div>
                             <div className="space-y-2">
-                              <Label htmlFor="highSchoolYear">ปีที่จบการศึกษา</Label>
+                              <Label htmlFor="highSchoolYear">
+                                ปีที่จบการศึกษา
+                              </Label>
                               <Input id="highSchoolYear" defaultValue="2564" />
                             </div>
                           </div>
@@ -234,10 +296,14 @@ export default function Profile() {
                   <TabsContent value="skills">
                     <div className="space-y-6">
                       <div className="space-y-4">
-                        <h3 className="text-lg font-medium">ทักษะและความสามารถ</h3>
+                        <h3 className="text-lg font-medium">
+                          ทักษะและความสามารถ
+                        </h3>
 
                         <div className="space-y-2">
-                          <Label htmlFor="programmingSkills">ทักษะการเขียนโปรแกรม</Label>
+                          <Label htmlFor="programmingSkills">
+                            ทักษะการเขียนโปรแกรม
+                          </Label>
                           <textarea
                             id="programmingSkills"
                             className="w-full p-2 border rounded-md min-h-[100px]"
@@ -251,7 +317,9 @@ export default function Profile() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="frameworks">เฟรมเวิร์คและไลบรารี</Label>
+                          <Label htmlFor="frameworks">
+                            เฟรมเวิร์คและไลบรารี
+                          </Label>
                           <textarea
                             id="frameworks"
                             className="w-full p-2 border rounded-md min-h-[100px]"
@@ -289,7 +357,9 @@ export default function Profile() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="certificates">ประกาศนียบัตรและการอบรม</Label>
+                          <Label htmlFor="certificates">
+                            ประกาศนียบัตรและการอบรม
+                          </Label>
                           <textarea
                             id="certificates"
                             className="w-full p-2 border rounded-md min-h-[100px]"
@@ -313,5 +383,5 @@ export default function Profile() {
         </div>
       </main>
     </div>
-  )
+  );
 }

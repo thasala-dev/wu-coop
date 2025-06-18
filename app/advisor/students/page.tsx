@@ -1,16 +1,31 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Search, FileText, MapPin, Building, Phone, Mail, Calendar, ChevronRight } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import Link from "next/link"
-import AdvisorSidebar from "@/components/advisor-sidebar"
+import { useState } from "react";
+import {
+  Search,
+  FileText,
+  MapPin,
+  Building,
+  Phone,
+  Mail,
+  Calendar,
+  ChevronRight,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
+import AdvisorSidebar from "@/components/advisor-sidebar";
 
 // Mock data for students
 const students = [
@@ -139,41 +154,42 @@ const students = [
       total: 4,
     },
   },
-]
+];
 
 export default function AdvisorStudentsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   // Filter students based on search term and status filter
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.studentId.includes(searchTerm) ||
-      student.company.toLowerCase().includes(searchTerm.toLowerCase())
+      student.company.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === "all" || student.status === statusFilter
+    const matchesStatus =
+      statusFilter === "all" || student.status === statusFilter;
 
-    return matchesSearch && matchesStatus
-  })
+    return matchesSearch && matchesStatus;
+  });
 
   // Function to render status badge
   const renderStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-500">ปกติ</Badge>
+        return <Badge className="bg-green-500">ปกติ</Badge>;
       case "warning":
-        return <Badge className="bg-yellow-500">ต้องติดตาม</Badge>
+        return <Badge className="bg-yellow-500">ต้องติดตาม</Badge>;
       case "issue":
-        return <Badge className="bg-red-500">มีปัญหา</Badge>
+        return <Badge className="bg-red-500">มีปัญหา</Badge>;
       default:
-        return <Badge>ไม่ระบุ</Badge>
+        return <Badge>ไม่ระบุ</Badge>;
     }
-  }
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div className="container mx-auto p-2">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <AdvisorSidebar activePage="students" />
 
         <div className="md:col-span-3">
@@ -223,50 +239,74 @@ export default function AdvisorStudentsPage() {
                             <div className="p-4 md:p-6 flex-1">
                               <div className="flex items-start gap-4">
                                 <Avatar className="h-12 w-12">
-                                  <AvatarImage src={student.avatar} alt={student.name} />
-                                  <AvatarFallback>{student.name.substring(0, 2)}</AvatarFallback>
+                                  <AvatarImage
+                                    src={student.avatar}
+                                    alt={student.name}
+                                  />
+                                  <AvatarFallback>
+                                    {student.name.substring(0, 2)}
+                                  </AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1">
                                   <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
                                     <div>
-                                      <h3 className="text-lg font-semibold">{student.name}</h3>
-                                      <p className="text-sm text-gray-500">รหัสนักศึกษา: {student.studentId}</p>
+                                      <h3 className="text-lg font-semibold">
+                                        {student.name}
+                                      </h3>
+                                      <p className="text-sm text-gray-500">
+                                        รหัสนักศึกษา: {student.studentId}
+                                      </p>
                                     </div>
-                                    <div className="mt-2 md:mt-0">{renderStatusBadge(student.status)}</div>
+                                    <div className="mt-2 md:mt-0">
+                                      {renderStatusBadge(student.status)}
+                                    </div>
                                   </div>
 
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
                                     <div className="flex items-center gap-2">
                                       <Building className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">{student.company}</span>
+                                      <span className="text-sm">
+                                        {student.company}
+                                      </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <MapPin className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">{student.location}</span>
+                                      <span className="text-sm">
+                                        {student.location}
+                                      </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <Phone className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">{student.phone}</span>
+                                      <span className="text-sm">
+                                        {student.phone}
+                                      </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <Mail className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">{student.email}</span>
+                                      <span className="text-sm">
+                                        {student.email}
+                                      </span>
                                     </div>
                                   </div>
 
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
                                     <div className="flex items-center gap-2">
                                       <Calendar className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">นิเทศล่าสุด: {student.lastVisit}</span>
+                                      <span className="text-sm">
+                                        นิเทศล่าสุด: {student.lastVisit}
+                                      </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <Calendar className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">นิเทศครั้งถัดไป: {student.nextVisit}</span>
+                                      <span className="text-sm">
+                                        นิเทศครั้งถัดไป: {student.nextVisit}
+                                      </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <FileText className="h-4 w-4 text-gray-500" />
                                       <span className="text-sm">
-                                        รายงาน: {student.reports.submitted}/{student.reports.total}
+                                        รายงาน: {student.reports.submitted}/
+                                        {student.reports.total}
                                       </span>
                                     </div>
                                   </div>
@@ -280,7 +320,10 @@ export default function AdvisorStudentsPage() {
                                   ดูข้อมูล
                                 </Button>
                               </Link>
-                              <Link href={`/advisor/schedule?action=new&student=${student.id}`} className="mt-2">
+                              <Link
+                                href={`/advisor/schedule?action=new&student=${student.id}`}
+                                className="mt-2"
+                              >
                                 <Button variant="outline" className="w-full">
                                   วางแผนนิเทศ
                                 </Button>
@@ -291,7 +334,9 @@ export default function AdvisorStudentsPage() {
                       ))
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-gray-500">ไม่พบนักศึกษาที่ตรงกับเงื่อนไขการค้นหา</p>
+                        <p className="text-gray-500">
+                          ไม่พบนักศึกษาที่ตรงกับเงื่อนไขการค้นหา
+                        </p>
                       </div>
                     )}
                   </div>
@@ -305,27 +350,40 @@ export default function AdvisorStudentsPage() {
                           <CardContent className="p-4">
                             <div className="flex items-center justify-between mb-4">
                               <Avatar className="h-10 w-10">
-                                <AvatarImage src={student.avatar} alt={student.name} />
-                                <AvatarFallback>{student.name.substring(0, 2)}</AvatarFallback>
+                                <AvatarImage
+                                  src={student.avatar}
+                                  alt={student.name}
+                                />
+                                <AvatarFallback>
+                                  {student.name.substring(0, 2)}
+                                </AvatarFallback>
                               </Avatar>
                               {renderStatusBadge(student.status)}
                             </div>
 
                             <h3 className="font-semibold">{student.name}</h3>
-                            <p className="text-sm text-gray-500 mb-3">{student.studentId}</p>
+                            <p className="text-sm text-gray-500 mb-3">
+                              {student.studentId}
+                            </p>
 
                             <div className="space-y-2 mb-4">
                               <div className="flex items-center gap-2">
                                 <Building className="h-4 w-4 text-gray-500" />
-                                <span className="text-sm truncate">{student.company}</span>
+                                <span className="text-sm truncate">
+                                  {student.company}
+                                </span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <MapPin className="h-4 w-4 text-gray-500" />
-                                <span className="text-sm truncate">{student.location}</span>
+                                <span className="text-sm truncate">
+                                  {student.location}
+                                </span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4 text-gray-500" />
-                                <span className="text-sm">นิเทศครั้งถัดไป: {student.nextVisit}</span>
+                                <span className="text-sm">
+                                  นิเทศครั้งถัดไป: {student.nextVisit}
+                                </span>
                               </div>
                             </div>
 
@@ -333,11 +391,16 @@ export default function AdvisorStudentsPage() {
                               <div className="flex items-center gap-1">
                                 <FileText className="h-4 w-4 text-gray-500" />
                                 <span className="text-sm">
-                                  รายงาน: {student.reports.submitted}/{student.reports.total}
+                                  รายงาน: {student.reports.submitted}/
+                                  {student.reports.total}
                                 </span>
                               </div>
                               <Link href={`/advisor/students/${student.id}`}>
-                                <Button variant="ghost" size="sm" className="p-0">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="p-0"
+                                >
                                   <span className="mr-1">รายละเอียด</span>
                                   <ChevronRight className="h-4 w-4" />
                                 </Button>
@@ -348,7 +411,9 @@ export default function AdvisorStudentsPage() {
                       ))
                     ) : (
                       <div className="text-center py-8 col-span-full">
-                        <p className="text-gray-500">ไม่พบนักศึกษาที่ตรงกับเงื่อนไขการค้นหา</p>
+                        <p className="text-gray-500">
+                          ไม่พบนักศึกษาที่ตรงกับเงื่อนไขการค้นหา
+                        </p>
                       </div>
                     )}
                   </div>
@@ -359,5 +424,5 @@ export default function AdvisorStudentsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

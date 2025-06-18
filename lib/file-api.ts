@@ -12,9 +12,13 @@ interface DeleteResponse {
   error?: string;
 }
 
-export async function callUploadApi(file: File): Promise<UploadResponse> {
+export async function callUploadApi(
+  file: File,
+  path: string
+): Promise<UploadResponse> {
   const formData = new FormData();
   formData.append("file", file);
+  formData.append("path", path);
 
   const response = await fetch("/api/files/uploads", {
     // เรียกไปยัง Next.js API Route

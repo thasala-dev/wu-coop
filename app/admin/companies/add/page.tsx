@@ -97,11 +97,11 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="container mx-auto p-2">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="companies" userType="admin" />
           {loading && <Loading />}
-          <div className="md:col-span-3 space-y-6">
+          <div className="md:col-span-4">
             <div className="flex items-center gap-3 mb-2">
               <Button
                 variant="ghost"
@@ -122,7 +122,7 @@ export default function Page({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-            <Card className="border-none shadow-sm bg-white overflow-hidden rounded-lg">
+            <Card className="rounded-lg border bg-card text-card-foreground shadow-sm">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <CardContent className="p-0">
                   <div className="p-6 relative">

@@ -117,8 +117,8 @@ export default function NewReport() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <main className="container mx-auto p-2">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <StudentSidebar activePage="reports" />
 
           <div className="md:col-span-3">

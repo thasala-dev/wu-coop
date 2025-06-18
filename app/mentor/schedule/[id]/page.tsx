@@ -1,14 +1,28 @@
-"use client"
+"use client";
 
-import { useParams, useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { CalendarIcon, Clock, MapPin, Users, Video, ChevronLeft, ExternalLink } from "lucide-react"
-import Link from "next/link"
-import MentorSidebar from "@/components/mentor-sidebar"
+import { useParams, useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import {
+  CalendarIcon,
+  Clock,
+  MapPin,
+  Users,
+  Video,
+  ChevronLeft,
+  ExternalLink,
+} from "lucide-react";
+import Link from "next/link";
+import MentorSidebar from "@/components/mentor-sidebar";
 
 // Mock data for appointments (same as in schedule/page.tsx)
 const appointments = [
@@ -19,7 +33,8 @@ const appointments = [
     time: "13:00 - 15:00",
     type: "onsite",
     location: "บริษัท เทคโนโลยี จำกัด ห้องประชุม 3A",
-    description: "การนิเทศนักศึกษาครั้งที่ 1 โดยอาจารย์นิเทศ เพื่อติดตามความก้าวหน้าของนักศึกษา",
+    description:
+      "การนิเทศนักศึกษาครั้งที่ 1 โดยอาจารย์นิเทศ เพื่อติดตามความก้าวหน้าของนักศึกษา",
     status: "upcoming",
     participants: [
       { name: "ผศ.ดร.สมชาย ใจดี", role: "อาจารย์นิเทศ" },
@@ -51,7 +66,8 @@ const appointments = [
     meetingLink: "https://zoom.us/j/123456789",
     meetingId: "123 456 789",
     passcode: "123456",
-    description: "ประชุมติดตามความก้าวหน้าประจำเดือนกับอาจารย์นิเทศและผู้ประสานงานสหกิจศึกษา",
+    description:
+      "ประชุมติดตามความก้าวหน้าประจำเดือนกับอาจารย์นิเทศและผู้ประสานงานสหกิจศึกษา",
     status: "upcoming",
     participants: [
       { name: "ผศ.ดร.สมชาย ใจดี", role: "อาจารย์นิเทศ" },
@@ -76,7 +92,8 @@ const appointments = [
     time: "13:00 - 15:00",
     type: "onsite",
     location: "บริษัท เทคโนโลยี จำกัด ห้องประชุม 3A",
-    description: "การนิเทศนักศึกษาครั้งที่ 2 โดยอาจารย์นิเทศ เพื่อติดตามความก้าวหน้าของนักศึกษา",
+    description:
+      "การนิเทศนักศึกษาครั้งที่ 2 โดยอาจารย์นิเทศ เพื่อติดตามความก้าวหน้าของนักศึกษา",
     status: "upcoming",
     participants: [
       { name: "ผศ.ดร.สมชาย ใจดี", role: "อาจารย์นิเทศ" },
@@ -105,7 +122,8 @@ const appointments = [
     location: "Google Meet",
     meetingLink: "https://meet.google.com/abc-defg-hij",
     meetingId: "abc-defg-hij",
-    description: "ประชุมเตรียมความพร้อมก่อนสิ้นสุดการฝึกงาน เพื่อสรุปผลการฝึกงานและเตรียมการนำเสนอผลงาน",
+    description:
+      "ประชุมเตรียมความพร้อมก่อนสิ้นสุดการฝึกงาน เพื่อสรุปผลการฝึกงานและเตรียมการนำเสนอผลงาน",
     status: "upcoming",
     participants: [
       { name: "ผศ.ดร.สมชาย ใจดี", role: "อาจารย์นิเทศ" },
@@ -141,7 +159,8 @@ const appointments = [
       { name: "นางสาวพิมพ์ชนก รักเรียน", role: "นักศึกษา" },
       { name: "นายภาคิน ใจดี", role: "นักศึกษา" },
     ],
-    notes: "เตรียมสถานที่สำหรับการนำเสนอผลงานของนักศึกษา และเตรียมแบบประเมินผลการฝึกงาน",
+    notes:
+      "เตรียมสถานที่สำหรับการนำเสนอผลงานของนักศึกษา และเตรียมแบบประเมินผลการฝึกงาน",
     agenda: [
       "นักศึกษานำเสนอผลงานและสรุปการฝึกงาน (90 นาที)",
       "พี่เลี้ยงให้ข้อมูลและประเมินผลการฝึกงาน (30 นาที)",
@@ -161,7 +180,8 @@ const appointments = [
     time: "09:00 - 12:00",
     type: "onsite",
     location: "บริษัท เทคโนโลยี จำกัด ห้องประชุมใหญ่",
-    description: "การปฐมนิเทศนักศึกษาฝึกงาน แนะนำบริษัท กฎระเบียบ และแนวทางการปฏิบัติงาน",
+    description:
+      "การปฐมนิเทศนักศึกษาฝึกงาน แนะนำบริษัท กฎระเบียบ และแนวทางการปฏิบัติงาน",
     status: "completed",
     participants: [
       { name: "นายธนกร มั่นคง", role: "นักศึกษา" },
@@ -189,14 +209,16 @@ const appointments = [
     time: "13:30 - 15:00",
     type: "onsite",
     location: "บริษัท เทคโนโลยี จำกัด ห้องประชุม 2B",
-    description: "ประชุมแนะนำโปรเจกต์ที่นักศึกษาจะได้รับมอบหมายระหว่างการฝึกงาน",
+    description:
+      "ประชุมแนะนำโปรเจกต์ที่นักศึกษาจะได้รับมอบหมายระหว่างการฝึกงาน",
     status: "completed",
     participants: [
       { name: "นายธนกร มั่นคง", role: "นักศึกษา" },
       { name: "นางสาวพิมพ์ชนก รักเรียน", role: "นักศึกษา" },
       { name: "นายภาคิน ใจดี", role: "นักศึกษา" },
     ],
-    notes: "นักศึกษาเข้าใจโปรเจกต์ที่ได้รับมอบหมาย และมีความกระตือรือร้นในการเริ่มงาน",
+    notes:
+      "นักศึกษาเข้าใจโปรเจกต์ที่ได้รับมอบหมาย และมีความกระตือรือร้นในการเริ่มงาน",
     agenda: [
       "แนะนำโปรเจกต์และเป้าหมาย (30 นาที)",
       "รายละเอียดงานและความคาดหวัง (30 นาที)",
@@ -208,64 +230,74 @@ const appointments = [
       { name: "แผนการดำเนินงาน", type: "xlsx" },
     ],
   },
-]
+];
 
 // Helper function to format date
 function formatDate(dateString: string) {
-  const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" }
-  return new Date(dateString).toLocaleDateString("th-TH", options)
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return new Date(dateString).toLocaleDateString("th-TH", options);
 }
 
 // Helper function to get document icon based on type
 function getDocumentIcon(type: string) {
   switch (type) {
     case "pdf":
-      return "📄"
+      return "📄";
     case "doc":
     case "docx":
-      return "📝"
+      return "📝";
     case "xlsx":
     case "xls":
-      return "📊"
+      return "📊";
     default:
-      return "📎"
+      return "📎";
   }
 }
 
 export default function AppointmentDetailPage() {
-  const params = useParams()
-  const router = useRouter()
-  const appointmentId = params.id as string
+  const params = useParams();
+  const router = useRouter();
+  const appointmentId = params.id as string;
 
   // Find the appointment by ID
-  const appointment = appointments.find((a) => a.id === appointmentId)
+  const appointment = appointments.find((a) => a.id === appointmentId);
 
   // If appointment not found, show error
   if (!appointment) {
     return (
       <div className="container mx-auto py-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <MentorSidebar activePage="schedule" />
           <div className="md:col-span-3">
             <Card>
               <CardContent className="p-8 text-center">
-                <h2 className="text-xl font-bold mb-2">ไม่พบข้อมูลการนัดหมาย</h2>
-                <p className="text-muted-foreground mb-4">ไม่พบข้อมูลการนัดหมายที่คุณกำลังค้นหา</p>
-                <Button onClick={() => router.push("/mentor/schedule")}>กลับไปยังตารางนัดหมาย</Button>
+                <h2 className="text-xl font-bold mb-2">
+                  ไม่พบข้อมูลการนัดหมาย
+                </h2>
+                <p className="text-muted-foreground mb-4">
+                  ไม่พบข้อมูลการนัดหมายที่คุณกำลังค้นหา
+                </p>
+                <Button onClick={() => router.push("/mentor/schedule")}>
+                  กลับไปยังตารางนัดหมาย
+                </Button>
               </CardContent>
             </Card>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto py-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <MentorSidebar activePage="schedule" />
 
-        <div className="md:col-span-3 space-y-6">
+        <div className="md:col-span-4">
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" asChild>
               <Link href="/mentor/schedule">
@@ -280,14 +312,18 @@ export default function AppointmentDetailPage() {
               <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-2xl">{appointment.title}</CardTitle>
+                    <CardTitle className="text-2xl">
+                      {appointment.title}
+                    </CardTitle>
                     {appointment.status === "upcoming" ? (
                       <Badge className="bg-blue-500">กำลังจะมาถึง</Badge>
                     ) : (
                       <Badge className="bg-green-500">เสร็จสิ้น</Badge>
                     )}
                   </div>
-                  <CardDescription className="text-base mt-1">{appointment.description}</CardDescription>
+                  <CardDescription className="text-base mt-1">
+                    {appointment.description}
+                  </CardDescription>
                 </div>
                 {appointment.type === "online" && appointment.meetingLink && (
                   <Button className="self-start" asChild>
@@ -308,8 +344,12 @@ export default function AppointmentDetailPage() {
                       <CalendarIcon className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
-                      <div className="text-sm text-muted-foreground">วันที่</div>
-                      <div className="font-medium">{formatDate(appointment.date)}</div>
+                      <div className="text-sm text-muted-foreground">
+                        วันที่
+                      </div>
+                      <div className="font-medium">
+                        {formatDate(appointment.date)}
+                      </div>
                     </div>
                   </div>
 
@@ -332,14 +372,19 @@ export default function AppointmentDetailPage() {
                       )}
                     </div>
                     <div>
-                      <div className="text-sm text-muted-foreground">สถานที่</div>
+                      <div className="text-sm text-muted-foreground">
+                        สถานที่
+                      </div>
                       <div className="font-medium">{appointment.location}</div>
-                      {appointment.type === "online" && appointment.meetingId && (
-                        <div className="text-sm mt-1">
-                          <div>Meeting ID: {appointment.meetingId}</div>
-                          {appointment.passcode && <div>Passcode: {appointment.passcode}</div>}
-                        </div>
-                      )}
+                      {appointment.type === "online" &&
+                        appointment.meetingId && (
+                          <div className="text-sm mt-1">
+                            <div>Meeting ID: {appointment.meetingId}</div>
+                            {appointment.passcode && (
+                              <div>Passcode: {appointment.passcode}</div>
+                            )}
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -350,7 +395,9 @@ export default function AppointmentDetailPage() {
                       <Users className="h-5 w-5 text-blue-600" />
                     </div>
                     <div>
-                      <div className="text-sm text-muted-foreground">ผู้เข้าร่วม ({appointment.participants.length})</div>
+                      <div className="text-sm text-muted-foreground">
+                        ผู้เข้าร่วม ({appointment.participants.length})
+                      </div>
                     </div>
                   </div>
 
@@ -358,11 +405,15 @@ export default function AppointmentDetailPage() {
                     {appointment.participants.map((participant, index) => (
                       <div key={index} className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
-                          <AvatarFallback>{participant.name.substring(0, 2)}</AvatarFallback>
+                          <AvatarFallback>
+                            {participant.name.substring(0, 2)}
+                          </AvatarFallback>
                         </Avatar>
                         <div>
                           <div className="font-medium">{participant.name}</div>
-                          <div className="text-xs text-muted-foreground">{participant.role}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {participant.role}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -391,7 +442,9 @@ export default function AppointmentDetailPage() {
                   <Separator />
                   <div>
                     <h3 className="text-lg font-medium mb-3">หมายเหตุ</h3>
-                    <div className="bg-gray-50 p-3 rounded-md">{appointment.notes}</div>
+                    <div className="bg-gray-50 p-3 rounded-md">
+                      {appointment.notes}
+                    </div>
                   </div>
                 </>
               )}
@@ -400,11 +453,18 @@ export default function AppointmentDetailPage() {
                 <>
                   <Separator />
                   <div>
-                    <h3 className="text-lg font-medium mb-3">เอกสารที่เกี่ยวข้อง</h3>
+                    <h3 className="text-lg font-medium mb-3">
+                      เอกสารที่เกี่ยวข้อง
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {appointment.documents.map((doc, index) => (
-                        <div key={index} className="flex items-center gap-2 p-2 border rounded-md hover:bg-gray-50">
-                          <div className="text-xl">{getDocumentIcon(doc.type)}</div>
+                        <div
+                          key={index}
+                          className="flex items-center gap-2 p-2 border rounded-md hover:bg-gray-50"
+                        >
+                          <div className="text-xl">
+                            {getDocumentIcon(doc.type)}
+                          </div>
                           <div className="flex-1 truncate">{doc.name}</div>
                           <Button variant="ghost" size="sm">
                             <ExternalLink className="h-4 w-4" />
@@ -429,5 +489,5 @@ export default function AppointmentDetailPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

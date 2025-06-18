@@ -1,10 +1,23 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import {
   PlusIcon,
   SearchIcon,
@@ -20,8 +33,8 @@ import {
   BookOpenIcon,
   BarChartIcon,
   FileIcon,
-} from "lucide-react"
-import StudentSidebar from "@/components/student-sidebar"
+} from "lucide-react";
+import StudentSidebar from "@/components/student-sidebar";
 
 export default function StudentReports() {
   // Mock data for reports
@@ -117,32 +130,58 @@ export default function StudentReports() {
         description: "สไลด์สำหรับการนำเสนอผลการปฏิบัติงานสหกิจศึกษา",
       },
     ],
-  }
+  };
 
   // Function to get status badge
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "submitted":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">ส่งแล้ว</Badge>
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            ส่งแล้ว
+          </Badge>
+        );
       case "pending":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">รอส่ง</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            รอส่ง
+          </Badge>
+        );
       case "upcoming":
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">ยังไม่ถึงกำหนด</Badge>
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            ยังไม่ถึงกำหนด
+          </Badge>
+        );
       case "late":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">เลยกำหนด</Badge>
+        return (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            เลยกำหนด
+          </Badge>
+        );
       case "rejected":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">ไม่ผ่าน</Badge>
+        return (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            ไม่ผ่าน
+          </Badge>
+        );
       default:
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">ไม่ระบุ</Badge>
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            ไม่ระบุ
+          </Badge>
+        );
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (นักศึกษา)</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              ระบบสหกิจศึกษา (นักศึกษา)
+            </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>
               <Link href="/">
@@ -155,16 +194,20 @@ export default function StudentReports() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <main className="container mx-auto p-2">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <StudentSidebar activePage="reports" />
 
           <div className="md:col-span-3">
             <Card>
               <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <CardTitle className="text-xl">รายงานผลการปฏิบัติงาน</CardTitle>
-                  <CardDescription>จัดการรายงานและเอกสารที่ต้องส่งทั้งหมด</CardDescription>
+                  <CardTitle className="text-xl">
+                    รายงานผลการปฏิบัติงาน
+                  </CardTitle>
+                  <CardDescription>
+                    จัดการรายงานและเอกสารที่ต้องส่งทั้งหมด
+                  </CardDescription>
                 </div>
                 <div className="flex gap-2">
                   <Link href="/student/reports/new">
@@ -179,8 +222,12 @@ export default function StudentReports() {
                 <Tabs defaultValue="weekly">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <TabsList>
-                      <TabsTrigger value="weekly">รายงานประจำสัปดาห์</TabsTrigger>
-                      <TabsTrigger value="progress">รายงานความก้าวหน้า</TabsTrigger>
+                      <TabsTrigger value="weekly">
+                        รายงานประจำสัปดาห์
+                      </TabsTrigger>
+                      <TabsTrigger value="progress">
+                        รายงานความก้าวหน้า
+                      </TabsTrigger>
                       <TabsTrigger value="final">รายงานฉบับสมบูรณ์</TabsTrigger>
                       <TabsTrigger value="all">ทั้งหมด</TabsTrigger>
                     </TabsList>
@@ -206,13 +253,17 @@ export default function StudentReports() {
                             <TableHead>วันที่ส่ง/กำหนดส่ง</TableHead>
                             <TableHead>สถานะ</TableHead>
                             <TableHead>ผลการประเมิน</TableHead>
-                            <TableHead className="text-right">การดำเนินการ</TableHead>
+                            <TableHead className="text-right">
+                              การดำเนินการ
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {reports.weekly.map((report) => (
                             <TableRow key={report.id}>
-                              <TableCell className="font-medium">{report.title}</TableCell>
+                              <TableCell className="font-medium">
+                                {report.title}
+                              </TableCell>
                               <TableCell>{report.period}</TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-1">
@@ -220,10 +271,14 @@ export default function StudentReports() {
                                   {report.submissionDate || report.dueDate}
                                 </div>
                               </TableCell>
-                              <TableCell>{getStatusBadge(report.status)}</TableCell>
+                              <TableCell>
+                                {getStatusBadge(report.status)}
+                              </TableCell>
                               <TableCell>
                                 {report.grade ? (
-                                  <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">{report.grade}</Badge>
+                                  <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                                    {report.grade}
+                                  </Badge>
                                 ) : (
                                   <span className="text-gray-500">-</span>
                                 )}
@@ -231,17 +286,27 @@ export default function StudentReports() {
                               <TableCell className="text-right">
                                 <div className="flex justify-end gap-2">
                                   {report.status === "submitted" ? (
-                                    <Link href={`/student/reports/view/${report.id}`}>
-                                      <Button variant="outline" size="sm" className="gap-1">
+                                    <Link
+                                      href={`/student/reports/view/${report.id}`}
+                                    >
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="gap-1"
+                                      >
                                         <EyeIcon className="h-3.5 w-3.5" />
                                         ดูรายงาน
                                       </Button>
                                     </Link>
                                   ) : (
-                                    <Link href={`/student/reports/edit/${report.id}`}>
+                                    <Link
+                                      href={`/student/reports/edit/${report.id}`}
+                                    >
                                       <Button size="sm" className="gap-1">
                                         <PencilIcon className="h-3.5 w-3.5" />
-                                        {report.status === "pending" ? "ส่งรายงาน" : "สร้างรายงาน"}
+                                        {report.status === "pending"
+                                          ? "ส่งรายงาน"
+                                          : "สร้างรายงาน"}
                                       </Button>
                                     </Link>
                                   )}
@@ -256,7 +321,9 @@ export default function StudentReports() {
                     <div className="mt-6">
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">คำแนะนำการเขียนรายงานประจำสัปดาห์</CardTitle>
+                          <CardTitle className="text-lg">
+                            คำแนะนำการเขียนรายงานประจำสัปดาห์
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
@@ -284,7 +351,9 @@ export default function StudentReports() {
                                 <h3 className="font-medium">ข้อควรทำ</h3>
                                 <ul className="mt-2 space-y-1 text-sm list-disc pl-5">
                                   <li>เขียนให้กระชับและชัดเจน</li>
-                                  <li>แนบรูปภาพหรือตัวอย่างผลงานประกอบ (ถ้ามี)</li>
+                                  <li>
+                                    แนบรูปภาพหรือตัวอย่างผลงานประกอบ (ถ้ามี)
+                                  </li>
                                   <li>ส่งรายงานตรงตามกำหนดเวลา</li>
                                   <li>ตรวจสอบความถูกต้องของเนื้อหาก่อนส่ง</li>
                                 </ul>
@@ -296,9 +365,13 @@ export default function StudentReports() {
                                 <XCircleIcon className="h-4 w-4 text-red-600" />
                               </div>
                               <div>
-                                <h3 className="font-medium">ข้อควรหลีกเลี่ยง</h3>
+                                <h3 className="font-medium">
+                                  ข้อควรหลีกเลี่ยง
+                                </h3>
                                 <ul className="mt-2 space-y-1 text-sm list-disc pl-5">
-                                  <li>เขียนเนื้อหาสั้นเกินไปหรือไม่มีรายละเอียด</li>
+                                  <li>
+                                    เขียนเนื้อหาสั้นเกินไปหรือไม่มีรายละเอียด
+                                  </li>
                                   <li>คัดลอกเนื้อหาจากรายงานสัปดาห์ก่อนหน้า</li>
                                   <li>ส่งรายงานล่าช้ากว่ากำหนด</li>
                                   <li>ไม่ระบุปัญหาหรือสิ่งที่ได้เรียนรู้</li>
@@ -314,20 +387,32 @@ export default function StudentReports() {
                   <TabsContent value="progress">
                     <div className="space-y-6">
                       {reports.progress.map((report) => (
-                        <Card key={report.id} className={report.status === "pending" ? "border-yellow-300" : ""}>
+                        <Card
+                          key={report.id}
+                          className={
+                            report.status === "pending"
+                              ? "border-yellow-300"
+                              : ""
+                          }
+                        >
                           <CardHeader className="pb-3">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                               <div>
-                                <CardTitle className="text-lg">{report.title}</CardTitle>
+                                <CardTitle className="text-lg">
+                                  {report.title}
+                                </CardTitle>
                                 <CardDescription>
-                                  ช่วงเวลา: {report.period} • กำหนดส่ง: {report.dueDate}
+                                  ช่วงเวลา: {report.period} • กำหนดส่ง:{" "}
+                                  {report.dueDate}
                                 </CardDescription>
                               </div>
                               {getStatusBadge(report.status)}
                             </div>
                           </CardHeader>
                           <CardContent>
-                            <p className="text-sm text-gray-600">{report.description}</p>
+                            <p className="text-sm text-gray-600">
+                              {report.description}
+                            </p>
 
                             <div className="mt-4 pt-4 border-t">
                               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -341,14 +426,20 @@ export default function StudentReports() {
                                 </div>
                                 <div>
                                   {report.status === "pending" ? (
-                                    <Link href={`/student/reports/progress/${report.id}`}>
+                                    <Link
+                                      href={`/student/reports/progress/${report.id}`}
+                                    >
                                       <Button size="sm" className="gap-1">
                                         <PencilIcon className="h-3.5 w-3.5" />
                                         ส่งรายงาน
                                       </Button>
                                     </Link>
                                   ) : (
-                                    <Button variant="outline" size="sm" disabled>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      disabled
+                                    >
                                       ยังไม่ถึงกำหนด
                                     </Button>
                                   )}
@@ -361,7 +452,9 @@ export default function StudentReports() {
 
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">คำแนะนำการเขียนรายงานความก้าวหน้า</CardTitle>
+                          <CardTitle className="text-lg">
+                            คำแนะนำการเขียนรายงานความก้าวหน้า
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
@@ -373,11 +466,19 @@ export default function StudentReports() {
                                 <h3 className="font-medium">เนื้อหาที่ควรมี</h3>
                                 <ul className="mt-2 space-y-1 text-sm list-disc pl-5">
                                   <li>สรุปภาพรวมของงานที่ได้รับมอบหมาย</li>
-                                  <li>ความก้าวหน้าของงานเทียบกับแผนงานที่วางไว้</li>
-                                  <li>ผลงานที่สำคัญที่ได้ดำเนินการในช่วงที่ผ่านมา</li>
-                                  <li>ปัญหาและอุปสรรคที่พบ พร้อมวิธีการแก้ไข</li>
+                                  <li>
+                                    ความก้าวหน้าของงานเทียบกับแผนงานที่วางไว้
+                                  </li>
+                                  <li>
+                                    ผลงานที่สำคัญที่ได้ดำเนินการในช่วงที่ผ่านมา
+                                  </li>
+                                  <li>
+                                    ปัญหาและอุปสรรคที่พบ พร้อมวิธีการแก้ไข
+                                  </li>
                                   <li>แผนการดำเนินงานในช่วงถัดไป</li>
-                                  <li>ความรู้และทักษะที่ได้รับจากการปฏิบัติงาน</li>
+                                  <li>
+                                    ความรู้และทักษะที่ได้รับจากการปฏิบัติงาน
+                                  </li>
                                 </ul>
                               </div>
                             </div>
@@ -392,7 +493,10 @@ export default function StudentReports() {
                                   <li>ความยาว 5-10 หน้า</li>
                                   <li>มีหน้าปก สารบัญ และบทนำ</li>
                                   <li>แบ่งเนื้อหาเป็นบทหรือหัวข้อที่ชัดเจน</li>
-                                  <li>มีรูปภาพ แผนภูมิ หรือตารางประกอบตามความเหมาะสม</li>
+                                  <li>
+                                    มีรูปภาพ แผนภูมิ
+                                    หรือตารางประกอบตามความเหมาะสม
+                                  </li>
                                   <li>มีการอ้างอิงแหล่งข้อมูล (ถ้ามี)</li>
                                   <li>ส่งในรูปแบบไฟล์ PDF</li>
                                 </ul>
@@ -411,16 +515,21 @@ export default function StudentReports() {
                           <CardHeader className="pb-3">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                               <div>
-                                <CardTitle className="text-lg">{report.title}</CardTitle>
+                                <CardTitle className="text-lg">
+                                  {report.title}
+                                </CardTitle>
                                 <CardDescription>
-                                  ช่วงเวลา: {report.period} • กำหนดส่ง: {report.dueDate}
+                                  ช่วงเวลา: {report.period} • กำหนดส่ง:{" "}
+                                  {report.dueDate}
                                 </CardDescription>
                               </div>
                               {getStatusBadge(report.status)}
                             </div>
                           </CardHeader>
                           <CardContent>
-                            <p className="text-sm text-gray-600">{report.description}</p>
+                            <p className="text-sm text-gray-600">
+                              {report.description}
+                            </p>
 
                             <div className="mt-4 pt-4 border-t">
                               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -445,7 +554,9 @@ export default function StudentReports() {
 
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">คำแนะนำการเขียนรายงานฉบับสมบูรณ์</CardTitle>
+                          <CardTitle className="text-lg">
+                            คำแนะนำการเขียนรายงานฉบับสมบูรณ์
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
@@ -456,11 +567,24 @@ export default function StudentReports() {
                               <div>
                                 <h3 className="font-medium">โครงสร้างรายงาน</h3>
                                 <ul className="mt-2 space-y-1 text-sm list-disc pl-5">
-                                  <li>บทที่ 1: บทนำ (ที่มาและความสำคัญ, วัตถุประสงค์, ขอบเขตการปฏิบัติงาน)</li>
-                                  <li>บทที่ 2: รายละเอียดของสถานประกอบการและงานที่ได้รับมอบหมาย</li>
-                                  <li>บทที่ 3: รายละเอียดการปฏิบัติงาน (ขั้นตอน, วิธีการ, ผลลัพธ์)</li>
-                                  <li>บทที่ 4: ปัญหา อุปสรรค และวิธีการแก้ไข</li>
-                                  <li>บทที่ 5: สรุปผลการปฏิบัติงานและข้อเสนอแนะ</li>
+                                  <li>
+                                    บทที่ 1: บทนำ (ที่มาและความสำคัญ,
+                                    วัตถุประสงค์, ขอบเขตการปฏิบัติงาน)
+                                  </li>
+                                  <li>
+                                    บทที่ 2:
+                                    รายละเอียดของสถานประกอบการและงานที่ได้รับมอบหมาย
+                                  </li>
+                                  <li>
+                                    บทที่ 3: รายละเอียดการปฏิบัติงาน (ขั้นตอน,
+                                    วิธีการ, ผลลัพธ์)
+                                  </li>
+                                  <li>
+                                    บทที่ 4: ปัญหา อุปสรรค และวิธีการแก้ไข
+                                  </li>
+                                  <li>
+                                    บทที่ 5: สรุปผลการปฏิบัติงานและข้อเสนอแนะ
+                                  </li>
                                   <li>บรรณานุกรม และภาคผนวก (ถ้ามี)</li>
                                 </ul>
                               </div>
@@ -471,14 +595,25 @@ export default function StudentReports() {
                                 <CheckCircleIcon className="h-4 w-4 text-green-600" />
                               </div>
                               <div>
-                                <h3 className="font-medium">ข้อแนะนำในการเขียน</h3>
+                                <h3 className="font-medium">
+                                  ข้อแนะนำในการเขียน
+                                </h3>
                                 <ul className="mt-2 space-y-1 text-sm list-disc pl-5">
                                   <li>ใช้ภาษาทางวิชาการที่ถูกต้องและเหมาะสม</li>
                                   <li>มีการอ้างอิงแหล่งข้อมูลตามหลักวิชาการ</li>
-                                  <li>แสดงรูปภาพ แผนภูมิ หรือตารางประกอบเพื่อให้เข้าใจง่าย</li>
-                                  <li>เรียบเรียงเนื้อหาให้มีความต่อเนื่องและเชื่อมโยงกัน</li>
-                                  <li>ตรวจสอบความถูกต้องของเนื้อหาและการพิมพ์</li>
-                                  <li>ส่งรายงานในรูปแบบไฟล์ PDF ตามรูปแบบที่กำหนด</li>
+                                  <li>
+                                    แสดงรูปภาพ แผนภูมิ
+                                    หรือตารางประกอบเพื่อให้เข้าใจง่าย
+                                  </li>
+                                  <li>
+                                    เรียบเรียงเนื้อหาให้มีความต่อเนื่องและเชื่อมโยงกัน
+                                  </li>
+                                  <li>
+                                    ตรวจสอบความถูกต้องของเนื้อหาและการพิมพ์
+                                  </li>
+                                  <li>
+                                    ส่งรายงานในรูปแบบไฟล์ PDF ตามรูปแบบที่กำหนด
+                                  </li>
                                 </ul>
                               </div>
                             </div>
@@ -490,10 +625,16 @@ export default function StudentReports() {
                               <div>
                                 <h3 className="font-medium">ข้อควรระวัง</h3>
                                 <ul className="mt-2 space-y-1 text-sm list-disc pl-5">
-                                  <li>ไม่เปิดเผยข้อมูลที่เป็นความลับของบริษัท</li>
-                                  <li>ไม่คัดลอกผลงานของผู้อื่นโดยไม่มีการอ้างอิงที่เหมาะสม</li>
+                                  <li>
+                                    ไม่เปิดเผยข้อมูลที่เป็นความลับของบริษัท
+                                  </li>
+                                  <li>
+                                    ไม่คัดลอกผลงานของผู้อื่นโดยไม่มีการอ้างอิงที่เหมาะสม
+                                  </li>
                                   <li>ไม่ส่งรายงานล่าช้ากว่ากำหนด</li>
-                                  <li>ไม่ใช้ภาษาที่ไม่เป็นทางการหรือไม่เหมาะสม</li>
+                                  <li>
+                                    ไม่ใช้ภาษาที่ไม่เป็นทางการหรือไม่เหมาะสม
+                                  </li>
                                 </ul>
                               </div>
                             </div>
@@ -507,8 +648,12 @@ export default function StudentReports() {
                     <div className="space-y-6">
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">รายงานที่ต้องส่งทั้งหมด</CardTitle>
-                          <CardDescription>รายการรายงานทั้งหมดที่ต้องส่งในภาคการศึกษานี้</CardDescription>
+                          <CardTitle className="text-lg">
+                            รายงานที่ต้องส่งทั้งหมด
+                          </CardTitle>
+                          <CardDescription>
+                            รายการรายงานทั้งหมดที่ต้องส่งในภาคการศึกษานี้
+                          </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="rounded-md border">
@@ -519,7 +664,9 @@ export default function StudentReports() {
                                   <TableHead>รายงาน</TableHead>
                                   <TableHead>กำหนดส่ง</TableHead>
                                   <TableHead>สถานะ</TableHead>
-                                  <TableHead className="text-right">การดำเนินการ</TableHead>
+                                  <TableHead className="text-right">
+                                    การดำเนินการ
+                                  </TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
@@ -527,25 +674,43 @@ export default function StudentReports() {
                                 {reports.weekly.map((report) => (
                                   <TableRow key={`weekly-${report.id}`}>
                                     <TableCell>
-                                      <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">รายสัปดาห์</Badge>
+                                      <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                                        รายสัปดาห์
+                                      </Badge>
                                     </TableCell>
-                                    <TableCell className="font-medium">{report.title}</TableCell>
-                                    <TableCell>{report.dueDate || report.submissionDate}</TableCell>
-                                    <TableCell>{getStatusBadge(report.status)}</TableCell>
+                                    <TableCell className="font-medium">
+                                      {report.title}
+                                    </TableCell>
+                                    <TableCell>
+                                      {report.dueDate || report.submissionDate}
+                                    </TableCell>
+                                    <TableCell>
+                                      {getStatusBadge(report.status)}
+                                    </TableCell>
                                     <TableCell className="text-right">
                                       <div className="flex justify-end gap-2">
                                         {report.status === "submitted" ? (
-                                          <Link href={`/student/reports/view/${report.id}`}>
-                                            <Button variant="outline" size="sm" className="gap-1">
+                                          <Link
+                                            href={`/student/reports/view/${report.id}`}
+                                          >
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              className="gap-1"
+                                            >
                                               <EyeIcon className="h-3.5 w-3.5" />
                                               ดูรายงาน
                                             </Button>
                                           </Link>
                                         ) : (
-                                          <Link href={`/student/reports/edit/${report.id}`}>
+                                          <Link
+                                            href={`/student/reports/edit/${report.id}`}
+                                          >
                                             <Button size="sm" className="gap-1">
                                               <PencilIcon className="h-3.5 w-3.5" />
-                                              {report.status === "pending" ? "ส่งรายงาน" : "สร้างรายงาน"}
+                                              {report.status === "pending"
+                                                ? "ส่งรายงาน"
+                                                : "สร้างรายงาน"}
                                             </Button>
                                           </Link>
                                         )}
@@ -562,20 +727,30 @@ export default function StudentReports() {
                                         ความก้าวหน้า
                                       </Badge>
                                     </TableCell>
-                                    <TableCell className="font-medium">{report.title}</TableCell>
+                                    <TableCell className="font-medium">
+                                      {report.title}
+                                    </TableCell>
                                     <TableCell>{report.dueDate}</TableCell>
-                                    <TableCell>{getStatusBadge(report.status)}</TableCell>
+                                    <TableCell>
+                                      {getStatusBadge(report.status)}
+                                    </TableCell>
                                     <TableCell className="text-right">
                                       <div className="flex justify-end gap-2">
                                         {report.status === "pending" ? (
-                                          <Link href={`/student/reports/progress/${report.id}`}>
+                                          <Link
+                                            href={`/student/reports/progress/${report.id}`}
+                                          >
                                             <Button size="sm" className="gap-1">
                                               <PencilIcon className="h-3.5 w-3.5" />
                                               ส่งรายงาน
                                             </Button>
                                           </Link>
                                         ) : (
-                                          <Button variant="outline" size="sm" disabled>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            disabled
+                                          >
                                             ยังไม่ถึงกำหนด
                                           </Button>
                                         )}
@@ -592,12 +767,20 @@ export default function StudentReports() {
                                         รายงานสมบูรณ์
                                       </Badge>
                                     </TableCell>
-                                    <TableCell className="font-medium">{report.title}</TableCell>
+                                    <TableCell className="font-medium">
+                                      {report.title}
+                                    </TableCell>
                                     <TableCell>{report.dueDate}</TableCell>
-                                    <TableCell>{getStatusBadge(report.status)}</TableCell>
+                                    <TableCell>
+                                      {getStatusBadge(report.status)}
+                                    </TableCell>
                                     <TableCell className="text-right">
                                       <div className="flex justify-end gap-2">
-                                        <Button variant="outline" size="sm" disabled>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          disabled
+                                        >
                                           ยังไม่ถึงกำหนด
                                         </Button>
                                       </div>
@@ -612,8 +795,12 @@ export default function StudentReports() {
 
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">ปฏิทินกำหนดส่งรายงาน</CardTitle>
-                          <CardDescription>กำหนดการส่งรายงานทั้งหมดในภาคการศึกษานี้</CardDescription>
+                          <CardTitle className="text-lg">
+                            ปฏิทินกำหนดส่งรายงาน
+                          </CardTitle>
+                          <CardDescription>
+                            กำหนดการส่งรายงานทั้งหมดในภาคการศึกษานี้
+                          </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
@@ -623,8 +810,12 @@ export default function StudentReports() {
                                 <div className="text-xs">ก.ค.</div>
                               </div>
                               <div>
-                                <h3 className="font-medium">รายงานประจำสัปดาห์ที่ 6</h3>
-                                <p className="text-sm text-gray-600">กำหนดส่งรายงานประจำสัปดาห์ที่ 6</p>
+                                <h3 className="font-medium">
+                                  รายงานประจำสัปดาห์ที่ 6
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                  กำหนดส่งรายงานประจำสัปดาห์ที่ 6
+                                </p>
                               </div>
                             </div>
 
@@ -634,8 +825,12 @@ export default function StudentReports() {
                                 <div className="text-xs">ก.ค.</div>
                               </div>
                               <div>
-                                <h3 className="font-medium">รายงานความก้าวหน้าครั้งที่ 1</h3>
-                                <p className="text-sm text-gray-600">กำหนดส่งรายงานความก้าวหน้าครั้งที่ 1</p>
+                                <h3 className="font-medium">
+                                  รายงานความก้าวหน้าครั้งที่ 1
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                  กำหนดส่งรายงานความก้าวหน้าครั้งที่ 1
+                                </p>
                               </div>
                             </div>
 
@@ -645,8 +840,12 @@ export default function StudentReports() {
                                 <div className="text-xs">ส.ค.</div>
                               </div>
                               <div>
-                                <h3 className="font-medium">รายงานความก้าวหน้าครั้งที่ 2</h3>
-                                <p className="text-sm text-gray-600">กำหนดส่งรายงานความก้าวหน้าครั้งที่ 2</p>
+                                <h3 className="font-medium">
+                                  รายงานความก้าวหน้าครั้งที่ 2
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                  กำหนดส่งรายงานความก้าวหน้าครั้งที่ 2
+                                </p>
                               </div>
                             </div>
 
@@ -656,8 +855,12 @@ export default function StudentReports() {
                                 <div className="text-xs">ก.ย.</div>
                               </div>
                               <div>
-                                <h3 className="font-medium">รายงานฉบับสมบูรณ์</h3>
-                                <p className="text-sm text-gray-600">กำหนดส่งรายงานฉบับสมบูรณ์</p>
+                                <h3 className="font-medium">
+                                  รายงานฉบับสมบูรณ์
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                  กำหนดส่งรายงานฉบับสมบูรณ์
+                                </p>
                               </div>
                             </div>
 
@@ -667,8 +870,12 @@ export default function StudentReports() {
                                 <div className="text-xs">ก.ย.</div>
                               </div>
                               <div>
-                                <h3 className="font-medium">สไลด์นำเสนอผลงาน</h3>
-                                <p className="text-sm text-gray-600">กำหนดส่งสไลด์สำหรับการนำเสนอผลงาน</p>
+                                <h3 className="font-medium">
+                                  สไลด์นำเสนอผลงาน
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                  กำหนดส่งสไลด์สำหรับการนำเสนอผลงาน
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -683,5 +890,5 @@ export default function StudentReports() {
         </div>
       </main>
     </div>
-  )
+  );
 }

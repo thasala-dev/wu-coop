@@ -1,14 +1,20 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import {
   UserCheck,
   FileText,
@@ -23,9 +29,9 @@ import {
   Clock,
   AlertCircle,
   ChevronLeft,
-} from "lucide-react"
-import Link from "next/link"
-import MentorSidebar from "@/components/mentor-sidebar"
+} from "lucide-react";
+import Link from "next/link";
+import MentorSidebar from "@/components/mentor-sidebar";
 
 // Mock data for a single student
 const studentData = {
@@ -42,7 +48,8 @@ const studentData = {
   progress: 75,
   email: "thanakorn.m@example.com",
   phone: "062-XXX-XXXX",
-  address: "บริษัท เทคโนโลยี จำกัด 123 ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพฯ 10310",
+  address:
+    "บริษัท เทคโนโลยี จำกัด 123 ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพฯ 10310",
   advisor: {
     name: "ผศ.ดร.สมชาย ใจดี",
     email: "somchai.j@university.ac.th",
@@ -118,7 +125,8 @@ const studentData = {
       date: "30 มิถุนายน 2566",
       status: "completed",
       score: 85,
-      feedback: "มีความรับผิดชอบดี ทำงานได้ตามเป้าหมาย ควรพัฒนาทักษะการสื่อสารเพิ่มเติม",
+      feedback:
+        "มีความรับผิดชอบดี ทำงานได้ตามเป้าหมาย ควรพัฒนาทักษะการสื่อสารเพิ่มเติม",
     },
     {
       id: "E002",
@@ -126,7 +134,8 @@ const studentData = {
       date: "31 กรกฎาคม 2566",
       status: "completed",
       score: 90,
-      feedback: "พัฒนาการดีขึ้น มีความคิดริเริ่มสร้างสรรค์ สามารถแก้ไขปัญหาได้ดี",
+      feedback:
+        "พัฒนาการดีขึ้น มีความคิดริเริ่มสร้างสรรค์ สามารถแก้ไขปัญหาได้ดี",
     },
     {
       id: "E003",
@@ -160,14 +169,15 @@ const studentData = {
     },
     {
       date: "20 มิถุนายน 2566",
-      content: "นักศึกษาสามารถเรียนรู้งานได้เร็ว แต่ควรระมัดระวังเรื่องความละเอียดรอบคอบ",
+      content:
+        "นักศึกษาสามารถเรียนรู้งานได้เร็ว แต่ควรระมัดระวังเรื่องความละเอียดรอบคอบ",
     },
     {
       date: "15 กรกฎาคม 2566",
       content: "นักศึกษามีพัฒนาการที่ดีขึ้น สามารถทำงานได้อย่างอิสระมากขึ้น",
     },
   ],
-}
+};
 
 // Task status component
 function TaskStatus({ status }: { status: string }) {
@@ -177,64 +187,64 @@ function TaskStatus({ status }: { status: string }) {
         <CheckCircle className="h-4 w-4" />
         <span>เสร็จสิ้น</span>
       </div>
-    )
+    );
   } else if (status === "in-progress") {
     return (
       <div className="flex items-center gap-1 text-yellow-600">
         <Clock className="h-4 w-4" />
         <span>กำลังดำเนินการ</span>
       </div>
-    )
+    );
   } else if (status === "pending") {
     return (
       <div className="flex items-center gap-1 text-gray-600">
         <AlertCircle className="h-4 w-4" />
         <span>รอดำเนินการ</span>
       </div>
-    )
+    );
   }
-  return null
+  return null;
 }
 
 // Report status badge component
 function ReportStatusBadge({ status }: { status: string }) {
   if (status === "submitted") {
-    return <Badge className="bg-green-500">ส่งแล้ว</Badge>
+    return <Badge className="bg-green-500">ส่งแล้ว</Badge>;
   } else if (status === "pending") {
-    return <Badge className="bg-yellow-500">รอส่ง</Badge>
+    return <Badge className="bg-yellow-500">รอส่ง</Badge>;
   } else if (status === "late") {
-    return <Badge className="bg-red-500">ส่งล่าช้า</Badge>
+    return <Badge className="bg-red-500">ส่งล่าช้า</Badge>;
   }
-  return <Badge className="bg-gray-500">ไม่ทราบสถานะ</Badge>
+  return <Badge className="bg-gray-500">ไม่ทราบสถานะ</Badge>;
 }
 
 // Attendance status component
 function AttendanceStatus({ status }: { status: string }) {
   if (status === "present") {
-    return <Badge className="bg-green-500">มา</Badge>
+    return <Badge className="bg-green-500">มา</Badge>;
   } else if (status === "late") {
-    return <Badge className="bg-yellow-500">มาสาย</Badge>
+    return <Badge className="bg-yellow-500">มาสาย</Badge>;
   } else if (status === "absent") {
-    return <Badge className="bg-red-500">ขาด</Badge>
+    return <Badge className="bg-red-500">ขาด</Badge>;
   }
-  return <Badge className="bg-gray-500">ไม่ทราบสถานะ</Badge>
+  return <Badge className="bg-gray-500">ไม่ทราบสถานะ</Badge>;
 }
 
 export default function StudentDetailPage() {
-  const params = useParams()
-  const studentId = params.id as string
-  const [newNote, setNewNote] = useState("")
+  const params = useParams();
+  const studentId = params.id as string;
+  const [newNote, setNewNote] = useState("");
 
   // In a real application, you would fetch the student data based on the ID
   // For this example, we're using the mock data
-  const student = studentData
+  const student = studentData;
 
   return (
     <div className="container mx-auto py-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <MentorSidebar activePage="students" />
 
-        <div className="md:col-span-3 space-y-6">
+        <div className="md:col-span-4">
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" asChild>
               <Link href="/mentor/students">
@@ -250,7 +260,9 @@ export default function StudentDetailPage() {
                 <div className="flex items-center gap-4">
                   <Avatar className="h-16 w-16">
                     <AvatarImage src={student.image} alt={student.name} />
-                    <AvatarFallback>{student.name.substring(0, 2)}</AvatarFallback>
+                    <AvatarFallback>
+                      {student.name.substring(0, 2)}
+                    </AvatarFallback>
                   </Avatar>
                   <div>
                     <CardTitle className="text-2xl">{student.name}</CardTitle>
@@ -260,8 +272,12 @@ export default function StudentDetailPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100">ชั้นปีที่ {student.year}</Badge>
-                  {student.status === "active" && <Badge className="bg-green-500">กำลังฝึกงาน</Badge>}
+                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                    ชั้นปีที่ {student.year}
+                  </Badge>
+                  {student.status === "active" && (
+                    <Badge className="bg-green-500">กำลังฝึกงาน</Badge>
+                  )}
                 </div>
               </div>
             </CardHeader>
@@ -300,8 +316,12 @@ export default function StudentDetailPage() {
                     <div>
                       <div className="font-medium">อาจารย์ที่ปรึกษา</div>
                       <div>{student.advisor.name}</div>
-                      <div className="text-sm text-muted-foreground">{student.advisor.email}</div>
-                      <div className="text-sm text-muted-foreground">{student.advisor.phone}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {student.advisor.email}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {student.advisor.phone}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -312,7 +332,9 @@ export default function StudentDetailPage() {
                     <div>
                       <div className="font-medium">สถานประกอบการ</div>
                       <div>{student.company.name}</div>
-                      <div className="text-sm text-muted-foreground">{student.company.website}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {student.company.website}
+                      </div>
                     </div>
                   </div>
 
@@ -338,7 +360,9 @@ export default function StudentDetailPage() {
                   <div>
                     <div className="font-medium mb-2">ความคืบหน้าโดยรวม</div>
                     <Progress value={student.progress} className="h-2" />
-                    <div className="text-sm text-right mt-1">{student.progress}%</div>
+                    <div className="text-sm text-right mt-1">
+                      {student.progress}%
+                    </div>
                   </div>
                 </div>
               </div>
@@ -357,13 +381,17 @@ export default function StudentDetailPage() {
                     <Card key={index}>
                       <CardHeader className="p-4 pb-2">
                         <div className="flex justify-between items-start">
-                          <CardTitle className="text-base">{task.name}</CardTitle>
+                          <CardTitle className="text-base">
+                            {task.name}
+                          </CardTitle>
                           <TaskStatus status={task.status} />
                         </div>
                       </CardHeader>
                       <CardContent className="p-4 pt-0">
                         <p className="text-sm mb-2">{task.description}</p>
-                        <div className="text-sm text-muted-foreground">กำหนดส่ง: {task.dueDate}</div>
+                        <div className="text-sm text-muted-foreground">
+                          กำหนดส่ง: {task.dueDate}
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -380,11 +408,21 @@ export default function StudentDetailPage() {
                       <table className="w-full caption-bottom text-sm">
                         <thead className="[&_tr]:border-b">
                           <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                            <th className="h-12 px-4 text-left align-middle font-medium">รหัสรายงาน</th>
-                            <th className="h-12 px-4 text-left align-middle font-medium">ชื่อรายงาน</th>
-                            <th className="h-12 px-4 text-left align-middle font-medium">วันที่ส่ง</th>
-                            <th className="h-12 px-4 text-left align-middle font-medium">สถานะ</th>
-                            <th className="h-12 px-4 text-left align-middle font-medium">การให้ข้อเสนอแนะ</th>
+                            <th className="h-12 px-4 text-left align-middle font-medium">
+                              รหัสรายงาน
+                            </th>
+                            <th className="h-12 px-4 text-left align-middle font-medium">
+                              ชื่อรายงาน
+                            </th>
+                            <th className="h-12 px-4 text-left align-middle font-medium">
+                              วันที่ส่ง
+                            </th>
+                            <th className="h-12 px-4 text-left align-middle font-medium">
+                              สถานะ
+                            </th>
+                            <th className="h-12 px-4 text-left align-middle font-medium">
+                              การให้ข้อเสนอแนะ
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="[&_tr:last-child]:border-0">
@@ -394,14 +432,20 @@ export default function StudentDetailPage() {
                               className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
                             >
                               <td className="p-4 align-middle">{report.id}</td>
-                              <td className="p-4 align-middle font-medium">{report.title}</td>
-                              <td className="p-4 align-middle">{report.date}</td>
+                              <td className="p-4 align-middle font-medium">
+                                {report.title}
+                              </td>
+                              <td className="p-4 align-middle">
+                                {report.date}
+                              </td>
                               <td className="p-4 align-middle">
                                 <ReportStatusBadge status={report.status} />
                               </td>
                               <td className="p-4 align-middle">
                                 {report.feedback ? (
-                                  <div className="text-sm">{report.feedback}</div>
+                                  <div className="text-sm">
+                                    {report.feedback}
+                                  </div>
                                 ) : (
                                   <Button size="sm" variant="outline">
                                     <FileText className="mr-2 h-4 w-4" />
@@ -423,7 +467,9 @@ export default function StudentDetailPage() {
                       <CardHeader className="p-4 pb-2">
                         <div className="flex justify-between items-start">
                           <div>
-                            <CardTitle className="text-base">{evaluation.title}</CardTitle>
+                            <CardTitle className="text-base">
+                              {evaluation.title}
+                            </CardTitle>
                             <CardDescription>{evaluation.date}</CardDescription>
                           </div>
                           {evaluation.status === "completed" ? (
@@ -438,17 +484,23 @@ export default function StudentDetailPage() {
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
                               <span className="font-medium">คะแนน:</span>
-                              <span className="font-bold text-lg">{evaluation.score}/100</span>
+                              <span className="font-bold text-lg">
+                                {evaluation.score}/100
+                              </span>
                             </div>
                             <div>
-                              <div className="font-medium mb-1">ข้อเสนอแนะ:</div>
+                              <div className="font-medium mb-1">
+                                ข้อเสนอแนะ:
+                              </div>
                               <p className="text-sm">{evaluation.feedback}</p>
                             </div>
                           </div>
                         ) : (
                           <div className="flex justify-end">
                             <Button asChild>
-                              <Link href={`/mentor/evaluations/${student.id}/${evaluation.id}`}>
+                              <Link
+                                href={`/mentor/evaluations/${student.id}/${evaluation.id}`}
+                              >
                                 <UserCheck className="mr-2 h-4 w-4" />
                                 ทำการประเมิน
                               </Link>
@@ -466,9 +518,15 @@ export default function StudentDetailPage() {
                       <table className="w-full caption-bottom text-sm">
                         <thead className="[&_tr]:border-b">
                           <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                            <th className="h-12 px-4 text-left align-middle font-medium">วันที่</th>
-                            <th className="h-12 px-4 text-left align-middle font-medium">สถานะ</th>
-                            <th className="h-12 px-4 text-left align-middle font-medium">จำนวนชั่วโมง</th>
+                            <th className="h-12 px-4 text-left align-middle font-medium">
+                              วันที่
+                            </th>
+                            <th className="h-12 px-4 text-left align-middle font-medium">
+                              สถานะ
+                            </th>
+                            <th className="h-12 px-4 text-left align-middle font-medium">
+                              จำนวนชั่วโมง
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="[&_tr:last-child]:border-0">
@@ -477,11 +535,15 @@ export default function StudentDetailPage() {
                               key={index}
                               className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
                             >
-                              <td className="p-4 align-middle">{record.date}</td>
+                              <td className="p-4 align-middle">
+                                {record.date}
+                              </td>
                               <td className="p-4 align-middle">
                                 <AttendanceStatus status={record.status} />
                               </td>
-                              <td className="p-4 align-middle">{record.hours}</td>
+                              <td className="p-4 align-middle">
+                                {record.hours}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -493,7 +555,9 @@ export default function StudentDetailPage() {
                 <TabsContent value="notes" className="space-y-4">
                   <Card>
                     <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-base">เพิ่มบันทึกใหม่</CardTitle>
+                      <CardTitle className="text-base">
+                        เพิ่มบันทึกใหม่
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 pt-0">
                       <Textarea
@@ -525,5 +589,5 @@ export default function StudentDetailPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

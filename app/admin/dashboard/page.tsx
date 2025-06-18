@@ -47,7 +47,7 @@ export default function AdminDashboard() {
   }
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="dashboard" userType="admin" />
           {loading && <Loading />}

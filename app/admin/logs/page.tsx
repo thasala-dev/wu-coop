@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
   PlusIcon,
@@ -41,17 +41,19 @@ export default function CompaniesPage() {
   useEffect(() => {
     if (role === "all") {
       setFilterData(data);
-    } else if (role === "active") {
-      setFilterData(data.filter((item: any) => item.status_id === 1));
-    } else if (role === "inactive") {
-      setFilterData(data.filter((item: any) => item.status_id === 2));
-    } else if (role === "pending") {
-      setFilterData(data.filter((item: any) => item.status_id === 0));
+    } else if (role === "admin") {
+      setFilterData(data.filter((item: any) => item.user_role === "admin"));
+    } else if (role === "student") {
+      setFilterData(data.filter((item: any) => item.user_role === "student"));
+    } else if (role === "advisor") {
+      setFilterData(data.filter((item: any) => item.user_role === "advisor"));
+    } else if (role === "mentor") {
+      setFilterData(data.filter((item: any) => item.user_role === "mentor"));
     }
   }, [data, role]);
 
   async function fetchData() {
-    const response = await fetch("/api/admin", {
+    const response = await fetch("/api/log", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -65,36 +67,10 @@ export default function CompaniesPage() {
     }
   }
 
-  // Function to render status badge
-  const renderStatusBadge = (status: string) => {
-    switch (status) {
-      case "1":
-        return (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            <CheckCircleIcon className="h-3 w-3 mr-1" /> ใช้งาน
-          </Badge>
-        );
-      case "2":
-        return (
-          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            <XCircleIcon className="h-3 w-3 mr-1" /> ไม่ใช้งาน
-          </Badge>
-        );
-      case "0":
-        return (
-          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-            <ClockIcon className="h-3 w-3 mr-1" /> รอดำเนินการ
-          </Badge>
-        );
-      default:
-        return <Badge>{status}</Badge>;
-    }
-  };
-
   return (
     <div className="container mx-auto p-2">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Sidebar activePage="admins" userType="admin" />
+        <Sidebar activePage="logs" userType="admin" />
         {loading && <Loading />}
 
         <div className="md:col-span-4 space-y-4">
@@ -103,17 +79,8 @@ export default function CompaniesPage() {
               <CardHeader className="pb-3">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle className="text-xl">
-                      จัดการข้อมูลผู้ดูแลระบบ
-                    </CardTitle>
-                    <CardDescription>รายชื่อผู้ดูแลระบบ</CardDescription>
+                    <CardTitle className="text-xl">Logs</CardTitle>
                   </div>
-                  <a href={`/admin/admins/add`}>
-                    <Button>
-                      <PlusIcon className="h-4 w-4 mr-2" />
-                      สร้างบัญชีใหม่
-                    </Button>
-                  </a>
                 </div>
               </CardHeader>
 
@@ -133,13 +100,7 @@ export default function CompaniesPage() {
                             role === "all"
                               ? data
                               : data.filter((item: any) => {
-                                  if (role === "active")
-                                    return item.status_id === 1;
-                                  if (role === "inactive")
-                                    return item.status_id === 2;
-                                  if (role === "pending")
-                                    return item.status_id === 0;
-                                  return true;
+                                  return item.user_role === role;
                                 })
                           );
                         } else {
@@ -147,13 +108,7 @@ export default function CompaniesPage() {
                             (role === "all"
                               ? data
                               : data.filter((item: any) => {
-                                  if (role === "active")
-                                    return item.status_id === 1;
-                                  if (role === "inactive")
-                                    return item.status_id === 2;
-                                  if (role === "pending")
-                                    return item.status_id === 0;
-                                  return true;
+                                  return item.user_role === role;
                                 })
                             ).filter((item: any) =>
                               item.fullname
@@ -168,26 +123,30 @@ export default function CompaniesPage() {
                 </div>
                 <TabsList>
                   <TabsTrigger value="all">ทั้งหมด ({data.length})</TabsTrigger>
-                  <TabsTrigger value="active">
-                    ใช้งาน ({data.filter((c: any) => c.status_id === 1).length})
+                  <TabsTrigger value="admin">
+                    ผู้ดูแลระบบ (
+                    {data.filter((c: any) => c.user_role === "admin").length})
                   </TabsTrigger>
-                  <TabsTrigger value="inactive">
-                    ไม่ใช้งาน (
-                    {data.filter((c: any) => c.status_id === 2).length})
+                  <TabsTrigger value="student">
+                    นักศึกษา (
+                    {data.filter((c: any) => c.user_role === "student").length})
                   </TabsTrigger>
-                  <TabsTrigger value="pending">
-                    รอดำเนินการ (
-                    {data.filter((c: any) => c.status_id === 0).length})
+                  <TabsTrigger value="advisor">
+                    อาจารย์ (
+                    {data.filter((c: any) => c.user_role === "advisor").length})
+                  </TabsTrigger>
+                  <TabsTrigger value="mentor">
+                    แหล่งฝึก (
+                    {data.filter((c: any) => c.user_role === "mentor").length})
                   </TabsTrigger>
                 </TabsList>
                 <div className="rounded-md border my-4 overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-center py-3 px-4">ผู้ดูแลระบบ</th>
-                        <th className="text-center py-3 px-4">สถานะ</th>
-                        <th className="text-center py-3 px-4">ใช้งานล่าสุด</th>
-                        <th className="text-center py-3 px-4"></th>
+                        <th className="text-center py-3 px-4">ผู้ใช้งาน</th>
+                        <th className="text-center py-3 px-4">รายละเอียด</th>
+                        <th className="text-center py-3 px-4">เวลาที่ใช้งาน</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -206,27 +165,33 @@ export default function CompaniesPage() {
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-3">
                               <CustomAvatar
-                                id={`admin${item.username}`}
+                                id={`${item.user_role}${item.username}`}
                                 image={item.image}
                                 size="12"
                               />
                               <div>
                                 <div>{item.fullname}</div>
                                 <div className="text-sm text-gray-500">
-                                  Username: {item.username}
+                                  {item.user_role === "admin"
+                                    ? "ผู้ดูแลระบบ"
+                                    : item.user_role === "advisor"
+                                    ? "อาจารย์"
+                                    : item.user_role === "student"
+                                    ? "นักศึกษา"
+                                    : item.user_role === "mentor"
+                                    ? "แหล่งฝึก"
+                                    : "ไม่ทราบ"}
                                 </div>
                               </div>
                             </div>
                           </td>
 
-                          <td className="py-3 px-4 text-center">
-                            {renderStatusBadge(String(item.status_id))}
-                          </td>
+                          <td className="py-3 px-4">{item.title}</td>
                           <td className="py-3 px-4 text-center">
                             {
                               <div className="text-sm text-gray-500">
-                                {item.last_login ? (
-                                  new Date(item.last_login).toLocaleString(
+                                {item.created_at ? (
+                                  new Date(item.created_at).toLocaleString(
                                     "th-TH",
                                     {
                                       year: "numeric",
@@ -238,31 +203,10 @@ export default function CompaniesPage() {
                                     }
                                   )
                                 ) : (
-                                  <i>ไม่เคยใช้งาน</i>
+                                  <i>ไม่สามารถระบุได้</i>
                                 )}
                               </div>
                             }
-                          </td>
-                          <td className="py-3 px-4 text-right">
-                            <div className="flex justify-end gap-2">
-                              <Link href={`/admin/admins/${item.id}`}>
-                                <Button variant="outline" size="sm">
-                                  <Eye className="h-3.5 w-3.5" />
-                                </Button>
-                              </Link>
-                              <Link href={`/admin/admins/edit/${item.id}`}>
-                                <Button variant="outline" size="sm">
-                                  <Edit className="h-3.5 w-3.5" />
-                                </Button>
-                              </Link>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                className="bg-red-600 hover:bg-red-700 text-white"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
-                            </div>
                           </td>
                         </tr>
                       ))}
