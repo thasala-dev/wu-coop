@@ -51,119 +51,32 @@ export default function AdminCalendar() {
   const [loading, setLoading] = useState(false);
   const [calendars, setCalendars] = useState<any>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
+  const [currentMonth, setCurrentMonth] = useState("มิถุนายน 2567");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredEvents, setFilteredEvents] = useState<any>([]);
+  const [events, setEvents] = useState<any>([]);
 
-  // Mock data for current month
-  const currentMonth = "มิถุนายน 2567";
-
-  // Mock data for calendar events
-  const events = [
-    {
-      id: 1,
-      date: "1 มิ.ย. 2567",
-      title: "เริ่มปฏิบัติงานสหกิจศึกษา",
-      description: "นักศึกษาเริ่มปฏิบัติงาน ณ สถานประกอบการ",
-      category: "สำคัญ",
-      status: "active",
-      term: "1/2567",
-    },
-    {
-      id: 2,
-      date: "15 ก.ค. 2567",
-      title: "กำหนดส่งรายงานความก้าวหน้าครั้งที่ 1",
-      description: "นักศึกษาส่งรายงานความก้าวหน้าครั้งที่ 1 ผ่านระบบ",
-      category: "กำหนดส่ง",
-      status: "upcoming",
-      term: "1/2567",
-    },
-    {
-      id: 3,
-      date: "15-25 ก.ค. 2567",
-      title: "การนิเทศครั้งที่ 1",
-      description: "อาจารย์นิเทศเข้าเยี่ยมนักศึกษา ณ สถานประกอบการ",
-      category: "การนิเทศ",
-      status: "upcoming",
-      term: "1/2567",
-    },
-    {
-      id: 4,
-      date: "15 ส.ค. 2567",
-      title: "กำหนดส่งรายงานความก้าวหน้าครั้งที่ 2",
-      description: "นักศึกษาส่งรายงานความก้าวหน้าครั้งที่ 2 ผ่านระบบ",
-      category: "กำหนดส่ง",
-      status: "upcoming",
-      term: "1/2567",
-    },
-    {
-      id: 5,
-      date: "15-25 ส.ค. 2567",
-      title: "การนิเทศครั้งที่ 2",
-      description: "อาจารย์นิเทศเข้าเยี่ยมนักศึกษา ณ สถานประกอบการ (ถ้ามี)",
-      category: "การนิเทศ",
-      status: "upcoming",
-      term: "1/2567",
-    },
-    {
-      id: 6,
-      date: "15 ก.ย. 2567",
-      title: "กำหนดส่งรายงานฉบับสมบูรณ์",
-      description: "นักศึกษาส่งรายงานฉบับสมบูรณ์ผ่านระบบ",
-      category: "กำหนดส่ง",
-      status: "upcoming",
-      term: "1/2567",
-    },
-    {
-      id: 7,
-      date: "30 ก.ย. 2567",
-      title: "สิ้นสุดการปฏิบัติงานสหกิจศึกษา",
-      description: "วันสุดท้ายของการปฏิบัติงาน ณ สถานประกอบการ",
-      category: "สำคัญ",
-      status: "upcoming",
-      term: "1/2567",
-    },
-    {
-      id: 8,
-      date: "15 ต.ค. 2567",
-      title: "นำเสนอผลการปฏิบัติงานสหกิจศึกษา",
-      description: "นักศึกษานำเสนอผลการปฏิบัติงานสหกิจศึกษาต่อคณะกรรมการ",
-      category: "การนำเสนอ",
-      status: "upcoming",
-      term: "1/2567",
-    },
-    // Events for term 2/2567
-    {
-      id: 9,
-      date: "1 พ.ย. 2567",
-      title: "เริ่มปฏิบัติงานสหกิจศึกษา",
-      description: "นักศึกษาเริ่มปฏิบัติงาน ณ สถานประกอบการ",
-      category: "สำคัญ",
-      status: "upcoming",
-      term: "2/2567",
-    },
-    {
-      id: 10,
-      date: "15 ธ.ค. 2567",
-      title: "กำหนดส่งรายงานความก้าวหน้าครั้งที่ 1",
-      description: "นักศึกษาส่งรายงานความก้าวหน้าครั้งที่ 1 ผ่านระบบ",
-      category: "กำหนดส่ง",
-      status: "upcoming",
-      term: "2/2567",
-    },
-    {
-      id: 11,
-      date: "15-25 ธ.ค. 2567",
-      title: "การนิเทศครั้งที่ 1",
-      description: "อาจารย์นิเทศเข้าเยี่ยมนักศึกษา ณ สถานประกอบการ",
-      category: "การนิเทศ",
-      status: "upcoming",
-      term: "2/2567",
-    },
-  ];
-
-  // Mock data for calendar grid
-  const calendarDays = Array.from({ length: 30 }, (_, i) => i + 1);
+  // State for calendar view
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(5); // June (0-indexed)
+  const [currentYear, setCurrentYear] = useState(2567); // BE
+  const [calendarDays, setCalendarDays] = useState<any[]>([]);
 
   // Days of the week
   const daysOfWeek = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
+  const monthNames = [
+    "มกราคม",
+    "กุมภาพันธ์",
+    "มีนาคม",
+    "เมษายน",
+    "พฤษภาคม",
+    "มิถุนายน",
+    "กรกฎาคม",
+    "สิงหาคม",
+    "กันยายน",
+    "ตุลาคม",
+    "พฤศจิกายน",
+    "ธันวาคม",
+  ];
 
   // Function to get badge color based on category
   const getBadgeColor = (category: string) => {
@@ -217,15 +130,144 @@ export default function AdminCalendar() {
     }
   };
 
+  // Function to generate calendar days for the current month
+  const generateCalendarDays = () => {
+    // Convert BE year to CE year for JavaScript Date
+    const ceYear = currentYear - 543;
+
+    // Create date for the first day of the month
+    const firstDay = new Date(ceYear, currentMonthIndex, 1);
+
+    // Get the day of the week for the first day (0 = Sunday, 6 = Saturday)
+    const firstDayOfWeek = firstDay.getDay();
+
+    // Get the last day of the month
+    const lastDay = new Date(ceYear, currentMonthIndex + 1, 0).getDate();
+
+    // Generate array of calendar days including empty days for start of month
+    const days = [];
+
+    // Add empty cells for days before the 1st of the month
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      days.push({ day: null, events: [] });
+    }
+
+    // Add days of the month with their events
+    for (let day = 1; day <= lastDay; day++) {
+      // Find events for this day
+      const dayEvents = events.filter((event) => {
+        if (!event.day || !event.month || !event.year) return false;
+
+        const eventDay = event.day;
+        const eventMonth = event.month;
+        const eventYear = event.year;
+
+        const dayMatches = eventDay === day;
+        const monthMatches = eventMonth === currentMonthIndex + 1;
+        const yearMatches = eventYear === currentYear;
+        const calendarMatches =
+          !calendarSelected || event.calendar_id === parseInt(calendarSelected);
+
+        return dayMatches && monthMatches && yearMatches && calendarMatches;
+      });
+
+      days.push({ day, events: dayEvents });
+    }
+
+    setCalendarDays(days);
+    setCurrentMonth(`${monthNames[currentMonthIndex]} ${currentYear}`);
+  };
+
+  // Function to get the term of the selected calendar
+  const getSelectedCalendarTerm = () => {
+    const selectedCal = calendars.find(
+      (cal: any) => cal.id === calendarSelected
+    );
+    return selectedCal ? `${selectedCal.semester}/${selectedCal.year}` : null;
+  };
+
+  // Replace the filterEvents function to handle API data
+  const filterEvents = () => {
+    if (!events || events.length === 0) {
+      setFilteredEvents([]);
+      return;
+    }
+
+    let filtered = [...events];
+
+    // Filter by selected calendar term if one is selected
+    if (calendarSelected) {
+      filtered = filtered.filter(
+        (event) => event.calendar_id === parseInt(calendarSelected)
+      );
+    }
+
+    // Filter by search term if one is entered
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (event) =>
+          event.title.toLowerCase().includes(search) ||
+          event.description.toLowerCase().includes(search) ||
+          event.category.toLowerCase().includes(search) ||
+          event.date.toLowerCase().includes(search)
+      );
+    }
+
+    setFilteredEvents(filtered);
+  };
+
+  // Handle month navigation
+  const goToPreviousMonth = () => {
+    if (currentMonthIndex === 0) {
+      setCurrentMonthIndex(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonthIndex(currentMonthIndex - 1);
+    }
+  };
+
+  const goToNextMonth = () => {
+    if (currentMonthIndex === 11) {
+      setCurrentMonthIndex(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonthIndex(currentMonthIndex + 1);
+    }
+  };
+
+  const goToToday = () => {
+    // Get current date in Buddhist Era (BE)
+    const today = new Date();
+    const beYear = today.getFullYear() + 543;
+
+    setCurrentMonthIndex(today.getMonth());
+    setCurrentYear(beYear);
+  };
   useEffect(() => {
     fetchCalendar();
   }, []);
 
   useEffect(() => {
+    if (calendars.length > 0) {
+      fetchEvents();
+    }
+  }, [calendars]);
+
+  useEffect(() => {
     if (calendarSelected) {
       // selectCalendar(calendarSelected);
+      filterEvents();
     }
-  }, [calendarSelected]);
+  }, [calendarSelected, events]);
+  useEffect(() => {
+    generateCalendarDays();
+    filterEvents();
+  }, [currentMonthIndex, currentYear, calendarSelected, events]);
+
+  useEffect(() => {
+    filterEvents();
+  }, [searchTerm]);
 
   async function selectCalendar(id: number) {
     if (id) {
@@ -265,6 +307,115 @@ export default function AdminCalendar() {
     }
     setLoading(false);
   }
+
+  // Function to map event type_id to category
+  const mapTypeToCategory = (typeId: number): string => {
+    switch (typeId) {
+      case 1:
+        return "สำคัญ";
+      case 2:
+        return "กำหนดส่ง";
+      case 3:
+        return "การนิเทศ";
+      case 4:
+        return "การนำเสนอ";
+      default:
+        return "ทั่วไป";
+    }
+  };
+
+  // Function to map status_id to status string
+  const mapStatusToString = (statusId: number): string => {
+    return statusId === 1 ? "active" : "upcoming";
+  };
+
+  // Function to format API event data
+  const formatEventData = (apiEvents: any[]) => {
+    return apiEvents.map((event) => {
+      // Parse the event_date
+      const eventDate = event.event_date
+        ? new Date(event.event_date)
+        : new Date();
+      const day = eventDate.getDate();
+      const month = eventDate.getMonth() + 1; // JavaScript months are 0-indexed
+      const year = eventDate.getFullYear() + 543; // Convert to Buddhist Era
+
+      // Format the date string for display
+      const dateOptions: Intl.DateTimeFormatOptions = {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      };
+      const dateString = eventDate.toLocaleDateString("th-TH", dateOptions);
+
+      return {
+        ...event,
+        date: dateString,
+        category: mapTypeToCategory(event.type_id),
+        status: mapStatusToString(event.status_id),
+        term:
+          event.calendar_id && calendars.length > 0
+            ? getCalendarTermById(event.calendar_id)
+            : "",
+        day,
+        month,
+        year,
+      };
+    });
+  };
+
+  // Function to get calendar term by calendar_id
+  const getCalendarTermById = (calendarId: number): string => {
+    const calendar = calendars.find((cal: any) => cal.id === calendarId);
+    return calendar ? `${calendar.semester}/${calendar.year}` : "";
+  };
+
+  // Function to fetch events from API
+  async function fetchEvents() {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/event", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        const formattedEvents = formatEventData(data.data || []);
+        setEvents(formattedEvents);
+        console.log("Fetched events:", formattedEvents);
+      } else {
+        console.error("Error fetching events:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Function to render event dot in calendar
+  const renderEventDot = (category: string) => {
+    let bgColor = "bg-gray-400";
+
+    switch (category) {
+      case "สำคัญ":
+        bgColor = "bg-red-500";
+        break;
+      case "กำหนดส่ง":
+        bgColor = "bg-blue-500";
+        break;
+      case "การนิเทศ":
+        bgColor = "bg-purple-500";
+        break;
+      case "การนำเสนอ":
+        bgColor = "bg-green-500";
+        break;
+    }
+
+    return <div className={`h-2 w-2 rounded-full ${bgColor} mr-1`}></div>;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -347,8 +498,8 @@ export default function AdminCalendar() {
                               )}
                             </p>
                             <div className="flex justify-between mt-2 text-sm">
-                              <span>นักศึกษา: {cal.total_intern || 0}</span>
-                              <span>บริษัท: {cal.total_regist || 0}</span>
+                              <span>นักศึกษา: {cal.total_student || 0}</span>
+                              <span>แหล่งฝึก: {cal.total_company || 0}</span>
                             </div>
                           </CardContent>
                         </Card>
@@ -445,10 +596,6 @@ export default function AdminCalendar() {
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline">
-                      <DownloadIcon className="h-4 w-4 mr-2" />
-                      ส่งออก
-                    </Button>
                     <Link href={`/admin/event/add/${calendarSelected}`}>
                       <Button>
                         <PlusIcon className="h-4 w-4 mr-2" />
@@ -473,10 +620,14 @@ export default function AdminCalendar() {
                             type="text"
                             placeholder="ค้นหากิจกรรม..."
                             className="pl-10 pr-4 py-2 border rounded-md w-full"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                           />
                         </div>
                         <Select
-                          defaultValue={calendarSelected || ""}
+                          defaultValue={
+                            calendarSelected ? calendarSelected.toString() : ""
+                          }
                           onValueChange={(value) => {
                             setCalendarSelected(value || null);
                           }}
@@ -488,8 +639,7 @@ export default function AdminCalendar() {
                             {calendars.map((cal: any) => (
                               <SelectItem
                                 key={cal.id}
-                                value={cal.id}
-                                onClick={() => setCalendarSelected(cal.id)}
+                                value={cal.id.toString()}
                               >
                                 {cal.name} ({cal.semester}/{cal.year})
                               </SelectItem>
@@ -515,7 +665,7 @@ export default function AdminCalendar() {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {events.map((event) => (
+                            {filteredEvents.map((event: any) => (
                               <TableRow key={event.id}>
                                 <TableCell className="font-medium">
                                   {event.date}
@@ -553,20 +703,30 @@ export default function AdminCalendar() {
                                 </TableCell>
                                 <TableCell className="text-right">
                                   <div className="flex justify-end gap-2">
-                                    <Button variant="outline" size="sm">
-                                      <Edit className="h-3.5 w-3.5" />
-                                    </Button>
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      className="bg-red-600 hover:bg-red-700 text-white"
+                                    <Link
+                                      href={`/admin/event/edit/${event.id}`}
                                     >
-                                      <Trash2 className="h-3.5 w-3.5" />
+                                      <Button variant="outline" size="sm">
+                                        แก้ไข
+                                      </Button>
+                                    </Link>
+                                    <Button variant="ghost" size="sm">
+                                      ลบ
                                     </Button>
                                   </div>
                                 </TableCell>
                               </TableRow>
                             ))}
+                            {filteredEvents.length === 0 && (
+                              <TableRow>
+                                <TableCell
+                                  colSpan={6}
+                                  className="text-center py-4 text-gray-500"
+                                >
+                                  ไม่พบกิจกรรมที่ต้องการ
+                                </TableCell>
+                              </TableRow>
+                            )}
                           </TableBody>
                         </Table>
                       </div>
@@ -576,18 +736,30 @@ export default function AdminCalendar() {
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={goToPreviousMonth}
+                            >
                               <ChevronLeftIcon className="h-4 w-4" />
                             </Button>
                             <h3 className="text-lg font-medium">
                               {currentMonth}
                             </h3>
-                            <Button variant="outline" size="sm">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={goToNextMonth}
+                            >
                               <ChevronRightIcon className="h-4 w-4" />
                             </Button>
                           </div>
                           <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={goToToday}
+                            >
                               วันนี้
                             </Button>
                           </div>
@@ -603,24 +775,46 @@ export default function AdminCalendar() {
                             </div>
                           ))}
 
-                          {/* Empty cells for days before the 1st of the month (assuming June 2024 starts on Saturday) */}
-                          {Array.from({ length: 5 }).map((_, index) => (
+                          {calendarDays.map((day, index) => (
                             <div
-                              key={`empty-${index}`}
-                              className="h-24 border rounded-md bg-gray-50"
-                            ></div>
-                          ))}
-
-                          {calendarDays.map((day) => (
-                            <div
-                              key={day}
-                              className="h-24 border rounded-md p-1 hover:bg-gray-50"
+                              key={index}
+                              className={`min-h-24 border rounded-md p-1 ${
+                                day.day ? "hover:bg-gray-50" : "bg-gray-50"
+                              }`}
                             >
-                              <div className="font-medium text-sm">{day}</div>
-                              {day === 1 && (
-                                <div className="mt-1 p-1 text-xs bg-red-100 text-red-800 rounded truncate">
-                                  เริ่มปฏิบัติงานสหกิจศึกษา
-                                </div>
+                              {day.day && (
+                                <>
+                                  <div className="font-medium text-sm mb-1">
+                                    {day.day}
+                                  </div>
+                                  <div className="space-y-1">
+                                    {day.events.slice(0, 2).map((event) => (
+                                      <div
+                                        key={event.id}
+                                        className={`p-1 text-xs rounded truncate flex items-center ${
+                                          event.category === "สำคัญ"
+                                            ? "bg-red-100 text-red-800"
+                                            : event.category === "กำหนดส่ง"
+                                            ? "bg-blue-100 text-blue-800"
+                                            : event.category === "การนิเทศ"
+                                            ? "bg-purple-100 text-purple-800"
+                                            : event.category === "การนำเสนอ"
+                                            ? "bg-green-100 text-green-800"
+                                            : "bg-gray-100 text-gray-800"
+                                        }`}
+                                      >
+                                        {renderEventDot(event.category)}
+                                        {event.title}
+                                      </div>
+                                    ))}
+                                    {day.events.length > 2 && (
+                                      <div className="text-xs text-gray-500 pl-1">
+                                        + {day.events.length - 2}{" "}
+                                        กิจกรรมเพิ่มเติม
+                                      </div>
+                                    )}
+                                  </div>
+                                </>
                               )}
                             </div>
                           ))}
@@ -637,11 +831,22 @@ export default function AdminCalendar() {
                         </div>
 
                         <div className="relative border-l-2 border-gray-200 ml-3 pl-8 space-y-8">
-                          {events
-                            .filter((event) => event.term === "1/2567")
-                            .map((event) => (
+                          {filteredEvents.length > 0 ? (
+                            filteredEvents.map((event: any) => (
                               <div key={event.id} className="relative">
-                                <div className="absolute -left-10 mt-1.5 h-4 w-4 rounded-full border-2 border-white bg-red-500"></div>
+                                <div
+                                  className={`absolute -left-10 mt-1.5 h-4 w-4 rounded-full border-2 border-white ${
+                                    event.category === "สำคัญ"
+                                      ? "bg-red-500"
+                                      : event.category === "กำหนดส่ง"
+                                      ? "bg-blue-500"
+                                      : event.category === "การนิเทศ"
+                                      ? "bg-purple-500"
+                                      : event.category === "การนำเสนอ"
+                                      ? "bg-green-500"
+                                      : "bg-gray-500"
+                                  }`}
+                                ></div>
                                 <div className="mb-1 flex items-center gap-2">
                                   <Badge
                                     className={getBadgeColor(event.category)}
@@ -659,15 +864,22 @@ export default function AdminCalendar() {
                                   {event.description}
                                 </p>
                                 <div className="mt-2 flex gap-2">
-                                  <Button variant="outline" size="sm">
-                                    แก้ไข
-                                  </Button>
+                                  <Link href={`/admin/event/edit/${event.id}`}>
+                                    <Button variant="outline" size="sm">
+                                      แก้ไข
+                                    </Button>
+                                  </Link>
                                   <Button variant="ghost" size="sm">
                                     ลบ
                                   </Button>
                                 </div>
                               </div>
-                            ))}
+                            ))
+                          ) : (
+                            <div className="text-center text-gray-500 py-8">
+                              ไม่พบกิจกรรมในรอบสหกิจศึกษานี้
+                            </div>
+                          )}
                         </div>
                       </div>
                     </TabsContent>
