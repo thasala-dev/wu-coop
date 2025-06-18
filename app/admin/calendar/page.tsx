@@ -498,8 +498,8 @@ export default function AdminCalendar() {
                               )}
                             </p>
                             <div className="flex justify-between mt-2 text-sm">
-                              <span>นักศึกษา: {cal.total_student || 0}</span>
-                              <span>แหล่งฝึก: {cal.total_company || 0}</span>
+                              <span>นักศึกษา: {cal.total_intern || 0}</span>
+                              <span>แหล่งฝึก: {cal.total_regist || 0}</span>
                             </div>
                           </CardContent>
                         </Card>

@@ -27,6 +27,7 @@ import Link from "next/link";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import CustomAvatar from "@/components/avatar";
+import TableList from "@/components/TableList";
 
 export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
@@ -180,77 +181,79 @@ export default function CompaniesPage() {
                     {data.filter((c: any) => c.status_id === 0).length})
                   </TabsTrigger>
                 </TabsList>
-                <div className="rounded-md border my-4 overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-center py-3 px-4">ผู้ดูแลระบบ</th>
-                        <th className="text-center py-3 px-4">สถานะ</th>
-                        <th className="text-center py-3 px-4">ใช้งานล่าสุด</th>
-                        <th className="text-center py-3 px-4"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filterData.length === 0 && (
-                        <tr>
-                          <td colSpan={6} className="text-center py-5">
-                            <i className="text-gray-300 py-4">ไม่พบข้อมูล</i>
-                          </td>
-                        </tr>
-                      )}
-                      {filterData.map((item: any) => (
-                        <tr
-                          key={item.id}
-                          className="border-b hover:bg-gray-50 last:border-b-0"
-                        >
-                          <td className="py-3 px-4">
+                <div className="my-4 overflow-x-auto">
+                  <TableList
+                    meta={[
+                      {
+                        key: "id",
+                        content: "รายการ",
+                        render: (row: any) => {
+                          return (
                             <div className="flex items-center gap-3">
                               <CustomAvatar
-                                id={`admin${item.username}`}
-                                image={item.image}
+                                id={`admin${row.username}`}
+                                image={row.image}
                                 size="12"
                               />
                               <div>
-                                <div>{item.fullname}</div>
+                                <div>{row.fullname}</div>
                                 <div className="text-sm text-gray-500">
-                                  Username: {item.username}
+                                  Username: {row.username}
                                 </div>
                               </div>
                             </div>
-                          </td>
-
-                          <td className="py-3 px-4 text-center">
-                            {renderStatusBadge(String(item.status_id))}
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            {
-                              <div className="text-sm text-gray-500">
-                                {item.last_login ? (
-                                  new Date(item.last_login).toLocaleString(
-                                    "th-TH",
-                                    {
-                                      year: "numeric",
-                                      month: "2-digit",
-                                      day: "2-digit",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                      second: "2-digit",
-                                    }
-                                  )
-                                ) : (
-                                  <i>ไม่เคยใช้งาน</i>
-                                )}
-                              </div>
-                            }
-                          </td>
-                          <td className="py-3 px-4 text-right">
+                          );
+                        },
+                      },
+                      {
+                        key: "status_id",
+                        className: "text-center",
+                        content: "สถานะ",
+                        render: (row: any) => {
+                          return renderStatusBadge(String(row.status_id));
+                        },
+                      },
+                      {
+                        key: "last_login",
+                        content: "ใช้งานล่าสุด",
+                        className: "text-center",
+                        width: "150px",
+                        render: (row: any) => {
+                          return (
+                            <div className="text-sm text-gray-500">
+                              {row.last_login ? (
+                                new Date(row.last_login).toLocaleString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    second: "2-digit",
+                                  }
+                                )
+                              ) : (
+                                <i>ไม่เคยใช้งาน</i>
+                              )}
+                            </div>
+                          );
+                        },
+                      },
+                      {
+                        key: "actions",
+                        content: "จัดการ",
+                        sort: false,
+                        width: "150px",
+                        render: (row: any) => {
+                          return (
                             <div className="flex justify-end gap-2">
-                              <Link href={`/admin/admins/${item.id}`}>
+                              <Link href={`/admin/admins/${row.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Eye className="h-3.5 w-3.5" />
                                 </Button>
                               </Link>
-                              <Link href={`/admin/admins/edit/${item.id}`}>
+                              <Link href={`/admin/admins/edit/${row.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-3.5 w-3.5" />
                                 </Button>
@@ -263,11 +266,13 @@ export default function CompaniesPage() {
                                 <Trash2 className="h-3.5 w-3.5" />
                               </Button>
                             </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          );
+                        },
+                      },
+                    ]}
+                    data={filterData}
+                    loading={loading}
+                  />
                 </div>
               </CardContent>
             </Card>

@@ -27,6 +27,7 @@ import Link from "next/link";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import CustomAvatar from "@/components/avatar";
+import TableList from "@/components/TableList";
 
 export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
@@ -140,78 +141,72 @@ export default function CompaniesPage() {
                     {data.filter((c: any) => c.user_role === "mentor").length})
                   </TabsTrigger>
                 </TabsList>
-                <div className="rounded-md border my-4 overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-center py-3 px-4">ผู้ใช้งาน</th>
-                        <th className="text-center py-3 px-4">รายละเอียด</th>
-                        <th className="text-center py-3 px-4">เวลาที่ใช้งาน</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filterData.length === 0 && (
-                        <tr>
-                          <td colSpan={6} className="text-center py-5">
-                            <i className="text-gray-300 py-4">ไม่พบข้อมูล</i>
-                          </td>
-                        </tr>
-                      )}
-                      {filterData.map((item: any) => (
-                        <tr
-                          key={item.id}
-                          className="border-b hover:bg-gray-50 last:border-b-0"
-                        >
-                          <td className="py-3 px-4">
+                <div className="my-4 overflow-x-auto">
+                  <TableList
+                    meta={[
+                      {
+                        key: "id",
+                        content: "ผู้ใช้งาน",
+                        render: (row: any) => {
+                          return (
                             <div className="flex items-center gap-3">
                               <CustomAvatar
-                                id={`${item.user_role}${item.username}`}
-                                image={item.image}
+                                id={`${row.user_role}${row.username}`}
+                                image={row.image}
                                 size="12"
                               />
                               <div>
-                                <div>{item.fullname}</div>
-                                <div className="text-sm text-gray-500">
-                                  {item.user_role === "admin"
-                                    ? "ผู้ดูแลระบบ"
-                                    : item.user_role === "advisor"
-                                    ? "อาจารย์"
-                                    : item.user_role === "student"
-                                    ? "นักศึกษา"
-                                    : item.user_role === "mentor"
-                                    ? "แหล่งฝึก"
-                                    : "ไม่ทราบ"}
-                                </div>
+                                <div>{row.fullname}</div>
                               </div>
                             </div>
-                          </td>
-
-                          <td className="py-3 px-4">{item.title}</td>
-                          <td className="py-3 px-4 text-center">
+                          );
+                        },
+                      },
+                      {
+                        key: "user_role",
+                        content: "ประเภทผู้ใช้งาน",
+                        render: (row: any) => {
+                          return (
+                            <>
+                              {row.user_role === "admin"
+                                ? "ผู้ดูแลระบบ"
+                                : row.user_role === "advisor"
+                                ? "อาจารย์"
+                                : row.user_role === "student"
+                                ? "นักศึกษา"
+                                : row.user_role === "mentor"
+                                ? "แหล่งฝึก"
+                                : "ไม่ทราบ"}
+                            </>
+                          );
+                        },
+                      },
+                      {
+                        key: "title",
+                        content: "รายละเอียด",
+                      },
+                      {
+                        key: "created_at",
+                        width: "150px",
+                        content: "เวลาที่ใช้งาน",
+                        render: (row: any) => {
+                          return new Date(row.created_at).toLocaleString(
+                            "th-TH",
                             {
-                              <div className="text-sm text-gray-500">
-                                {item.created_at ? (
-                                  new Date(item.created_at).toLocaleString(
-                                    "th-TH",
-                                    {
-                                      year: "numeric",
-                                      month: "2-digit",
-                                      day: "2-digit",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                      second: "2-digit",
-                                    }
-                                  )
-                                ) : (
-                                  <i>ไม่สามารถระบุได้</i>
-                                )}
-                              </div>
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
                             }
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          );
+                        },
+                      },
+                    ]}
+                    data={filterData}
+                    loading={loading}
+                  />
                 </div>
               </CardContent>
             </Card>

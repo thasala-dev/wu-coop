@@ -5,7 +5,7 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import Avatar, { genConfig } from "react-nice-avatar";
-import { UsersIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
 
 interface Props {
   id: string;
@@ -22,12 +22,10 @@ export default function CustomAvatar({
 }: Props) {
   if (image) {
     return (
-      <MainAvatar
-        className={`h-${size} w-${size} rounded border border-gray-200`}
-      >
+      <MainAvatar className={`h-${size} w-${size} rounded`}>
         <AvatarImage src={image} alt={id} />
-        <AvatarFallback className="rounded-md bg-gray-100 text-gray-600">
-          <UsersIcon className="h-6 w-6 text-gray-500" />
+        <AvatarFallback className="rounded-md bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200">
+          <UserIcon className="h-6 w-6 text-white" />
         </AvatarFallback>
       </MainAvatar>
     );

@@ -40,6 +40,7 @@ import Link from "next/link";
 import { companyType } from "@/lib/global";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
+import TableList from "@/components/TableList";
 
 export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
@@ -137,42 +138,6 @@ export default function CompaniesPage() {
                     <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                     <Input placeholder="ค้นหาแหล่งฝึกงาน.." className="pl-8" />
                   </div>
-                  <div className="flex gap-2">
-                    <Select defaultValue="all">
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="สถานะ" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">ทั้งหมด</SelectItem>
-                        <SelectItem value="active">ใช้งาน</SelectItem>
-                        <SelectItem value="inactive">ไม่ใช้งาน</SelectItem>
-                        <SelectItem value="pending">รอดำเนินการ</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select defaultValue="all">
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="ประเภทแหล่งฝึก" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">ทั้งหมด</SelectItem>
-                        <SelectItem value="tech">เทคโนโลยีสารสนเทศ</SelectItem>
-                        <SelectItem value="pharma">เภสัชกรรม</SelectItem>
-                        <SelectItem value="energy">พลังงาน</SelectItem>
-                        <SelectItem value="food">
-                          อาหารและเครื่องดื่ม
-                        </SelectItem>
-                        <SelectItem value="logistics">โลจิสติกส์</SelectItem>
-                        <SelectItem value="marketing">การตลาด</SelectItem>
-                        <SelectItem value="construction">ก่อสร้าง</SelectItem>
-                        <SelectItem value="medical">
-                          การแพทย์และสุขภาพ
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button variant="outline" size="icon">
-                      <FilterIcon className="h-4 w-4" />
-                    </Button>
-                  </div>
                 </div>
                 <TabsList>
                   <TabsTrigger value="all">ทั้งหมด ({data.length})</TabsTrigger>
@@ -188,95 +153,120 @@ export default function CompaniesPage() {
                     {data.filter((c: any) => c.status_id === 0).length})
                   </TabsTrigger>
                 </TabsList>
-                <div className="rounded-md border my-4 overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-3 px-4">แหล่งฝึกงาน</th>
-                        <th className="text-left py-3 px-4">ประเภทแหล่งฝึก</th>
-                        <th className="text-left py-3 px-4">ที่ตั้ง</th>
-                        <th className="text-left py-3 px-4">นักศึกษา</th>
-                        <th className="text-left py-3 px-4">สถานะ</th>
-                        <th className="text-left py-3 px-4"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filterData.length === 0 && (
-                        <tr>
-                          <td colSpan={6} className="text-center py-4">
-                            <p className="text-gray-500">
-                              ไม่พบข้อมูลแหล่งฝึกงาน
-                            </p>
-                          </td>
-                        </tr>
-                      )}
-                      {filterData.map((company: any) => (
-                        <tr
-                          key={company.id}
-                          className="border-b hover:bg-gray-50 last:border-b-0"
-                        >
-                          <td className="py-3 px-4">
+                <div className="my-4 overflow-x-auto">
+                  <TableList
+                    meta={[
+                      {
+                        key: "id",
+                        content: "รายการ",
+                        render: (row: any) => {
+                          return (
                             <div className="flex items-center gap-3">
                               <Avatar className="h-12 w-12 rounded-md border border-gray-200">
-                                <AvatarImage
-                                  src={company.image}
-                                  alt={company.name}
-                                />
+                                <AvatarImage src={row.image} alt={row.name} />
                                 <AvatarFallback className="rounded-md bg-gray-100 text-gray-600">
                                   <BuildingIcon className="h-6 w-6 text-gray-500" />
                                 </AvatarFallback>
                               </Avatar>
                               <div>
                                 <Link
-                                  href={`/admin/companies/${company.id}`}
+                                  href={`/admin/companies/${row.id}`}
                                   className="font-medium hover:underline"
                                 >
-                                  {company.name}
+                                  {row.name}
                                 </Link>
                                 <div className="text-sm text-gray-500">
-                                  {company.contact_name}
+                                  {row.contact_name}
                                 </div>
                               </div>
                             </div>
-                          </td>
-                          <td className="py-3 px-4">
+                          );
+                        },
+                      },
+                      {
+                        key: "business_type",
+                        content: "ประเภทแหล่งฝึก",
+                        render: (row: any) => {
+                          return (
                             <div className="flex items-center gap-1">
                               <BuildingIcon className="h-4 w-4 text-gray-500" />
                               <span>
                                 {companyType.find(
-                                  (t) => t.value === company.business_type
+                                  (t) => t.value === row.business_type
                                 )?.label || "-"}
                               </span>
                             </div>
-                          </td>
-                          <td className="py-3 px-4">
+                          );
+                        },
+                      },
+                      {
+                        key: "location",
+                        content: "ที่ตั้ง",
+                        render: (row: any) => {
+                          return (
                             <div className="flex items-center gap-1">
                               <MapPinIcon className="h-4 w-4 text-gray-500" />
-                              <span>{company.location}</span>
+                              <span>{row.location}</span>
                             </div>
-                          </td>
-                          <td className="py-3 px-4">
+                          );
+                        },
+                      },
+                      {
+                        key: "total_intern",
+                        content: "นักศึกษา",
+                        render: (row: any) => {
+                          return (
                             <div className="flex items-center gap-1">
                               <UsersIcon className="h-4 w-4 text-gray-500" />
                               <span>
-                                {company.total_intern || 0} /
-                                {company.total_regist || 0}
+                                {row.total_intern || 0} /{" "}
+                                {row.total_regist || 0}
                               </span>
                             </div>
-                          </td>
-                          <td className="py-3 px-4">
-                            {renderStatusBadge(String(company.status_id))}
-                          </td>
-                          <td className="py-3 px-4 text-right">
+                          );
+                        },
+                      },
+                      {
+                        key: "last_login",
+                        content: "ใช้งานล่าสุด",
+                        className: "text-center",
+                        width: "150px",
+                        render: (row: any) => {
+                          return (
+                            <div className="text-sm text-gray-500">
+                              {row.last_login ? (
+                                new Date(row.last_login).toLocaleString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    second: "2-digit",
+                                  }
+                                )
+                              ) : (
+                                <i>ไม่เคยใช้งาน</i>
+                              )}
+                            </div>
+                          );
+                        },
+                      },
+                      {
+                        key: "actions",
+                        content: "จัดการ",
+                        sort: false,
+                        width: "150px",
+                        render: (row: any) => {
+                          return (
                             <div className="flex justify-end gap-2">
-                              <Link href={`/admin/companies/${company.id}`}>
+                              <Link href={`/admin/companies/${row.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Eye className="h-3.5 w-3.5" />
                                 </Button>
                               </Link>
-                              <Link
-                                href={`/admin/companies/edit/${company.id}`}
-                              >
+                              <Link href={`/admin/companies/edit/${row.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-3.5 w-3.5" />
                                 </Button>
@@ -289,11 +279,13 @@ export default function CompaniesPage() {
                                 <Trash2 className="h-3.5 w-3.5" />
                               </Button>
                             </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          );
+                        },
+                      },
+                    ]}
+                    data={filterData}
+                    loading={loading}
+                  />
                 </div>
               </CardContent>
             </Card>
