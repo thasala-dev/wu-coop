@@ -192,7 +192,7 @@ export default function AdminMatching() {
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          <Sidebar activePage="logs" userType="admin" />
+          <Sidebar activePage="matching" userType="admin" />
           {loading && <Loading />}
 
           <div className="md:col-span-4">
@@ -278,8 +278,22 @@ export default function AdminMatching() {
                 <Tabs defaultValue="pending">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                     <TabsList>
-                      <TabsTrigger value="pending">รอจับคู่ (24)</TabsTrigger>
-                      <TabsTrigger value="matched">จับคู่แล้ว (96)</TabsTrigger>
+                      <TabsTrigger value="pending">
+                        รอจับคู่ (
+                        {
+                          info.intern.filter((item: any) => !item.company_id)
+                            .length
+                        }
+                        )
+                      </TabsTrigger>
+                      <TabsTrigger value="matched">
+                        จับคู่แล้ว (
+                        {
+                          info.intern.filter((item: any) => item.company_id)
+                            .length
+                        }
+                        )
+                      </TabsTrigger>
                     </TabsList>
 
                     <div className="flex gap-2 w-full md:w-auto">
@@ -375,7 +389,7 @@ export default function AdminMatching() {
                           ),
                         },
                       ]}
-                      data={info.intern}
+                      data={info.intern.filter((item: any) => !item.company_id)}
                       loading={loading}
                     />
                   </TabsContent>
@@ -431,7 +445,7 @@ export default function AdminMatching() {
                           ),
                         },
                       ]}
-                      data={info.intern}
+                      data={info.intern.filter((item: any) => item.company_id)}
                       loading={loading}
                     />
                   </TabsContent>
