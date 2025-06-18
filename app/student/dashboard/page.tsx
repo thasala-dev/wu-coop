@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import StudentSidebar from "@/components/student-sidebar";
+import { Sidebar } from "@/components/sidebar";
 import {
   Bell,
   BookOpen,
@@ -27,7 +28,7 @@ export default function StudentDashboard() {
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <StudentSidebar activePage="dashboard" />
+          <Sidebar activePage="dashboard" userType="student" />
 
           <div className="md:col-span-3 space-y-6">
             <div className="flex justify-between items-center">

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, PlusIcon, SearchIcon, TrashIcon } from "lucide-react";
-import StudentSidebar from "@/components/student-sidebar";
+import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
@@ -180,7 +180,7 @@ export default function StudentActivities() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <StudentSidebar activePage="activities" />
+          <Sidebar activePage="activities" userType="student" />
 
           <div className="md:col-span-3">
             <Card>
