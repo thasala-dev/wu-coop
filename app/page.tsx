@@ -98,10 +98,10 @@ export default function Home() {
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
       {/* Background Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-emerald-200 to-cyan-200 opacity-90" />
+      <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200 opacity-90" />
 
       {/* ชั้นที่ 2: เพิ่มความนุ่มนวลด้วย blur และ overlay */}
-      <div className="absolute inset-0 backdrop-blur-md bg-white/30 mix-blend-overlay" />
+      {/* <div className="absolute inset-0 backdrop-blur-md bg-white/30 mix-blend-overlay" /> */}
 
       <div className="container relative z-10 mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center">
@@ -115,18 +115,20 @@ export default function Home() {
             </p>
           </div>
 
-          <Card className="w-full max-w-md shadow-xl backdrop-blur-sm bg-white/90 border-0">
+          <Card className="w-full rounded-xl max-w-md shadow-xl bg-white backdrop-blur-md bg-opacity-60  border-0">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold">เข้าสู่ระบบ</CardTitle>
-              <CardDescription>
-                กรุณาเข้าสู่ระบบเพื่อใช้งานระบบสหกิจศึกษา
+              <CardTitle className="text-2xl font-bold text-green-700">
+                เข้าสู่ระบบ
+              </CardTitle>
+              <CardDescription className="text-sm text-green-700/50">
+                กรุณาเข้าสู่ระบบเพื่อใช้งานระบบฝึกงาน
               </CardDescription>
             </CardHeader>
 
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <Tabs value={role} onValueChange={setRole} className="w-full">
-                  <TabsList className="grid grid-cols-4 mb-4 border-b-2 border-gray-200 ">
+                  <TabsList className="grid grid-cols-4 mb-4 bg-green-100 shadow-sm">
                     <TabsTrigger
                       value="student"
                       className="flex items-center gap-2 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600 data-[state=active]:font-bold rounded-md px-2 py-1"
