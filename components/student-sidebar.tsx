@@ -11,7 +11,6 @@ export default function StudentSidebar({ activePage = "dashboard" }: StudentSide
     { href: "/student/dashboard", id: "dashboard", label: "หน้าหลัก", icon: <LayoutDashboard className="h-5 w-5" /> },
     { href: "/student/profile", id: "profile", label: "ข้อมูลส่วนตัว", icon: <User className="h-5 w-5" /> },
     { href: "/student/activities", id: "activities", label: "บันทึกกิจกรรม", icon: <Activity className="h-5 w-5" /> },
-    { href: "/student/reports", id: "reports", label: "รายงานผล", icon: <FileText className="h-5 w-5" /> },
     { href: "/student/schedule", id: "schedule", label: "ตารางนัดหมาย", icon: <Calendar className="h-5 w-5" /> },
   ]
 

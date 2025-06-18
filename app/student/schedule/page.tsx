@@ -143,21 +143,7 @@ export default function StudentSchedulePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา (นักศึกษา)</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">นายธนกร มั่นคง</span>
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  ออกจากระบบ
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">

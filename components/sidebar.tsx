@@ -79,12 +79,6 @@ export function Sidebar({
         icon: Activity,
       },
       {
-        href: "/student/reports",
-        page: "reports",
-        label: "รายงานผล",
-        icon: FileText,
-      },
-      {
         href: "/student/schedule",
         page: "schedule",
         label: "ตารางนัดหมาย",
