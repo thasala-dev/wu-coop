@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft, Edit, ChevronRight, Save } from "lucide-react";
 import {
   Card,
@@ -11,7 +10,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AdminSidebar from "@/components/admin-sidebar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,13 +18,21 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter, useParams } from "next/navigation";
 
 const formSchema = z.object({
-  name: z.string().min(1, "กรุณากรอกชื่อสถานประกอบการ"),
-  semester: z.string().min(1, "กรุณาเลือกภาคการศึกษา"),
-  year: z.string().min(1, "กรุณาเลือกปีการศึกษา"),
-  startDate: z.string().min(1, "กรุณาเลือกวันที่เริ่มต้น"),
-  endDate: z.string().min(1, "กรุณาเลือกวันที่สิ้นสุด"),
+  title: z.string().min(1, "กรุณากรอกชื่อกิจกรรม"),
+  description: z.string().optional(),
+  eventDate: z.string().min(1, "กรุณาเลือกวันที่จัดกิจกรรม"),
+  location: z.string().min(1, "กรุณากรอกสถานที่จัดกิจกรรม"),
+  calendarId: z.string().min(1, "กรุณาเลือกรอบสหกิจศึกษา"),
+  typeId: z.string().min(1, "กรุณาเลือกประเภทกิจกรรม"),
   statusId: z.string().min(1, "กรุณาเลือกสถานะ"),
 });
+
+type Calendar = {
+  id: number;
+  name: string;
+  semester: number;
+  year: number;
+};
 
 export default function Page() {
   const params = useParams();
@@ -34,82 +40,131 @@ export default function Page() {
 
   const { toast } = useToast();
   const router = useRouter();
-  const years = ["2568", "2569", "2570"];
+  const [calendars, setCalendars] = useState<Calendar[]>([]);
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
     setValue,
   } = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      semester: "",
-      year: "",
-      startDate: "",
-      endDate: "",
+      title: "",
+      description: "",
+      eventDate: "",
+      location: "",
+      calendarId: "",
+      typeId: "",
       statusId: "",
     },
   });
 
   useEffect(() => {
-    fetchStudentData();
+    fetchCalendars();
+    fetchEventData();
   }, []);
 
-  async function fetchStudentData() {
-    const response = await fetch(`/api/calendar/${id}`);
-    if (!response.ok) {
+  async function fetchCalendars() {
+    try {
+      const response = await fetch("/api/calendar");
+      if (!response.ok) {
+        toast({
+          title: "ไม่สามารถโหลดข้อมูลรอบสหกิจศึกษาได้",
+          description: "เกิดข้อผิดพลาดในการดึงข้อมูล",
+          variant: "destructive",
+        });
+        return;
+      }
+      const data = await response.json();
+      if (data.success) {
+        setCalendars(data.data);
+      }
+    } catch (error) {
       toast({
-        title: "ไม่สามารถโหลดข้อมูลนักศึกษาได้",
-        description: "เกิดข้อผิดพลาดในการดึงข้อมูลนักศึกษา",
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลรอบสหกิจศึกษาได้",
         variant: "destructive",
       });
-      return;
     }
-    const data = await response.json();
-    if (data.success) {
-      setValue("name", data.data.name);
-      setValue("semester", data.data.semester.toString());
-      setValue("year", data.data.year.toString());
-      setValue("startDate", data.data.start_date);
-      setValue("endDate", data.data.end_date);
-      setValue("statusId", data.data.status_id.toString());
-    } else {
+  }
+
+  async function fetchEventData() {
+    try {
+      const response = await fetch(`/api/event/${id}`);
+      if (!response.ok) {
+        toast({
+          title: "ไม่สามารถโหลดข้อมูลกิจกรรมได้",
+          description: "เกิดข้อผิดพลาดในการดึงข้อมูล",
+          variant: "destructive",
+        });
+        return;
+      }
+      const data = await response.json();
+      if (data.success) {
+        setValue("title", data.data.title);
+        setValue("description", data.data.description || "");
+        setValue("eventDate", data.data.event_date);
+        setValue("location", data.data.location);
+        setValue("calendarId", data.data.calendar_id.toString());
+        setValue("typeId", data.data.type_id.toString());
+        setValue("statusId", data.data.status_id.toString());
+      } else {
+        toast({
+          title: "ไม่พบข้อมูลกิจกรรม",
+          description: data.message || "เกิดข้อผิดพลาด",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "ไม่พบข้อมูลนักศึกษา",
-        description: data.message || "เกิดข้อผิดพลาด",
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลกิจกรรมได้",
         variant: "destructive",
       });
     }
   }
 
   async function onSubmit(values: any) {
-    values.year = parseInt(values.year);
-    values.semester = parseInt(values.semester);
-    values.statusId = parseInt(values.statusId);
-    const response = await fetch(`/api/calendar/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
+    setLoading(true);
+    try {
+      // Convert string values to integers
+      values.calendarId = parseInt(values.calendarId);
+      values.typeId = parseInt(values.typeId);
+      values.statusId = parseInt(values.statusId);
 
-    const data = await response.json();
-    if (data.success) {
-      toast({
-        title: "ดำเนินการสำเร็จ",
-        description: data.message || "เกิดข้อผิดพลาด",
-        variant: "success",
+      const response = await fetch(`/api/event/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
       });
-      router.push("/admin/calendar");
-    } else {
+
+      const data = await response.json();
+      if (data.success) {
+        toast({
+          title: "ดำเนินการสำเร็จ",
+          description: "แก้ไขกิจกรรมสำเร็จ",
+          variant: "success",
+        });
+        router.push("/admin/event");
+      } else {
+        toast({
+          title: "ดำเนินการไม่สำเร็จ",
+          description: data.message || "เกิดข้อผิดพลาด",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "ดำเนินการไม่สำเร็จ",
-        description: data.message || "เกิดข้อผิดพลาด",
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถแก้ไขกิจกรรมได้",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -117,7 +172,7 @@ export default function Page() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <AdminSidebar activePage="calendar" />
+          <AdminSidebar activePage="event" />
 
           <div className="md:col-span-4 space-y-6">
             <div className="flex items-center gap-3 mb-2">
@@ -127,16 +182,16 @@ export default function Page() {
                 className="h-8 w-8 rounded-full"
                 asChild
               >
-                <a href="/admin/calendar">
+                <a href="/admin/event">
                   <ArrowLeft className="h-4 w-4" />
                 </a>
               </Button>
               <div className="flex items-center gap-1 text-sm text-gray-500">
-                <a href="/admin/calendar" className="hover:text-gray-900">
-                  รอบสหกิจศึกษา
+                <a href="/admin/event" className="hover:text-gray-900">
+                  กิจกรรมสหกิจศึกษา
                 </a>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-gray-900">แก้ไขรอบสหกิจศึกษา</span>
+                <span className="text-gray-900">แก้ไขกิจกรรม</span>
               </div>
             </div>
 
@@ -149,130 +204,138 @@ export default function Page() {
                         <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
                           <div className="sm:col-span-12">
                             <div className="font-semibold tracking-tight text-lg">
-                              ข้อมูลรอบสหกิจศึกษา
+                              ข้อมูลกิจกรรม
                             </div>
                           </div>
-                          <div className="sm:col-span-6 space-y-1">
-                            <label>ชื่อรอบสหกิจศึกษา</label>
+
+                          <div className="sm:col-span-8 space-y-1">
+                            <label>ชื่อกิจกรรม</label>
                             <input
-                              id="name"
+                              id="title"
                               type="text"
-                              {...register("name")}
+                              {...register("title")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.name ? "border-red-600  border-2" : "")
+                                (errors.title ? "border-red-600 border-2" : "")
                               }
-                              placeholder="เช่น ผลัดที่ 1"
+                              placeholder="ชื่อกิจกรรม"
                             />
-                            {errors.name && (
+                            {errors.title && (
                               <p className="text-sm text-red-600">
-                                {errors.name.message}
+                                {String(errors.title.message)}
                               </p>
                             )}
                           </div>
 
-                          <div className="sm:col-span-3">
-                            <label>ภาคการศึกษา</label>
+                          <div className="sm:col-span-4 space-y-1">
+                            <label>รอบสหกิจศึกษา</label>
                             <select
-                              id="semester"
-                              {...register("semester")}
+                              id="calendarId"
+                              {...register("calendarId")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.semester
-                                  ? "border-red-600  border-2"
-                                  : "")
+                                (errors.calendarId ? "border-red-600 border-2" : "")
                               }
                             >
                               <option value="" disabled>
-                                เลือกภาคการศึกษา
+                                เลือกรอบสหกิจศึกษา
                               </option>
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                            </select>
-
-                            {errors.semester && (
-                              <p className="text-sm text-red-600">
-                                {errors.semester.message}
-                              </p>
-                            )}
-                          </div>
-                          <div className="sm:col-span-3">
-                            <label>ปีการศึกษา</label>
-                            <select
-                              id="year"
-                              {...register("year")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.year ? "border-red-600  border-2" : "")
-                              }
-                            >
-                              <option value="" disabled>
-                                เลือกปีการศึกษา
-                              </option>
-                              {years.map((y) => (
-                                <option key={y} value={y}>
-                                  {y}
+                              {calendars.map((calendar) => (
+                                <option key={calendar.id} value={calendar.id}>
+                                  {calendar.name} ({calendar.semester}/{calendar.year})
                                 </option>
                               ))}
                             </select>
+                            {errors.calendarId && (
+                              <p className="text-sm text-red-600">
+                                {String(errors.calendarId.message)}
+                              </p>
+                            )}
+                          </div>
 
-                            {errors.year && (
-                              <p className="text-sm text-red-600">
-                                {errors.year.message}
-                              </p>
-                            )}
+                          <div className="sm:col-span-12 space-y-1">
+                            <label>รายละเอียด</label>
+                            <textarea
+                              id="description"
+                              rows={3}
+                              {...register("description")}
+                              className="w-full p-2 border rounded-md"
+                              placeholder="รายละเอียดกิจกรรม"
+                            />
                           </div>
-                          <div className="sm:col-span-4">
-                            <label>วันที่เริ่มต้น</label>
+
+                          <div className="sm:col-span-4 space-y-1">
+                            <label>วันที่จัดกิจกรรม</label>
                             <input
-                              id="startDate"
+                              id="eventDate"
                               type="date"
-                              {...register("startDate")}
+                              {...register("eventDate")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.startDate
-                                  ? "border-red-600  border-2"
-                                  : "")
+                                (errors.eventDate ? "border-red-600 border-2" : "")
                               }
-                              placeholder="วันที่เริ่มต้น"
                             />
-                            {errors.startDate && (
+                            {errors.eventDate && (
                               <p className="text-sm text-red-600">
-                                {errors.startDate.message}
+                                {String(errors.eventDate.message)}
                               </p>
                             )}
                           </div>
-                          <div className="sm:col-span-4">
-                            <label>วันที่สิ้นสุด</label>
+
+                          <div className="sm:col-span-8 space-y-1">
+                            <label>สถานที่</label>
                             <input
-                              id="endDate"
-                              type="date"
-                              {...register("endDate")}
+                              id="location"
+                              type="text"
+                              {...register("location")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.endDate
-                                  ? "border-red-600  border-2"
-                                  : "")
+                                (errors.location ? "border-red-600 border-2" : "")
                               }
-                              placeholder="วันที่สิ้นสุด"
+                              placeholder="สถานที่จัดกิจกรรม"
                             />
-                            {errors.endDate && (
+                            {errors.location && (
                               <p className="text-sm text-red-600">
-                                {errors.endDate.message}
+                                {String(errors.location.message)}
                               </p>
                             )}
                           </div>
-                          <div className="sm:col-span-4">
+
+                          <div className="sm:col-span-6 space-y-1">
+                            <label>ประเภทกิจกรรม</label>
+                            <select
+                              id="typeId"
+                              {...register("typeId")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.typeId ? "border-red-600 border-2" : "")
+                              }
+                            >
+                              <option value="" disabled>
+                                เลือกประเภทกิจกรรม
+                              </option>
+                              <option value="1">การประชุม</option>
+                              <option value="2">อบรม</option>
+                              <option value="3">สัมมนา</option>
+                              <option value="4">นำเสนอผลงาน</option>
+                              <option value="5">ประเมินผล</option>
+                              <option value="6">อื่นๆ</option>
+                            </select>
+                            {errors.typeId && (
+                              <p className="text-sm text-red-600">
+                                {String(errors.typeId.message)}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-6 space-y-1">
                             <label>สถานะ</label>
                             <select
                               id="statusId"
                               {...register("statusId")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.statusId
-                                  ? "border-red-600  border-2"
-                                  : "")
+                                (errors.statusId ? "border-red-600 border-2" : "")
                               }
                             >
                               <option value="" disabled>
@@ -280,13 +343,12 @@ export default function Page() {
                               </option>
                               <option value="1">กำลังดำเนินการ</option>
                               <option value="2">กำลังจะมาถึง</option>
-                              <option value="3">วางแผน</option>
+                              <option value="3">เสร็จสิ้น</option>
                               <option value="4">ยกเลิก</option>
                             </select>
-
                             {errors.statusId && (
                               <p className="text-sm text-red-600">
-                                {errors.statusId.message}
+                                {String(errors.statusId.message)}
                               </p>
                             )}
                           </div>
@@ -296,15 +358,15 @@ export default function Page() {
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-center gap-2">
-                  <a href="/admin/calendar">
+                  <a href="/admin/event">
                     <Button type="button" className="flex" variant="outline">
                       <ArrowLeft className="h-4 w-4 mr-2" />
                       ยกเลิก
                     </Button>
                   </a>
-                  <Button type="submit" className="flex">
+                  <Button type="submit" className="flex" disabled={loading}>
                     <Save className="h-4 w-4 mr-2" />
-                    บันทึก
+                    {loading ? "กำลังบันทึก..." : "บันทึก"}
                   </Button>
                 </CardFooter>
               </form>

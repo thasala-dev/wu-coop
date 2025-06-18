@@ -23,7 +23,6 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ activePage = "dashboard" }: AdminSidebarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const menuItems = [
     {
       label: "แดชบอร์ด",
@@ -32,10 +31,16 @@ export function AdminSidebar({ activePage = "dashboard" }: AdminSidebarProps) {
       page: "dashboard",
     },
     {
-      label: "ปฏิทินกิจกรรม",
+      label: "ปฏิทินสหกิจ",
       href: "/admin/calendar",
       icon: Calendar,
       page: "calendar",
+    },
+    {
+      label: "กิจกรรมสหกิจ",
+      href: "/admin/event",
+      icon: Calendar,
+      page: "event",
     },
     {
       label: "สถานประกอบการ",
