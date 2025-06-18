@@ -92,7 +92,7 @@ export default function CompaniesPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto p-2">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Sidebar activePage="admins" userType="admin" />
         {loading && <Loading />}

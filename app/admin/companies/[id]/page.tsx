@@ -311,7 +311,7 @@ export default function CompanyPage() {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <Sidebar activePage="companies" userType="admin" />
         {loading && <Loading />}
-        <div className="md:col-span-4 space-y-6">
+        <div className="md:col-span-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Link

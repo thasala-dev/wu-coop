@@ -42,7 +42,7 @@ export default function Page() {
   const router = useRouter();
   const [calendars, setCalendars] = useState<Calendar[]>([]);
   const [loading, setLoading] = useState(false);
-  
+
   const {
     register,
     handleSubmit,
@@ -96,7 +96,7 @@ export default function Page() {
       values.calendarId = parseInt(values.calendarId);
       values.typeId = parseInt(values.typeId);
       values.statusId = parseInt(values.statusId);
-      
+
       const response = await fetch("/api/event", {
         method: "POST",
         headers: {
@@ -133,11 +133,11 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <AdminSidebar activePage="event" />
 
-          <div className="md:col-span-4 space-y-6">
+          <div className="md:col-span-4">
             <div className="flex items-center gap-3 mb-2">
               <Button
                 variant="ghost"
@@ -170,7 +170,7 @@ export default function Page() {
                               ข้อมูลกิจกรรม
                             </div>
                           </div>
-                          
+
                           <div className="sm:col-span-8 space-y-1">
                             <label>ชื่อกิจกรรม</label>
                             <input
@@ -182,7 +182,8 @@ export default function Page() {
                                 (errors.title ? "border-red-600 border-2" : "")
                               }
                               placeholder="ชื่อกิจกรรม"
-                            />                            {errors.title && (
+                            />{" "}
+                            {errors.title && (
                               <p className="text-sm text-red-600">
                                 {String(errors.title.message)}
                               </p>
@@ -196,7 +197,9 @@ export default function Page() {
                               {...register("calendarId")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.calendarId ? "border-red-600 border-2" : "")
+                                (errors.calendarId
+                                  ? "border-red-600 border-2"
+                                  : "")
                               }
                             >
                               <option value="" disabled>
@@ -204,16 +207,18 @@ export default function Page() {
                               </option>
                               {calendars.map((calendar) => (
                                 <option key={calendar.id} value={calendar.id}>
-                                  {calendar.name} ({calendar.semester}/{calendar.year})
+                                  {calendar.name} ({calendar.semester}/
+                                  {calendar.year})
                                 </option>
                               ))}
-                            </select>                            {errors.calendarId && (
+                            </select>{" "}
+                            {errors.calendarId && (
                               <p className="text-sm text-red-600">
                                 {String(errors.calendarId.message)}
                               </p>
                             )}
                           </div>
-                          
+
                           <div className="sm:col-span-12 space-y-1">
                             <label>รายละเอียด</label>
                             <textarea
@@ -224,7 +229,7 @@ export default function Page() {
                               placeholder="รายละเอียดกิจกรรม"
                             />
                           </div>
-                          
+
                           <div className="sm:col-span-4 space-y-1">
                             <label>วันที่จัดกิจกรรม</label>
                             <input
@@ -233,15 +238,18 @@ export default function Page() {
                               {...register("eventDate")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.eventDate ? "border-red-600 border-2" : "")
+                                (errors.eventDate
+                                  ? "border-red-600 border-2"
+                                  : "")
                               }
-                            />                            {errors.eventDate && (
+                            />{" "}
+                            {errors.eventDate && (
                               <p className="text-sm text-red-600">
                                 {String(errors.eventDate.message)}
                               </p>
                             )}
                           </div>
-                          
+
                           <div className="sm:col-span-8 space-y-1">
                             <label>สถานที่</label>
                             <input
@@ -250,16 +258,19 @@ export default function Page() {
                               {...register("location")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.location ? "border-red-600 border-2" : "")
+                                (errors.location
+                                  ? "border-red-600 border-2"
+                                  : "")
                               }
                               placeholder="สถานที่จัดกิจกรรม"
-                            />                            {errors.location && (
+                            />{" "}
+                            {errors.location && (
                               <p className="text-sm text-red-600">
                                 {String(errors.location.message)}
                               </p>
                             )}
                           </div>
-                          
+
                           <div className="sm:col-span-6 space-y-1">
                             <label>ประเภทกิจกรรม</label>
                             <select
@@ -279,13 +290,14 @@ export default function Page() {
                               <option value="4">นำเสนอผลงาน</option>
                               <option value="5">ประเมินผล</option>
                               <option value="6">อื่นๆ</option>
-                            </select>                            {errors.typeId && (
+                            </select>{" "}
+                            {errors.typeId && (
                               <p className="text-sm text-red-600">
                                 {String(errors.typeId.message)}
                               </p>
                             )}
                           </div>
-                          
+
                           <div className="sm:col-span-6 space-y-1">
                             <label>สถานะ</label>
                             <select
@@ -293,7 +305,9 @@ export default function Page() {
                               {...register("statusId")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.statusId ? "border-red-600 border-2" : "")
+                                (errors.statusId
+                                  ? "border-red-600 border-2"
+                                  : "")
                               }
                             >
                               <option value="" disabled>
@@ -303,7 +317,8 @@ export default function Page() {
                               <option value="2">กำลังจะมาถึง</option>
                               <option value="3">เสร็จสิ้น</option>
                               <option value="4">ยกเลิก</option>
-                            </select>                            {errors.statusId && (
+                            </select>{" "}
+                            {errors.statusId && (
                               <p className="text-sm text-red-600">
                                 {String(errors.statusId.message)}
                               </p>

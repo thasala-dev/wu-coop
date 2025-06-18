@@ -61,38 +61,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import AdminSidebar from "@/components/admin-sidebar";
-
-// Mock data for students
-// const students = [
-//   {
-//     id: "STU001",
-//     name: "นายธนกร มั่นคง",
-//     studentId: "64XXXXX21",
-//     faculty: "คณะเภสัชศาสตร์",
-//     year: 4,
-//     gpa: 3.75,
-//     status: "placed",
-//     company: "โรงพยาบาลศิริราช",
-//     advisor: "ผศ.ดร.สมชาย ใจดี",
-//     phone: "081-234-5678",
-//     email: "thanakorn.m@example.com",
-//     avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-//   },
-//   {
-//     id: "STU002",
-//     name: "นางสาวพิมพ์มาดา วงศ์สกุล",
-//     studentId: "64XXXXX22",
-//     faculty: "คณะเภสัชศาสตร์",
-//     year: 4,
-//     gpa: 3.82,
-//     status: "pending",
-//     company: "รอการจับคู่",
-//     advisor: "รศ.ดร.วิมล ศรีสุข",
-//     phone: "089-876-5432",
-//     email: "pimmada.w@example.com",
-//     avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-//   },
-// ];
+import Sidebar from "@/components/sidebar";
+import Loading from "@/components/loading";
 
 // Status mapping for display
 const statusMap = {
@@ -161,6 +131,7 @@ const statusDistribution = [
 ];
 
 export default function AdminStudentsPage() {
+  const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<any>([]);
   useEffect(() => {
     fetchStudents();
@@ -168,6 +139,7 @@ export default function AdminStudentsPage() {
   }, []);
 
   async function fetchStudents() {
+    setLoading(true);
     const response = await fetch("/api/student", {
       method: "GET",
       headers: {
@@ -179,6 +151,7 @@ export default function AdminStudentsPage() {
       setStudents(data.data || []);
       statsData[0].value = data.data.length;
     }
+    setLoading(false);
   }
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -237,9 +210,10 @@ export default function AdminStudentsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <AdminSidebar activePage="students" />
+          <Sidebar activePage="students" userType="admin" />
+          {loading && <Loading />}
 
           <div className="md:col-span-4 gap">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">

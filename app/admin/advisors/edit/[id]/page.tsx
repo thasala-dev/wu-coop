@@ -19,6 +19,7 @@ import { useRouter, useParams } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { callUploadApi, callDeleteApi } from "@/lib/file-api";
+import CustomAvatar from "@/components/avatar";
 
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
@@ -139,23 +140,10 @@ export default function Page() {
         const uploadResult = await callUploadApi(selectedFile);
         if (uploadResult.filePath) {
           finalImageUrl = uploadResult.filePath;
-          toast({
-            title: "อัปโหลดรูปภาพใหม่สำเร็จ",
-            description: "รูปภาพถูกอัปโหลดเรียบร้อยแล้ว",
-            variant: "success",
-          });
-          // After successful upload, clear the selectedFile as it's now handled
           setSelectedFile(null);
           setCurrentImageUrl(finalImageUrl); // Update current display
         } else {
           hasUploadError = true;
-          toast({
-            title: "อัปโหลดรูปภาพใหม่ไม่สำเร็จ",
-            description:
-              uploadResult.message || "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพใหม่",
-            variant: "destructive",
-          });
-          // If upload fails, revert to original image or stay empty if no original
           finalImageUrl = initialImageUrl;
         }
       }
@@ -172,23 +160,11 @@ export default function Page() {
       if (initialImageUrl && initialImageUrl !== finalImageUrl) {
         const fileNameToDelete = initialImageUrl.split("/").pop();
         if (fileNameToDelete) {
-          console.log("Attempting to delete old file:", fileNameToDelete);
           try {
             const deleteResult = await callDeleteApi(fileNameToDelete);
             if (deleteResult.message.includes("success")) {
-              toast({
-                title: "ลบรูปภาพเก่าสำเร็จ",
-                description: "รูปภาพเก่าถูกลบออกจากเซิร์ฟเวอร์แล้ว",
-                variant: "info",
-              });
             } else {
               hasDeleteError = true;
-              toast({
-                title: "ลบรูปภาพเก่าไม่สำเร็จ",
-                description:
-                  deleteResult.message || "เกิดข้อผิดพลาดในการลบรูปภาพเก่า",
-                variant: "warning", // Warning, not destructive, as main form might still save
-              });
             }
           } catch (deleteError) {
             hasDeleteError = true;
@@ -246,11 +222,11 @@ export default function Page() {
   // --- Render UI ---
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="advisors" userType="admin" />
           {loading && <Loading />}
-          <div className="md:col-span-4 space-y-6">
+          <div className="md:col-span-4">
             {/* ส่วนหัวของหน้า */}
             <div className="flex items-center gap-3 mb-2">
               <Button
@@ -286,15 +262,9 @@ export default function Page() {
                       </div>
 
                       {/* ส่วนการอัปโหลดรูปภาพ (ดีไซน์ใหม่) */}
-                      <div className="sm:col-span-12">
-                        <label
-                          className="block font-medium mb-2"
-                          htmlFor="image-upload"
-                        >
-                          รูปประจำตัว
-                        </label>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                          <div className="relative">
+                      <div className="sm:col-span-12 flex flex-col items-center justify-center text-center">
+                        <div className="flex flex-row items-center justify-center gap-4">
+                          <div className="relative flex items-center justify-center">
                             <input
                               id="image-upload"
                               type="file"
@@ -306,19 +276,16 @@ export default function Page() {
                               htmlFor="image-upload"
                               className="cursor-pointer"
                             >
-                              <Avatar className="h-24 w-24 ring-2 ring-gray-300 shadow-md">
-                                <AvatarImage
-                                  src={currentImageUrl || undefined} // Use currentImageUrl for display
-                                  alt="รูปประจำตัว"
-                                />
-                                <AvatarFallback>รูป</AvatarFallback>
-                              </Avatar>
+                              <CustomAvatar
+                                id={`advisor${getValues("username")}`}
+                                image={currentImageUrl}
+                                size="32"
+                              />
                             </label>
-                            {/* Conditional rendering for delete button */}
                             {currentImageUrl && (
                               <Button
                                 type="button"
-                                onClick={handleImageDeleteClick} // Use new delete click handler
+                                onClick={handleImageDeleteClick}
                                 variant="destructive"
                                 size="icon"
                                 className="absolute -top-2 -right-2 h-7 w-7 rounded-full shadow bg-white border border-gray-200"
@@ -327,25 +294,6 @@ export default function Page() {
                               >
                                 <Trash2 className="h-4 w-4 text-red-600" />
                               </Button>
-                            )}
-                          </div>
-                          <div className="flex flex-col gap-2 flex-1">
-                            {selectedFile && (
-                              <span className="text-xs text-gray-500 truncate max-w-[160px] self-center">
-                                ไฟล์ใหม่: {selectedFile.name}
-                              </span>
-                            )}
-                            {initialImageUrl &&
-                              !selectedFile && ( // Only show current file name if no new file selected
-                                <span className="text-xs text-gray-500 truncate max-w-[200px]">
-                                  ไฟล์ปัจจุบัน:{" "}
-                                  {initialImageUrl.split("/").pop()}
-                                </span>
-                              )}
-                            {!(selectedFile || initialImageUrl) && (
-                              <span className="text-xs text-gray-500">
-                                ยังไม่มีรูปภาพ
-                              </span>
                             )}
                           </div>
                         </div>

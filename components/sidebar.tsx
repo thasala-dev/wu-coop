@@ -257,16 +257,16 @@ export function Sidebar({
 
       {/* Mobile Header */}
       <div
-        className={`md:hidden flex items-center justify-between px-4 py-3 bg-${colors[userType]}-50 border border-${colors[userType]}-100 rounded-lg shadow-sm`}
+        className={`md:hidden flex items-center justify-between px-4 py-3 bg-gradient-to-r from-${colors[userType]}-600 to-${colors[userType]}-700 rounded-lg shadow-sm`}
       >
         <div className="flex items-center gap-2">
           {menuIcons[userType]}
-          <span className={`text-lg font-bold text-${colors[userType]}-700`}>
+          <span className={`text-lg font-bold text-white`}>
             {menuTitles[userType]}
           </span>
         </div>
         <button onClick={() => setMobileMenuOpen(true)}>
-          <Menu className={`h-6 w-6 text-${colors[userType]}-600`} />
+          <Menu className={`h-6 w-6 text-white`} />
         </button>
       </div>
 

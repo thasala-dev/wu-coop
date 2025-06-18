@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Search,
   Filter,
@@ -11,17 +11,36 @@ import {
   BarChart4,
   Building2,
   Calendar,
-} from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import AdvisorSidebar from "@/components/advisor-sidebar"
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AdvisorSidebar from "@/components/advisor-sidebar";
 
 // Mock data for evaluations
 const evaluations = [
@@ -121,54 +140,83 @@ const evaluations = [
     score: null,
     submittedDate: null,
   },
-]
+];
 
 // Status badge component
 const StatusBadge = ({ status }: { status: string }) => {
   const statusConfig = {
-    completed: { label: "เสร็จสิ้น", color: "bg-emerald-100 text-emerald-800 border-emerald-200" },
-    pending: { label: "รอดำเนินการ", color: "bg-blue-100 text-blue-800 border-blue-200" },
-    in_progress: { label: "กำลังดำเนินการ", color: "bg-amber-100 text-amber-800 border-amber-200" },
-    overdue: { label: "เลยกำหนด", color: "bg-red-100 text-red-800 border-red-200" },
-  }
+    completed: {
+      label: "เสร็จสิ้น",
+      color: "bg-emerald-100 text-emerald-800 border-emerald-200",
+    },
+    pending: {
+      label: "รอดำเนินการ",
+      color: "bg-blue-100 text-blue-800 border-blue-200",
+    },
+    in_progress: {
+      label: "กำลังดำเนินการ",
+      color: "bg-amber-100 text-amber-800 border-amber-200",
+    },
+    overdue: {
+      label: "เลยกำหนด",
+      color: "bg-red-100 text-red-800 border-red-200",
+    },
+  };
 
-  const config = statusConfig[status as keyof typeof statusConfig]
+  const config = statusConfig[status as keyof typeof statusConfig];
 
   return (
     <Badge variant="outline" className={`${config.color} border`}>
       {config.label}
     </Badge>
-  )
-}
+  );
+};
 
 export default function EvaluationsPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [typeFilter, setTypeFilter] = useState("all")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
 
   // Filter evaluations based on search term and filters
   const filteredEvaluations = evaluations.filter((evaluation) => {
     const matchesSearch =
       evaluation.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       evaluation.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      evaluation.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+      evaluation.companyName.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === "all" || evaluation.status === statusFilter
-    const matchesType = typeFilter === "all" || evaluation.evaluationType === typeFilter
+    const matchesStatus =
+      statusFilter === "all" || evaluation.status === statusFilter;
+    const matchesType =
+      typeFilter === "all" || evaluation.evaluationType === typeFilter;
 
-    return matchesSearch && matchesStatus && matchesType
-  })
+    return matchesSearch && matchesStatus && matchesType;
+  });
 
   // Calculate statistics
-  const totalEvaluations = evaluations.length
-  const completedEvaluations = evaluations.filter((e) => e.status === "completed").length
-  const pendingEvaluations = evaluations.filter((e) => e.status === "pending").length
-  const inProgressEvaluations = evaluations.filter((e) => e.status === "in_progress").length
-  const overdueEvaluations = evaluations.filter((e) => e.status === "overdue").length
+  const totalEvaluations = evaluations.length;
+  const completedEvaluations = evaluations.filter(
+    (e) => e.status === "completed"
+  ).length;
+  const pendingEvaluations = evaluations.filter(
+    (e) => e.status === "pending"
+  ).length;
+  const inProgressEvaluations = evaluations.filter(
+    (e) => e.status === "in_progress"
+  ).length;
+  const overdueEvaluations = evaluations.filter(
+    (e) => e.status === "overdue"
+  ).length;
 
   // Calculate average score
-  const scores = evaluations.filter((e) => e.score !== null).map((e) => e.score as number)
-  const averageScore = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0
+  const scores = evaluations
+    .filter((e) => e.score !== null)
+    .map((e) => e.score as number);
+  const averageScore =
+    scores.length > 0
+      ? Math.round(
+          scores.reduce((sum, score) => sum + score, 0) / scores.length
+        )
+      : 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -176,17 +224,23 @@ export default function EvaluationsPage() {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdvisorSidebar activePage="evaluations" />
 
-          <div className="md:col-span-4 space-y-6">
+          <div className="md:col-span-4">
             <div className="flex flex-col gap-2">
-              <h1 className="text-3xl font-bold tracking-tight">การประเมินนักศึกษา</h1>
-              <p className="text-muted-foreground">จัดการและติดตามการประเมินผลการฝึกงานของนักศึกษาในความดูแลของท่าน</p>
+              <h1 className="text-3xl font-bold tracking-tight">
+                การประเมินนักศึกษา
+              </h1>
+              <p className="text-muted-foreground">
+                จัดการและติดตามการประเมินผลการฝึกงานของนักศึกษาในความดูแลของท่าน
+              </p>
             </div>
 
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="shadow-sm border-none">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">การประเมินทั้งหมด</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    การประเมินทั้งหมด
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
@@ -200,7 +254,9 @@ export default function EvaluationsPage() {
 
               <Card className="shadow-sm border-none">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">คะแนนเฉลี่ย</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    คะแนนเฉลี่ย
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
@@ -214,11 +270,15 @@ export default function EvaluationsPage() {
 
               <Card className="shadow-sm border-none">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">เสร็จสิ้นแล้ว</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    เสร็จสิ้นแล้ว
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold">{completedEvaluations}</div>
+                    <div className="text-2xl font-bold">
+                      {completedEvaluations}
+                    </div>
                     <div className="p-2 bg-emerald-100 text-emerald-700 rounded-full">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
@@ -228,11 +288,15 @@ export default function EvaluationsPage() {
 
               <Card className="shadow-sm border-none">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">รอดำเนินการ</CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    รอดำเนินการ
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold">{pendingEvaluations + inProgressEvaluations}</div>
+                    <div className="text-2xl font-bold">
+                      {pendingEvaluations + inProgressEvaluations}
+                    </div>
                     <div className="p-2 bg-amber-100 text-amber-700 rounded-full">
                       <Clock className="h-5 w-5" />
                     </div>
@@ -251,7 +315,9 @@ export default function EvaluationsPage() {
             <Card className="shadow-sm border-none">
               <CardHeader>
                 <CardTitle>สถานะการประเมิน</CardTitle>
-                <CardDescription>การกระจายของสถานะการประเมินทั้งหมด</CardDescription>
+                <CardDescription>
+                  การกระจายของสถานะการประเมินทั้งหมด
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -262,7 +328,11 @@ export default function EvaluationsPage() {
                         <span>เสร็จสิ้น</span>
                       </div>
                       <span>
-                        {completedEvaluations} ({Math.round((completedEvaluations / totalEvaluations) * 100)}%)
+                        {completedEvaluations} (
+                        {Math.round(
+                          (completedEvaluations / totalEvaluations) * 100
+                        )}
+                        %)
                       </span>
                     </div>
                     <Progress
@@ -279,7 +349,11 @@ export default function EvaluationsPage() {
                         <span>รอดำเนินการ</span>
                       </div>
                       <span>
-                        {pendingEvaluations} ({Math.round((pendingEvaluations / totalEvaluations) * 100)}%)
+                        {pendingEvaluations} (
+                        {Math.round(
+                          (pendingEvaluations / totalEvaluations) * 100
+                        )}
+                        %)
                       </span>
                     </div>
                     <Progress
@@ -296,7 +370,11 @@ export default function EvaluationsPage() {
                         <span>กำลังดำเนินการ</span>
                       </div>
                       <span>
-                        {inProgressEvaluations} ({Math.round((inProgressEvaluations / totalEvaluations) * 100)}%)
+                        {inProgressEvaluations} (
+                        {Math.round(
+                          (inProgressEvaluations / totalEvaluations) * 100
+                        )}
+                        %)
                       </span>
                     </div>
                     <Progress
@@ -313,7 +391,11 @@ export default function EvaluationsPage() {
                         <span>เลยกำหนด</span>
                       </div>
                       <span>
-                        {overdueEvaluations} ({Math.round((overdueEvaluations / totalEvaluations) * 100)}%)
+                        {overdueEvaluations} (
+                        {Math.round(
+                          (overdueEvaluations / totalEvaluations) * 100
+                        )}
+                        %)
                       </span>
                     </div>
                     <Progress
@@ -389,7 +471,9 @@ export default function EvaluationsPage() {
                           <TableHead>กำหนดส่ง</TableHead>
                           <TableHead>สถานะ</TableHead>
                           <TableHead>คะแนน</TableHead>
-                          <TableHead className="text-right">การจัดการ</TableHead>
+                          <TableHead className="text-right">
+                            การจัดการ
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -398,12 +482,21 @@ export default function EvaluationsPage() {
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 <Avatar className="h-8 w-8">
-                                  <AvatarImage src={evaluation.studentImage} alt={evaluation.studentName} />
-                                  <AvatarFallback>{evaluation.studentName.charAt(0)}</AvatarFallback>
+                                  <AvatarImage
+                                    src={evaluation.studentImage}
+                                    alt={evaluation.studentName}
+                                  />
+                                  <AvatarFallback>
+                                    {evaluation.studentName.charAt(0)}
+                                  </AvatarFallback>
                                 </Avatar>
                                 <div>
-                                  <div className="font-medium">{evaluation.studentName}</div>
-                                  <div className="text-xs text-muted-foreground">{evaluation.studentId}</div>
+                                  <div className="font-medium">
+                                    {evaluation.studentName}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {evaluation.studentId}
+                                  </div>
                                 </div>
                               </div>
                             </TableCell>
@@ -415,15 +508,21 @@ export default function EvaluationsPage() {
                             </TableCell>
                             <TableCell>
                               {evaluation.score !== null ? (
-                                <span className="font-medium">{evaluation.score}/100</span>
+                                <span className="font-medium">
+                                  {evaluation.score}/100
+                                </span>
                               ) : (
                                 <span className="text-muted-foreground">-</span>
                               )}
                             </TableCell>
                             <TableCell className="text-right">
                               <Button variant="outline" size="sm" asChild>
-                                <a href={`/advisor/evaluations/${evaluation.id}`}>
-                                  {evaluation.status === "completed" ? "ดูรายละเอียด" : "ประเมิน"}
+                                <a
+                                  href={`/advisor/evaluations/${evaluation.id}`}
+                                >
+                                  {evaluation.status === "completed"
+                                    ? "ดูรายละเอียด"
+                                    : "ประเมิน"}
                                 </a>
                               </Button>
                             </TableCell>
@@ -434,7 +533,8 @@ export default function EvaluationsPage() {
                   </CardContent>
                   <CardFooter className="flex items-center justify-between border-t p-4">
                     <div className="text-sm text-muted-foreground">
-                      แสดง {filteredEvaluations.length} จาก {evaluations.length} รายการ
+                      แสดง {filteredEvaluations.length} จาก {evaluations.length}{" "}
+                      รายการ
                     </div>
                     <div className="flex items-center gap-2">
                       <Button variant="outline" size="sm" disabled>
@@ -456,12 +556,21 @@ export default function EvaluationsPage() {
                         <div className="flex justify-between items-start">
                           <div className="flex items-center gap-2">
                             <Avatar className="h-10 w-10">
-                              <AvatarImage src={evaluation.studentImage} alt={evaluation.studentName} />
-                              <AvatarFallback>{evaluation.studentName.charAt(0)}</AvatarFallback>
+                              <AvatarImage
+                                src={evaluation.studentImage}
+                                alt={evaluation.studentName}
+                              />
+                              <AvatarFallback>
+                                {evaluation.studentName.charAt(0)}
+                              </AvatarFallback>
                             </Avatar>
                             <div>
-                              <CardTitle className="text-base">{evaluation.studentName}</CardTitle>
-                              <CardDescription>{evaluation.studentId}</CardDescription>
+                              <CardTitle className="text-base">
+                                {evaluation.studentName}
+                              </CardTitle>
+                              <CardDescription>
+                                {evaluation.studentId}
+                              </CardDescription>
                             </div>
                           </div>
                           <StatusBadge status={evaluation.status} />
@@ -485,7 +594,10 @@ export default function EvaluationsPage() {
                             <div className="flex items-center gap-2 text-sm">
                               <BarChart4 className="h-4 w-4 text-muted-foreground" />
                               <span>
-                                คะแนน: <span className="font-medium">{evaluation.score}/100</span>
+                                คะแนน:{" "}
+                                <span className="font-medium">
+                                  {evaluation.score}/100
+                                </span>
                               </span>
                             </div>
                           )}
@@ -494,7 +606,9 @@ export default function EvaluationsPage() {
                       <CardFooter>
                         <Button variant="outline" className="w-full" asChild>
                           <a href={`/advisor/evaluations/${evaluation.id}`}>
-                            {evaluation.status === "completed" ? "ดูรายละเอียด" : "ประเมิน"}
+                            {evaluation.status === "completed"
+                              ? "ดูรายละเอียด"
+                              : "ประเมิน"}
                           </a>
                         </Button>
                       </CardFooter>
@@ -507,5 +621,5 @@ export default function EvaluationsPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

@@ -170,11 +170,11 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <AdminSidebar activePage="event" />
 
-          <div className="md:col-span-4 space-y-6">
+          <div className="md:col-span-4">
             <div className="flex items-center gap-3 mb-2">
               <Button
                 variant="ghost"
@@ -234,7 +234,9 @@ export default function Page() {
                               {...register("calendarId")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.calendarId ? "border-red-600 border-2" : "")
+                                (errors.calendarId
+                                  ? "border-red-600 border-2"
+                                  : "")
                               }
                             >
                               <option value="" disabled>
@@ -242,7 +244,8 @@ export default function Page() {
                               </option>
                               {calendars.map((calendar) => (
                                 <option key={calendar.id} value={calendar.id}>
-                                  {calendar.name} ({calendar.semester}/{calendar.year})
+                                  {calendar.name} ({calendar.semester}/
+                                  {calendar.year})
                                 </option>
                               ))}
                             </select>
@@ -272,7 +275,9 @@ export default function Page() {
                               {...register("eventDate")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.eventDate ? "border-red-600 border-2" : "")
+                                (errors.eventDate
+                                  ? "border-red-600 border-2"
+                                  : "")
                               }
                             />
                             {errors.eventDate && (
@@ -290,7 +295,9 @@ export default function Page() {
                               {...register("location")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.location ? "border-red-600 border-2" : "")
+                                (errors.location
+                                  ? "border-red-600 border-2"
+                                  : "")
                               }
                               placeholder="สถานที่จัดกิจกรรม"
                             />
@@ -335,7 +342,9 @@ export default function Page() {
                               {...register("statusId")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.statusId ? "border-red-600 border-2" : "")
+                                (errors.statusId
+                                  ? "border-red-600 border-2"
+                                  : "")
                               }
                             >
                               <option value="" disabled>

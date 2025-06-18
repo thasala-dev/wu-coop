@@ -129,12 +129,12 @@ export default function Page() {
 
   async function deleteEvent() {
     if (!selectedEvent) return;
-    
+
     try {
       const response = await fetch(`/api/event/${selectedEvent.id}`, {
         method: "DELETE",
       });
-      
+
       const data = await response.json();
       if (data.success) {
         toast({
@@ -174,7 +174,9 @@ export default function Page() {
 
   function getCalendarName(calendarId: number) {
     const calendar = calendars.find((c) => c.id === calendarId);
-    return calendar ? `${calendar.name} (${calendar.semester}/${calendar.year})` : "-";
+    return calendar
+      ? `${calendar.name} (${calendar.semester}/${calendar.year})`
+      : "-";
   }
 
   function getEventTypeName(typeId: number) {
@@ -192,7 +194,7 @@ export default function Page() {
   function getStatusBadge(statusId: number) {
     let color = "";
     let text = "";
-    
+
     switch (statusId) {
       case 1:
         color = "bg-blue-500";
@@ -214,17 +216,17 @@ export default function Page() {
         color = "bg-gray-500";
         text = "ไม่ระบุ";
     }
-    
+
     return <Badge className={color}>{text}</Badge>;
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <AdminSidebar activePage="event" />
 
-          <div className="md:col-span-4 space-y-6">
+          <div className="md:col-span-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
@@ -279,9 +281,7 @@ export default function Page() {
                       {events.map((event) => (
                         <TableRow key={event.id}>
                           <TableCell className="font-medium">
-                            <div>
-                              {event.title}
-                            </div>
+                            <div>{event.title}</div>
                             {event.location && (
                               <div className="text-sm text-gray-500 flex items-center mt-1">
                                 <MapPin className="h-3 w-3 mr-1" />
@@ -292,7 +292,9 @@ export default function Page() {
                           <TableCell>
                             {getCalendarName(event.calendar_id)}
                           </TableCell>
-                          <TableCell>{getEventTypeName(event.type_id)}</TableCell>
+                          <TableCell>
+                            {getEventTypeName(event.type_id)}
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-1">
                               <Calendar className="h-3 w-3" />
@@ -346,7 +348,7 @@ export default function Page() {
           <DialogHeader>
             <DialogTitle>ลบกิจกรรม</DialogTitle>
             <DialogDescription>
-              คุณต้องการลบกิจกรรม "{selectedEvent?.title}" ใช่หรือไม่? 
+              คุณต้องการลบกิจกรรม "{selectedEvent?.title}" ใช่หรือไม่?
               การกระทำนี้ไม่สามารถเปลี่ยนกลับได้
             </DialogDescription>
           </DialogHeader>
@@ -357,10 +359,7 @@ export default function Page() {
             >
               ยกเลิก
             </Button>
-            <Button
-              variant="destructive"
-              onClick={deleteEvent}
-            >
+            <Button variant="destructive" onClick={deleteEvent}>
               ลบกิจกรรม
             </Button>
           </DialogFooter>
