@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, act } from "react";
 import {
   Search,
   Filter,
@@ -58,9 +58,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import AdminSidebar from "@/components/admin-sidebar";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import CardList from "@/components/CardList";
@@ -68,31 +66,35 @@ import CustomAvatar from "@/components/avatar";
 import TableList from "@/components/TableList";
 import Link from "next/link";
 
-// Status mapping for display
 const statusMap = {
   pending: {
     label: "รอการจับคู่",
-    color: "bg-amber-50 text-amber-700 border-amber-200",
+    color:
+      "bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100 hover:text-orange-800 transition-colors",
     icon: Clock,
   },
   placed: {
     label: "จับคู่แล้ว",
-    color: "bg-blue-50 text-blue-700 border-blue-200",
+    color:
+      "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 hover:text-blue-800 transition-colors",
     icon: CheckCircle,
   },
   active: {
     label: "กำลังฝึกงาน",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    color:
+      "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-800 transition-colors",
     icon: CheckCircle,
   },
-  issue: {
-    label: "มีปัญหา",
-    color: "bg-rose-50 text-rose-700 border-rose-200",
+  nonregist: {
+    label: "ไม่ได้ลงทะเบียน",
+    color:
+      "bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100 hover:text-yellow-800 transition-colors",
     icon: AlertCircle,
   },
   completed: {
     label: "เสร็จสิ้น",
-    color: "bg-violet-50 text-violet-700 border-violet-200",
+    color:
+      "bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100 hover:text-violet-800 transition-colors",
     icon: CheckCircle,
   },
 };
@@ -125,26 +127,33 @@ let statsData = [
   },
 ];
 
-// Status distribution data
-const statusDistribution = [
-  { status: "active", count: 64, percentage: 50 },
-  { status: "completed", count: 36, percentage: 28 },
-  { status: "placed", count: 16, percentage: 13 },
-  { status: "pending", count: 8, percentage: 6 },
-  { status: "issue", count: 4, percentage: 3 },
-];
-
 export default function AdminStudentsPage() {
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<any>([]);
+  const [calendars, setCalendars] = useState<any>([]);
+  const [calendarSelected, setCalendarSelected] = useState<any>(null);
+  const [stats, setStats] = useState<any>([
+    { status: "completed", count: 0, percentage: 0 },
+    { status: "active", count: 0, percentage: 0 },
+    { status: "placed", count: 0, percentage: 0 },
+    { status: "pending", count: 0, percentage: 0 },
+    { status: "nonregist", count: 0, percentage: 0 },
+  ]);
+
+  const [totalCompanies, setTotalCompanies] = useState(0);
+
   useEffect(() => {
-    fetchStudents();
-    console.log("Admin Students Page Loaded");
+    fetchCalendar();
   }, []);
 
-  async function fetchStudents() {
+  useEffect(() => {
+    if (!calendarSelected) return;
+    fetchStudents(calendarSelected);
+  }, [calendarSelected]);
+
+  async function fetchStudents(calendarId: any) {
     setLoading(true);
-    const response = await fetch("/api/student", {
+    const response = await fetch(`/api/student?calendarId=${calendarId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -153,7 +162,93 @@ export default function AdminStudentsPage() {
     const data = await response.json();
     if (data.success) {
       setStudents(data.data || []);
+      let stat = {
+        active: 0,
+        completed: 0,
+        placed: 0,
+        pending: 0,
+        nonregist: 0,
+      };
+      data.data.forEach((item: any) => {
+        if (item.status_id === 0) {
+          stat.nonregist += 1;
+        } else if (item.status_id === 1) {
+          stat.pending += 1;
+        } else if (item.status_id === 2) {
+          stat.placed += 1;
+        } else if (item.status_id === 3) {
+          stat.active += 1;
+        } else if (item.status_id === 4) {
+          stat.completed += 1;
+        }
+      });
+      setStats([
+        {
+          status: "completed",
+          count: stat.completed,
+          percentage:
+            stat.completed > 0
+              ? Math.round((stat.completed / data.data.length) * 100)
+              : 0,
+        },
+        {
+          status: "active",
+          count: stat.active,
+          percentage:
+            stat.active > 0
+              ? Math.round((stat.active / data.data.length) * 100)
+              : 0,
+        },
+        {
+          status: "placed",
+          count: stat.placed,
+          percentage:
+            stat.placed > 0
+              ? Math.round((stat.placed / data.data.length) * 100)
+              : 0,
+        },
+        {
+          status: "pending",
+          count: stat.pending,
+          percentage:
+            stat.pending > 0
+              ? Math.round((stat.pending / data.data.length) * 100)
+              : 0,
+        },
+        {
+          status: "nonregist",
+          count: stat.nonregist,
+          percentage:
+            stat.nonregist > 0
+              ? Math.round((stat.nonregist / data.data.length) * 100)
+              : 0,
+        },
+      ]);
+
       statsData[0].value = data.data.length;
+      statsData[1].value = stat.active;
+      statsData[2].value = totalCompanies;
+      statsData[3].value = stat.completed;
+    }
+    setLoading(false);
+  }
+
+  async function fetchCalendar() {
+    setLoading(true);
+    const response = await fetch("/api/calendar", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    if (data.success) {
+      setCalendars(data.data || []);
+      const activeCalendar = data.data.find((cal: any) => cal.active_id === 1);
+      if (activeCalendar) {
+        setCalendarSelected(activeCalendar.id);
+        setTotalCompanies(activeCalendar.total_regist || 0);
+      }
     }
     setLoading(false);
   }
@@ -211,6 +306,33 @@ export default function AdminStudentsPage() {
     setStudentToDelete(null);
   };
 
+  const badgeClasses = (id: number) => {
+    let status = "pending";
+    if (id === 0) {
+      status = "nonregist";
+    } else if (id === 1) {
+      status = "pending";
+    } else if (id === 2) {
+      status = "placed";
+    } else if (id === 3) {
+      status = "active";
+    } else if (id === 4) {
+      status = "completed";
+    }
+    return (
+      <Badge
+        className={`${
+          statusMap[status as keyof typeof statusMap].color
+        } flex items-center gap-1 font-normal px-2 py-0.5 h-6 border whitespace-nowrap`}
+      >
+        {React.createElement(statusMap[status as keyof typeof statusMap].icon, {
+          className: "h-3 w-3",
+        })}
+        {statusMap[status as keyof typeof statusMap].label}
+      </Badge>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto p-2">
@@ -229,13 +351,27 @@ export default function AdminStudentsPage() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-1 h-9 px-3 rounded-md border-gray-200 bg-white"
+                <Select
+                  value={calendarSelected ? calendarSelected.toString() : ""}
+                  onValueChange={(value) => {
+                    setCalendarSelected(value || null);
+                    setTotalCompanies(
+                      calendars.find((cal: any) => cal.id.toString() === value)
+                        ?.total_regist || 0
+                    );
+                  }}
                 >
-                  <Download className="h-4 w-4" />
-                  <span className="text-sm">ส่งออก</span>
-                </Button>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="เลือกรอบฝึกงาน" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {calendars.map((cal: any) => (
+                      <SelectItem key={cal.id} value={cal.id.toString()}>
+                        {cal.name} ({cal.semester}/{cal.year})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <a href={`/admin/students/add`}>
                   <Button className="flex items-center gap-1 h-9 px-3 rounded-md bg-gray-900 hover:bg-gray-800">
                     <UserPlus className="h-4 w-4" />
@@ -282,7 +418,7 @@ export default function AdminStudentsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {statusDistribution.map((item) => (
+                    {stats.map((item: any) => (
                       <div key={item.status} className="space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -344,7 +480,7 @@ export default function AdminStudentsPage() {
                         className="flex items-center gap-3 p-3"
                       >
                         <CustomAvatar
-                          id={`student${student.username}`}
+                          id={`student${student.student_id}`}
                           image={student.image}
                           size="8"
                         />
@@ -356,21 +492,7 @@ export default function AdminStudentsPage() {
                             {student.studentId}
                           </p>
                         </div>
-                        <Badge
-                          className={`${
-                            statusMap[
-                              (student.status as keyof typeof statusMap) ||
-                                "pending"
-                            ].color
-                          } text-xs px-2 py-0.5 border`}
-                        >
-                          {
-                            statusMap[
-                              (student.status as keyof typeof statusMap) ||
-                                "pending"
-                            ].label
-                          }
-                        </Badge>
+                        {badgeClasses(student.status_id)}
                       </div>
                     ))}
                   </div>
@@ -433,7 +555,9 @@ export default function AdminStudentsPage() {
                                 <SelectItem value="active">
                                   กำลังฝึกงาน
                                 </SelectItem>
-                                <SelectItem value="issue">มีปัญหา</SelectItem>
+                                <SelectItem value="nonregist">
+                                  ไม่ได้ลงทะเบียน
+                                </SelectItem>
                                 <SelectItem value="completed">
                                   เสร็จสิ้น
                                 </SelectItem>
@@ -537,7 +661,7 @@ export default function AdminStudentsPage() {
                             <div className="p-5">
                               <div className="flex items-start gap-3">
                                 <CustomAvatar
-                                  id={`student${student.username}`}
+                                  id={`student${student.student_id}`}
                                   image={student.image}
                                   size="12"
                                 />
@@ -551,30 +675,7 @@ export default function AdminStudentsPage() {
                                         {student.student_id}
                                       </p>
                                     </div>
-                                    <Badge
-                                      className={`${
-                                        statusMap[
-                                          (student.status as keyof typeof statusMap) ||
-                                            "pending"
-                                        ].color
-                                      } flex items-center gap-1 font-normal px-2 py-0.5 h-6 border whitespace-nowrap`}
-                                    >
-                                      {React.createElement(
-                                        statusMap[
-                                          (student.status as keyof typeof statusMap) ||
-                                            "pending"
-                                        ].icon,
-                                        {
-                                          className: "h-3 w-3",
-                                        }
-                                      )}
-                                      {
-                                        statusMap[
-                                          (student.status as keyof typeof statusMap) ||
-                                            "pending"
-                                        ].label
-                                      }
-                                    </Badge>
+                                    {badgeClasses(student.status_id)}
                                   </div>
                                 </div>
                               </div>
@@ -604,7 +705,7 @@ export default function AdminStudentsPage() {
                                   <span className="text-gray-500">
                                     แหล่งฝึกงาน:
                                   </span>{" "}
-                                  {student.company || (
+                                  {student.company_name || (
                                     <i className="text-xs">(ไม่มีข้อมูล)</i>
                                   )}
                                 </p>
@@ -670,7 +771,7 @@ export default function AdminStudentsPage() {
                               return (
                                 <div className="flex items-center gap-2">
                                   <CustomAvatar
-                                    id={`student${row.username}`}
+                                    id={`student${row.student_id}`}
                                     image={row.image}
                                     size="8"
                                   />
@@ -692,39 +793,14 @@ export default function AdminStudentsPage() {
                             content: "เกรดเฉลี่ย",
                           },
                           {
-                            key: "company",
+                            key: "company_name",
                             content: "แหล่งฝึกงาน",
                           },
                           {
                             key: "status",
                             content: "สถานะ",
                             render: (row: any) => {
-                              return (
-                                <Badge
-                                  className={`${
-                                    statusMap[
-                                      (row.status as keyof typeof statusMap) ||
-                                        "pending"
-                                    ].color
-                                  } flex items-center gap-1 font-normal px-2 py-0.5 h-6 border`}
-                                >
-                                  {React.createElement(
-                                    statusMap[
-                                      (row.status as keyof typeof statusMap) ||
-                                        "pending"
-                                    ].icon,
-                                    {
-                                      className: "h-3 w-3",
-                                    }
-                                  )}
-                                  {
-                                    statusMap[
-                                      (row.status as keyof typeof statusMap) ||
-                                        "pending"
-                                    ].label
-                                  }
-                                </Badge>
-                              );
+                              return badgeClasses(row.status_id);
                             },
                           },
                           {

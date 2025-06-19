@@ -13,14 +13,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -39,10 +31,6 @@ import {
   Edit,
   Trash2,
 } from "lucide-react";
-import AdminSidebar from "@/components/admin-sidebar";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import Loading from "@/components/loading";
 import Sidebar from "@/components/sidebar";
@@ -180,14 +168,6 @@ export default function AdminCalendar() {
     setCurrentMonth(`${monthNames[currentMonthIndex]} ${currentYear}`);
   };
 
-  // Function to get the term of the selected calendar
-  const getSelectedCalendarTerm = () => {
-    const selectedCal = calendars.find(
-      (cal: any) => cal.id === calendarSelected
-    );
-    return selectedCal ? `${selectedCal.semester}/${selectedCal.year}` : null;
-  };
-
   // Replace the filterEvents function to handle API data
   const filterEvents = () => {
     if (!events || events.length === 0) {
@@ -304,8 +284,6 @@ export default function AdminCalendar() {
       if (activeCalendar) {
         setCalendarSelected(activeCalendar.id);
       }
-      console.log("Fetched calendars:", data.data);
-      // statsData[0].value = data.data.length;
     }
     setLoading(false);
   }
@@ -640,16 +618,6 @@ export default function AdminCalendar() {
                       </TabsList>
 
                       <div className="flex gap-2 w-full md:w-auto">
-                        <div className="relative flex-grow">
-                          <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                          <input
-                            type="text"
-                            placeholder="ค้นหากิจกรรม..."
-                            className="pl-10 pr-4 py-2 border rounded-md w-full"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                          />
-                        </div>
                         <Select
                           defaultValue={
                             calendarSelected ? calendarSelected.toString() : ""

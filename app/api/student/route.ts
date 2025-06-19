@@ -1,11 +1,43 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    let calendarId = searchParams.get("calendarId");
+
     const sql = neon(`${process.env.DATABASE_URL}`);
+    if (!calendarId || typeof calendarId !== "string") {
+      const data = await sql(
+        `SELECT * from user_student ORDER BY updated_at DESC`
+      );
+
+      return NextResponse.json({
+        success: true,
+        message: "ดำเนินการสำเร็จ",
+        data: data,
+      });
+    }
+
     const data = await sql(
-      "SELECT * FROM user_student ORDER BY updated_at DESC"
+      `SELECT std.id, std.fullname, std.student_id, std.mobile, std.faculty, std.major, std.std_year, std.address, std.gpa, std.image,
+      intern.id AS regist_id,
+      intern.company_id,
+      com.name AS company_name,
+      case 
+        when intern.id is null then 0
+        when intern.company_id is null then 1
+        when cal.start_date > now() then 2
+        when cal.end_date < now() then 4
+        else 3
+      end as status_id
+      FROM user_student std
+      LEFT JOIN regist_intern intern ON std.id = intern.student_id 
+        and intern.calendar_id = $1
+      LEFT join user_company com on intern.company_id = com.id
+      LEFT JOIN calendar cal ON intern.calendar_id = cal.id
+      ORDER BY std.updated_at DESC`,
+      [calendarId]
     );
     return NextResponse.json({
       success: true,

@@ -151,52 +151,6 @@ const TableList = <
           )}
         </div>
         <div className="flex gap-1">
-          <div className="hidden md:flex gap-1 items-center ">
-            <div className="w-40">
-              <button
-                className="w-40 h-7 text-sm px-3 py-1 border border-gray-300 rounded-md bg-white dark:bg-gray-800 w-full flex justify-between items-centeพ"
-                type="button"
-                onClick={() => setIsOpen(!isOpen)}
-              >
-                <span>แสดงรายการ</span>
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              <div className="absolute" ref={dropdownRef}>
-                {isOpen && (
-                  <div className="absolute w-40">
-                    <div className="absolute right-0 z-10 mt-2 w-64 p-2 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-                      {meta.map((m, index) => (
-                        <label
-                          key={`show-${index}`}
-                          className="flex text-sm items-center m-1 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={!selectedOptions.includes(index)}
-                            onChange={() => toggleSelection(index)}
-                            className="mr-1"
-                          />
-                          {m.content}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
           <div className="hidden md:flex gap-1 items-center">
             <label className="block text-sm font-medium text-gray-900 dark:text-gray-300"></label>
             <select
@@ -204,7 +158,7 @@ const TableList = <
               onChange={(e) => {
                 updateItemsPerPage(e.target.value);
               }}
-              className="w-40 h-7 text-sm px-3 py-1 border border-gray-300 rounded-md bg-white dark:bg-gray-800"
+              className="w-30 h-7 text-sm px-3 py-1 border border-gray-300 rounded-md bg-white dark:bg-gray-800"
             >
               <option value={10}>10 รายการ/หน้า</option>
               <option value={20}>20 รายการ/หน้า</option>
