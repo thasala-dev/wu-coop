@@ -347,7 +347,7 @@ export default function AdminStudentsPage() {
                   นักศึกษาทั้งหมด
                 </h1>
                 <p className="text-sm text-gray-500 mt-1">
-                  จัดการข้อมูลนักศึกษาในระบบสหกิจศึกษา
+                  จัดการข้อมูลนักศึกษาในระบบฝึกงาน
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -663,7 +663,7 @@ export default function AdminStudentsPage() {
                                 <CustomAvatar
                                   id={`student${student.student_id}`}
                                   image={student.image}
-                                  size="12"
+                                  size="8"
                                 />
                                 <div className="flex-1 min-w-0">
                                   <div className="flex justify-between items-start">
@@ -761,24 +761,26 @@ export default function AdminStudentsPage() {
                       <TableList
                         meta={[
                           {
-                            key: "student_id",
-                            content: "รหัสนักศึกษา",
-                          },
-                          {
                             key: "fullname",
-                            content: "ชื่อ-นามสกุล",
-                            render: (row: any) => {
-                              return (
-                                <div className="flex items-center gap-2">
-                                  <CustomAvatar
-                                    id={`student${row.student_id}`}
-                                    image={row.image}
-                                    size="8"
-                                  />
-                                  <span>{row.fullname}</span>
+                            content: "นักศึกษา",
+                            width: "200px",
+                            render: (item: any) => (
+                              <div className="flex items-center gap-2">
+                                <CustomAvatar
+                                  id={`student${item.student_id}`}
+                                  image={item.image}
+                                  size="8"
+                                />
+                                <div>
+                                  <div className="truncate">
+                                    {item.fullname}
+                                  </div>
+                                  <p className="text-xs text-gray-500">
+                                    {item.student_id}
+                                  </p>
                                 </div>
-                              );
-                            },
+                              </div>
+                            ),
                           },
                           {
                             key: "major",

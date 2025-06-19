@@ -48,7 +48,7 @@ export default function AdvisorDashboard() {
                         12
                       </div>
                       <p className="text-sm text-gray-500 mt-1">
-                        นักศึกษาสหกิจศึกษาทั้งหมด
+                        นักศึกษาฝึกงานทั้งหมด
                       </p>
                       <div className="mt-4 pt-4 border-t flex flex-col gap-1 text-sm">
                         <div className="flex justify-between">

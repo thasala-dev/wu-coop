@@ -28,7 +28,7 @@ export default function NewEvaluation() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold text-gray-800">
-              ระบบสหกิจศึกษา (ผู้ดูแลระบบ)
+              ระบบฝึกงาน (ผู้ดูแลระบบ)
             </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผู้ดูแลระบบ</span>

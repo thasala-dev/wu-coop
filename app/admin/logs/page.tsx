@@ -131,7 +131,7 @@ export default function CompaniesPage() {
                               <CustomAvatar
                                 id={`${row.user_role}${row.username}`}
                                 image={row.image}
-                                size="12"
+                                size="8"
                               />
                               <div>
                                 <div>{row.fullname}</div>

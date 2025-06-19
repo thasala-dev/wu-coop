@@ -34,7 +34,7 @@ export default function Jobs() {
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา</h1>
+            <h1 className="text-xl font-bold text-gray-800">ระบบฝึกงาน</h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>
               <Link href="/">
@@ -106,9 +106,7 @@ export default function Jobs() {
           <div className="md:col-span-3">
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle className="text-xl">
-                  ค้นหาตำแหน่งงานสหกิจศึกษา
-                </CardTitle>
+                <CardTitle className="text-xl">ค้นหาตำแหน่งงานฝึกงาน</CardTitle>
                 <CardDescription>ค้นหาตำแหน่งงานที่เหมาะกับคุณ</CardDescription>
               </CardHeader>
               <CardContent>

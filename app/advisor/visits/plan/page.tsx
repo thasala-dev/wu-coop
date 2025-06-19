@@ -150,7 +150,7 @@ export default function PlanVisit() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold text-gray-800">
-              ระบบสหกิจศึกษา (อาจารย์ที่ปรึกษา)
+              ระบบฝึกงาน (อาจารย์ที่ปรึกษา)
             </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผศ.ดร. วิชาญ นักสอน</span>

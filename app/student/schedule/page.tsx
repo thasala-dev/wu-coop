@@ -69,7 +69,7 @@ export default function StudentSchedulePage() {
       location: "บริษัท เทคโนโลยี จำกัด",
       advisor: "ผศ.ดร.สมชาย ใจดี",
       status: "completed",
-      description: "การนิเทศเพิ่มเติมเพื่อแนะนำการเตรียมตัวก่อนเริ่มสหกิจศึกษา",
+      description: "การนิเทศเพิ่มเติมเพื่อแนะนำการเตรียมตัวก่อนเริ่มฝึกงาน",
     },
     {
       id: 5,

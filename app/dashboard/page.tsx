@@ -23,7 +23,7 @@ export default function Dashboard() {
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา</h1>
+            <h1 className="text-xl font-bold text-gray-800">ระบบฝึกงาน</h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>
               <Link href="/">
@@ -153,7 +153,7 @@ export default function Dashboard() {
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span>แบบขออนุมัติสหกิจศึกษา</span>
+                          <span>แบบขออนุมัติฝึกงาน</span>
                           <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">
                             ยังไม่ส่ง
                           </span>
@@ -246,34 +246,34 @@ export default function Dashboard() {
                     <div className="space-y-4">
                       <div className="border-b pb-4">
                         <h3 className="font-medium">
-                          การปฐมนิเทศนักศึกษาสหกิจศึกษา ประจำปีการศึกษา 2025
+                          การปฐมนิเทศนักศึกษาฝึกงาน ประจำปีการศึกษา 2025
                         </h3>
                         <p className="text-sm text-gray-600 mt-1">
                           วันที่ 20 เมษายน 2025 เวลา 09:00-12:00 น. ณ
                           ห้องประชุมคณะ
                         </p>
                         <p className="text-sm mt-2">
-                          ขอเชิญนักศึกษาที่ลงทะเบียนสหกิจศึกษาทุกท่านเข้าร่วมการปฐมนิเทศ
+                          ขอเชิญนักศึกษาที่ลงทะเบียนฝึกงานทุกท่านเข้าร่วมการปฐมนิเทศ
                           เพื่อรับทราบข้อมูลสำคัญและแนวทางการปฏิบัติงาน
                         </p>
                       </div>
 
                       <div className="border-b pb-4">
                         <h3 className="font-medium">
-                          กำหนดส่งเอกสารสมัครงานสหกิจศึกษา
+                          กำหนดส่งเอกสารสมัครงานฝึกงาน
                         </h3>
                         <p className="text-sm text-gray-600 mt-1">
                           ภายในวันที่ 15 เมษายน 2025
                         </p>
                         <p className="text-sm mt-2">
-                          นักศึกษาที่ประสงค์จะออกปฏิบัติงานสหกิจศึกษาในภาคการศึกษาที่
+                          นักศึกษาที่ประสงค์จะออกปฏิบัติงานฝึกงานในภาคการศึกษาที่
                           1/2025 กรุณาส่งเอกสารการสมัครงานภายในวันที่กำหนด
                         </p>
                       </div>
 
                       <div className="border-b pb-4">
                         <h3 className="font-medium">
-                          การอบรมเตรียมความพร้อมก่อนออกปฏิบัติงานสหกิจศึกษา
+                          การอบรมเตรียมความพร้อมก่อนออกปฏิบัติงานฝึกงาน
                         </h3>
                         <p className="text-sm text-gray-600 mt-1">
                           วันที่ 25-26 เมษายน 2025
@@ -292,7 +292,7 @@ export default function Dashboard() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">
-                      ปฏิทินกิจกรรมสหกิจศึกษา
+                      ปฏิทินกิจกรรมฝึกงาน
                     </CardTitle>
                     <CardDescription>ภาคการศึกษาที่ 1/2025</CardDescription>
                   </CardHeader>
@@ -308,7 +308,7 @@ export default function Dashboard() {
                             วันสุดท้ายของการส่งเอกสารสมัครงาน
                           </h3>
                           <p className="text-sm text-gray-600">
-                            ส่งเอกสารที่ห้องสหกิจศึกษา หรือผ่านระบบออนไลน์
+                            ส่งเอกสารที่ห้องฝึกงาน หรือผ่านระบบออนไลน์
                           </p>
                         </div>
                       </div>
@@ -320,7 +320,7 @@ export default function Dashboard() {
                         </div>
                         <div>
                           <h3 className="font-medium">
-                            ปฐมนิเทศนักศึกษาสหกิจศึกษา
+                            ปฐมนิเทศนักศึกษาฝึกงาน
                           </h3>
                           <p className="text-sm text-gray-600">
                             เวลา 09:00-12:00 น. ณ ห้องประชุมคณะ
@@ -347,9 +347,7 @@ export default function Dashboard() {
                           <div className="text-xs">มิ.ย.</div>
                         </div>
                         <div>
-                          <h3 className="font-medium">
-                            เริ่มปฏิบัติงานสหกิจศึกษา
-                          </h3>
+                          <h3 className="font-medium">เริ่มปฏิบัติงานฝึกงาน</h3>
                           <p className="text-sm text-gray-600">
                             นักศึกษารายงานตัวที่สถานประกอบการ
                           </p>
@@ -363,7 +361,7 @@ export default function Dashboard() {
                         </div>
                         <div>
                           <h3 className="font-medium">
-                            สิ้นสุดการปฏิบัติงานสหกิจศึกษา
+                            สิ้นสุดการปฏิบัติงานฝึกงาน
                           </h3>
                           <p className="text-sm text-gray-600">
                             ส่งรายงานฉบับสมบูรณ์และนำเสนอผลงาน

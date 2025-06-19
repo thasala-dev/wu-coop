@@ -54,7 +54,7 @@ export default function StudentDashboard() {
                   สถานะการฝึกงาน
                 </CardTitle>
                 <CardDescription>
-                  ติดตามสถานะการฝึกงานสหกิจศึกษาของคุณ
+                  ติดตามสถานะการฝึกงานฝึกงานของคุณ
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -120,7 +120,7 @@ export default function StudentDashboard() {
                   ประกาศล่าสุด
                 </CardTitle>
                 <CardDescription>
-                  ข่าวสารและประกาศสำคัญเกี่ยวกับสหกิจศึกษา
+                  ข่าวสารและประกาศสำคัญเกี่ยวกับฝึกงาน
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -128,7 +128,7 @@ export default function StudentDashboard() {
                   <div className="bg-white border rounded-lg p-3 hover:shadow-md transition-shadow">
                     <div className="flex justify-between">
                       <h3 className="font-medium">
-                        เปิดรับสมัครสหกิจศึกษาประจำภาคการศึกษาที่ 2/2566
+                        เปิดรับสมัครฝึกงานประจำภาคการศึกษาที่ 2/2566
                       </h3>
                       <Badge className="bg-blue-500">ประกาศ</Badge>
                     </div>
@@ -136,7 +136,7 @@ export default function StudentDashboard() {
                       วันที่ 15 ตุลาคม 2566
                     </div>
                     <p className="text-sm mt-2">
-                      ขอเชิญนักศึกษาที่สนใจเข้าร่วมโครงการสหกิจศึกษาประจำภาคการศึกษาที่
+                      ขอเชิญนักศึกษาที่สนใจเข้าร่วมโครงการฝึกงานประจำภาคการศึกษาที่
                       2/2566 สมัครได้ตั้งแต่วันนี้ถึง 30 ตุลาคม 2566
                     </p>
                     <Button variant="outline" size="sm" className="mt-2">
@@ -147,7 +147,7 @@ export default function StudentDashboard() {
                   <div className="bg-white border rounded-lg p-3 hover:shadow-md transition-shadow">
                     <div className="flex justify-between">
                       <h3 className="font-medium">
-                        การอบรมเตรียมความพร้อมสหกิจศึกษา
+                        การอบรมเตรียมความพร้อมฝึกงาน
                       </h3>
                       <Badge className="bg-green-500">กิจกรรม</Badge>
                     </div>
@@ -155,7 +155,7 @@ export default function StudentDashboard() {
                       วันที่ 10 ตุลาคม 2566
                     </div>
                     <p className="text-sm mt-2">
-                      ขอเชิญนักศึกษาที่สมัครโครงการสหกิจศึกษาเข้าร่วมการอบรมเตรียมความพร้อมในวันที่
+                      ขอเชิญนักศึกษาที่สมัครโครงการฝึกงานเข้าร่วมการอบรมเตรียมความพร้อมในวันที่
                       1 พฤศจิกายน 2566
                     </p>
                     <Button variant="outline" size="sm" className="mt-2">

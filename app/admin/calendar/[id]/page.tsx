@@ -253,7 +253,7 @@ export default function CompanyPage({ params }: any) {
                         <CalendarIcon className="h-4 w-4 text-gray-500 mt-0.5" />
                         <div>
                           <span className="text-gray-500">
-                            เริ่มร่วมโครงการสหกิจศึกษา:
+                            เริ่มร่วมโครงการฝึกงาน:
                           </span>{" "}
                           {company.cooperationSince}
                         </div>

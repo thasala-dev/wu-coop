@@ -119,7 +119,7 @@ export default function StudentReports() {
         period: "1 มิถุนายน - 30 กันยายน 2567",
         dueDate: "15 กันยายน 2567",
         status: "upcoming",
-        description: "รายงานสรุปผลการปฏิบัติงานสหกิจศึกษาทั้งหมด",
+        description: "รายงานสรุปผลการปฏิบัติงานฝึกงานทั้งหมด",
       },
       {
         id: 2,
@@ -127,7 +127,7 @@ export default function StudentReports() {
         period: "1 มิถุนายน - 30 กันยายน 2567",
         dueDate: "20 กันยายน 2567",
         status: "upcoming",
-        description: "สไลด์สำหรับการนำเสนอผลการปฏิบัติงานสหกิจศึกษา",
+        description: "สไลด์สำหรับการนำเสนอผลการปฏิบัติงานฝึกงาน",
       },
     ],
   };
@@ -180,7 +180,7 @@ export default function StudentReports() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold text-gray-800">
-              ระบบสหกิจศึกษา (นักศึกษา)
+              ระบบฝึกงาน (นักศึกษา)
             </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>

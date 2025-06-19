@@ -55,7 +55,7 @@ export default function AdminDashboard() {
             <Tabs defaultValue="overview">
               <TabsList className="mb-4">
                 <TabsTrigger value="overview">ภาพรวม</TabsTrigger>
-                <TabsTrigger value="cycles">รอบสหกิจศึกษา</TabsTrigger>
+                <TabsTrigger value="cycles">รอบฝึกงาน</TabsTrigger>
                 <TabsTrigger value="stats">สถิติ</TabsTrigger>
               </TabsList>
 
@@ -284,7 +284,7 @@ export default function AdminDashboard() {
                           </div>
                           <div>
                             <h3 className="font-medium">
-                              เริ่มปฏิบัติงานสหกิจศึกษา
+                              เริ่มปฏิบัติงานฝึกงาน
                             </h3>
                             <p className="text-sm text-gray-600">
                               นักศึกษาเริ่มฝึกงานที่บริษัท
@@ -323,10 +323,8 @@ export default function AdminDashboard() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                      <CardTitle className="text-xl">รอบสหกิจศึกษา</CardTitle>
-                      <CardDescription>
-                        จัดการรอบสหกิจศึกษาทั้งหมด
-                      </CardDescription>
+                      <CardTitle className="text-xl">รอบฝึกงาน</CardTitle>
+                      <CardDescription>จัดการรอบฝึกงานทั้งหมด</CardDescription>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -469,7 +467,7 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div className="border rounded-lg p-4">
                         <h3 className="font-medium text-lg mb-3">
-                          อัตราส่วนผ่าน/ไม่ผ่านสหกิจศึกษา
+                          อัตราส่วนผ่าน/ไม่ผ่านฝึกงาน
                         </h3>
                         <div className="h-52 bg-gray-100 rounded-md flex items-center justify-center">
                           <div className="text-center">
@@ -477,7 +475,7 @@ export default function AdminDashboard() {
                               แผนภูมิแท่งแสดงสถิตินักศึกษา
                             </div>
                             <div className="text-sm text-gray-400">
-                              ผ่าน/ไม่ผ่านสหกิจศึกษา
+                              ผ่าน/ไม่ผ่านฝึกงาน
                             </div>
                           </div>
                         </div>

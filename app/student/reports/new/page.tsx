@@ -103,7 +103,7 @@ export default function NewReport() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold text-gray-800">
-              ระบบสหกิจศึกษา (นักศึกษา)
+              ระบบฝึกงาน (นักศึกษา)
             </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>
@@ -728,7 +728,7 @@ export default function NewReport() {
                               </Label>
                               <Input
                                 id="final-report-keywords"
-                                placeholder="ระบุคำสำคัญ เช่น สหกิจศึกษา, เภสัชกรรม, การผลิตยา (คั่นด้วยเครื่องหมายจุลภาค)"
+                                placeholder="ระบุคำสำคัญ เช่น ฝึกงาน, เภสัชกรรม, การผลิตยา (คั่นด้วยเครื่องหมายจุลภาค)"
                                 className="mt-1.5"
                               />
                             </div>

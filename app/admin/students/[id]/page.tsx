@@ -361,7 +361,7 @@ export default function AdminStudentDetailPage({
                     <div>
                       <div className="space-y-2">
                         <h3 className="text-sm font-medium">
-                          ความคืบหน้าการฝึกสหกิจศึกษา
+                          ความคืบหน้าการฝึกฝึกงาน
                         </h3>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-600">
@@ -422,7 +422,7 @@ export default function AdminStudentDetailPage({
                       value="coop"
                       className="rounded-none border-b-2 border-transparent px-4 py-3 text-sm font-medium text-gray-600 data-[state=active]:border-gray-900 data-[state=active]:text-gray-900 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                     >
-                      ข้อมูลสหกิจศึกษา
+                      ข้อมูลฝึกงาน
                     </TabsTrigger>
                     <TabsTrigger
                       value="reports"
@@ -604,7 +604,7 @@ export default function AdminStudentDetailPage({
                         <CardHeader className="pb-2">
                           <CardTitle className="text-base font-medium flex items-center gap-2">
                             <BarChart className="h-4 w-4 text-gray-500" />
-                            ความคืบหน้าการฝึกสหกิจศึกษา
+                            ความคืบหน้าการฝึกฝึกงาน
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -856,13 +856,13 @@ export default function AdminStudentDetailPage({
                                 15 พ.ค. 2566
                               </TableCell>
                               <TableCell className="text-sm font-medium">
-                                ลงทะเบียนสหกิจศึกษา
+                                ลงทะเบียนฝึกงาน
                               </TableCell>
                               <TableCell className="text-sm text-gray-600">
                                 นายธนกร มั่นคง
                               </TableCell>
                               <TableCell className="text-sm text-gray-600">
-                                ลงทะเบียนเข้าร่วมโครงการสหกิจศึกษา
+                                ลงทะเบียนเข้าร่วมโครงการฝึกงาน
                               </TableCell>
                             </TableRow>
                             <TableRow className="hover:bg-gray-50 border-gray-100">

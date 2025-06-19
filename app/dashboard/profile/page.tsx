@@ -25,7 +25,7 @@ export default function Profile() {
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">ระบบสหกิจศึกษา</h1>
+            <h1 className="text-xl font-bold text-gray-800">ระบบฝึกงาน</h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>
               <Link href="/">
@@ -234,7 +234,7 @@ export default function Profile() {
 
                         <div className="space-y-2">
                           <Label htmlFor="courses">
-                            วิชาที่ผ่านการเรียนแล้ว (ที่เกี่ยวข้องกับสหกิจศึกษา)
+                            วิชาที่ผ่านการเรียนแล้ว (ที่เกี่ยวข้องกับฝึกงาน)
                           </Label>
                           <textarea
                             id="courses"

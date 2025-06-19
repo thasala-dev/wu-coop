@@ -359,7 +359,7 @@ export default function EditActivity({ params }: { params: { id: string } }) {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold text-gray-800">
-              ระบบสหกิจศึกษา (นักศึกษา)
+              ระบบฝึกงาน (นักศึกษา)
             </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>

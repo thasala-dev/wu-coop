@@ -230,9 +230,9 @@ export default function Page() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle>กิจกรรมสหกิจศึกษา</CardTitle>
+                  <CardTitle>กิจกรรมฝึกงาน</CardTitle>
                   <CardDescription>
-                    จัดการกิจกรรมที่เกี่ยวข้องกับสหกิจศึกษา
+                    จัดการกิจกรรมที่เกี่ยวข้องกับฝึกงาน
                   </CardDescription>
                 </div>
                 <Link href="/admin/event/add/0">
@@ -270,7 +270,7 @@ export default function Page() {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="w-[250px]">ชื่อกิจกรรม</TableHead>
-                        <TableHead>รอบสหกิจศึกษา</TableHead>
+                        <TableHead>รอบฝึกงาน</TableHead>
                         <TableHead>ประเภทกิจกรรม</TableHead>
                         <TableHead>วันที่</TableHead>
                         <TableHead>สถานะ</TableHead>

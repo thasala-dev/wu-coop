@@ -266,7 +266,7 @@ export default function StudentProfile() {
                   </Button>
                 </div>
                 <CardDescription className="text-blue-100">
-                  ข้อมูลส่วนตัวของนักศึกษาสหกิจศึกษา
+                  ข้อมูลส่วนตัวของนักศึกษาฝึกงาน
                 </CardDescription>
               </CardHeader>
 

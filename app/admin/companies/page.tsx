@@ -120,7 +120,7 @@ export default function CompaniesPage() {
                       จัดการข้อมูลแหล่งฝึกงาน
                     </CardTitle>
                     <CardDescription>
-                      รายชื่อแหล่งฝึกงานที่ร่วมโครงการสหกิจศึกษาทั้งหมด
+                      รายชื่อแหล่งฝึกงานที่ร่วมโครงการฝึกงานทั้งหมด
                     </CardDescription>
                   </div>
                   <a href={`/admin/companies/add`}>

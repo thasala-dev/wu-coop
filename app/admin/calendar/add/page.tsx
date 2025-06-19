@@ -99,10 +99,10 @@ export default function Page({ params }: any) {
               </Button>
               <div className="flex items-center gap-1 text-sm text-gray-500">
                 <a href="/admin/calendar" className="hover:text-gray-900">
-                  รอบสหกิจศึกษา
+                  รอบฝึกงาน
                 </a>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-gray-900">เพิ่มรอบสหกิจศึกษา</span>
+                <span className="text-gray-900">เพิ่มรอบฝึกงาน</span>
               </div>
             </div>
 
@@ -115,11 +115,11 @@ export default function Page({ params }: any) {
                         <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
                           <div className="sm:col-span-12">
                             <div className="font-semibold tracking-tight text-lg">
-                              ข้อมูลรอบสหกิจศึกษา
+                              ข้อมูลรอบฝึกงาน
                             </div>
                           </div>
                           <div className="sm:col-span-6 space-y-1">
-                            <label>ชื่อรอบสหกิจศึกษา</label>
+                            <label>ชื่อรอบฝึกงาน</label>
                             <input
                               id="name"
                               type="text"

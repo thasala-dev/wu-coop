@@ -29,9 +29,7 @@ export default function SettingsPage() {
         <div className="md:col-span-3">
           <div className="mb-6">
             <h1 className="text-2xl font-bold">ตั้งค่าระบบ</h1>
-            <p className="text-gray-500">
-              จัดการการตั้งค่าต่างๆ ของระบบสหกิจศึกษา
-            </p>
+            <p className="text-gray-500">จัดการการตั้งค่าต่างๆ ของระบบฝึกงาน</p>
           </div>
 
           <Tabs defaultValue="general">
@@ -268,7 +266,7 @@ export default function SettingsPage() {
                       <Label htmlFor="email-sender-name">ชื่อผู้ส่ง</Label>
                       <Input
                         id="email-sender-name"
-                        defaultValue="ระบบสหกิจศึกษา มหาวิทยาลัยเทคโนโลยีสุรนารี"
+                        defaultValue="ระบบฝึกงาน มหาวิทยาลัยเทคโนโลยีสุรนารี"
                       />
                     </div>
                   </div>
@@ -378,7 +376,7 @@ export default function SettingsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="registration-start">
-                          วันเริ่มลงทะเบียนสหกิจศึกษา
+                          วันเริ่มลงทะเบียนฝึกงาน
                         </Label>
                         <Input
                           id="registration-start"
@@ -388,7 +386,7 @@ export default function SettingsPage() {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="registration-end">
-                          วันสิ้นสุดลงทะเบียนสหกิจศึกษา
+                          วันสิ้นสุดลงทะเบียนฝึกงาน
                         </Label>
                         <Input
                           id="registration-end"
@@ -399,7 +397,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="coop-start">วันเริ่มสหกิจศึกษา</Label>
+                        <Label htmlFor="coop-start">วันเริ่มฝึกงาน</Label>
                         <Input
                           id="coop-start"
                           type="date"
@@ -407,7 +405,7 @@ export default function SettingsPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="coop-end">วันสิ้นสุดสหกิจศึกษา</Label>
+                        <Label htmlFor="coop-end">วันสิ้นสุดฝึกงาน</Label>
                         <Input
                           id="coop-end"
                           type="date"

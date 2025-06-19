@@ -792,25 +792,27 @@ export default function AdminCalendar() {
                                     {day.day}
                                   </div>
                                   <div className="space-y-1">
-                                    {day.events.slice(0, 2).map((event) => (
-                                      <div
-                                        key={event.id}
-                                        className={`p-1 text-xs rounded truncate flex items-center ${
-                                          event.category === "สำคัญ"
-                                            ? "bg-red-100 text-red-800"
-                                            : event.category === "กำหนดส่ง"
-                                            ? "bg-blue-100 text-blue-800"
-                                            : event.category === "การนิเทศ"
-                                            ? "bg-purple-100 text-purple-800"
-                                            : event.category === "การนำเสนอ"
-                                            ? "bg-green-100 text-green-800"
-                                            : "bg-gray-100 text-gray-800"
-                                        }`}
-                                      >
-                                        {renderEventDot(event.category)}
-                                        {event.title}
-                                      </div>
-                                    ))}
+                                    {day.events
+                                      .slice(0, 2)
+                                      .map((event: any) => (
+                                        <div
+                                          key={event.id}
+                                          className={`p-1 text-xs rounded truncate flex items-center ${
+                                            event.category === "สำคัญ"
+                                              ? "bg-red-100 text-red-800"
+                                              : event.category === "กำหนดส่ง"
+                                              ? "bg-blue-100 text-blue-800"
+                                              : event.category === "การนิเทศ"
+                                              ? "bg-purple-100 text-purple-800"
+                                              : event.category === "การนำเสนอ"
+                                              ? "bg-green-100 text-green-800"
+                                              : "bg-gray-100 text-gray-800"
+                                          }`}
+                                        >
+                                          {renderEventDot(event.category)}
+                                          {event.title}
+                                        </div>
+                                      ))}
                                     {day.events.length > 2 && (
                                       <div className="text-xs text-gray-500 pl-1">
                                         + {day.events.length - 2}{" "}

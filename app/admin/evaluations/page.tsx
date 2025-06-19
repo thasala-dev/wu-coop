@@ -25,7 +25,7 @@ export default function AdminEvaluations() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold text-gray-800">
-              ระบบสหกิจศึกษา (ผู้ดูแลระบบ)
+              ระบบฝึกงาน (ผู้ดูแลระบบ)
             </h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">ผู้ดูแลระบบ</span>
@@ -85,7 +85,7 @@ export default function AdminEvaluations() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h3 className="font-medium">
-                                  แบบประเมินผลการปฏิบัติงานนักศึกษาสหกิจศึกษา
+                                  แบบประเมินผลการปฏิบัติงานนักศึกษาฝึกงาน
                                 </h3>
                                 <Badge
                                   variant="outline"
@@ -138,7 +138,7 @@ export default function AdminEvaluations() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h3 className="font-medium">
-                                  แบบประเมินรายงานสหกิจศึกษา
+                                  แบบประเมินรายงานฝึกงาน
                                 </h3>
                                 <Badge
                                   variant="outline"
@@ -431,7 +431,7 @@ export default function AdminEvaluations() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h3 className="font-medium">
-                                  แบบประเมินรายงานสหกิจศึกษา
+                                  แบบประเมินรายงานฝึกงาน
                                 </h3>
                                 <Badge
                                   variant="outline"
@@ -498,7 +498,7 @@ export default function AdminEvaluations() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h3 className="font-medium">
-                                  แบบประเมินผลการปฏิบัติงานนักศึกษาสหกิจศึกษา
+                                  แบบประเมินผลการปฏิบัติงานนักศึกษาฝึกงาน
                                 </h3>
                                 <Badge
                                   variant="outline"
