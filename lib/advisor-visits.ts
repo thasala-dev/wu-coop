@@ -11,18 +11,28 @@ export const formatVisitDateTime = (
   timeEnd: string
 ): string => {
   const visitDate = new Date(date);
-  
+
   // Thai month names
   const thaiMonths = [
-    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    "มกราคม",
+    "กุมภาพันธ์",
+    "มีนาคม",
+    "เมษายน",
+    "พฤษภาคม",
+    "มิถุนายน",
+    "กรกฎาคม",
+    "สิงหาคม",
+    "กันยายน",
+    "ตุลาคม",
+    "พฤศจิกายน",
+    "ธันวาคม",
   ];
-  
+
   // Format date to Thai format
   const day = visitDate.getDate();
   const month = thaiMonths[visitDate.getMonth()];
   const year = visitDate.getFullYear() + 543; // Convert to Buddhist era
-  
+
   return `${day} ${month} ${year} เวลา ${timeStart} - ${timeEnd} น.`;
 };
 
@@ -31,16 +41,18 @@ export const formatVisitDateTime = (
  * @param status The visit status
  * @returns Object with text and color for the status
  */
-export const getVisitStatusInfo = (status: string): { text: string; color: string } => {
+export const getVisitStatusInfo = (
+  status: string
+): { text: string; color: string } => {
   switch (status) {
-    case 'upcoming':
-      return { text: 'กำลังจะถึง', color: 'blue' };
-    case 'completed':
-      return { text: 'เสร็จสิ้นแล้ว', color: 'green' };
-    case 'cancelled':
-      return { text: 'ยกเลิกแล้ว', color: 'red' };
+    case "upcoming":
+      return { text: "กำลังจะถึง", color: "blue" };
+    case "completed":
+      return { text: "เสร็จสิ้นแล้ว", color: "green" };
+    case "cancelled":
+      return { text: "ยกเลิกแล้ว", color: "red" };
     default:
-      return { text: 'ไม่ระบุ', color: 'gray' };
+      return { text: "ไม่ระบุ", color: "gray" };
   }
 };
 
@@ -51,12 +63,12 @@ export const getVisitStatusInfo = (status: string): { text: string; color: strin
  */
 export const getVisitTypeText = (type: string): string => {
   switch (type) {
-    case 'onsite':
-      return 'การนิเทศที่สถานประกอบการ';
-    case 'online':
-      return 'การนิเทศออนไลน์';
+    case "onsite":
+      return "การนิเทศที่แหล่งฝึกงาน";
+    case "online":
+      return "การนิเทศออนไลน์";
     default:
-      return 'ไม่ระบุ';
+      return "ไม่ระบุ";
   }
 };
 
@@ -65,17 +77,19 @@ export const getVisitTypeText = (type: string): string => {
  * @param performance The performance level string
  * @returns Object with text and color for the performance level
  */
-export const getPerformanceInfo = (performance: string): { text: string; color: string } => {
+export const getPerformanceInfo = (
+  performance: string
+): { text: string; color: string } => {
   switch (performance) {
-    case 'excellent':
-      return { text: 'ดีเยี่ยม', color: 'green' };
-    case 'good':
-      return { text: 'ดี', color: 'blue' };
-    case 'satisfactory':
-      return { text: 'พอใช้', color: 'orange' };
-    case 'needsImprovement':
-      return { text: 'ต้องปรับปรุง', color: 'red' };
+    case "excellent":
+      return { text: "ดีเยี่ยม", color: "green" };
+    case "good":
+      return { text: "ดี", color: "blue" };
+    case "satisfactory":
+      return { text: "พอใช้", color: "orange" };
+    case "needsImprovement":
+      return { text: "ต้องปรับปรุง", color: "red" };
     default:
-      return { text: 'ไม่ระบุ', color: 'gray' };
+      return { text: "ไม่ระบุ", color: "gray" };
   }
 };

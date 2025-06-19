@@ -39,7 +39,7 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
     },
     company: {
       id: 1,
-      name: "บริษัท เทคโนโลยีดิจิทัล จำกัด",
+      name: "แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด",
       address:
         "อาคารดิจิทัล ชั้น 15 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพมหานคร 10400",
       location: "กรุงเทพมหานคร",
@@ -104,7 +104,7 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                       รายละเอียดการนิเทศ
                     </CardTitle>
                     <CardDescription>
-                      ข้อมูลการนิเทศนักศึกษา ณ สถานประกอบการ
+                      ข้อมูลการนิเทศนักศึกษา ณ แหล่งฝึกงาน
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
@@ -182,7 +182,7 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg flex items-center gap-2">
                           <BuildingIcon className="h-5 w-5 text-blue-500" />
-                          ข้อมูลบริษัท
+                          ข้อมูลแหล่งฝึกงาน
                         </CardTitle>
                       </CardHeader>
                       <CardContent>

@@ -17,10 +17,10 @@ import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 
 const formSchema = z.object({
-  name: z.string().min(1, "กรุณากรอกชื่อสถานประกอบการ"),
+  name: z.string().min(1, "กรุณากรอกชื่อแหล่งฝึกงาน"),
   businessType: z.string().min(1, "กรุณาเลือกประเภทธุรกิจ"),
-  detail: z.string().min(1, "กรุณากรอกรายละเอียดสถานประกอบการ"),
-  location: z.string().min(1, "กรุณากรอกที่อยู่สถานประกอบการ"),
+  detail: z.string().min(1, "กรุณากรอกรายละเอียดแหล่งฝึกงาน"),
+  location: z.string().min(1, "กรุณากรอกที่อยู่แหล่งฝึกงาน"),
 
   establishYear: z.string(),
   totalEmployees: z.string(),
@@ -135,7 +135,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             </div>
                           </div>
                           <div className="sm:col-span-6">
-                            <label>ชื่อสถานประกอบการ</label>
+                            <label>ชื่อแหล่งฝึกงาน</label>
                             <input
                               id="name"
                               type="text"
@@ -144,7 +144,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                 "w-full p-2 border rounded-md " +
                                 (errors.name ? "border-red-600  border-2" : "")
                               }
-                              placeholder="กรุณากรอกชื่อสถานประกอบการ"
+                              placeholder="กรุณากรอกชื่อแหล่งฝึกงาน"
                             />
                             {errors.name && (
                               <p className="text-sm text-red-600">
@@ -183,7 +183,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             )}
                           </div>
                           <div className="sm:col-span-12">
-                            <label>รายละเอียดสถานประกอบการ</label>
+                            <label>รายละเอียดแหล่งฝึกงาน</label>
                             <textarea
                               id="detail"
                               {...register("detail")}
@@ -193,7 +193,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                   ? "border-red-600  border-2"
                                   : "")
                               }
-                              placeholder="กรุณากรอกรายละเอียดสถานประกอบการ"
+                              placeholder="กรุณากรอกรายละเอียดแหล่งฝึกงาน"
                               rows={4}
                             />
                             {errors.detail && (
@@ -328,7 +328,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                   ? "border-red-600  border-2"
                                   : "")
                               }
-                              placeholder="กรุณากรอกชื่อสถานประกอบการ"
+                              placeholder="กรุณากรอกชื่อแหล่งฝึกงาน"
                             />
                             {errors.contactName && (
                               <p className="text-sm text-red-600">
@@ -348,7 +348,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                   ? "border-red-600  border-2"
                                   : "")
                               }
-                              placeholder="กรุณากรอกชื่อสถานประกอบการ"
+                              placeholder="กรุณากรอกชื่อแหล่งฝึกงาน"
                             />
                             {errors.contactPosition && (
                               <p className="text-sm text-red-600">

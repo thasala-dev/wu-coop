@@ -98,7 +98,7 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         <div>
-                          <div className="font-medium">บริษัท</div>
+                          <div className="font-medium">แหล่งฝึกงาน</div>
                           <div className="text-2xl font-bold text-gray-900">
                             {data.currentCalendar?.total_regist}
                           </div>
@@ -182,7 +182,7 @@ export default function AdminDashboard() {
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-lg">
-                        บริษัทล่าสุดที่เข้าร่วม
+                        แหล่งฝึกงานล่าสุดที่เข้าร่วม
                       </CardTitle>
                       <CardDescription>
                         อัพเดทล่าสุด: 5 วันที่ผ่านมา
@@ -196,7 +196,7 @@ export default function AdminDashboard() {
                           </div>
                           <div className="flex-grow">
                             <div className="font-medium">
-                              บริษัท เทคโนโลยีชั้นนำ จำกัด
+                              แหล่งฝึกงาน เทคโนโลยีชั้นนำ จำกัด
                             </div>
                             <div className="text-sm text-gray-500">
                               4 ตำแหน่งงาน • 6 นักศึกษา
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
                           </div>
                           <div className="flex-grow">
                             <div className="font-medium">
-                              บริษัท ออโตเมชั่น โซลูชั่น จำกัด
+                              แหล่งฝึกงาน ออโตเมชั่น โซลูชั่น จำกัด
                             </div>
                             <div className="text-sm text-gray-500">
                               2 ตำแหน่งงาน • 3 นักศึกษา
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
                           </div>
                           <div className="flex-grow">
                             <div className="font-medium">
-                              บริษัท ดาต้า แอนาไลติกส์ จำกัด
+                              แหล่งฝึกงาน ดาต้า แอนาไลติกส์ จำกัด
                             </div>
                             <div className="text-sm text-gray-500">
                               1 ตำแหน่งงาน • 2 นักศึกษา
@@ -248,7 +248,7 @@ export default function AdminDashboard() {
                       <div className="mt-4 pt-2 border-t">
                         <Link href="/admin/companies">
                           <Button variant="ghost" size="sm" className="w-full">
-                            ดูบริษัททั้งหมด
+                            ดูแหล่งฝึกงานทั้งหมด
                           </Button>
                         </Link>
                       </div>
@@ -269,7 +269,7 @@ export default function AdminDashboard() {
                           </div>
                           <div>
                             <h3 className="font-medium">
-                              จับคู่นักศึกษากับบริษัท
+                              จับคู่นักศึกษากับแหล่งฝึกงาน
                             </h3>
                             <p className="text-sm text-gray-600">
                               กำหนดจับคู่และประกาศผล
@@ -287,7 +287,7 @@ export default function AdminDashboard() {
                               เริ่มปฏิบัติงานฝึกงาน
                             </h3>
                             <p className="text-sm text-gray-600">
-                              นักศึกษาเริ่มฝึกงานที่บริษัท
+                              นักศึกษาเริ่มฝึกงานที่แหล่งฝึกงาน
                             </p>
                           </div>
                         </div>
@@ -346,7 +346,7 @@ export default function AdminDashboard() {
                                 นักศึกษา: 142 คน
                               </span>
                               <span className="text-sm text-gray-600">
-                                บริษัท: 38 แห่ง
+                                แหล่งฝึกงาน: 38 แห่ง
                               </span>
                             </div>
                           </div>
@@ -376,7 +376,7 @@ export default function AdminDashboard() {
                                 นักศึกษา: 92 คน
                               </span>
                               <span className="text-sm text-gray-600">
-                                บริษัท: 25 แห่ง
+                                แหล่งฝึกงาน: 25 แห่ง
                               </span>
                             </div>
                           </div>
@@ -406,7 +406,7 @@ export default function AdminDashboard() {
                                 นักศึกษา: 128 คน
                               </span>
                               <span className="text-sm text-gray-600">
-                                บริษัท: 35 แห่ง
+                                แหล่งฝึกงาน: 35 แห่ง
                               </span>
                             </div>
                           </div>
@@ -438,7 +438,7 @@ export default function AdminDashboard() {
                                 นักศึกษา: 135 คน
                               </span>
                               <span className="text-sm text-gray-600">
-                                บริษัท: 32 แห่ง
+                                แหล่งฝึกงาน: 32 แห่ง
                               </span>
                             </div>
                           </div>
@@ -512,7 +512,7 @@ export default function AdminDashboard() {
                         </div>
                         <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md">
                           <span className="font-medium">
-                            รายงานสรุปบริษัทและตำแหน่งงาน
+                            รายงานสรุปแหล่งฝึกงานและตำแหน่งงาน
                           </span>
                           <Button variant="outline" size="sm">
                             <FileSpreadsheetIcon className="h-4 w-4 mr-2" />

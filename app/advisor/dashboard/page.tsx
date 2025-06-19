@@ -133,7 +133,7 @@ export default function AdvisorDashboard() {
                           <div className="flex-grow">
                             <div className="font-medium">นายวิชัย เรียนดี</div>
                             <div className="text-sm text-gray-500">
-                              บริษัท เทคโนโลยีดิจิทัล จำกัด • กรุงเทพฯ
+                              แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด • กรุงเทพฯ
                             </div>
                           </div>
                           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
@@ -147,7 +147,7 @@ export default function AdvisorDashboard() {
                           <div className="flex-grow">
                             <div className="font-medium">นางสาวนภา สุขใจ</div>
                             <div className="text-sm text-gray-500">
-                              บริษัท เน็ตเวิร์ค โซลูชั่น จำกัด • นนทบุรี
+                              แหล่งฝึกงาน เน็ตเวิร์ค โซลูชั่น จำกัด • นนทบุรี
                             </div>
                           </div>
                           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
@@ -161,7 +161,7 @@ export default function AdvisorDashboard() {
                           <div className="flex-grow">
                             <div className="font-medium">นายสมชาย ใจดี</div>
                             <div className="text-sm text-gray-500">
-                              บริษัท เทคโนโลยีดิจิทัล จำกัด • กรุงเทพฯ
+                              แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด • กรุงเทพฯ
                             </div>
                           </div>
                           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
@@ -202,7 +202,7 @@ export default function AdvisorDashboard() {
                               15 ก.ค. 2567 • 10:00-12:00 น.
                             </div>
                             <div className="text-sm text-gray-500">
-                              บริษัท เทคโนโลยีดิจิทัล จำกัด
+                              แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด
                             </div>
                           </div>
                           <Link href="/advisor/visits/1">
@@ -221,7 +221,7 @@ export default function AdvisorDashboard() {
                               17 ก.ค. 2567 • 13:00-15:00 น.
                             </div>
                             <div className="text-sm text-gray-500">
-                              บริษัท เน็ตเวิร์ค โซลูชั่น จำกัด
+                              แหล่งฝึกงาน เน็ตเวิร์ค โซลูชั่น จำกัด
                             </div>
                           </div>
                           <Link href="/advisor/visits/2">
@@ -240,7 +240,7 @@ export default function AdvisorDashboard() {
                               20 ก.ค. 2567 • 09:00-12:00 น.
                             </div>
                             <div className="text-sm text-gray-500">
-                              บริษัท อิเล็กทรอนิกส์ จำกัด
+                              แหล่งฝึกงาน อิเล็กทรอนิกส์ จำกัด
                             </div>
                           </div>
                           <Link href="/advisor/visits/3">
@@ -273,7 +273,7 @@ export default function AdvisorDashboard() {
                         </div>
                         <div>
                           <h3 className="font-medium">
-                            นิเทศนักศึกษา - บริษัท เทคโนโลยีดิจิทัล จำกัด
+                            นิเทศนักศึกษา - แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด
                           </h3>
                           <p className="text-sm text-gray-600">
                             เวลา 10:00-12:00 น. • นายวิชัย เรียนดี
@@ -288,7 +288,8 @@ export default function AdvisorDashboard() {
                         </div>
                         <div>
                           <h3 className="font-medium">
-                            นิเทศนักศึกษา - บริษัท เน็ตเวิร์ค โซลูชั่น จำกัด
+                            นิเทศนักศึกษา - แหล่งฝึกงาน เน็ตเวิร์ค โซลูชั่น
+                            จำกัด
                           </h3>
                           <p className="text-sm text-gray-600">
                             เวลา 13:00-15:00 น. • นางสาวนภา สุขใจ
@@ -357,7 +358,7 @@ export default function AdvisorDashboard() {
                                 </Badge>
                                 <div className="flex items-center text-sm text-gray-600">
                                   <MapPinIcon className="h-4 w-4 mr-1" />
-                                  บริษัท เทคโนโลยีดิจิทัล จำกัด • กรุงเทพฯ
+                                  แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด • กรุงเทพฯ
                                 </div>
                               </div>
                             </div>
@@ -397,7 +398,8 @@ export default function AdvisorDashboard() {
                                 </Badge>
                                 <div className="flex items-center text-sm text-gray-600">
                                   <MapPinIcon className="h-4 w-4 mr-1" />
-                                  บริษัท เน็ตเวิร์ค โซลูชั่น จำกัด • นนทบุรี
+                                  แหล่งฝึกงาน เน็ตเวิร์ค โซลูชั่น จำกัด •
+                                  นนทบุรี
                                 </div>
                               </div>
                             </div>
@@ -437,7 +439,7 @@ export default function AdvisorDashboard() {
                                 </Badge>
                                 <div className="flex items-center text-sm text-gray-600">
                                   <MapPinIcon className="h-4 w-4 mr-1" />
-                                  บริษัท เทคโนโลยีดิจิทัล จำกัด • กรุงเทพฯ
+                                  แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด • กรุงเทพฯ
                                 </div>
                               </div>
                             </div>
@@ -498,7 +500,7 @@ export default function AdvisorDashboard() {
                                     กรกฎาคม 2567 • 10:00-12:00 น.
                                   </div>
                                   <h3 className="text-lg font-medium">
-                                    นิเทศนักศึกษา - บริษัท เทคโนโลยีดิจิทัล
+                                    นิเทศนักศึกษา - แหล่งฝึกงาน เทคโนโลยีดิจิทัล
                                     จำกัด
                                   </h3>
                                   <p className="text-sm text-gray-600 mt-1">
@@ -541,8 +543,8 @@ export default function AdvisorDashboard() {
                                     กรกฎาคม 2567 • 13:00-15:00 น.
                                   </div>
                                   <h3 className="text-lg font-medium">
-                                    นิเทศนักศึกษา - บริษัท เน็ตเวิร์ค โซลูชั่น
-                                    จำกัด
+                                    นิเทศนักศึกษา - แหล่งฝึกงาน เน็ตเวิร์ค
+                                    โซลูชั่น จำกัด
                                   </h3>
                                   <p className="text-sm text-gray-600 mt-1">
                                     นักศึกษา: นางสาวนภา สุขใจ
@@ -584,7 +586,8 @@ export default function AdvisorDashboard() {
                                     กรกฎาคม 2567 • 09:00-12:00 น.
                                   </div>
                                   <h3 className="text-lg font-medium">
-                                    นิเทศนักศึกษา - บริษัท อิเล็กทรอนิกส์ จำกัด
+                                    นิเทศนักศึกษา - แหล่งฝึกงาน อิเล็กทรอนิกส์
+                                    จำกัด
                                   </h3>
                                   <p className="text-sm text-gray-600 mt-1">
                                     นักศึกษา: นายมานะ ตั้งใจ, นายธนา รักการเรียน

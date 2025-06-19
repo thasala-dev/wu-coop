@@ -157,7 +157,7 @@ export function Sidebar({
         page: "calendar",
       },
       {
-        label: "สถานประกอบการ",
+        label: "แหล่งฝึกงาน",
         href: "/admin/companies",
         icon: Building,
         page: "companies",
@@ -175,7 +175,7 @@ export function Sidebar({
         page: "advisors",
       },
       {
-        label: "จับคู่นักศึกษา-บริษัท",
+        label: "จับคู่นักศึกษา-แหล่งฝึกงาน",
         href: "/admin/matching",
         icon: LinkIcon,
         page: "matching",

@@ -244,7 +244,7 @@ export default function AdminEvaluations() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h3 className="font-medium">
-                                  แบบประเมินสถานประกอบการ
+                                  แบบประเมินแหล่งฝึกงาน
                                 </h3>
                                 <Badge
                                   variant="outline"
@@ -254,7 +254,7 @@ export default function AdminEvaluations() {
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับนักศึกษาประเมินสถานประกอบการ •{" "}
+                                สำหรับนักศึกษาประเมินแหล่งฝึกงาน •{" "}
                                 {"8 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
@@ -364,7 +364,7 @@ export default function AdminEvaluations() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h3 className="font-medium">
-                                  แบบประเมินสถานประกอบการ
+                                  แบบประเมินแหล่งฝึกงาน
                                 </h3>
                                 <Badge
                                   variant="outline"
@@ -374,7 +374,7 @@ export default function AdminEvaluations() {
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับนักศึกษาประเมินสถานประกอบการ •{" "}
+                                สำหรับนักศึกษาประเมินแหล่งฝึกงาน •{" "}
                                 {"8 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">

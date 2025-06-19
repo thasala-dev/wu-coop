@@ -46,7 +46,7 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
     },
     company: {
       id: 1,
-      name: "บริษัท เทคโนโลยีดิจิทัล จำกัด",
+      name: "แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด",
       address:
         "อาคารดิจิทัล ชั้น 15 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพมหานคร 10400",
       location: "กรุงเทพมหานคร",
@@ -143,7 +143,7 @@ export default function RecordVisit({ params }: { params: { id: string } }) {
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <BuildingIcon className="h-4 w-4 text-gray-500" />
-                          <span className="font-medium">บริษัท:</span>
+                          <span className="font-medium">แหล่งฝึกงาน:</span>
                           <span>{visit.company.name}</span>
                         </div>
                       </div>

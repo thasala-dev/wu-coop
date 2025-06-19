@@ -114,19 +114,19 @@ export default function Dashboard() {
                     <CardContent>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                          <span>บริษัท เอบีซี จำกัด</span>
+                          <span>แหล่งฝึกงาน เอบีซี จำกัด</span>
                           <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
                             รอการตอบรับ
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span>บริษัท เทคโนโลยี จำกัด</span>
+                          <span>แหล่งฝึกงาน เทคโนโลยี จำกัด</span>
                           <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
                             ผ่านการคัดเลือก
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span>บริษัท ซอฟต์แวร์ จำกัด</span>
+                          <span>แหล่งฝึกงาน ซอฟต์แวร์ จำกัด</span>
                           <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">
                             ไม่ผ่านการคัดเลือก
                           </span>
@@ -183,7 +183,7 @@ export default function Dashboard() {
                               นักพัฒนาเว็บไซต์ (Web Developer)
                             </h3>
                             <p className="text-sm text-gray-600">
-                              บริษัท เทคโนโลยีดิจิทัล จำกัด
+                              แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด
                             </p>
                             <p className="text-sm text-gray-600 mt-1">
                               กรุงเทพมหานคร • เงินเดือน 15,000 บาท
@@ -202,7 +202,7 @@ export default function Dashboard() {
                               นักพัฒนาแอปพลิเคชัน (Mobile Developer)
                             </h3>
                             <p className="text-sm text-gray-600">
-                              บริษัท แอพพลิเคชั่น จำกัด
+                              แหล่งฝึกงาน แอพพลิเคชั่น จำกัด
                             </p>
                             <p className="text-sm text-gray-600 mt-1">
                               เชียงใหม่ • เงินเดือน 13,000 บาท
@@ -221,7 +221,7 @@ export default function Dashboard() {
                               ผู้ช่วยนักวิเคราะห์ข้อมูล (Data Analyst)
                             </h3>
                             <p className="text-sm text-gray-600">
-                              บริษัท ดาต้า อินไซต์ จำกัด
+                              แหล่งฝึกงาน ดาต้า อินไซต์ จำกัด
                             </p>
                             <p className="text-sm text-gray-600 mt-1">
                               กรุงเทพมหานคร • เงินเดือน 14,000 บาท
@@ -349,7 +349,7 @@ export default function Dashboard() {
                         <div>
                           <h3 className="font-medium">เริ่มปฏิบัติงานฝึกงาน</h3>
                           <p className="text-sm text-gray-600">
-                            นักศึกษารายงานตัวที่สถานประกอบการ
+                            นักศึกษารายงานตัวที่แหล่งฝึกงาน
                           </p>
                         </div>
                       </div>

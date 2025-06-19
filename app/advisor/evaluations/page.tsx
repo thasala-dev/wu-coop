@@ -49,7 +49,7 @@ const evaluations = [
     studentId: "ST001",
     studentName: "นายธนกร มั่นคง",
     studentImage: "https://randomuser.me/api/portraits/men/1.jpg",
-    companyName: "บริษัท เทคโนโลยี จำกัด",
+    companyName: "แหล่งฝึกงาน เทคโนโลยี จำกัด",
     evaluationType: "ประเมินกลางภาค",
     dueDate: "15 มิ.ย. 2566",
     status: "completed",
@@ -61,7 +61,7 @@ const evaluations = [
     studentId: "ST002",
     studentName: "นางสาวพิมพ์ชนก สุขใจ",
     studentImage: "https://randomuser.me/api/portraits/women/2.jpg",
-    companyName: "บริษัท ดิจิทัล โซลูชั่น จำกัด",
+    companyName: "แหล่งฝึกงาน ดิจิทัล โซลูชั่น จำกัด",
     evaluationType: "ประเมินปลายภาค",
     dueDate: "30 ก.ค. 2566",
     status: "pending",
@@ -73,7 +73,7 @@ const evaluations = [
     studentId: "ST003",
     studentName: "นายภาณุพงศ์ วงศ์ประเสริฐ",
     studentImage: "https://randomuser.me/api/portraits/men/3.jpg",
-    companyName: "บริษัท เภสัชกรรม ไทย จำกัด",
+    companyName: "แหล่งฝึกงาน เภสัชกรรม ไทย จำกัด",
     evaluationType: "ประเมินกลางภาค",
     dueDate: "15 มิ.ย. 2566",
     status: "completed",
@@ -109,7 +109,7 @@ const evaluations = [
     studentId: "ST006",
     studentName: "นางสาวศิริพร แก้วมณี",
     studentImage: "https://randomuser.me/api/portraits/women/6.jpg",
-    companyName: "บริษัท ยาและเวชภัณฑ์ จำกัด",
+    companyName: "แหล่งฝึกงาน ยาและเวชภัณฑ์ จำกัด",
     evaluationType: "ประเมินปลายภาค",
     dueDate: "30 ก.ค. 2566",
     status: "pending",
@@ -133,7 +133,7 @@ const evaluations = [
     studentId: "ST008",
     studentName: "นางสาวปิยะดา นวลจันทร์",
     studentImage: "https://randomuser.me/api/portraits/women/8.jpg",
-    companyName: "บริษัท เภสัชภัณฑ์ จำกัด",
+    companyName: "แหล่งฝึกงาน เภสัชภัณฑ์ จำกัด",
     evaluationType: "ประเมินปลายภาค",
     dueDate: "30 ก.ค. 2566",
     status: "in_progress",
@@ -413,7 +413,7 @@ export default function EvaluationsPage() {
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="ค้นหาตามชื่อนักศึกษา, รหัส หรือบริษัท..."
+                  placeholder="ค้นหาตามชื่อนักศึกษา, รหัส หรือแหล่งฝึกงาน..."
                   className="pl-8"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -466,7 +466,7 @@ export default function EvaluationsPage() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>นักศึกษา</TableHead>
-                          <TableHead>สถานประกอบการ</TableHead>
+                          <TableHead>แหล่งฝึกงาน</TableHead>
                           <TableHead>ประเภท</TableHead>
                           <TableHead>กำหนดส่ง</TableHead>
                           <TableHead>สถานะ</TableHead>

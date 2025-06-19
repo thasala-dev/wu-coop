@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 
 const formSchema = z.object({
-  name: z.string().min(1, "กรุณากรอกชื่อสถานประกอบการ"),
+  name: z.string().min(1, "กรุณากรอกชื่อแหล่งฝึกงาน"),
   semester: z.string().min(1, "กรุณาเลือกภาคการศึกษา"),
   year: z.string().min(1, "กรุณาเลือกปีการศึกษา"),
   startDate: z.string().min(1, "กรุณาเลือกวันที่เริ่มต้น"),

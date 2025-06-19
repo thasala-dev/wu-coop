@@ -543,7 +543,7 @@ export default function AdminCalendar() {
                         },
                         {
                           key: "total_regist",
-                          content: "บริษัท",
+                          content: "แหล่งฝึกงาน",
                           className: "text-center",
                           width: "80px",
                           render: (cal: any) => {

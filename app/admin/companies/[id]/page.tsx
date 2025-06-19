@@ -143,8 +143,8 @@ export default function CompanyPage() {
     const res = await response.json();
     if (!res) {
       toast({
-        title: "ไม่พบข้อมูลบริษัท",
-        description: "ไม่พบข้อมูลสำหรับบริษัทที่ระบุ",
+        title: "ไม่พบข้อมูลแหล่งฝึกงาน",
+        description: "ไม่พบข้อมูลสำหรับแหล่งฝึกงานที่ระบุ",
         variant: "destructive",
       });
       return;
@@ -162,7 +162,7 @@ export default function CompanyPage() {
   // Mock data for company with ID 2
   const company = {
     id: "2",
-    name: "บริษัท ฟาร์มาเฮลท์แคร์ จำกัด",
+    name: "แหล่งฝึกงาน ฟาร์มาเฮลท์แคร์ จำกัด",
     logo: "https://logo.clearbit.com/pfizer.com",
     industry: "เภสัชกรรม",
     location: "นนทบุรี",
@@ -176,7 +176,7 @@ export default function CompanyPage() {
     contactEmail: "somying@pharmahealth.co.th",
     contactPhone: "02-234-5678",
     description:
-      "บริษัท ฟาร์มาเฮลท์แคร์ จำกัด เป็นบริษัทชั้นนำในอุตสาหกรรมเภสัชกรรมของประเทศไทย ก่อตั้งเมื่อปี พ.ศ. 2535 เรามุ่งมั่นในการวิจัยและพัฒนาผลิตภัณฑ์ยาและเวชภัณฑ์ที่มีคุณภาพสูง เพื่อสุขภาพที่ดีของคนไทย",
+      "แหล่งฝึกงาน ฟาร์มาเฮลท์แคร์ จำกัด เป็นแหล่งฝึกงานชั้นนำในอุตสาหกรรมเภสัชกรรมของประเทศไทย ก่อตั้งเมื่อปี พ.ศ. 2535 เรามุ่งมั่นในการวิจัยและพัฒนาผลิตภัณฑ์ยาและเวชภัณฑ์ที่มีคุณภาพสูง เพื่อสุขภาพที่ดีของคนไทย",
     establishedYear: 1992,
     employeeCount: 250,
     cooperationSince: 2018,
@@ -320,7 +320,7 @@ export default function CompanyPage() {
               >
                 <ArrowLeftIcon className="h-5 w-5" />
               </Link>
-              <h1 className="text-2xl font-bold">รายละเอียดบริษัท</h1>
+              <h1 className="text-2xl font-bold">รายละเอียดแหล่งฝึกงาน</h1>
             </div>
             <Button
               onClick={() => router.push(`/admin/companies/edit/${param_id}`)}
@@ -545,7 +545,7 @@ export default function CompanyPage() {
                 <CardHeader className="pb-2">
                   <CardTitle>นักศึกษาที่ฝึกงานอยู่ในปัจจุบัน</CardTitle>
                   <CardDescription>
-                    รายชื่อนักศึกษาที่กำลังฝึกงานอยู่ที่บริษัทนี้
+                    รายชื่อนักศึกษาที่กำลังฝึกงานอยู่ที่แหล่งฝึกงานนี้
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -744,7 +744,7 @@ export default function CompanyPage() {
                 <CardHeader className="pb-2">
                   <CardTitle>เอกสารที่เกี่ยวข้อง</CardTitle>
                   <CardDescription>
-                    เอกสารสำคัญที่เกี่ยวข้องกับบริษัทและการฝึกงาน
+                    เอกสารสำคัญที่เกี่ยวข้องกับแหล่งฝึกงานและการฝึกงาน
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

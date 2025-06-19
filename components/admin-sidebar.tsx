@@ -43,7 +43,7 @@ export function AdminSidebar({ activePage = "dashboard" }: AdminSidebarProps) {
       page: "event",
     },
     {
-      label: "สถานประกอบการ",
+      label: "แหล่งฝึกงาน",
       href: "/admin/companies",
       icon: Building,
       page: "companies",
@@ -55,7 +55,7 @@ export function AdminSidebar({ activePage = "dashboard" }: AdminSidebarProps) {
       page: "students",
     },
     {
-      label: "จับคู่นักศึกษา-บริษัท",
+      label: "จับคู่นักศึกษา-แหล่งฝึกงาน",
       href: "/admin/matching",
       icon: LinkIcon,
       page: "matching",

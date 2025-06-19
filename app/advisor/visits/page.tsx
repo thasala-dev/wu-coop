@@ -312,7 +312,7 @@ export default function AdvisorVisits() {
                 <div>
                   <CardTitle className="text-xl">การนิเทศนักศึกษา</CardTitle>
                   <CardDescription>
-                    จัดการการนิเทศนักศึกษา ณ สถานประกอบการ
+                    จัดการการนิเทศนักศึกษา ณ แหล่งฝึกงาน
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
@@ -761,7 +761,7 @@ export default function AdvisorVisits() {
                                 <TableRow>
                                   <TableHead>วันที่</TableHead>
                                   <TableHead>นักศึกษา</TableHead>
-                                  <TableHead>บริษัท</TableHead>
+                                  <TableHead>แหล่งฝึกงาน</TableHead>
                                   <TableHead>ผลการประเมิน</TableHead>
                                   <TableHead>สถานะ</TableHead>
                                   <TableHead className="text-right">

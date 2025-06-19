@@ -62,7 +62,7 @@ const students = [
     major: "เภสัชศาสตร์",
     year: 4,
     status: "warning",
-    company: "บริษัท ยาไทย จำกัด",
+    company: "แหล่งฝึกงาน ยาไทย จำกัด",
     position: "ผู้ช่วยวิจัยและพัฒนา",
     location: "นนทบุรี",
     startDate: "01/06/2023",
@@ -137,7 +137,7 @@ const students = [
     major: "เภสัชศาสตร์",
     year: 4,
     status: "active",
-    company: "บริษัท ผลิตยาสากล จำกัด",
+    company: "แหล่งฝึกงาน ผลิตยาสากล จำกัด",
     position: "ผู้ช่วยฝ่ายผลิต",
     location: "ระยอง",
     startDate: "01/06/2023",
@@ -203,7 +203,7 @@ export default function AdvisorStudentsPage() {
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                   <Input
                     type="search"
-                    placeholder="ค้นหาด้วยชื่อ, รหัสนักศึกษา, หรือสถานประกอบการ"
+                    placeholder="ค้นหาด้วยชื่อ, รหัสนักศึกษา, หรือแหล่งฝึกงาน"
                     className="pl-8"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

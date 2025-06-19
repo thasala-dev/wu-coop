@@ -105,9 +105,7 @@ export default function NewEvaluation() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="student">นักศึกษา</SelectItem>
-                            <SelectItem value="company">
-                              สถานประกอบการ
-                            </SelectItem>
+                            <SelectItem value="company">แหล่งฝึกงาน</SelectItem>
                             <SelectItem value="report">รายงาน</SelectItem>
                             <SelectItem value="presentation">
                               การนำเสนอ

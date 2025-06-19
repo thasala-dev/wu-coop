@@ -86,7 +86,7 @@ export default function AdvisorSchedule() {
       date: "5 มิถุนายน 2567",
       time: "10:00 - 12:00",
       type: "ลงพื้นที่",
-      location: "บริษัท เภสัชภัณฑ์ จำกัด",
+      location: "แหล่งฝึกงาน เภสัชภัณฑ์ จำกัด",
       students: ["นายธนา รักการเรียน"],
       status: "completed",
       description: "นิเทศนักศึกษาครั้งที่ 1 ประจำภาคการศึกษา 1/2567",

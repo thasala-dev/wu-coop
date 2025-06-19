@@ -1,13 +1,33 @@
-import { AdminSidebar } from "@/components/admin-sidebar"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Search, FileText, Download, Eye, FileEdit, Trash2 } from "lucide-react"
-import Link from "next/link"
+import { AdminSidebar } from "@/components/admin-sidebar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Search,
+  FileText,
+  Download,
+  Eye,
+  FileEdit,
+  Trash2,
+} from "lucide-react";
+import Link from "next/link";
 
 // Mock data for reports
 const reports = [
@@ -17,7 +37,7 @@ const reports = [
     type: "รายงานประจำเดือน",
     submittedDate: "15/01/2023",
     student: "นายสมชาย ใจดี",
-    company: "บริษัท เทคโนโลยี จำกัด",
+    company: "แหล่งฝึกงาน เทคโนโลยี จำกัด",
     status: "ตรวจแล้ว",
   },
   {
@@ -26,7 +46,7 @@ const reports = [
     type: "รายงานฉบับสมบูรณ์",
     submittedDate: "20/03/2023",
     student: "นางสาวสมหญิง รักเรียน",
-    company: "บริษัท ซอฟต์แวร์ไทย จำกัด",
+    company: "แหล่งฝึกงาน ซอฟต์แวร์ไทย จำกัด",
     status: "รอตรวจ",
   },
   {
@@ -35,7 +55,7 @@ const reports = [
     type: "รายงานประจำเดือน",
     submittedDate: "15/02/2023",
     student: "นายวิชัย เก่งกาจ",
-    company: "บริษัท ไอทีโซลูชั่น จำกัด",
+    company: "แหล่งฝึกงาน ไอทีโซลูชั่น จำกัด",
     status: "ตรวจแล้ว",
   },
   {
@@ -44,7 +64,7 @@ const reports = [
     type: "รายงานประจำเดือน",
     submittedDate: "15/03/2023",
     student: "นางสาวนภา ดาวเด่น",
-    company: "บริษัท เทคโนโลยี จำกัด",
+    company: "แหล่งฝึกงาน เทคโนโลยี จำกัด",
     status: "รอตรวจ",
   },
   {
@@ -53,7 +73,7 @@ const reports = [
     type: "รายงานฉบับสมบูรณ์",
     submittedDate: "25/03/2023",
     student: "นายสมชาย ใจดี",
-    company: "บริษัท เทคโนโลยี จำกัด",
+    company: "แหล่งฝึกงาน เทคโนโลยี จำกัด",
     status: "ตรวจแล้ว",
   },
   {
@@ -62,7 +82,7 @@ const reports = [
     type: "รายงานประจำเดือน",
     submittedDate: "15/01/2023",
     student: "นางสาวสมหญิง รักเรียน",
-    company: "บริษัท ซอฟต์แวร์ไทย จำกัด",
+    company: "แหล่งฝึกงาน ซอฟต์แวร์ไทย จำกัด",
     status: "ตรวจแล้ว",
   },
   {
@@ -71,10 +91,10 @@ const reports = [
     type: "รายงานประจำเดือน",
     submittedDate: "15/02/2023",
     student: "นายวิชัย เก่งกาจ",
-    company: "บริษัท ไอทีโซลูชั่น จำกัด",
+    company: "แหล่งฝึกงาน ไอทีโซลูชั่น จำกัด",
     status: "รอตรวจ",
   },
-]
+];
 
 export default function AdminReportsPage() {
   return (
@@ -130,7 +150,7 @@ export default function AdminReportsPage() {
                       <TableHead>ประเภท</TableHead>
                       <TableHead>วันที่ส่ง</TableHead>
                       <TableHead>นักศึกษา</TableHead>
-                      <TableHead>บริษัท</TableHead>
+                      <TableHead>แหล่งฝึกงาน</TableHead>
                       <TableHead>สถานะ</TableHead>
                       <TableHead className="text-right">การดำเนินการ</TableHead>
                     </TableRow>
@@ -150,7 +170,9 @@ export default function AdminReportsPage() {
                         <TableCell>{report.company}</TableCell>
                         <TableCell>
                           <Badge
-                            variant={report.status === "รอตรวจ" ? "outline" : "default"}
+                            variant={
+                              report.status === "รอตรวจ" ? "outline" : "default"
+                            }
                             className={
                               report.status === "รอตรวจ"
                                 ? "bg-yellow-100 text-yellow-800"
@@ -178,7 +200,11 @@ export default function AdminReportsPage() {
                                 <span className="sr-only">แก้ไข</span>
                               </Link>
                             </Button>
-                            <Button variant="outline" size="icon" className="text-red-500">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="text-red-500"
+                            >
                               <Trash2 className="h-4 w-4" />
                               <span className="sr-only">ลบ</span>
                             </Button>
@@ -202,7 +228,7 @@ export default function AdminReportsPage() {
                       <TableHead>ประเภท</TableHead>
                       <TableHead>วันที่ส่ง</TableHead>
                       <TableHead>นักศึกษา</TableHead>
-                      <TableHead>บริษัท</TableHead>
+                      <TableHead>แหล่งฝึกงาน</TableHead>
                       <TableHead>สถานะ</TableHead>
                       <TableHead className="text-right">การดำเนินการ</TableHead>
                     </TableRow>
@@ -224,7 +250,11 @@ export default function AdminReportsPage() {
                           <TableCell>{report.company}</TableCell>
                           <TableCell>
                             <Badge
-                              variant={report.status === "รอตรวจ" ? "outline" : "default"}
+                              variant={
+                                report.status === "รอตรวจ"
+                                  ? "outline"
+                                  : "default"
+                              }
                               className={
                                 report.status === "รอตรวจ"
                                   ? "bg-yellow-100 text-yellow-800"
@@ -252,7 +282,11 @@ export default function AdminReportsPage() {
                                   <span className="sr-only">แก้ไข</span>
                                 </Link>
                               </Button>
-                              <Button variant="outline" size="icon" className="text-red-500">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="text-red-500"
+                              >
                                 <Trash2 className="h-4 w-4" />
                                 <span className="sr-only">ลบ</span>
                               </Button>
@@ -276,7 +310,7 @@ export default function AdminReportsPage() {
                       <TableHead>ประเภท</TableHead>
                       <TableHead>วันที่ส่ง</TableHead>
                       <TableHead>นักศึกษา</TableHead>
-                      <TableHead>บริษัท</TableHead>
+                      <TableHead>แหล่งฝึกงาน</TableHead>
                       <TableHead>สถานะ</TableHead>
                       <TableHead className="text-right">การดำเนินการ</TableHead>
                     </TableRow>
@@ -298,7 +332,11 @@ export default function AdminReportsPage() {
                           <TableCell>{report.company}</TableCell>
                           <TableCell>
                             <Badge
-                              variant={report.status === "รอตรวจ" ? "outline" : "default"}
+                              variant={
+                                report.status === "รอตรวจ"
+                                  ? "outline"
+                                  : "default"
+                              }
                               className={
                                 report.status === "รอตรวจ"
                                   ? "bg-yellow-100 text-yellow-800"
@@ -326,7 +364,11 @@ export default function AdminReportsPage() {
                                   <span className="sr-only">แก้ไข</span>
                                 </Link>
                               </Button>
-                              <Button variant="outline" size="icon" className="text-red-500">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="text-red-500"
+                              >
                                 <Trash2 className="h-4 w-4" />
                                 <span className="sr-only">ลบ</span>
                               </Button>
@@ -350,7 +392,7 @@ export default function AdminReportsPage() {
                       <TableHead>ประเภท</TableHead>
                       <TableHead>วันที่ส่ง</TableHead>
                       <TableHead>นักศึกษา</TableHead>
-                      <TableHead>บริษัท</TableHead>
+                      <TableHead>แหล่งฝึกงาน</TableHead>
                       <TableHead>สถานะ</TableHead>
                       <TableHead className="text-right">การดำเนินการ</TableHead>
                     </TableRow>
@@ -371,7 +413,10 @@ export default function AdminReportsPage() {
                           <TableCell>{report.student}</TableCell>
                           <TableCell>{report.company}</TableCell>
                           <TableCell>
-                            <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
+                            <Badge
+                              variant="outline"
+                              className="bg-yellow-100 text-yellow-800"
+                            >
                               {report.status}
                             </Badge>
                           </TableCell>
@@ -393,7 +438,11 @@ export default function AdminReportsPage() {
                                   <span className="sr-only">แก้ไข</span>
                                 </Link>
                               </Button>
-                              <Button variant="outline" size="icon" className="text-red-500">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="text-red-500"
+                              >
                                 <Trash2 className="h-4 w-4" />
                                 <span className="sr-only">ลบ</span>
                               </Button>
@@ -409,5 +458,5 @@ export default function AdminReportsPage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }

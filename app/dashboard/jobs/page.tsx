@@ -114,7 +114,7 @@ export default function Jobs() {
                   <div className="relative">
                     <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
-                      placeholder="ค้นหาตำแหน่งงาน, บริษัท, ทักษะ..."
+                      placeholder="ค้นหาตำแหน่งงาน, แหล่งฝึกงาน, ทักษะ..."
                       className="pl-10"
                     />
                   </div>
@@ -200,7 +200,7 @@ export default function Jobs() {
                         <div className="flex flex-wrap gap-2 mt-2">
                           <div className="flex items-center text-sm text-gray-600">
                             <BuildingIcon className="h-4 w-4 mr-1" />
-                            <span>บริษัท เทคโนโลยีดิจิทัล จำกัด</span>
+                            <span>แหล่งฝึกงาน เทคโนโลยีดิจิทัล จำกัด</span>
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
                             <MapPinIcon className="h-4 w-4 mr-1" />
@@ -252,7 +252,7 @@ export default function Jobs() {
                         <div className="flex flex-wrap gap-2 mt-2">
                           <div className="flex items-center text-sm text-gray-600">
                             <BuildingIcon className="h-4 w-4 mr-1" />
-                            <span>บริษัท แอพพลิเคชั่น จำกัด</span>
+                            <span>แหล่งฝึกงาน แอพพลิเคชั่น จำกัด</span>
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
                             <MapPinIcon className="h-4 w-4 mr-1" />
@@ -304,7 +304,7 @@ export default function Jobs() {
                         <div className="flex flex-wrap gap-2 mt-2">
                           <div className="flex items-center text-sm text-gray-600">
                             <BuildingIcon className="h-4 w-4 mr-1" />
-                            <span>บริษัท ดาต้า อินไซต์ จำกัด</span>
+                            <span>แหล่งฝึกงาน ดาต้า อินไซต์ จำกัด</span>
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
                             <MapPinIcon className="h-4 w-4 mr-1" />
@@ -356,7 +356,7 @@ export default function Jobs() {
                         <div className="flex flex-wrap gap-2 mt-2">
                           <div className="flex items-center text-sm text-gray-600">
                             <BuildingIcon className="h-4 w-4 mr-1" />
-                            <span>บริษัท เน็ตเวิร์ค โซลูชั่น จำกัด</span>
+                            <span>แหล่งฝึกงาน เน็ตเวิร์ค โซลูชั่น จำกัด</span>
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
                             <MapPinIcon className="h-4 w-4 mr-1" />
@@ -408,7 +408,7 @@ export default function Jobs() {
                         <div className="flex flex-wrap gap-2 mt-2">
                           <div className="flex items-center text-sm text-gray-600">
                             <BuildingIcon className="h-4 w-4 mr-1" />
-                            <span>บริษัท ครีเอทีฟ ดีไซน์ จำกัด</span>
+                            <span>แหล่งฝึกงาน ครีเอทีฟ ดีไซน์ จำกัด</span>
                           </div>
                           <div className="flex items-center text-sm text-gray-600">
                             <MapPinIcon className="h-4 w-4 mr-1" />

@@ -49,14 +49,14 @@ const studentData = {
   email: "thanakorn.m@example.com",
   phone: "062-XXX-XXXX",
   address:
-    "บริษัท เทคโนโลยี จำกัด 123 ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพฯ 10310",
+    "แหล่งฝึกงาน เทคโนโลยี จำกัด 123 ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพฯ 10310",
   advisor: {
     name: "ผศ.ดร.สมชาย ใจดี",
     email: "somchai.j@university.ac.th",
     phone: "081-XXX-XXXX",
   },
   company: {
-    name: "บริษัท เทคโนโลยี จำกัด",
+    name: "แหล่งฝึกงาน เทคโนโลยี จำกัด",
     address: "123 ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพฯ 10310",
     website: "www.techcompany.co.th",
   },
@@ -330,7 +330,7 @@ export default function StudentDetailPage() {
                   <div className="flex items-start gap-2">
                     <Building className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
-                      <div className="font-medium">สถานประกอบการ</div>
+                      <div className="font-medium">แหล่งฝึกงาน</div>
                       <div>{student.company.name}</div>
                       <div className="text-sm text-muted-foreground">
                         {student.company.website}

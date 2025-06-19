@@ -536,13 +536,13 @@ export default function AdminStudentDetailPage({
                         <CardHeader className="pb-2">
                           <CardTitle className="text-base font-medium flex items-center gap-2">
                             <Building className="h-4 w-4 text-gray-500" />
-                            ข้อมูลสถานประกอบการ
+                            ข้อมูลแหล่งฝึกงาน
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <dl className="space-y-2 text-sm">
                             <div className="flex flex-col">
-                              <dt className="text-gray-500">สถานประกอบการ</dt>
+                              <dt className="text-gray-500">แหล่งฝึกงาน</dt>
                               <dd className="font-medium">{student.company}</dd>
                             </div>
                             <div className="flex flex-col">
@@ -870,7 +870,7 @@ export default function AdminStudentDetailPage({
                                 20 พ.ค. 2566
                               </TableCell>
                               <TableCell className="text-sm font-medium">
-                                จับคู่สถานประกอบการ
+                                จับคู่แหล่งฝึกงาน
                               </TableCell>
                               <TableCell className="text-sm text-gray-600">
                                 ผศ.ดร.สมชาย ใจดี

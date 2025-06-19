@@ -379,13 +379,13 @@ export default function StudentDetailPage() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>ข้อมูลสถานประกอบการ</CardTitle>
+                    <CardTitle>ข้อมูลแหล่งฝึกงาน</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-500">
-                          ชื่อสถานประกอบการ
+                          ชื่อแหล่งฝึกงาน
                         </h3>
                         <p>{student.company}</p>
                       </div>
