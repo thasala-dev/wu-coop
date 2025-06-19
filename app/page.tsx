@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -50,6 +50,25 @@ export default function Home() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      switch (user.role) {
+        case "student":
+          router.push("/student/dashboard");
+          break;
+        case "mentor":
+          router.push("/mentor/dashboard");
+          break;
+        case "advisor":
+          router.push("/advisor/dashboard");
+          break;
+        case "admin":
+          router.push("/admin/dashboard");
+          break;
+      }
+    }
+  }, [user, router]);
 
   // if (isLoading) {
   //   return (
