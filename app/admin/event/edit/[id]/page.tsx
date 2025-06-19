@@ -22,7 +22,7 @@ const formSchema = z.object({
   description: z.string().optional(),
   eventDate: z.string().min(1, "กรุณาเลือกวันที่จัดกิจกรรม"),
   location: z.string().min(1, "กรุณากรอกสถานที่จัดกิจกรรม"),
-  calendarId: z.string().min(1, "กรุณาเลือกรอบสหกิจศึกษา"),
+  calendarId: z.string().min(1, "กรุณาเลือกรอบฝึกงาน"),
   typeId: z.string().min(1, "กรุณาเลือกประเภทกิจกรรม"),
   statusId: z.string().min(1, "กรุณาเลือกสถานะ"),
 });
@@ -71,7 +71,7 @@ export default function Page() {
       const response = await fetch("/api/calendar");
       if (!response.ok) {
         toast({
-          title: "ไม่สามารถโหลดข้อมูลรอบสหกิจศึกษาได้",
+          title: "ไม่สามารถโหลดข้อมูลรอบฝึกงานได้",
           description: "เกิดข้อผิดพลาดในการดึงข้อมูล",
           variant: "destructive",
         });
@@ -84,7 +84,7 @@ export default function Page() {
     } catch (error) {
       toast({
         title: "เกิดข้อผิดพลาด",
-        description: "ไม่สามารถดึงข้อมูลรอบสหกิจศึกษาได้",
+        description: "ไม่สามารถดึงข้อมูลรอบฝึกงานได้",
         variant: "destructive",
       });
     }
@@ -188,7 +188,7 @@ export default function Page() {
               </Button>
               <div className="flex items-center gap-1 text-sm text-gray-500">
                 <a href="/admin/event" className="hover:text-gray-900">
-                  กิจกรรมสหกิจศึกษา
+                  กิจกรรมฝึกงาน
                 </a>
                 <ChevronRight className="h-3 w-3" />
                 <span className="text-gray-900">แก้ไขกิจกรรม</span>
@@ -228,7 +228,7 @@ export default function Page() {
                           </div>
 
                           <div className="sm:col-span-4 space-y-1">
-                            <label>รอบสหกิจศึกษา</label>
+                            <label>รอบฝึกงาน</label>
                             <select
                               id="calendarId"
                               {...register("calendarId")}
@@ -240,7 +240,7 @@ export default function Page() {
                               }
                             >
                               <option value="" disabled>
-                                เลือกรอบสหกิจศึกษา
+                                เลือกรอบฝึกงาน
                               </option>
                               {calendars.map((calendar) => (
                                 <option key={calendar.id} value={calendar.id}>
