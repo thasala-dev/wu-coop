@@ -663,7 +663,7 @@ export default function AdminStudentsPage() {
                                 <CustomAvatar
                                   id={`student${student.student_id}`}
                                   image={student.image}
-                                  size="8"
+                                  size="12"
                                 />
                                 <div className="flex-1 min-w-0">
                                   <div className="flex justify-between items-start">

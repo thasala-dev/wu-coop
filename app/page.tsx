@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
-import { Loader2, LogIn } from "lucide-react";
+import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
@@ -35,6 +35,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Home() {
   const [role, setRole] = useState("student");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { user, login, isLoading } = useAuth();
   console.log("Current User:", user);
@@ -116,12 +117,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
-      {/* Background Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200 opacity-90" />
-
-      {/* ชั้นที่ 2: เพิ่มความนุ่มนวลด้วย blur และ overlay */}
-      {/* <div className="absolute inset-0 backdrop-blur-md bg-white/30 mix-blend-overlay" /> */}
-
       <div className="container relative z-10 mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center">
           <div className="mb-8 text-center text-green-700">
@@ -200,18 +196,30 @@ export default function Home() {
                           {errors.username.message}
                         </p>
                       )}
-                    </div>
-                    <div className="space-y-1">
+                    </div>                    <div className="space-y-1">
                       <label htmlFor="password" className="text-sm font-medium">
                         รหัสผ่าน
                       </label>
-                      <input
-                        id="password"
-                        type="password"
-                        {...register("password")}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="กรอกรหัสผ่าน"
-                      />
+                      <div className="relative">
+                        <input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          {...register("password")}
+                          className="w-full p-2 border rounded-md pr-10"
+                          placeholder="กรอกรหัสผ่าน"
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
                       {errors.password && (
                         <p className="text-sm text-red-600">
                           {errors.password.message}
