@@ -139,7 +139,7 @@ export default function CompaniesPage() {
                     <Input placeholder="ค้นหาแหล่งฝึกงาน.." className="pl-8" />
                   </div>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto mb-1">
                   <TabsList>
                     <TabsTrigger value="all">
                       ทั้งหมด ({data.length})

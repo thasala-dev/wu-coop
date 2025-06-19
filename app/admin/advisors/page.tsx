@@ -176,7 +176,7 @@ export default function CompaniesPage() {
                     />
                   </div>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto mb-1">
                   <TabsList>
                     <TabsTrigger value="all">
                       ทั้งหมด ({data.length})
