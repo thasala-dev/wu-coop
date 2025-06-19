@@ -139,20 +139,25 @@ export default function CompaniesPage() {
                     <Input placeholder="ค้นหาแหล่งฝึกงาน.." className="pl-8" />
                   </div>
                 </div>
-                <TabsList>
-                  <TabsTrigger value="all">ทั้งหมด ({data.length})</TabsTrigger>
-                  <TabsTrigger value="active">
-                    ใช้งาน ({data.filter((c: any) => c.status_id === 1).length})
-                  </TabsTrigger>
-                  <TabsTrigger value="inactive">
-                    ไม่ใช้งาน (
-                    {data.filter((c: any) => c.status_id === 2).length})
-                  </TabsTrigger>
-                  <TabsTrigger value="pending">
-                    รอดำเนินการ (
-                    {data.filter((c: any) => c.status_id === 0).length})
-                  </TabsTrigger>
-                </TabsList>
+                <div className="overflow-x-auto">
+                  <TabsList>
+                    <TabsTrigger value="all">
+                      ทั้งหมด ({data.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="active">
+                      ใช้งาน (
+                      {data.filter((c: any) => c.status_id === 1).length})
+                    </TabsTrigger>
+                    <TabsTrigger value="inactive">
+                      ไม่ใช้งาน (
+                      {data.filter((c: any) => c.status_id === 2).length})
+                    </TabsTrigger>
+                    <TabsTrigger value="pending">
+                      รอดำเนินการ (
+                      {data.filter((c: any) => c.status_id === 0).length})
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
                 <div className="my-4 overflow-x-auto">
                   <TableList
                     meta={[
