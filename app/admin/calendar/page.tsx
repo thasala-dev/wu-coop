@@ -46,6 +46,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import Loading from "@/components/loading";
 import Sidebar from "@/components/sidebar";
+import CardList from "@/components/CardList";
+import TableList from "@/components/TableList";
 
 export default function AdminCalendar() {
   const [loading, setLoading] = useState(false);
@@ -155,7 +157,7 @@ export default function AdminCalendar() {
     // Add days of the month with their events
     for (let day = 1; day <= lastDay; day++) {
       // Find events for this day
-      const dayEvents = events.filter((event) => {
+      const dayEvents = events.filter((event: any) => {
         if (!event.day || !event.month || !event.year) return false;
 
         const eventDay = event.day;
@@ -429,9 +431,9 @@ export default function AdminCalendar() {
               <CardHeader className="pb-3">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle className="text-xl">รอบสหกิจศึกษา</CardTitle>
+                    <CardTitle className="text-xl">รอบฝึกงานศึกษา</CardTitle>
                     <CardDescription>
-                      เลือกรอบสหกิจศึกษาที่ต้องการจัดการ
+                      เลือกรอบฝึกงานศึกษาที่ต้องการจัดการ
                     </CardDescription>
                   </div>
                   <a href={`/admin/calendar/add`}>
@@ -446,115 +448,138 @@ export default function AdminCalendar() {
                 <Tabs defaultValue="select">
                   <div>
                     <TabsList>
-                      <TabsTrigger value="select">แสดงรอบสหกิจ</TabsTrigger>
-                      <TabsTrigger value="manage">จัดการรอบสหกิจ</TabsTrigger>
+                      <TabsTrigger value="select">แสดงรอบฝึกงาน</TabsTrigger>
+                      <TabsTrigger value="manage">จัดการรอบฝึกงาน</TabsTrigger>
                     </TabsList>
                   </div>
 
                   <TabsContent value="select">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      {calendars.map((cal: any) => (
-                        <Card
-                          key={cal.id}
-                          className={`cursor-pointer hover:border-blue-300 transition-colors ${
-                            cal.id === calendarSelected
-                              ? "border-blue-500 bg-blue-50"
-                              : ""
-                          }`}
-                          onClick={() => {
-                            setCalendarSelected(cal.id);
-                            selectCalendar(cal.id);
-                          }}
-                        >
-                          <CardHeader className="p-4 pb-0">
-                            <div className="flex justify-between items-start">
-                              <CardTitle className="text-md">
-                                {cal.semester}/{cal.year}
+                    <div>
+                      <CardList
+                        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
+                        data={calendars}
+                        pageLength={4}
+                        render={(cal: any) => (
+                          <Card
+                            className={`cursor-pointer hover:border-blue-300 transition-colors ${
+                              cal.id === calendarSelected
+                                ? "border-blue-500 bg-blue-50"
+                                : ""
+                            }`}
+                            onClick={() => {
+                              setCalendarSelected(cal.id);
+                              selectCalendar(cal.id);
+                            }}
+                          >
+                            <CardHeader className="p-4 pb-0">
+                              <div className="flex justify-between items-start">
+                                <CardTitle className="text-md">
+                                  {cal.semester}/{cal.year}
+                                </CardTitle>
+                                {getStatusBadge(cal.status_id || 1)}
+                              </div>
+                              <CardTitle className="text-lg">
+                                {cal.name}
                               </CardTitle>
-                              {getStatusBadge(cal.status_id || 1)}
-                            </div>
-                            <CardTitle className="text-lg">
-                              {cal.name}
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="p-4">
-                            <p className="text-sm text-gray-600">
-                              {new Date(cal.start_date).toLocaleDateString(
-                                "th-TH",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}{" "}
-                              -{" "}
-                              {new Date(cal.end_date).toLocaleDateString(
-                                "th-TH",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}
-                            </p>
-                            <div className="flex justify-between mt-2 text-sm">
-                              <span>นักศึกษา: {cal.total_intern || 0}</span>
-                              <span>แหล่งฝึก: {cal.total_regist || 0}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                            </CardHeader>
+                            <CardContent className="p-4">
+                              <p className="text-sm text-gray-600">
+                                {new Date(cal.start_date).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )}{" "}
+                                -{" "}
+                                {new Date(cal.end_date).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )}
+                              </p>
+                              <div className="flex justify-between mt-2 text-sm">
+                                <span>นักศึกษา: {cal.total_intern || 0}</span>
+                                <span>แหล่งฝึก: {cal.total_regist || 0}</span>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )}
+                      />
                     </div>
                   </TabsContent>
                   <TabsContent value="manage">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>รอบสหกิจ</TableHead>
-                          <TableHead>ภาคการศึกษา</TableHead>
-                          <TableHead>ระยะเวลา</TableHead>
-                          <TableHead>สถานะ</TableHead>
-                          <TableHead>นักศึกษา</TableHead>
-                          <TableHead>บริษัท</TableHead>
-                          <TableHead className="text-right">
-                            การดำเนินการ
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {calendars.map((cal: any) => (
-                          <TableRow key={cal.id}>
-                            <TableCell className="font-medium">
-                              {cal.name}
-                            </TableCell>
-                            <TableCell>
-                              {cal.semester}/{cal.year}
-                            </TableCell>
-                            <TableCell>
-                              {new Date(cal.start_date).toLocaleDateString(
+                    <TableList
+                      meta={[
+                        {
+                          key: "name",
+                          content: "รอบฝึกงาน",
+                        },
+                        {
+                          key: "semester",
+                          content: "ภาคการศึกษา",
+                          render: (cal: any) => {
+                            return `${cal.semester}/${cal.year}`;
+                          },
+                        },
+                        {
+                          key: "start_date",
+                          content: "ระยะเวลา",
+                          render: (cal: any) => {
+                            return `${new Date(
+                              cal.start_date
+                            ).toLocaleDateString("th-TH", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })} - 
+                              ${new Date(cal.end_date).toLocaleDateString(
                                 "th-TH",
                                 {
                                   year: "numeric",
                                   month: "short",
                                   day: "numeric",
                                 }
-                              )}{" "}
-                              -{" "}
-                              {new Date(cal.end_date).toLocaleDateString(
-                                "th-TH",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {getStatusBadge(cal.status_id || 1)}
-                            </TableCell>
-                            <TableCell>{cal.total_intern || 0}</TableCell>
-                            <TableCell>{cal.total_regist || 0}</TableCell>
-                            <TableCell className="text-right">
+                              )}`;
+                          },
+                        },
+                        {
+                          key: "status_id",
+                          content: "สถานะ",
+                          render: (cal: any) => {
+                            return getStatusBadge(cal.status_id || 1);
+                          },
+                        },
+                        {
+                          key: "total_intern",
+                          content: "นักศึกษา",
+                          className: "text-center",
+                          width: "80px",
+                          render: (cal: any) => {
+                            return cal.total_intern || 0;
+                          },
+                        },
+                        {
+                          key: "total_regist",
+                          content: "บริษัท",
+                          className: "text-center",
+                          width: "80px",
+                          render: (cal: any) => {
+                            return cal.total_regist || 0;
+                          },
+                        },
+                        {
+                          key: "actions",
+                          content: "การดำเนินการ",
+                          sort: false,
+                          width: "150px",
+                          className: "text-center",
+                          render: (cal: any) => {
+                            return (
                               <div className="flex justify-end gap-2">
                                 <Link href={`/admin/calendar/${cal.id}`}>
                                   <Button variant="outline" size="sm">
@@ -574,11 +599,12 @@ export default function AdminCalendar() {
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
                               </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                            );
+                          },
+                        },
+                      ]}
+                      data={calendars}
+                    />
                   </TabsContent>
                 </Tabs>
               </CardContent>
@@ -589,7 +615,7 @@ export default function AdminCalendar() {
                 <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <CardTitle className="text-xl">
-                      ปฏิทินกิจกรรมสหกิจศึกษา
+                      ปฏิทินกิจกรรมฝึกงานศึกษา
                     </CardTitle>
                     <CardDescription>
                       จัดการกำหนดการและกิจกรรมสำคัญ
@@ -633,7 +659,7 @@ export default function AdminCalendar() {
                           }}
                         >
                           <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="เลือกรอบสหกิจ" />
+                            <SelectValue placeholder="เลือกรอบฝึกงาน" />
                           </SelectTrigger>
                           <SelectContent>
                             {calendars.map((cal: any) => (
@@ -650,27 +676,18 @@ export default function AdminCalendar() {
                     </div>
 
                     <TabsContent value="list">
-                      <div className="rounded-md border">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>วันที่</TableHead>
-                              <TableHead>กิจกรรม</TableHead>
-                              <TableHead>ประเภท</TableHead>
-                              <TableHead>รอบสหกิจ</TableHead>
-                              <TableHead>สถานะ</TableHead>
-                              <TableHead className="text-right">
-                                การดำเนินการ
-                              </TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {filteredEvents.map((event: any) => (
-                              <TableRow key={event.id}>
-                                <TableCell className="font-medium">
-                                  {event.date}
-                                </TableCell>
-                                <TableCell>
+                      <div className="rounded-md">
+                        <TableList
+                          meta={[
+                            {
+                              key: "date",
+                              content: "วันที่",
+                            },
+                            {
+                              key: "title",
+                              content: "กิจกรรม",
+                              render: (event: any) => {
+                                return (
                                   <div>
                                     <div className="font-medium">
                                       {event.title}
@@ -679,56 +696,75 @@ export default function AdminCalendar() {
                                       {event.description}
                                     </div>
                                   </div>
-                                </TableCell>
-                                <TableCell>
+                                );
+                              },
+                            },
+                            {
+                              key: "category",
+                              content: "ประเภท",
+                              render: (event: any) => {
+                                return (
                                   <Badge
                                     className={getBadgeColor(event.category)}
                                   >
                                     {event.category}
                                   </Badge>
-                                </TableCell>
-                                <TableCell>{event.term}</TableCell>
-                                <TableCell>
-                                  {event.status === "active" ? (
-                                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                                      <ClockIcon className="h-3 w-3 mr-1" />
-                                      กำลังดำเนินการ
-                                    </Badge>
-                                  ) : (
-                                    <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
-                                      <ClockIcon className="h-3 w-3 mr-1" />
-                                      กำลังจะมาถึง
-                                    </Badge>
-                                  )}
-                                </TableCell>
-                                <TableCell className="text-right">
+                                );
+                              },
+                            },
+                            {
+                              key: "term",
+                              content: "รอบฝึกงาน",
+                              render: (event: any) => {
+                                return getCalendarTermById(event.calendar_id);
+                              },
+                            },
+                            {
+                              key: "status",
+                              content: "สถานะ",
+                              render: (event: any) => {
+                                return event.status === "active" ? (
+                                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                                    <ClockIcon className="h-3 w-3 mr-1" />
+                                    กำลังดำเนินการ
+                                  </Badge>
+                                ) : (
+                                  <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+                                    <ClockIcon className="h-3 w-3 mr-1" />
+                                    กำลังจะมาถึง
+                                  </Badge>
+                                );
+                              },
+                            },
+                            {
+                              key: "actions",
+                              content: "การดำเนินการ",
+                              sort: false,
+                              width: "150px",
+                              render: (event: any) => {
+                                return (
                                   <div className="flex justify-end gap-2">
                                     <Link
-                                      href={`/admin/event/edit/${event.id}`}
+                                      href={`/admin/calendar/edit/${event.id}`}
                                     >
                                       <Button variant="outline" size="sm">
-                                        แก้ไข
+                                        <Edit className="h-3.5 w-3.5" />
                                       </Button>
                                     </Link>
-                                    <Button variant="ghost" size="sm">
-                                      ลบ
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      className="bg-red-600 hover:bg-red-700 text-white"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
                                     </Button>
                                   </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                            {filteredEvents.length === 0 && (
-                              <TableRow>
-                                <TableCell
-                                  colSpan={6}
-                                  className="text-center py-4 text-gray-500"
-                                >
-                                  ไม่พบกิจกรรมที่ต้องการ
-                                </TableCell>
-                              </TableRow>
-                            )}
-                          </TableBody>
-                        </Table>
+                                );
+                              },
+                            },
+                          ]}
+                          data={filteredEvents}
+                        />
                       </div>
                     </TabsContent>
 
@@ -826,7 +862,7 @@ export default function AdminCalendar() {
                       <div className="space-y-6">
                         <div className="flex justify-between items-center">
                           <h3 className="text-lg font-medium">
-                            ไทม์ไลน์กิจกรรมสหกิจศึกษา
+                            ไทม์ไลน์กิจกรรมฝึกงานศึกษา
                           </h3>
                         </div>
 
@@ -877,7 +913,7 @@ export default function AdminCalendar() {
                             ))
                           ) : (
                             <div className="text-center text-gray-500 py-8">
-                              ไม่พบกิจกรรมในรอบสหกิจศึกษานี้
+                              ไม่พบกิจกรรมในรอบฝึกงานศึกษานี้
                             </div>
                           )}
                         </div>

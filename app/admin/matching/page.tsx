@@ -32,6 +32,7 @@ import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { useEffect, useState } from "react";
 import TableList from "@/components/TableList";
+import CardList from "@/components/CardList";
 
 export default function AdminMatching() {
   const [loading, setLoading] = useState(true);
@@ -209,52 +210,63 @@ export default function AdminMatching() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  {calendars.map((cal: any) => (
-                    <Card
-                      key={cal.id}
-                      className={`cursor-pointer hover:border-blue-300 transition-colors ${
-                        cal.id === calendarSelected
-                          ? "border-blue-500 bg-blue-50"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        setCalendarSelected(cal.id);
-                      }}
-                    >
-                      <CardHeader className="p-4 pb-0">
-                        <div className="flex justify-between items-start">
-                          <CardTitle className="text-md">
-                            {cal.semester}/{cal.year}
-                          </CardTitle>
-                          {getStatusBadge(cal.status_id || 1)}
-                        </div>
-                        <CardTitle className="text-lg">{cal.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-4">
-                        <p className="text-sm text-gray-600">
-                          {new Date(cal.start_date).toLocaleDateString(
-                            "th-TH",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}{" "}
-                          -{" "}
-                          {new Date(cal.end_date).toLocaleDateString("th-TH", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </p>
-                        <div className="flex justify-between mt-2 text-sm">
-                          <span>นักศึกษา: {cal.total_intern || 0}</span>
-                          <span>แหล่งฝึก: {cal.total_regist || 0}</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                <div>
+                  <CardList
+                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
+                    data={calendars}
+                    pageLength={4}
+                    render={(cal: any) => (
+                      <Card
+                        className={`cursor-pointer hover:border-blue-300 transition-colors ${
+                          cal.id === calendarSelected
+                            ? "border-blue-500 bg-blue-50"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          setCalendarSelected(cal.id);
+                        }}
+                      >
+                        <CardHeader className="p-4 pb-0">
+                          <div className="flex justify-between items-start">
+                            <CardTitle className="text-md">
+                              {cal.semester}/{cal.year}
+                            </CardTitle>
+                            {getStatusBadge(cal.status_id || 1)}
+                          </div>
+                          <CardTitle className="text-lg">{cal.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <p className="text-sm text-gray-600">
+                            {cal.start_date
+                              ? new Date(cal.start_date).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )
+                              : "-"}{" "}
+                            -{" "}
+                            {cal.end_date
+                              ? new Date(cal.end_date).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )
+                              : "-"}
+                          </p>
+                          <div className="flex justify-between mt-2 text-sm">
+                            <span>นักศึกษา: {cal.total_intern || 0}</span>
+                            <span>แหล่งฝึก: {cal.total_regist || 0}</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -374,6 +386,7 @@ export default function AdminMatching() {
                         {
                           key: "gpa",
                           content: "GPA",
+                          className: "text-center",
                         },
                         {
                           key: "id",

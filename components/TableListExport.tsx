@@ -161,7 +161,7 @@ export default function TableListExport({
         className="h-7 text-sm px-1 border border-green-700 text-green-700 dark:border-green-500 dark:text-green-500 rounded shadow-sm hover:text-green-800 transition-all duration-200 flex items-center gap-1"
       >
         <FileText size={16} />
-        Excel
+        <span className="hidden md:flex">Excel</span>
       </button>
 
       <button
@@ -170,7 +170,7 @@ export default function TableListExport({
         className="h-7 text-sm px-1 border border-blue-600 text-blue-600 rounded shadow-sm hover:text-blue-700 transition-all duration-200 flex items-center gap-1"
       >
         <Printer size={16} />
-        Print
+        <span className="hidden md:flex">Print</span>
       </button>
     </div>
   );

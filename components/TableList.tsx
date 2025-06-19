@@ -314,7 +314,7 @@ const TableList = <
                     (currentPage - 1) * itemsPerPage + index + 1;
                   return (
                     <tr
-                      key={item.id ?? currentRow}
+                      key={currentRow}
                       className="border-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
                     >
                       <td className="border border-gray-200 dark:border-gray-700 p-2 text-center text-gray-900 dark:text-gray-300">
@@ -329,13 +329,15 @@ const TableList = <
                               m.className || "",
                             ].join(" ")}
                           >
-                            {m.render
-                              ? m.render(item)
-                              : item[m.key] ?? (
-                                  <i className="text-sm text-gray-300 dark:text-gray-700">
-                                    (ไม่มีข้อมูล)
-                                  </i>
-                                )}
+                            {m.render ? (
+                              m.render(item)
+                            ) : item[m.key] && item[m.key] !== "" ? (
+                              item[m.key]
+                            ) : (
+                              <i className="text-sm text-gray-300 dark:text-gray-700">
+                                (ไม่มีข้อมูล)
+                              </i>
+                            )}
                           </td>
                         ) : null
                       )}

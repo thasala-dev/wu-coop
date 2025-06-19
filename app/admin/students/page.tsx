@@ -63,6 +63,9 @@ import { Progress } from "@/components/ui/progress";
 import AdminSidebar from "@/components/admin-sidebar";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
+import CardList from "@/components/CardList";
+import CustomAvatar from "@/components/avatar";
+import TableList from "@/components/TableList";
 
 // Status mapping for display
 const statusMap = {
@@ -346,15 +349,11 @@ export default function AdminStudentsPage() {
                         key={student.id}
                         className="flex items-center gap-3 p-3"
                       >
-                        <Avatar className="h-8 w-8 rounded-full border border-gray-200">
-                          <AvatarImage
-                            src={student.avatar}
-                            alt={student.fullname}
-                          />
-                          <AvatarFallback className="text-xs">
-                            {student.fullname.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
+                        <CustomAvatar
+                          id={`student${student.username}`}
+                          image={student.image}
+                          size="8"
+                        />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">
                             {student.fullname}
@@ -534,24 +533,20 @@ export default function AdminStudentsPage() {
                   </TabsList>
 
                   <TabsContent value="list">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                      {filteredStudents.map((student: any) => (
-                        <Card
-                          key={student.id}
-                          className="overflow-hidden border-gray-200 hover:border-gray-300 transition-colors bg-white"
-                        >
+                    <CardList
+                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                      data={filteredStudents}
+                      pageLength={6}
+                      render={(student: any) => (
+                        <Card className="overflow-hidden border-gray-200 hover:border-gray-300 transition-colors bg-white">
                           <CardContent className="p-0">
                             <div className="p-5">
                               <div className="flex items-start gap-3">
-                                <Avatar className="h-10 w-10 rounded-full border border-gray-200">
-                                  <AvatarImage
-                                    src={student.avatar}
-                                    alt={student.fullname}
-                                  />
-                                  <AvatarFallback>
-                                    {student.fullname.charAt(0)}
-                                  </AvatarFallback>
-                                </Avatar>
+                                <CustomAvatar
+                                  id={`student${student.username}`}
+                                  image={student.image}
+                                  size="12"
+                                />
                                 <div className="flex-1 min-w-0">
                                   <div className="flex justify-between items-start">
                                     <div>
@@ -654,12 +649,25 @@ export default function AdminStudentsPage() {
                             </div>
                           </CardContent>
                         </Card>
-                      ))}
-                    </div>
+                      )}
+                    />
                   </TabsContent>
 
                   <TabsContent value="grid">
                     <div className="rounded-md border border-gray-200 bg-white overflow-hidden">
+                      <TableList
+                        meta={[
+                          {
+                            key: "student_id",
+                            content: "รหัสนักศึกษา",
+                          },
+                          {
+                            key: "fullname",
+                            content: "ชื่อ-นามสกุล",
+                          },
+                        ]}
+                        data={filteredStudents}
+                      />
                       <Table>
                         <TableHeader>
                           <TableRow className="bg-gray-50 hover:bg-gray-50">
@@ -700,15 +708,11 @@ export default function AdminStudentsPage() {
                               </TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-2">
-                                  <Avatar className="h-7 w-7 rounded-full border border-gray-200">
-                                    <AvatarImage
-                                      src={student.avatar}
-                                      alt={student.fullname}
-                                    />
-                                    <AvatarFallback className="text-xs">
-                                      {student.fullname.charAt(0)}
-                                    </AvatarFallback>
-                                  </Avatar>
+                                  <CustomAvatar
+                                    id={`student${student.username}`}
+                                    image={student.image}
+                                    size="12"
+                                  />
                                   <span className="text-sm font-medium">
                                     {student.fullname}
                                   </span>
@@ -794,36 +798,6 @@ export default function AdminStudentsPage() {
                   </TabsContent>
                 </Tabs>
               </CardContent>
-              <CardFooter className="border-t border-gray-100 px-5 py-3">
-                <div className="flex justify-between items-center w-full text-sm text-gray-500">
-                  <span>
-                    แสดง {filteredStudents.length} จาก {students.length} รายการ
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 w-8 p-0 rounded-md border-gray-200"
-                    >
-                      &lt;
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 w-8 p-0 rounded-md border-gray-200 bg-gray-900 text-white"
-                    >
-                      1
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 w-8 p-0 rounded-md border-gray-200"
-                    >
-                      &gt;
-                    </Button>
-                  </div>
-                </div>
-              </CardFooter>
             </Card>
           </div>
         </div>

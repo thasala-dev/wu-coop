@@ -23,7 +23,7 @@ export default function CustomAvatar({
   if (image) {
     return (
       <MainAvatar className={`h-${size} w-${size} rounded`}>
-        <AvatarImage src={image} alt={id} />
+        <AvatarImage src={image} alt={id} style={{ objectFit: "cover" }} />
         <AvatarFallback className="rounded-md bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200">
           <UserIcon className="h-6 w-6 text-white" />
         </AvatarFallback>
