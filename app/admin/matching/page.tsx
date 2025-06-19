@@ -11,14 +11,6 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -26,15 +18,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
+  BuildingIcon,
   CheckIcon,
   InfoIcon,
+  Link2,
+  Link2Off,
   LinkIcon,
+  PlusIcon,
   SearchIcon,
   UserIcon,
   XIcon,
 } from "lucide-react";
-import AdminSidebar from "@/components/admin-sidebar";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { useEffect, useState } from "react";
@@ -48,6 +46,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import CustomAvatar from "@/components/avatar";
 
 export default function AdminMatching() {
   const [loading, setLoading] = useState(true);
@@ -56,8 +55,16 @@ export default function AdminMatching() {
   const [info, setInfo] = useState<any>({
     intern: [],
     company: [],
+    student: [],
+    companyList: [],
   });
   const { toast } = useToast();
+  // Modal states
+  const [studentImportModal, setStudentImportModal] = useState(false);
+  const [companyImportModal, setCompanyImportModal] = useState(false);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<string>("placeholder");
+  const [capacity, setCapacity] = useState<string>("1");
 
   useEffect(() => {
     fetchData();
@@ -67,10 +74,11 @@ export default function AdminMatching() {
     if (calendarSelected) {
       fetchInterns();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calendarSelected]);
+  }, [calendarSelected, calendars]);
 
   async function fetchInterns() {
+    setSelectedStudents([]);
+    setSelectedCompany("placeholder");
     setLoading(true);
     const response = await fetch(`/api/calendar/${calendarSelected}/info`, {
       method: "GET",
@@ -83,6 +91,8 @@ export default function AdminMatching() {
       setInfo({
         intern: res.intern,
         company: res.company,
+        student: res.student,
+        companyList: res.companyList,
       });
     }
     setLoading(false);
@@ -203,6 +213,122 @@ export default function AdminMatching() {
     }
   };
 
+  // ฟังก์ชันสำหรับการนำเข้านักศึกษา
+  const handleToggleStudentSelection = (id: string) => {
+    setSelectedStudents((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleImportStudents = async () => {
+    if (!selectedStudents.length) {
+      toast({
+        title: "ไม่สามารถนำเข้าได้",
+        description: "กรุณาเลือกนักศึกษาอย่างน้อย 1 คน",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      console.log("Selected Students:", selectedStudents);
+      const response = await fetch(
+        `/api/calendar/${calendarSelected}/regist-intern`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            student_ids: selectedStudents,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      if (result.success) {
+        toast({
+          title: "ดำเนินการสำเร็จ",
+          description: `นำเข้านักศึกษาจำนวน ${selectedStudents.length} คนเรียบร้อยแล้ว`,
+          variant: "success",
+        });
+        setStudentImportModal(false);
+        setSelectedStudents([]);
+        fetchData(); // รีเฟรชข้อมูล
+      } else {
+        throw new Error(result.message || "เกิดข้อผิดพลาด");
+      }
+    } catch (error: any) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: error.message || "ไม่สามารถนำเข้านักศึกษาได้",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  // ฟังก์ชันสำหรับการนำเข้าแหล่งฝึก
+  const handleImportCompany = async () => {
+    if (!selectedCompany || selectedCompany === "placeholder") {
+      toast({
+        title: "ไม่สามารถนำเข้าได้",
+        description: "กรุณาเลือกแหล่งฝึก",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!capacity || isNaN(parseInt(capacity)) || parseInt(capacity) < 1) {
+      toast({
+        title: "ไม่สามารถนำเข้าได้",
+        description: "กรุณากำหนดจำนวนรับที่ถูกต้อง",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("/api/admin/regist_company", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: "",
+          calendarId: calendarSelected,
+          companyId: selectedCompany,
+          total: parseInt(capacity),
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        toast({
+          title: "ดำเนินการสำเร็จ",
+          description: "นำเข้าแหล่งฝึกเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        setCompanyImportModal(false);
+        setSelectedCompany("placeholder");
+        setCapacity("1");
+        fetchData(); // รีเฟรชข้อมูล
+      } else {
+        throw new Error(result.message || "เกิดข้อผิดพลาด");
+      }
+    } catch (error: any) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: error.message || "ไม่สามารถนำเข้าแหล่งฝึกได้",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
@@ -294,10 +420,16 @@ export default function AdminMatching() {
                       </CardTitle>
                       <CardDescription>ภาคการศึกษาที่ 1/2567</CardDescription>
                     </div>
-                    <Button>
-                      <UserIcon className="h-4 w-4 mr-2" />
-                      นำเข้านักศึกษา
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Button onClick={() => setStudentImportModal(true)}>
+                        <UserIcon className="h-4 w-4 mr-2" />
+                        นำเข้านักศึกษา
+                      </Button>
+                      <Button onClick={() => setCompanyImportModal(true)}>
+                        <BuildingIcon className="h-4 w-4 mr-2" />
+                        นำเข้าแหล่งฝึก
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -362,13 +494,26 @@ export default function AdminMatching() {
                       <TableList
                         meta={[
                           {
-                            key: "student_id",
-                            content: "รหัสนักศึกษา",
-                            width: "120px",
-                          },
-                          {
                             key: "fullname",
-                            content: "ชื่อ-นามสกุล",
+                            content: "นักศึกษา",
+                            width: "200px",
+                            render: (item: any) => (
+                              <div className="flex items-center gap-2">
+                                <CustomAvatar
+                                  id={`student${item.student_id}`}
+                                  image={item.image}
+                                  size="8"
+                                />
+                                <div>
+                                  <div className="truncate">
+                                    {item.fullname}
+                                  </div>
+                                  <p className="text-xs text-gray-500">
+                                    {item.student_id}
+                                  </p>
+                                </div>
+                              </div>
+                            ),
                           },
                           {
                             key: "major",
@@ -435,7 +580,7 @@ export default function AdminMatching() {
                                 onClick={() => handleLink(item.id)}
                                 disabled={!item.company_id}
                               >
-                                <LinkIcon className="h-4 w-4 mr-1" />
+                                <Link2 className="h-4 w-4 mr-1" />
                                 จับคู่
                               </Button>
                             ),
@@ -452,13 +597,26 @@ export default function AdminMatching() {
                       <TableList
                         meta={[
                           {
-                            key: "student_id",
-                            content: "รหัสนักศึกษา",
-                            width: "120px",
-                          },
-                          {
                             key: "fullname",
-                            content: "ชื่อ-นามสกุล",
+                            content: "นักศึกษา",
+                            width: "200px",
+                            render: (item: any) => (
+                              <div className="flex items-center gap-2">
+                                <CustomAvatar
+                                  id={`student${item.student_id}`}
+                                  image={item.image}
+                                  size="8"
+                                />
+                                <div>
+                                  <div className="truncate">
+                                    {item.fullname}
+                                  </div>
+                                  <p className="text-xs text-gray-500">
+                                    {item.student_id}
+                                  </p>
+                                </div>
+                              </div>
+                            ),
                           },
                           {
                             key: "major",
@@ -496,8 +654,8 @@ export default function AdminMatching() {
                                 variant="destructive"
                                 onClick={() => handleUnlink(item.id)}
                               >
-                                <LinkIcon className="h-4 w-4 mr-1" />
-                                ยกเลิกการจับคู่
+                                <Link2Off className="h-4 w-4 mr-1" />
+                                ยกเลิกจับคู่
                               </Button>
                             ),
                           },
@@ -515,7 +673,6 @@ export default function AdminMatching() {
           </div>
         </div>
       </main>
-
       {/* Dialog should be in JSX tree here */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
@@ -546,6 +703,151 @@ export default function AdminMatching() {
             >
               <CheckIcon className="h-4 w-4 mr-1" />
               ยืนยัน
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>{" "}
+      {/* Student Import Modal */}
+      <Dialog open={studentImportModal} onOpenChange={setStudentImportModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>นำเข้านักศึกษา</DialogTitle>
+            <p className="text-sm text-gray-500">
+              จำนวนที่เลือก: {selectedStudents.length}/{info.student.length} คน
+            </p>
+          </DialogHeader>
+          <div>
+            <TableList
+              meta={[
+                {
+                  key: "fullname",
+                  content: "นักศึกษา",
+                  width: "200px",
+                  render: (item: any) => (
+                    <div className="flex items-center gap-2">
+                      <CustomAvatar
+                        id={`student${item.username}`}
+                        image={item.image}
+                        size="8"
+                      />
+                      <div>
+                        <div className="truncate">{item.fullname}</div>
+                        <p className="text-xs text-gray-500">
+                          {item.student_id}
+                        </p>
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  key: "major",
+                  content: "สาขาวิชา",
+                },
+                {
+                  key: "action",
+                  content: " ",
+                  width: "60px",
+                  className: "text-center",
+                  sort: false,
+                  render: (item: any) => (
+                    <Button
+                      size="sm"
+                      variant={
+                        selectedStudents.includes(item.id)
+                          ? "destructive"
+                          : "outline"
+                      }
+                      onClick={() => handleToggleStudentSelection(item.id)}
+                    >
+                      {selectedStudents.includes(item.id) ? (
+                        <CheckIcon className="h-4 w-4" />
+                      ) : (
+                        <PlusIcon className="h-4 w-4" />
+                      )}
+                      {/* {selectedStudents.includes(item.id) ? "ยกเลิก" : "เลือก"} */}
+                    </Button>
+                  ),
+                },
+              ]}
+              data={info.student}
+              loading={loading}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setStudentImportModal(false)}
+            >
+              <XIcon className="h-4 w-4 mr-1" />
+              ยกเลิก
+            </Button>
+            <Button
+              onClick={handleImportStudents}
+              disabled={loading || !selectedStudents.length}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <CheckIcon className="h-4 w-4 mr-1" />
+              นำเข้า
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>{" "}
+      {/* Company Import Modal */}
+      <Dialog open={companyImportModal} onOpenChange={setCompanyImportModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>นำเข้าแหล่งฝึก</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-gray-500 mb-4">
+              กรุณาเลือกแหล่งฝึกและกำหนดจำนวนรับเพื่อนำเข้าไปยังรอบฝึกงานนี้
+            </p>
+            <div className="grid grid-cols-1 gap-4">
+              <Select
+                onValueChange={(value) => setSelectedCompany(value)}
+                value={selectedCompany}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="เลือกแหล่งฝึก" />
+                </SelectTrigger>{" "}
+                <SelectContent>
+                  <SelectItem value="placeholder">เลือกแหล่งฝึก</SelectItem>
+                  {info.companyList.map((company: any) => (
+                    <SelectItem key={company.id} value={company.id}>
+                      {company.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div>
+                <Label>จำนวนรับนักศึกษา</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={capacity}
+                  onChange={(e) => setCapacity(e.target.value)}
+                  className="h-10"
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setCompanyImportModal(false)}
+            >
+              <XIcon className="h-4 w-4 mr-1" />
+              ยกเลิก
+            </Button>
+            <Button
+              onClick={handleImportCompany}
+              disabled={
+                loading || !selectedCompany || selectedCompany === "placeholder"
+              }
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <CheckIcon className="h-4 w-4 mr-1" />
+              นำเข้า
             </Button>
           </DialogFooter>
         </DialogContent>

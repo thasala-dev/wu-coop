@@ -20,6 +20,22 @@ export async function GET(request: NextRequest, { params }: any) {
       INNER JOIN user_company com ON reg.company_id = com.id
       WHERE reg.calendar_id = $1`,
       [id]
+    ); // Get students not already in the regist_intern table for this calendar
+    const student = await sql(
+      `SELECT us.* 
+       FROM user_student us
+       LEFT JOIN regist_intern ri ON us.id = ri.student_id AND ri.calendar_id = $1
+       WHERE ri.id IS NULL`,
+      [id]
+    );
+
+    // Get companies not already in the regist_company table for this calendar
+    const companyList = await sql(
+      `SELECT uc.* 
+       FROM user_company uc
+       LEFT JOIN regist_company rc ON uc.id = rc.company_id AND rc.calendar_id = $1
+       WHERE rc.id IS NULL`,
+      [id]
     );
 
     return NextResponse.json({
@@ -27,6 +43,8 @@ export async function GET(request: NextRequest, { params }: any) {
       message: "ดำเนินการสำเร็จ",
       intern: intern,
       company: company,
+      student: student,
+      companyList: companyList,
     });
   } catch (error) {
     return NextResponse.json(
