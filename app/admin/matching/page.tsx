@@ -455,39 +455,6 @@ export default function AdminMatching() {
                           )
                         </TabsTrigger>
                       </TabsList>
-
-                      <div className="flex gap-2 w-full md:w-auto">
-                        <Select>
-                          <SelectTrigger className="w-full md:w-[180px]">
-                            <SelectValue placeholder="รหัสนักศึกษา" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">ทุกรหัส</SelectItem>
-                            <SelectItem value="cs">68</SelectItem>
-                            <SelectItem value="ee">67</SelectItem>
-                            <SelectItem value="ie">66</SelectItem>
-                            <SelectItem value="me">65</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Select>
-                          <SelectTrigger className="w-full md:w-[180px]">
-                            <SelectValue placeholder="ทุกสาขาวิชา" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">ทุกสาขาวิชา</SelectItem>
-                            <SelectItem value="cs">
-                              วิศวกรรมคอมพิวเตอร์
-                            </SelectItem>
-                            <SelectItem value="ee">วิศวกรรมไฟฟ้า</SelectItem>
-                            <SelectItem value="ie">
-                              วิศวกรรมอุตสาหการ
-                            </SelectItem>
-                            <SelectItem value="me">
-                              วิศวกรรมเครื่องกล
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
                     </div>
 
                     <TabsContent value="pending">
@@ -717,6 +684,33 @@ export default function AdminMatching() {
             </p>
           </DialogHeader>
           <div>
+            <div className="flex gap-2 w-full md:w-auto mb-4 flex-row-reverse">
+              <Select>
+                <SelectTrigger className="w-full md:w-[180px]">
+                  <SelectValue placeholder="รหัสนักศึกษา" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">ทุกรหัส</SelectItem>
+                  <SelectItem value="cs">68</SelectItem>
+                  <SelectItem value="ee">67</SelectItem>
+                  <SelectItem value="ie">66</SelectItem>
+                  <SelectItem value="me">65</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select>
+                <SelectTrigger className="w-full md:w-[180px]">
+                  <SelectValue placeholder="ทุกสาขาวิชา" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">ทุกสาขาวิชา</SelectItem>
+                  <SelectItem value="cs">วิศวกรรมคอมพิวเตอร์</SelectItem>
+                  <SelectItem value="ee">วิศวกรรมไฟฟ้า</SelectItem>
+                  <SelectItem value="ie">วิศวกรรมอุตสาหการ</SelectItem>
+                  <SelectItem value="me">วิศวกรรมเครื่องกล</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <TableList
               meta={[
                 {
