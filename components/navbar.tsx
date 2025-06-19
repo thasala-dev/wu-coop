@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import Avatar, { genConfig } from "react-nice-avatar";
+import CustomAvatar from "@/components/avatar";
 
 interface NavbarProps {
   userType: "student" | "advisor" | "mentor" | "admin";
@@ -142,22 +143,16 @@ export function Navbar({
                   variant="ghost"
                   className="flex items-center gap-2 text-white hover:bg-white/20"
                 >
-                  <Avatar className="h-8 w-8" {...config} />
-                  {/* <Avatar className="h-8 w-8 border-2 border-white/50">
-                    <AvatarImage
-                      src={`https://i.pravatar.cc/150?u=${user?.username}`}
-                    />
-                    <AvatarFallback>
-                      {getInitials(user?.username)}
-                    </AvatarFallback>
-                  </Avatar> */}
+                  <CustomAvatar
+                    id={user.role + user?.username}
+                    image={user.image}
+                    size="8"
+                  />
+
                   <div className="hidden md:block text-left">
                     <div className="font-medium">
                       {user.role == "mentor" ? user?.name : user?.fullname}
                     </div>
-                    {/* {user && (
-                      <div className="text-xs opacity-90">{userRole}</div>
-                    )} */}
                   </div>
                   <ChevronDown className="h-4 w-4 opacity-70" />
                 </Button>

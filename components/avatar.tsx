@@ -20,7 +20,7 @@ export default function CustomAvatar({
   size = "12",
   avatar = false,
 }: Props) {
-  if (image) {
+  if (image && avatar) {
     return (
       <MainAvatar className={`h-${size} w-${size} rounded`}>
         <AvatarImage src={image} alt={id} style={{ objectFit: "cover" }} />

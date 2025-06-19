@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { ArrowLeft, Edit, ChevronRight } from "lucide-react";
+import { ArrowLeft, Edit, ChevronRight, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter, useParams } from "next/navigation";
 import Loading from "@/components/loading";
 import Sidebar from "@/components/sidebar";
+import CustomAvatar from "@/components/avatar";
+import { callUploadApi, callDeleteApi } from "@/lib/file-api";
 
 const formSchema = z.object({
   fullname: z.string().min(1, "กรุณากรอกชื่อ-นามสกุล"),
@@ -44,9 +46,13 @@ const years = Array.from(
 );
 
 export default function Page() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const params = useParams();
   const id = params?.id as string;
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [currentImageUrl, setCurrentImageUrl] = useState<string>("");
+  const [initialImageUrl, setInitialImageUrl] = useState<string>(""); // To track original image for deletion
 
   const { toast } = useToast();
   const router = useRouter();
@@ -56,6 +62,7 @@ export default function Page() {
     formState: { errors },
     setError,
     setValue,
+    getValues,
   } = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,6 +85,7 @@ export default function Page() {
   }, []);
 
   async function fetchStudentData() {
+    setLoading(true);
     const response = await fetch(`/api/student/${id}`);
     if (!response.ok) {
       toast({
@@ -99,6 +107,10 @@ export default function Page() {
       setValue("address", data.data.address || "");
       setValue("gpa", data.data.gpa || "");
       setValue("password", "");
+
+      setValue("image", data.data.image || "");
+      setCurrentImageUrl(data.data.image || "");
+      setInitialImageUrl(data.data.image || "");
     } else {
       toast({
         title: "ไม่พบข้อมูลนักศึกษา",
@@ -106,37 +118,110 @@ export default function Page() {
         variant: "destructive",
       });
     }
+    setLoading(false);
   }
 
   async function onSubmit(values: any) {
     values.username = values.student_id;
+    setLoading(true);
 
-    console.log("Submitted values:", values);
+    let finalImageUrl = values.image; // Start with the image URL from the form (could be current or empty)
+    let hasUploadError = false;
+    let hasDeleteError = false;
 
-    const response = await fetch(`/api/student/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
+    try {
+      if (selectedFile) {
+        const uploadResult = await callUploadApi(selectedFile, "students");
+        if (uploadResult.filePath) {
+          finalImageUrl = uploadResult.filePath;
+          setSelectedFile(null);
+          setCurrentImageUrl(finalImageUrl); // Update current display
+        } else {
+          hasUploadError = true;
+          finalImageUrl = initialImageUrl;
+        }
+      }
 
-    const data = await response.json();
-    if (data.success) {
-      toast({
-        title: "ดำเนินการสำเร็จ",
-        description: data.message || "เกิดข้อผิดพลาด",
-        variant: "success",
+      if (hasUploadError) {
+        setLoading(false);
+        return; // Stop form submission if image upload failed
+      }
+
+      if (initialImageUrl && initialImageUrl !== finalImageUrl) {
+        try {
+          const deleteResult = await callDeleteApi(initialImageUrl);
+          if (deleteResult.message.includes("success")) {
+          } else {
+            hasDeleteError = true;
+          }
+        } catch (deleteError) {
+          hasDeleteError = true;
+          console.error("Error deleting old image:", deleteError);
+          toast({
+            title: "เกิดข้อผิดพลาดในการลบรูปภาพเก่า",
+            description: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อลบรูปภาพเก่าได้",
+            variant: "destructive",
+          });
+        }
+      }
+
+      // 3. Prepare payload for main form submission
+      const payload = { ...values, image: finalImageUrl }; // Ensure 'image' field reflects the latest status
+      if (payload.password === "") {
+        delete payload.password; // ลบ password ออกจาก payload หากเป็นค่าว่าง
+      }
+
+      // 4. Submit main form data
+      const response = await fetch(`/api/student/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-      router.push("/admin/students");
-    } else {
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        toast({
+          title: "ดำเนินการสำเร็จ",
+          description: data.message || "แก้ไขข้อมูลผู้ดูแลระบบสำเร็จ",
+          variant: "success",
+        });
+        router.push("/admin/students");
+      } else {
+        toast({
+          title: "ดำเนินการไม่สำเร็จ",
+          description: data.message || "เกิดข้อผิดพลาดในการแก้ไขข้อมูล",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
       toast({
-        title: "ดำเนินการไม่สำเร็จ",
-        description: data.message || "เกิดข้อผิดพลาด",
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อบันทึกข้อมูลได้",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFile(event.target.files ? event.target.files[0] : null);
+    // When a new file is selected, clear currentImageUrl visually until uploaded
+    if (event.target.files && event.target.files[0]) {
+      setCurrentImageUrl(URL.createObjectURL(event.target.files[0]));
+      setValue("image", ""); // Clear image field in form until successful upload
+    } else {
+      setCurrentImageUrl(initialImageUrl); // Revert if file selection is cancelled
+      setValue("image", initialImageUrl);
+    }
+  };
+
+  const handleImageDeleteClick = async () => {
+    setSelectedFile(null);
+    setCurrentImageUrl("");
+    setValue("image", "");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -178,6 +263,44 @@ export default function Page() {
                               ข้อมูลนักศึกษา
                             </h2>
                           </div>
+
+                          <div className="sm:col-span-12 flex flex-col items-center justify-center text-center">
+                            <div className="flex flex-row items-center justify-center gap-4">
+                              <div className="relative flex items-center justify-center">
+                                <input
+                                  id="image-upload"
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleFileChange}
+                                  className="hidden"
+                                />
+                                <label
+                                  htmlFor="image-upload"
+                                  className="cursor-pointer"
+                                >
+                                  <CustomAvatar
+                                    id={`admin${getValues("username")}`}
+                                    image={currentImageUrl}
+                                    size="32"
+                                  />
+                                </label>
+                                {currentImageUrl && (
+                                  <Button
+                                    type="button"
+                                    onClick={handleImageDeleteClick}
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute -top-2 -right-2 h-7 w-7 rounded-full shadow bg-white border border-gray-200"
+                                    disabled={loading}
+                                    title="ลบรูปภาพ"
+                                  >
+                                    <Trash2 className="h-4 w-4 text-red-600" />
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
                           <div className="sm:col-span-6">
                             <label>ชื่อ-นามสกุล</label>
                             <input

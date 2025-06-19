@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useMemo, useRef, ReactNode } from "react";
-import { ChevronLeft, ChevronRight, Search, XCircle } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Squirrel,
+  TentTree,
+  TreePalm,
+  Turtle,
+  XCircle,
+} from "lucide-react";
 import TableListExport from "./TableListExport";
 
 // Type for meta column
@@ -20,6 +29,13 @@ interface TableListProps<T = any> {
   disableSearch?: boolean;
   customSearchSlot?: ReactNode;
 }
+
+const iconList = [
+  <TentTree className="w-12 h-12 text-emerald-200 dark:text-gray-500" />,
+  <Squirrel className="w-12 h-12 text-emerald-200 dark:text-gray-500" />,
+  <TreePalm className="w-12 h-12 text-emerald-200 dark:text-gray-500" />,
+  <Turtle className="w-12 h-12 text-emerald-200 dark:text-gray-500" />,
+];
 
 const TableList = <
   T extends { id?: string | number } & { [key: string]: any }
@@ -232,10 +248,10 @@ const TableList = <
             className="min-w-full rounded-lg text-left text-sm"
           >
             <thead>
-              <tr className="border-y border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-gray-700">
+              <tr className="border-y border-gray-200 dark:border-gray-700 bg-emerald-50 dark:bg-gray-700">
                 <th
                   style={{ width: 40 }}
-                  className="border text-sm border-gray-200 dark:border-gray-700 px-1 py-3 text-center font-medium text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-600"
+                  className="border text-sm border-gray-200 dark:border-gray-700 px-1 py-3 text-center font-medium text-gray-600 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-gray-600"
                 >
                   <p className="flex items-center justify-center opacity-70">
                     #
@@ -246,7 +262,7 @@ const TableList = <
                     <th
                       key={`header-${index}`}
                       style={m.width ? { width: m.width } : undefined}
-                      className="border text-sm border-gray-200 dark:border-gray-700 px-1 py-3 text-center font-medium text-gray-600 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-600"
+                      className="border text-sm border-gray-200 dark:border-gray-700 px-1 py-3 text-center font-medium text-gray-600 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-gray-600"
                     >
                       {m.sort === false ? (
                         <p className="flex items-center justify-center gap-1">
@@ -346,24 +362,12 @@ const TableList = <
                 })
               ) : (
                 <tr className="border border-gray-200 dark:border-gray-700">
-                  <td colSpan={meta.length + 1} className="p-4 text-center">
-                    <div className="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-12 h-12 mb-2 text-gray-300 dark:text-gray-500"
-                        viewBox="0 0 32 32"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M6 8h10v2H6zm0 4h8v2H6zm0 4h4v2H6z"
-                        />
-                        <path
-                          fill="currentColor"
-                          d="M28 26H7.414L30 3.414L28.586 2l-2 2H4a2 2 0 0 0-2 2v16h2V6h20.586L2 28.586L3.414 30l2-2H28a2 2 0 0 0 2-2V10h-2Z"
-                        />
-                      </svg>
-
-                      <i className="text-sm text-gray-300 dark:text-gray-700">
+                  <td colSpan={meta.length + 1} className="p-4">
+                    <div className="flex flex-col items-center justify-center w-full">
+                      <div className="flex flex-col items-center justify-center bg-emerald-50 w-20 h-20 rounded-full mb-2">
+                        {iconList[Math.floor(Math.random() * iconList.length)]}
+                      </div>
+                      <i className="text-sm text-gray-400 dark:text-gray-700">
                         ไม่มีข้อมูล
                       </i>
                     </div>

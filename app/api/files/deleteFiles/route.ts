@@ -1,5 +1,6 @@
 import { del } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { invalidateCacheByPrefix } from "@/lib/blob-cache";
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -17,6 +18,10 @@ export async function DELETE(request: Request) {
     await del(fileUrl, {
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
+
+    // ล้าง cache list files ทั้งหมด เพราะเราไม่รู้ว่าไฟล์นี้อยู่ใน path ไหน
+    invalidateCacheByPrefix("blob:list");
+
     return NextResponse.json(
       {
         success: true,
