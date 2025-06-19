@@ -584,7 +584,9 @@ export default function AdminStudentsPage() {
                                   <span className="text-gray-500">
                                     สาขาวิชา:
                                   </span>{" "}
-                                  {student.major}
+                                  {student.major || (
+                                    <i className="text-xs">(ไม่มีข้อมูล)</i>
+                                  )}
                                 </p>
                                 <p>
                                   <span className="text-gray-500">ชั้นปี:</span>{" "}
@@ -594,19 +596,25 @@ export default function AdminStudentsPage() {
                                   <span className="text-gray-500">
                                     เกรดเฉลี่ย:
                                   </span>{" "}
-                                  {student.gpa}
+                                  {student.gpa || (
+                                    <i className="text-xs">(ไม่มีข้อมูล)</i>
+                                  )}
                                 </p>
                                 <p>
                                   <span className="text-gray-500">
                                     แหล่งฝึกงาน:
                                   </span>{" "}
-                                  {student.company}
+                                  {student.company || (
+                                    <i className="text-xs">(ไม่มีข้อมูล)</i>
+                                  )}
                                 </p>
                                 <p>
                                   <span className="text-gray-500">
                                     อาจารย์ที่ปรึกษา:
                                   </span>{" "}
-                                  {student.advisor}
+                                  {student.advisor || (
+                                    <i className="text-xs">(ไม่มีข้อมูล)</i>
+                                  )}
                                 </p>
                               </div>
                             </div>

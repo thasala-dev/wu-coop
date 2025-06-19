@@ -86,61 +86,39 @@ export default function CompaniesPage() {
               </CardHeader>
 
               <CardContent>
-                <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                  <div className="relative flex-grow">
-                    <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-                    <Input
-                      placeholder="ค้นหาชื่อผู้ดูแลระบบ.."
-                      className="pl-8"
-                      value={search}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setSearch(value);
-                        if (value.trim() === "") {
-                          setFilterData(
-                            role === "all"
-                              ? data
-                              : data.filter((item: any) => {
-                                  return item.user_role === role;
-                                })
-                          );
-                        } else {
-                          setFilterData(
-                            (role === "all"
-                              ? data
-                              : data.filter((item: any) => {
-                                  return item.user_role === role;
-                                })
-                            ).filter((item: any) =>
-                              item.fullname
-                                ?.toLowerCase()
-                                .includes(value.toLowerCase())
-                            )
-                          );
-                        }
-                      }}
-                    />
-                  </div>
+                <div className="overflow-x-auto">
+                  <TabsList>
+                    <TabsTrigger value="all">
+                      ทั้งหมด ({data.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="admin">
+                      ผู้ดูแลระบบ (
+                      {data.filter((c: any) => c.user_role === "admin").length})
+                    </TabsTrigger>
+                    <TabsTrigger value="student">
+                      นักศึกษา (
+                      {
+                        data.filter((c: any) => c.user_role === "student")
+                          .length
+                      }
+                      )
+                    </TabsTrigger>
+                    <TabsTrigger value="advisor">
+                      อาจารย์ (
+                      {
+                        data.filter((c: any) => c.user_role === "advisor")
+                          .length
+                      }
+                      )
+                    </TabsTrigger>
+                    <TabsTrigger value="mentor">
+                      แหล่งฝึก (
+                      {data.filter((c: any) => c.user_role === "mentor").length}
+                      )
+                    </TabsTrigger>
+                  </TabsList>
                 </div>
-                <TabsList>
-                  <TabsTrigger value="all">ทั้งหมด ({data.length})</TabsTrigger>
-                  <TabsTrigger value="admin">
-                    ผู้ดูแลระบบ (
-                    {data.filter((c: any) => c.user_role === "admin").length})
-                  </TabsTrigger>
-                  <TabsTrigger value="student">
-                    นักศึกษา (
-                    {data.filter((c: any) => c.user_role === "student").length})
-                  </TabsTrigger>
-                  <TabsTrigger value="advisor">
-                    อาจารย์ (
-                    {data.filter((c: any) => c.user_role === "advisor").length})
-                  </TabsTrigger>
-                  <TabsTrigger value="mentor">
-                    แหล่งฝึก (
-                    {data.filter((c: any) => c.user_role === "mentor").length})
-                  </TabsTrigger>
-                </TabsList>
+
                 <div className="my-4 overflow-x-auto">
                   <TableList
                     meta={[

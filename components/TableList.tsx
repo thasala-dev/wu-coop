@@ -334,7 +334,7 @@ const TableList = <
                             ) : item[m.key] && item[m.key] !== "" ? (
                               item[m.key]
                             ) : (
-                              <i className="text-sm text-gray-300 dark:text-gray-700">
+                              <i className="text-xs text-gray-300 dark:text-gray-700">
                                 (ไม่มีข้อมูล)
                               </i>
                             )}
