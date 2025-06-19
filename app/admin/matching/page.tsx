@@ -284,225 +284,234 @@ export default function AdminMatching() {
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <CardTitle className="text-xl">
-                      จัดการการจับคู่นักศึกษากับแหล่งฝึก
-                    </CardTitle>
-                    <CardDescription>ภาคการศึกษาที่ 1/2567</CardDescription>
-                  </div>
-                  <Button>
-                    <UserIcon className="h-4 w-4 mr-2" />
-                    นำเข้านักศึกษา
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Tabs defaultValue="pending">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                    <TabsList>
-                      <TabsTrigger value="pending">
-                        รอจับคู่ (
-                        {
-                          info.intern.filter((item: any) => !item.register_date)
-                            .length
-                        }
-                        )
-                      </TabsTrigger>
-                      <TabsTrigger value="matched">
-                        จับคู่แล้ว (
-                        {
-                          info.intern.filter((item: any) => item.register_date)
-                            .length
-                        }
-                        )
-                      </TabsTrigger>
-                    </TabsList>
-
-                    <div className="flex gap-2 w-full md:w-auto">
-                      <Select>
-                        <SelectTrigger className="w-full md:w-[180px]">
-                          <SelectValue placeholder="รหัสนักศึกษา" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">ทุกรหัส</SelectItem>
-                          <SelectItem value="cs">68</SelectItem>
-                          <SelectItem value="ee">67</SelectItem>
-                          <SelectItem value="ie">66</SelectItem>
-                          <SelectItem value="me">65</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Select>
-                        <SelectTrigger className="w-full md:w-[180px]">
-                          <SelectValue placeholder="ทุกสาขาวิชา" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">ทุกสาขาวิชา</SelectItem>
-                          <SelectItem value="cs">
-                            วิศวกรรมคอมพิวเตอร์
-                          </SelectItem>
-                          <SelectItem value="ee">วิศวกรรมไฟฟ้า</SelectItem>
-                          <SelectItem value="ie">วิศวกรรมอุตสาหการ</SelectItem>
-                          <SelectItem value="me">วิศวกรรมเครื่องกล</SelectItem>
-                        </SelectContent>
-                      </Select>
+            {calendarSelected && (
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <CardTitle className="text-xl">
+                        จัดการการจับคู่นักศึกษากับแหล่งฝึก
+                      </CardTitle>
+                      <CardDescription>ภาคการศึกษาที่ 1/2567</CardDescription>
                     </div>
+                    <Button>
+                      <UserIcon className="h-4 w-4 mr-2" />
+                      นำเข้านักศึกษา
+                    </Button>
                   </div>
+                </CardHeader>
+                <CardContent>
+                  <Tabs defaultValue="pending">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                      <TabsList>
+                        <TabsTrigger value="pending">
+                          รอจับคู่ (
+                          {
+                            info.intern.filter(
+                              (item: any) => !item.register_date
+                            ).length
+                          }
+                          )
+                        </TabsTrigger>
+                        <TabsTrigger value="matched">
+                          จับคู่แล้ว (
+                          {
+                            info.intern.filter(
+                              (item: any) => item.register_date
+                            ).length
+                          }
+                          )
+                        </TabsTrigger>
+                      </TabsList>
 
-                  <TabsContent value="pending">
-                    <TableList
-                      meta={[
-                        {
-                          key: "student_id",
-                          content: "รหัสนักศึกษา",
-                          width: "120px",
-                        },
-                        {
-                          key: "fullname",
-                          content: "ชื่อ-นามสกุล",
-                        },
-                        {
-                          key: "major",
-                          content: "สาขาวิชา",
-                        },
-                        {
-                          key: "company_id",
-                          content: "แหล่งฝึกที่ต้องการ",
-                          render: (item) => (
-                            <Select
-                              onValueChange={(value) => {
-                                const companyId = value.replace("company-", "");
-                                setInfo((prev: any) => ({
-                                  ...prev,
-                                  intern: prev.intern.map((intern: any) =>
-                                    intern.id === item.id
-                                      ? { ...intern, company_id: companyId }
-                                      : intern
-                                  ),
-                                }));
-                              }}
-                              value={
-                                item.company_id
-                                  ? `company-${item.company_id}`
-                                  : "company-"
-                              }
-                            >
-                              <SelectTrigger className="h-8 w-full">
-                                <SelectValue placeholder="เลือกแหล่งฝึก" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value={`company-`}>
-                                  เลือกแหล่งฝึก
-                                </SelectItem>
-                                {info.company.map((company: any) => (
-                                  <SelectItem
-                                    key={company.id}
-                                    value={`company-${company.company_id}`}
-                                  >
-                                    {company.name} [{company.total} ตำแหน่ง]
+                      <div className="flex gap-2 w-full md:w-auto">
+                        <Select>
+                          <SelectTrigger className="w-full md:w-[180px]">
+                            <SelectValue placeholder="รหัสนักศึกษา" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">ทุกรหัส</SelectItem>
+                            <SelectItem value="cs">68</SelectItem>
+                            <SelectItem value="ee">67</SelectItem>
+                            <SelectItem value="ie">66</SelectItem>
+                            <SelectItem value="me">65</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Select>
+                          <SelectTrigger className="w-full md:w-[180px]">
+                            <SelectValue placeholder="ทุกสาขาวิชา" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">ทุกสาขาวิชา</SelectItem>
+                            <SelectItem value="cs">
+                              วิศวกรรมคอมพิวเตอร์
+                            </SelectItem>
+                            <SelectItem value="ee">วิศวกรรมไฟฟ้า</SelectItem>
+                            <SelectItem value="ie">
+                              วิศวกรรมอุตสาหการ
+                            </SelectItem>
+                            <SelectItem value="me">
+                              วิศวกรรมเครื่องกล
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <TabsContent value="pending">
+                      <TableList
+                        meta={[
+                          {
+                            key: "student_id",
+                            content: "รหัสนักศึกษา",
+                            width: "120px",
+                          },
+                          {
+                            key: "fullname",
+                            content: "ชื่อ-นามสกุล",
+                          },
+                          {
+                            key: "major",
+                            content: "สาขาวิชา",
+                          },
+                          {
+                            key: "company_id",
+                            content: "แหล่งฝึกที่ต้องการ",
+                            render: (item) => (
+                              <Select
+                                onValueChange={(value) => {
+                                  const companyId = value.replace(
+                                    "company-",
+                                    ""
+                                  );
+                                  setInfo((prev: any) => ({
+                                    ...prev,
+                                    intern: prev.intern.map((intern: any) =>
+                                      intern.id === item.id
+                                        ? { ...intern, company_id: companyId }
+                                        : intern
+                                    ),
+                                  }));
+                                }}
+                                value={
+                                  item.company_id
+                                    ? `company-${item.company_id}`
+                                    : "company-"
+                                }
+                              >
+                                <SelectTrigger className="h-8 w-full">
+                                  <SelectValue placeholder="เลือกแหล่งฝึก" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value={`company-`}>
+                                    เลือกแหล่งฝึก
                                   </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          ),
-                        },
-                        {
-                          key: "gpa",
-                          content: "GPA",
-                          className: "text-center",
-                        },
-                        {
-                          key: "id",
-                          width: "100px",
-                          content: "Action",
-                          className: "text-center",
-                          sort: false,
-                          render: (item: any) => (
-                            <Button
-                              size="sm"
-                              onClick={() => handleLink(item.id)}
-                              disabled={!item.company_id}
-                            >
-                              <LinkIcon className="h-4 w-4 mr-1" />
-                              จับคู่
-                            </Button>
-                          ),
-                        },
-                      ]}
-                      data={info.intern.filter(
-                        (item: any) => !item.register_date
-                      )}
-                      loading={loading}
-                    />
-                  </TabsContent>
+                                  {info.company.map((company: any) => (
+                                    <SelectItem
+                                      key={company.id}
+                                      value={`company-${company.company_id}`}
+                                    >
+                                      {company.name} [{company.total} ตำแหน่ง]
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            ),
+                          },
+                          {
+                            key: "gpa",
+                            content: "GPA",
+                            className: "text-center",
+                          },
+                          {
+                            key: "id",
+                            width: "100px",
+                            content: "Action",
+                            className: "text-center",
+                            sort: false,
+                            render: (item: any) => (
+                              <Button
+                                size="sm"
+                                onClick={() => handleLink(item.id)}
+                                disabled={!item.company_id}
+                              >
+                                <LinkIcon className="h-4 w-4 mr-1" />
+                                จับคู่
+                              </Button>
+                            ),
+                          },
+                        ]}
+                        data={info.intern.filter(
+                          (item: any) => !item.register_date
+                        )}
+                        loading={loading}
+                      />
+                    </TabsContent>
 
-                  <TabsContent value="matched">
-                    <TableList
-                      meta={[
-                        {
-                          key: "student_id",
-                          content: "รหัสนักศึกษา",
-                          width: "120px",
-                        },
-                        {
-                          key: "fullname",
-                          content: "ชื่อ-นามสกุล",
-                        },
-                        {
-                          key: "major",
-                          content: "สาขาวิชา",
-                        },
-                        {
-                          key: "company_name",
-                          content: "แหล่งฝึกที่จับคู่",
-                        },
-                        {
-                          key: "register_date",
-                          content: "วันที่จับคู่",
-                          render: (item: any) => (
-                            <span>
-                              {new Date(item.register_date).toLocaleDateString(
-                                "th-TH",
-                                {
+                    <TabsContent value="matched">
+                      <TableList
+                        meta={[
+                          {
+                            key: "student_id",
+                            content: "รหัสนักศึกษา",
+                            width: "120px",
+                          },
+                          {
+                            key: "fullname",
+                            content: "ชื่อ-นามสกุล",
+                          },
+                          {
+                            key: "major",
+                            content: "สาขาวิชา",
+                          },
+                          {
+                            key: "company_name",
+                            content: "แหล่งฝึกที่จับคู่",
+                          },
+                          {
+                            key: "register_date",
+                            content: "วันที่จับคู่",
+                            render: (item: any) => (
+                              <span>
+                                {new Date(
+                                  item.register_date
+                                ).toLocaleDateString("th-TH", {
                                   year: "numeric",
                                   month: "short",
                                   day: "numeric",
-                                }
-                              )}
-                            </span>
-                          ),
-                        },
-                        {
-                          key: "id",
-                          width: "100px",
-                          content: "Action",
-                          className: "text-center",
-                          sort: false,
+                                })}
+                              </span>
+                            ),
+                          },
+                          {
+                            key: "id",
+                            width: "100px",
+                            content: "Action",
+                            className: "text-center",
+                            sort: false,
 
-                          render: (item) => (
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => handleUnlink(item.id)}
-                            >
-                              <LinkIcon className="h-4 w-4 mr-1" />
-                              ยกเลิกการจับคู่
-                            </Button>
-                          ),
-                        },
-                      ]}
-                      data={info.intern.filter(
-                        (item: any) => item.register_date
-                      )}
-                      loading={loading}
-                    />
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
+                            render: (item) => (
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleUnlink(item.id)}
+                              >
+                                <LinkIcon className="h-4 w-4 mr-1" />
+                                ยกเลิกการจับคู่
+                              </Button>
+                            ),
+                          },
+                        ]}
+                        data={info.intern.filter(
+                          (item: any) => item.register_date
+                        )}
+                        loading={loading}
+                      />
+                    </TabsContent>
+                  </Tabs>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </main>

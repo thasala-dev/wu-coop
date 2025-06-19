@@ -126,7 +126,7 @@ export default function CompaniesPage() {
                   <a href={`/admin/companies/add`}>
                     <Button>
                       <PlusIcon className="h-4 w-4 mr-2" />
-                      สร้างรอบใหม่
+                      สร้างบัญชีใหม่
                     </Button>
                   </a>
                 </div>

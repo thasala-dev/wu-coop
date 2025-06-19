@@ -131,7 +131,7 @@ export default function Home() {
                   <TabsList className="grid grid-cols-4 mb-4 bg-green-100 shadow-sm">
                     <TabsTrigger
                       value="student"
-                      className="flex items-center gap-2 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-blue-600 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
                       <GraduationCap className="w-4 h-4 text-blue-600" />
                       <span className="hidden sm:inline">นักศึกษา</span>
@@ -139,7 +139,7 @@ export default function Home() {
 
                     <TabsTrigger
                       value="mentor"
-                      className="flex items-center gap-2 data-[state=active]:bg-green-100 data-[state=active]:text-green-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-green-600 data-[state=active]:bg-green-100 data-[state=active]:text-green-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
                       <Briefcase className="w-4 h-4 text-green-600" />
                       <span className="hidden sm:inline">แหล่งฝึก</span>
@@ -147,7 +147,7 @@ export default function Home() {
 
                     <TabsTrigger
                       value="advisor"
-                      className="flex items-center gap-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-purple-600 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
                       <School className="w-4 h-4 text-purple-600" />
                       <span className="hidden sm:inline">อาจารย์</span>
@@ -155,7 +155,7 @@ export default function Home() {
 
                     <TabsTrigger
                       value="admin"
-                      className="flex items-center gap-2 data-[state=active]:bg-red-100 data-[state=active]:text-red-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-red-600 data-[state=active]:bg-red-100 data-[state=active]:text-red-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
                       <ShieldCheck className="w-4 h-4 text-red-600" />
                       <span className="hidden sm:inline">แอดมิน</span>
