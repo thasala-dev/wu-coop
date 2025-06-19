@@ -26,22 +26,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { LinkIcon, SearchIcon, UserIcon, BuildingIcon } from "lucide-react";
+import {
+  CheckIcon,
+  InfoIcon,
+  LinkIcon,
+  SearchIcon,
+  UserIcon,
+  XIcon,
+} from "lucide-react";
 import AdminSidebar from "@/components/admin-sidebar";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { useEffect, useState } from "react";
 import TableList from "@/components/TableList";
 import CardList from "@/components/CardList";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function AdminMatching() {
   const [loading, setLoading] = useState(true);
-  const [calendars, setCalendars] = useState<any>([]);
+  const [calendars, setCalendars] = useState<any[]>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
   const [info, setInfo] = useState<any>({
     intern: [],
     company: [],
   });
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchData();
@@ -51,6 +67,7 @@ export default function AdminMatching() {
     if (calendarSelected) {
       fetchInterns();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarSelected]);
 
   async function fetchInterns() {
@@ -63,7 +80,6 @@ export default function AdminMatching() {
     });
     const res = await response.json();
     if (res.success) {
-      console.log("Fetched info:", res);
       setInfo({
         intern: res.intern,
         company: res.company,
@@ -73,7 +89,7 @@ export default function AdminMatching() {
   }
 
   async function fetchData() {
-    setLoading(false);
+    setLoading(true);
     const response = await fetch("/api/calendar", {
       method: "GET",
       headers: {
@@ -87,73 +103,71 @@ export default function AdminMatching() {
     setLoading(false);
   }
 
-  // Mock data for companies
-  const companies = [
-    {
-      id: 1,
-      name: "แหล่งฝึก เทคโนโลยีดิจิทัล จำกัด",
-      location: "กรุงเทพมหานคร",
-      mentors: [
-        { id: 1, name: "นางสาวปรียา มากความรู้", position: "Senior Developer" },
-        { id: 2, name: "นายสมศักดิ์ เชี่ยวชาญ", position: "Project Manager" },
-      ],
-    },
-    {
-      id: 2,
-      name: "แหล่งฝึก เน็ตเวิร์ค โซลูชั่น จำกัด",
-      location: "นนทบุรี",
-      mentors: [
-        { id: 3, name: "นายวิทยา เชี่ยวชาญ", position: "Network Engineer" },
-        {
-          id: 4,
-          name: "นางสาวรัตนา ผู้ชำนาญ",
-          position: "System Administrator",
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "แหล่งฝึก โปรแกรมมิ่ง เอ็กซ์เพิร์ต จำกัด",
-      location: "กรุงเทพมหานคร",
-      mentors: [
-        { id: 5, name: "นายธนา ชำนาญโค้ด", position: "Lead Developer" },
-        { id: 6, name: "นางสาวพิมพ์ใจ รักการสอน", position: "Technical Lead" },
-      ],
-    },
-    {
-      id: 4,
-      name: "แหล่งฝึก ดาต้า อินไซต์ จำกัด",
-      location: "กรุงเทพมหานคร",
-      mentors: [
-        { id: 7, name: "นายปัญญา วิเคราะห์เก่ง", position: "Data Scientist" },
-        { id: 8, name: "นางสาวมีนา ชำนาญข้อมูล", position: "Data Engineer" },
-      ],
-    },
-    {
-      id: 5,
-      name: "แหล่งฝึก พลังงานสะอาด จำกัด",
-      location: "ปทุมธานี",
-      mentors: [
-        { id: 9, name: "นายพลัง นวัตกรรม", position: "Electrical Engineer" },
-        { id: 10, name: "นางสาวพลอย พลังงาน", position: "Project Coordinator" },
-      ],
-    },
-    {
-      id: 6,
-      name: "แหล่งฝึก อิเล็กทรอนิกส์ จำกัด",
-      location: "ชลบุรี",
-      mentors: [
-        {
-          id: 11,
-          name: "นายสุรศักดิ์ เทคนิคดี",
-          position: "Electronics Engineer",
-        },
-        { id: 12, name: "นางสาวไพลิน อุปกรณ์", position: "Quality Control" },
-      ],
-    },
-  ];
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<"link" | "unlink" | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  // Function to get status badge
+  async function handleLink(id: string) {
+    setSelectedId(id);
+    setDialogType("link");
+    setDialogOpen(true);
+  }
+
+  async function handleUnlink(id: string) {
+    setSelectedId(id);
+    setDialogType("unlink");
+    setDialogOpen(true);
+  }
+
+  async function confirmAction() {
+    if (!selectedId) return;
+    setDialogOpen(false);
+    setLoading(true);
+    if (dialogType === "link") {
+      const response = await fetch(`/api/registIntern/${selectedId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company_id: info.intern.find((item: any) => item.id === selectedId)
+            .company_id,
+          register_date: new Date().toISOString(),
+        }),
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        toast({
+          title: "จับคู่สำเร็จ",
+          description: "ดำเนินการจับคู่นักศึกษาและแหล่งฝึกงานเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        fetchInterns();
+      }
+    } else if (dialogType === "unlink") {
+      const response = await fetch(`/api/registIntern/${selectedId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company_id: null,
+          register_date: null,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        toast({
+          title: "ยกเลิกจับคู่สำเร็จ",
+          description:
+            "ดำเนินการยกเลิกการจับคู่นักศึกษาและแหล่งฝึกงานเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        fetchInterns();
+      }
+    }
+    setDialogOpen(false);
+    setLoading(false);
+    setSelectedId(null);
+    setDialogType(null);
+  }
+
   const getStatusBadge = (status: number) => {
     switch (status) {
       case 1:
@@ -293,7 +307,7 @@ export default function AdminMatching() {
                       <TabsTrigger value="pending">
                         รอจับคู่ (
                         {
-                          info.intern.filter((item: any) => !item.company_id)
+                          info.intern.filter((item: any) => !item.register_date)
                             .length
                         }
                         )
@@ -301,7 +315,7 @@ export default function AdminMatching() {
                       <TabsTrigger value="matched">
                         จับคู่แล้ว (
                         {
-                          info.intern.filter((item: any) => item.company_id)
+                          info.intern.filter((item: any) => item.register_date)
                             .length
                         }
                         )
@@ -309,14 +323,6 @@ export default function AdminMatching() {
                     </TabsList>
 
                     <div className="flex gap-2 w-full md:w-auto">
-                      <div className="relative flex-grow">
-                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                        <input
-                          type="text"
-                          placeholder="ค้นหานักศึกษา..."
-                          className="pl-10 pr-4 py-2 border rounded-md w-full"
-                        />
-                      </div>
                       <Select>
                         <SelectTrigger className="w-full md:w-[180px]">
                           <SelectValue placeholder="รหัสนักศึกษา" />
@@ -366,15 +372,35 @@ export default function AdminMatching() {
                           key: "company_id",
                           content: "แหล่งฝึกที่ต้องการ",
                           render: (item) => (
-                            <Select>
+                            <Select
+                              onValueChange={(value) => {
+                                const companyId = value.replace("company-", "");
+                                setInfo((prev: any) => ({
+                                  ...prev,
+                                  intern: prev.intern.map((intern: any) =>
+                                    intern.id === item.id
+                                      ? { ...intern, company_id: companyId }
+                                      : intern
+                                  ),
+                                }));
+                              }}
+                              value={
+                                item.company_id
+                                  ? `company-${item.company_id}`
+                                  : "company-"
+                              }
+                            >
                               <SelectTrigger className="h-8 w-full">
                                 <SelectValue placeholder="เลือกแหล่งฝึก" />
                               </SelectTrigger>
                               <SelectContent>
+                                <SelectItem value={`company-`}>
+                                  เลือกแหล่งฝึก
+                                </SelectItem>
                                 {info.company.map((company: any) => (
                                   <SelectItem
                                     key={company.id}
-                                    value={`company-${company.id}`}
+                                    value={`company-${company.company_id}`}
                                   >
                                     {company.name} [{company.total} ตำแหน่ง]
                                   </SelectItem>
@@ -394,15 +420,21 @@ export default function AdminMatching() {
                           content: "Action",
                           className: "text-center",
                           sort: false,
-                          render: (item) => (
-                            <Button size="sm">
+                          render: (item: any) => (
+                            <Button
+                              size="sm"
+                              onClick={() => handleLink(item.id)}
+                              disabled={!item.company_id}
+                            >
                               <LinkIcon className="h-4 w-4 mr-1" />
                               จับคู่
                             </Button>
                           ),
                         },
                       ]}
-                      data={info.intern.filter((item: any) => !item.company_id)}
+                      data={info.intern.filter(
+                        (item: any) => !item.register_date
+                      )}
                       loading={loading}
                     />
                   </TabsContent>
@@ -451,14 +483,20 @@ export default function AdminMatching() {
                           sort: false,
 
                           render: (item) => (
-                            <Button size="sm" variant="destructive">
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleUnlink(item.id)}
+                            >
                               <LinkIcon className="h-4 w-4 mr-1" />
                               ยกเลิกการจับคู่
                             </Button>
                           ),
                         },
                       ]}
-                      data={info.intern.filter((item: any) => item.company_id)}
+                      data={info.intern.filter(
+                        (item: any) => item.register_date
+                      )}
                       loading={loading}
                     />
                   </TabsContent>
@@ -468,6 +506,41 @@ export default function AdminMatching() {
           </div>
         </div>
       </main>
+
+      {/* Dialog should be in JSX tree here */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              <span className="flex items-center gap-2">
+                <InfoIcon className="h-5 w-5" />
+                {dialogType === "link"
+                  ? "ยืนยันการจับคู่นักศึกษา"
+                  : "ยืนยันการยกเลิกจับคู่"}
+              </span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            {dialogType === "link"
+              ? "คุณต้องการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"
+              : "คุณต้องการยกเลิกการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              <XIcon className="h-4 w-4 mr-1" />
+              ยกเลิก
+            </Button>
+            <Button
+              onClick={confirmAction}
+              disabled={loading}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <CheckIcon className="h-4 w-4 mr-1" />
+              ยืนยัน
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
