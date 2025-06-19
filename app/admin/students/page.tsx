@@ -66,6 +66,7 @@ import Loading from "@/components/loading";
 import CardList from "@/components/CardList";
 import CustomAvatar from "@/components/avatar";
 import TableList from "@/components/TableList";
+import Link from "next/link";
 
 // Status mapping for display
 const statusMap = {
@@ -111,7 +112,7 @@ let statsData = [
     color: "bg-emerald-50 text-emerald-600",
   },
   {
-    title: "สถานประกอบการ",
+    title: "แหล่งฝึกงาน",
     value: 0,
     icon: Building2,
     color: "bg-amber-50 text-amber-600",
@@ -170,8 +171,7 @@ export default function AdminStudentsPage() {
     // Search filter
     const matchesSearch =
       student.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.company.toLowerCase().includes(searchTerm.toLowerCase());
+      student.student_id.toLowerCase().includes(searchTerm.toLowerCase());
 
     // Status filter
     const matchesStatus =
@@ -334,12 +334,6 @@ export default function AdminStudentsPage() {
                     <CardTitle className="text-base font-medium">
                       นักศึกษาล่าสุด
                     </CardTitle>
-                    <Button variant="link" className="h-8 p-0 text-sm" asChild>
-                      <a href="#" className="flex items-center gap-1">
-                        ดูทั้งหมด
-                        <ArrowUpRight className="h-3 w-3" />
-                      </a>
-                    </Button>
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -604,7 +598,7 @@ export default function AdminStudentsPage() {
                                 </p>
                                 <p>
                                   <span className="text-gray-500">
-                                    สถานประกอบการ:
+                                    แหล่งฝึกงาน:
                                   </span>{" "}
                                   {student.company}
                                 </p>
@@ -654,7 +648,7 @@ export default function AdminStudentsPage() {
                   </TabsContent>
 
                   <TabsContent value="grid">
-                    <div className="rounded-md border border-gray-200 bg-white overflow-hidden">
+                    <div className="rounded-md overflow-hidden">
                       <TableList
                         meta={[
                           {
@@ -664,84 +658,51 @@ export default function AdminStudentsPage() {
                           {
                             key: "fullname",
                             content: "ชื่อ-นามสกุล",
-                          },
-                        ]}
-                        data={filteredStudents}
-                      />
-                      <Table>
-                        <TableHeader>
-                          <TableRow className="bg-gray-50 hover:bg-gray-50">
-                            <TableHead className="text-xs font-medium text-gray-500">
-                              รหัสนักศึกษา
-                            </TableHead>
-                            <TableHead className="text-xs font-medium text-gray-500">
-                              ชื่อ-นามสกุล
-                            </TableHead>
-                            <TableHead className="text-xs font-medium text-gray-500">
-                              คณะ
-                            </TableHead>
-                            <TableHead className="text-xs font-medium text-gray-500">
-                              ชั้นปี
-                            </TableHead>
-                            <TableHead className="text-xs font-medium text-gray-500">
-                              เกรดเฉลี่ย
-                            </TableHead>
-                            <TableHead className="text-xs font-medium text-gray-500">
-                              สถานประกอบการ
-                            </TableHead>
-                            <TableHead className="text-xs font-medium text-gray-500">
-                              สถานะ
-                            </TableHead>
-                            <TableHead className="text-xs font-medium text-gray-500">
-                              การจัดการ
-                            </TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredStudents.map((student: any) => (
-                            <TableRow
-                              key={student.id}
-                              className="hover:bg-gray-50"
-                            >
-                              <TableCell className="text-sm">
-                                {student.student_id}
-                              </TableCell>
-                              <TableCell>
+                            render: (row: any) => {
+                              return (
                                 <div className="flex items-center gap-2">
                                   <CustomAvatar
-                                    id={`student${student.username}`}
-                                    image={student.image}
-                                    size="12"
+                                    id={`student${row.username}`}
+                                    image={row.image}
+                                    size="8"
                                   />
-                                  <span className="text-sm font-medium">
-                                    {student.fullname}
-                                  </span>
+                                  <span>{row.fullname}</span>
                                 </div>
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {student.faculty}
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {student.major}
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {student.gpa}
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {student.company}
-                              </TableCell>
-                              <TableCell>
+                              );
+                            },
+                          },
+                          {
+                            key: "major",
+                            content: "สาขาวิชา",
+                          },
+                          {
+                            key: "std_year",
+                            content: "ชั้นปี",
+                          },
+                          {
+                            key: "gpa",
+                            content: "เกรดเฉลี่ย",
+                          },
+                          {
+                            key: "company",
+                            content: "แหล่งฝึกงาน",
+                          },
+                          {
+                            key: "status",
+                            content: "สถานะ",
+                            render: (row: any) => {
+                              return (
                                 <Badge
                                   className={`${
                                     statusMap[
-                                      (student.status as keyof typeof statusMap) ||
+                                      (row.status as keyof typeof statusMap) ||
                                         "pending"
                                     ].color
                                   } flex items-center gap-1 font-normal px-2 py-0.5 h-6 border`}
                                 >
                                   {React.createElement(
                                     statusMap[
-                                      (student.status as keyof typeof statusMap) ||
+                                      (row.status as keyof typeof statusMap) ||
                                         "pending"
                                     ].icon,
                                     {
@@ -750,50 +711,46 @@ export default function AdminStudentsPage() {
                                   )}
                                   {
                                     statusMap[
-                                      (student.status as keyof typeof statusMap) ||
+                                      (row.status as keyof typeof statusMap) ||
                                         "pending"
                                     ].label
                                   }
                                 </Badge>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-1">
-                                  <a href={`/admin/students/${student.id}`}>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-7 w-7 rounded-md"
-                                    >
+                              );
+                            },
+                          },
+                          {
+                            key: "actions",
+                            content: "จัดการ",
+                            sort: false,
+                            width: "150px",
+                            render: (row: any) => {
+                              return (
+                                <div className="flex justify-end gap-2">
+                                  <Link href={`/admin/students/${row.id}`}>
+                                    <Button variant="outline" size="sm">
                                       <Eye className="h-3.5 w-3.5" />
                                     </Button>
-                                  </a>
-                                  <a
-                                    href={`/admin/students/edit/${student.id}`}
-                                  >
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-7 w-7 rounded-md hover:text-blue-600 hover:bg-blue-50"
-                                    >
+                                  </Link>
+                                  <Link href={`/admin/students/edit/${row.id}`}>
+                                    <Button variant="outline" size="sm">
                                       <Edit className="h-3.5 w-3.5" />
                                     </Button>
-                                  </a>
+                                  </Link>
                                   <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-7 w-7 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50"
-                                    onClick={() =>
-                                      handleDeleteClick(student.id)
-                                    }
+                                    variant="destructive"
+                                    size="sm"
+                                    className="bg-red-600 hover:bg-red-700 text-white"
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </Button>
                                 </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                              );
+                            },
+                          },
+                        ]}
+                        data={filteredStudents}
+                      />
                     </div>
                   </TabsContent>
                 </Tabs>

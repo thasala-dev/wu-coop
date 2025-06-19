@@ -17,24 +17,30 @@ import Sidebar from "@/components/sidebar";
 
 const formSchema = z.object({
   fullname: z.string().min(1, "กรุณากรอกชื่อ-นามสกุล"),
-  studentId: z.string().min(1, "กรุณากรอกรหัสนักศึกษา"),
-  email: z.string().email("กรุณากรอกอีเมลที่ถูกต้อง").optional(),
+  student_id: z.string().min(1, "กรุณากรอกรหัสนักศึกษา"),
+  email: z
+    .string()
+    .email("กรุณากรอกอีเมลที่ถูกต้อง")
+    .optional()
+    .or(z.literal("")),
   mobile: z
     .string()
     .regex(/^\d{10}$/, "กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง")
-    .optional(),
-  // faculty: z.string().min(1, "กรุณาเลือกคณะ").optional(),
+    .optional()
+    .or(z.literal("")),
   major: z.string(),
-  stdYear: z.string().min(1, "กรุณาเลือกชั้นปี"),
-  address: z.string().min(1, "กรุณากรอกที่อยู่"),
+  std_year: z.string().min(1, "กรุณาเลือกกลุ่มรหัสนักศึกษา"),
+  address: z.string(),
   gpa: z.string(),
+
+  password: z.string(),
 });
 
 const years = Array.from(
   {
     length: new Date().getFullYear() + 544 - 2564 + 1,
   },
-  (_, i) => (2564 + i).toString()
+  (_, i) => (2564 + i).toString().slice(-2)
 );
 
 export default function Page() {
@@ -54,14 +60,16 @@ export default function Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullname: "",
-      studentId: "",
+      student_id: "",
       email: "",
       mobile: "",
       faculty: "",
       major: "",
-      stdYear: "",
+      std_year: "",
       address: "",
       gpa: "",
+
+      password: "",
     },
   });
 
@@ -82,14 +90,15 @@ export default function Page() {
     const data = await response.json();
     if (data.success) {
       setValue("fullname", data.data.fullname);
-      setValue("studentId", data.data.student_id);
+      setValue("student_id", data.data.student_id);
       setValue("email", data.data.email || "");
       setValue("mobile", data.data.mobile || "");
       setValue("faculty", data.data.faculty || "");
       setValue("major", data.data.major || "");
-      setValue("stdYear", data.data.std_year || "");
+      setValue("std_year", String(data.data.std_year) || "");
       setValue("address", data.data.address || "");
       setValue("gpa", data.data.gpa || "");
+      setValue("password", "");
     } else {
       toast({
         title: "ไม่พบข้อมูลนักศึกษา",
@@ -100,9 +109,9 @@ export default function Page() {
   }
 
   async function onSubmit(values: any) {
-    values.username = values.studentId;
+    values.username = values.student_id;
 
-    console.log("Submitting form with values:", values);
+    console.log("Submitted values:", values);
 
     const response = await fetch(`/api/student/${id}`, {
       method: "PUT",
@@ -164,6 +173,11 @@ export default function Page() {
                     <div>
                       <div>
                         <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
+                          <div className="sm:col-span-12">
+                            <h2 className="font-semibold tracking-tight text-lg">
+                              ข้อมูลนักศึกษา
+                            </h2>
+                          </div>
                           <div className="sm:col-span-6">
                             <label>ชื่อ-นามสกุล</label>
                             <input
@@ -187,20 +201,20 @@ export default function Page() {
                           <div className="sm:col-span-6">
                             <label>รหัสนักศึกษา</label>
                             <input
-                              id="studentId"
+                              id="student_id"
                               type="text"
-                              {...register("studentId")}
+                              {...register("student_id")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.studentId
+                                (errors.student_id
                                   ? "border-red-600  border-2"
                                   : "")
                               }
                               placeholder="กรุณากรอกรหัสนักศึกษา"
                             />
-                            {errors.studentId && (
+                            {errors.student_id && (
                               <p className="text-sm text-red-600">
-                                {errors.studentId.message}
+                                {errors.student_id.message}
                               </p>
                             )}
                           </div>
@@ -268,11 +282,11 @@ export default function Page() {
                           <div className="sm:col-span-3">
                             <label>กลุ่มรหัสนักศึกษา</label>
                             <select
-                              id="stdYear"
-                              {...register("stdYear")}
+                              id="std_year"
+                              {...register("std_year")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.stdYear
+                                (errors.std_year
                                   ? "border-red-600  border-2"
                                   : "")
                               }
@@ -287,15 +301,15 @@ export default function Page() {
                               ))}
                             </select>
 
-                            {errors.stdYear && (
+                            {errors.std_year && (
                               <p className="text-sm text-red-600">
-                                {errors.stdYear.message}
+                                {errors.std_year.message}
                               </p>
                             )}
                           </div>
 
                           <div className="sm:col-span-3">
-                            <label>GPA</label>
+                            <label>GPAX</label>
                             <input
                               id="gpa"
                               type="text"
@@ -304,7 +318,7 @@ export default function Page() {
                                 "w-full p-2 border rounded-md " +
                                 (errors.gpa ? "border-red-600  border-2" : "")
                               }
-                              placeholder="กรุณากรอก GPA (เกรดเฉลี่ย)"
+                              placeholder="กรุณากรอก GPAX (เกรดเฉลี่ย)"
                             />
                             {errors.gpa && (
                               <p className="text-sm text-red-600">
@@ -330,6 +344,33 @@ export default function Page() {
                             {errors.address && (
                               <p className="text-sm text-red-600">
                                 {errors.address.message}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* ข้อมูลผู้ใช้งาน */}
+                          <div className="sm:col-span-12">
+                            <h2 className="font-semibold tracking-tight text-lg">
+                              ข้อมูลผู้ใช้งาน
+                            </h2>
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label htmlFor="password">
+                              Password (หากไม่ต้องการแก้ไขไม่ต้องกรอก)
+                            </label>
+                            <input
+                              id="password"
+                              type="password"
+                              {...register("password")}
+                              className={`w-full p-2 border rounded-md ${
+                                errors.password ? "border-red-600 border-2" : ""
+                              }`}
+                              placeholder="กรุณากรอกรหัสผ่าน"
+                            />
+                            {errors.password && (
+                              <p className="text-sm text-red-600">
+                                {errors.password.message}
                               </p>
                             )}
                           </div>

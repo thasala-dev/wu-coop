@@ -33,10 +33,9 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    // Prepare update fields and values dynamically
     const updateFields = [];
-    const params = [id]; // First parameter is always the ID
-    let paramCount = 2; // Start from $2 since $1 is the id
+    const params = [id];
+    let paramCount = 2;
 
     // Add fields that are present in the request body
     if (body.fullname !== undefined) {
@@ -78,6 +77,16 @@ export async function PUT(request: NextRequest) {
     if (body.image !== undefined) {
       updateFields.push(`image = $${paramCount++}`);
       params.push(body.image);
+    }
+
+    if (body.username !== undefined) {
+      updateFields.push(`username = $${paramCount++}`);
+      params.push(body.username);
+    }
+
+    if (body.password !== undefined) {
+      updateFields.push(`password_hash = $${paramCount++}`);
+      params.push(body.password);
     }
 
     // Add updated_at timestamp
