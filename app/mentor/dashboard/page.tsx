@@ -1,15 +1,45 @@
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import MentorSidebar from "@/components/mentor-sidebar";
 import Sidebar from "@/components/sidebar";
+import { useAuth } from "@/contexts/auth-context";
+import { useEffect, useState } from "react";
+import Loading from "@/components/loading";
 
 export default function DashboardPage() {
+  const { user, isLoading } = useAuth();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!user) return;
+    fetchData();
+  }, [isLoading]);
+
+  async function fetchData() {
+    setLoading(true);
+    const response = await fetch(`/api/mentor/${user.id}/dashboard`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const res = await response.json();
+    if (res.success) {
+      setLoading(false);
+    }
+    console.log("Dashboard Data:", res);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="dashboard" userType="mentor" />
-
+          {loading && <Loading />}
           <div className="md:col-span-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">

@@ -23,8 +23,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const { user } = useAuth();
-  // console.log("Current User:", user);
   return (
     <html lang="th" suppressHydrationWarning>
       <head>

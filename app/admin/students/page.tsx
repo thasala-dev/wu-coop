@@ -108,7 +108,7 @@ let statsData = [
     color: "bg-blue-50 text-blue-600",
   },
   {
-    title: "กำลังฝึกงาน",
+    title: "นักศึกษาที่ลงทะเบียนฝึกงาน",
     value: 0,
     icon: GraduationCap,
     color: "bg-emerald-50 text-emerald-600",
@@ -226,7 +226,7 @@ export default function AdminStudentsPage() {
       ]);
 
       statsData[0].value = data.data.length;
-      statsData[1].value = stat.active;
+      statsData[1].value = data.data.length - stat.nonregist;
       statsData[2].value = totalCompanies;
       statsData[3].value = stat.completed;
     }

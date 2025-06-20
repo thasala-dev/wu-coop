@@ -38,7 +38,6 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { user, login, isLoading } = useAuth();
-  console.log("Current User:", user);
   const {
     register,
     handleSubmit,
@@ -196,7 +195,8 @@ export default function Home() {
                           {errors.username.message}
                         </p>
                       )}
-                    </div>                    <div className="space-y-1">
+                    </div>{" "}
+                    <div className="space-y-1">
                       <label htmlFor="password" className="text-sm font-medium">
                         รหัสผ่าน
                       </label>
