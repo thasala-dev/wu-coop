@@ -259,8 +259,12 @@ export default function Page({ params }: { params: { id: string } }) {
                               <option value="" disabled>
                                 เลือกสาขาวิชา
                               </option>
-                              <option value="SCI">สาย SCI</option>
-                              <option value="CARE">สาย CARE</option>
+                              <option value="SCI">
+                                สาขาวิชาเภสัชกรรมอุตสาหการ
+                              </option>
+                              <option value="CARE">
+                                สาขาวิชาการบริบาลทางเภสัชกรรม
+                              </option>
                             </select>
 
                             {errors.major && (

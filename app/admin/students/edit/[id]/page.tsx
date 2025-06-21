@@ -325,8 +325,12 @@ export default function Page() {
                               <option value="" disabled>
                                 เลือกสาขาวิชา
                               </option>
-                              <option value="SCI">สาย SCI</option>
-                              <option value="CARE">สาย CARE</option>
+                              <option value="SCI">
+                                สาขาวิชาเภสัชกรรมอุตสาหการ
+                              </option>
+                              <option value="CARE">
+                                สาขาวิชาการบริบาลทางเภสัชกรรม
+                              </option>
                             </select>{" "}
                             {errors.major && (
                               <p className="text-sm text-red-600">

@@ -9,21 +9,25 @@ export async function POST(request: Request) {
     const { username, password, role } = body;
     let users = <any>[];
     if (role === "admin") {
-      users = await sql("SELECT * FROM user_admin WHERE username = $1", [
-        username,
-      ]);
+      users = await sql(
+        "SELECT * FROM user_admin WHERE username = $1 and status_id != 2",
+        [username]
+      );
     } else if (role === "mentor") {
-      users = await sql("SELECT * FROM user_company WHERE username = $1", [
-        username,
-      ]);
+      users = await sql(
+        "SELECT * FROM user_company WHERE username = $1 and status_id != 2",
+        [username]
+      );
     } else if (role === "advisor") {
-      users = await sql("SELECT * FROM user_advisor WHERE username = $1", [
-        username,
-      ]);
+      users = await sql(
+        "SELECT * FROM user_advisor WHERE username = $1 and status_id != 2",
+        [username]
+      );
     } else if (role === "student") {
-      users = await sql("SELECT * FROM user_student WHERE username = $1", [
-        username,
-      ]);
+      users = await sql(
+        "SELECT * FROM user_student WHERE username = $1 and status_id != 2",
+        [username]
+      );
     }
 
     if (users.length === 0) {
@@ -61,25 +65,25 @@ export async function POST(request: Request) {
 
     const lastLogin = new Date().toISOString();
     if (role === "admin") {
-      await sql("UPDATE user_admin SET last_login = $1 WHERE username = $2", [
-        lastLogin,
-        username,
-      ]);
+      await sql(
+        "UPDATE user_admin SET last_login = $1, status_id = 1 WHERE username = $2",
+        [lastLogin, username]
+      );
     } else if (role === "mentor") {
-      await sql("UPDATE user_company SET last_login = $1 WHERE username = $2", [
-        lastLogin,
-        username,
-      ]);
+      await sql(
+        "UPDATE user_company SET last_login = $1, status_id = 1 WHERE username = $2",
+        [lastLogin, username]
+      );
     } else if (role === "advisor") {
-      await sql("UPDATE user_advisor SET last_login = $1 WHERE username = $2", [
-        lastLogin,
-        username,
-      ]);
+      await sql(
+        "UPDATE user_advisor SET last_login = $1, status_id = 1 WHERE username = $2",
+        [lastLogin, username]
+      );
     } else if (role === "student") {
-      await sql("UPDATE user_student SET last_login = $1 WHERE username = $2", [
-        lastLogin,
-        username,
-      ]);
+      await sql(
+        "UPDATE user_student SET last_login = $1, status_id = 1 WHERE username = $2",
+        [lastLogin, username]
+      );
     }
     sanitizedUser.lastLogin = lastLogin;
     sanitizedUser.role = role;
