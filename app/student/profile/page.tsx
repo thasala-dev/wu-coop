@@ -25,6 +25,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, User, Camera } from "lucide-react";
 import { callUploadApi } from "@/lib/file-api";
+import AvatarDesign from "@/components/AvatarDesign";
+import CustomAvatar from "@/components/avatar";
+
+const currentYear = new Date().getFullYear() + 543;
+const years = Array.from({ length: currentYear - 2562 + 1 }, (_, i) =>
+  (currentYear - i).toString().slice(-2)
+);
 
 export default function StudentProfile() {
   const { user, isLoading } = useAuth();
@@ -44,6 +51,7 @@ export default function StudentProfile() {
     std_year: "",
     address: "",
     gpa: "",
+    image: "",
   });
 
   // Fetch student profile data
@@ -69,6 +77,7 @@ export default function StudentProfile() {
           std_year: data.data.std_year || "",
           address: data.data.address || "",
           gpa: data.data.gpa || "",
+          image: data.data.image || "",
         });
       } else {
         toast({
@@ -275,39 +284,24 @@ export default function StudentProfile() {
                   {/* Profile Image */}
                   <div className="flex flex-col items-center space-y-4 mb-6 md:mb-0">
                     <div className="relative">
-                      <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-                        <AvatarImage
-                          src={profileData.image || "/placeholder-user.jpg"}
-                          alt={profileData.fullname}
+                      {isEditing ? (
+                        <AvatarDesign
+                          value={formData.image}
+                          setValue={(val: any) => {
+                            setFormData((prev: any) => ({
+                              ...prev,
+                              image: val,
+                            }));
+                          }}
+                          size="32"
                         />
-                        <AvatarFallback>
-                          <User className="h-16 w-16 text-gray-400" />
-                        </AvatarFallback>
-                      </Avatar>
-
-                      {/* Hidden file input */}
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        className="hidden"
-                        accept="image/*"
-                      />
-
-                      {/* Camera button for image upload */}
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        className="absolute bottom-0 right-0 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-md"
-                        onClick={handleProfileImageClick}
-                        disabled={isUploading}
-                      >
-                        {isUploading ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Camera className="h-4 w-4" />
-                        )}
-                      </Button>
+                      ) : (
+                        <CustomAvatar
+                          id={`student${formData.username}`}
+                          image={formData.image}
+                          size="32"
+                        />
+                      )}
                     </div>
 
                     <div className="text-center">
@@ -413,22 +407,7 @@ export default function StudentProfile() {
                           </TabsContent>
 
                           <TabsContent value="academic" className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <label
-                                  htmlFor="faculty"
-                                  className="text-sm font-medium"
-                                >
-                                  คณะ
-                                </label>
-                                <Input
-                                  id="faculty"
-                                  name="faculty"
-                                  value={formData.faculty}
-                                  onChange={handleChange}
-                                  placeholder="คณะ"
-                                />
-                              </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <div className="space-y-2">
                                 <label
                                   htmlFor="major"
@@ -436,13 +415,20 @@ export default function StudentProfile() {
                                 >
                                   สาขาวิชา
                                 </label>
-                                <Input
-                                  id="major"
-                                  name="major"
+                                <Select
                                   value={formData.major}
-                                  onChange={handleChange}
-                                  placeholder="สาขาวิชา"
-                                />
+                                  onValueChange={(value) =>
+                                    handleSelectChange("major", value)
+                                  }
+                                >
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="เลือกสาขาวิชา" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="SCI">SCI</SelectItem>
+                                    <SelectItem value="CARE">CARE</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                               <div className="space-y-2">
                                 <label
@@ -461,12 +447,11 @@ export default function StudentProfile() {
                                     <SelectValue placeholder="เลือกปีรหัส" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="1">ปี 1</SelectItem>
-                                    <SelectItem value="2">ปี 2</SelectItem>
-                                    <SelectItem value="3">ปี 3</SelectItem>
-                                    <SelectItem value="4">ปี 4</SelectItem>
-                                    <SelectItem value="5">ปี 5</SelectItem>
-                                    <SelectItem value="6">ปี 6</SelectItem>
+                                    {years.map((y) => (
+                                      <SelectItem key={y} value={y}>
+                                        รหัส {y}
+                                      </SelectItem>
+                                    ))}
                                   </SelectContent>
                                 </Select>
                               </div>
@@ -563,16 +548,8 @@ export default function StudentProfile() {
                           </TabsContent>
 
                           <TabsContent value="academic">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-/">
                               <div className="space-y-4">
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    คณะ
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.faculty || "-"}
-                                  </p>
-                                </div>
                                 <div>
                                   <h4 className="text-sm font-medium text-gray-500">
                                     สาขาวิชา
@@ -593,6 +570,8 @@ export default function StudentProfile() {
                                       : "-"}
                                   </p>
                                 </div>
+                              </div>
+                              <div className="space-y-4">
                                 <div>
                                   <h4 className="text-sm font-medium text-gray-500">
                                     เกรดเฉลี่ย (GPA)
