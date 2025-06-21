@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Edit, ChevronRight, Save } from "lucide-react";
+import {
+  ArrowLeft,
+  Edit,
+  ChevronRight,
+  Save,
+  Calendar as CalendarIcon,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -16,6 +22,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useParams } from "next/navigation";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { th } from "date-fns/locale";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import Sidebar from "@/components/sidebar";
 
 const formSchema = z.object({
   title: z.string().min(1, "กรุณากรอกชื่อกิจกรรม"),
@@ -27,7 +43,7 @@ const formSchema = z.object({
   statusId: z.string().min(1, "กรุณาเลือกสถานะ"),
 });
 
-type Calendar = {
+type CalendarType = {
   id: number;
   name: string;
   semester: number;
@@ -40,8 +56,9 @@ export default function Page() {
 
   const { toast } = useToast();
   const router = useRouter();
-  const [calendars, setCalendars] = useState<Calendar[]>([]);
+  const [calendars, setCalendars] = useState<CalendarType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [eventDate, setEventDate] = useState<Date | null>(null);
 
   const {
     register,
@@ -131,11 +148,18 @@ export default function Page() {
     }
   }
 
+  // Helper function to safely display error messages
+  const getErrorMessage = (error: any) => {
+    if (!error) return "";
+    if (typeof error.message === "string") return error.message;
+    return String(error.message || "Invalid input");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <AdminSidebar activePage="event" />
+          <Sidebar activePage="calendar" userType="admin" />
 
           <div className="md:col-span-4">
             <div className="flex items-center gap-3 mb-2">
@@ -170,7 +194,6 @@ export default function Page() {
                               ข้อมูลกิจกรรม
                             </div>
                           </div>
-
                           <div className="sm:col-span-8 space-y-1">
                             <label>ชื่อกิจกรรม</label>
                             <input
@@ -189,7 +212,6 @@ export default function Page() {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-4 space-y-1">
                             <label>ผลัดฝึกงาน</label>
                             <select
@@ -218,7 +240,6 @@ export default function Page() {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-12 space-y-1">
                             <label>รายละเอียด</label>
                             <textarea
@@ -228,28 +249,68 @@ export default function Page() {
                               className="w-full p-2 border rounded-md"
                               placeholder="รายละเอียดกิจกรรม"
                             />
-                          </div>
-
+                          </div>{" "}
                           <div className="sm:col-span-4 space-y-1">
                             <label>วันที่จัดกิจกรรม</label>
-                            <input
-                              id="eventDate"
-                              type="date"
-                              {...register("eventDate")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.eventDate
-                                  ? "border-red-600 border-2"
-                                  : "")
-                              }
-                            />{" "}
+                            <div>
+                              <input
+                                type="hidden"
+                                {...register("eventDate")}
+                                value={
+                                  eventDate
+                                    ? format(eventDate, "yyyy-MM-dd")
+                                    : ""
+                                }
+                              />
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !eventDate && "text-muted-foreground",
+                                      errors.eventDate
+                                        ? "border-red-600 border-2"
+                                        : ""
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {eventDate ? (
+                                      format(eventDate, "d MMMM yyyy", {
+                                        locale: th,
+                                      })
+                                    ) : (
+                                      <span>เลือกวันที่จัดกิจกรรม</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto p-0 shadow-md rounded-md"
+                                  align="start"
+                                >
+                                  <Calendar
+                                    selected={eventDate || undefined}
+                                    onSelect={(date: Date | null) => {
+                                      setEventDate(date);
+                                      if (date) {
+                                        setValue(
+                                          "eventDate",
+                                          format(date, "yyyy-MM-dd")
+                                        );
+                                      }
+                                    }}
+                                    locale={th}
+                                    className="rounded-md"
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
                             {errors.eventDate && (
                               <p className="text-sm text-red-600">
-                                {String(errors.eventDate.message)}
+                                {getErrorMessage(errors.eventDate)}
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-8 space-y-1">
                             <label>สถานที่</label>
                             <input
@@ -270,7 +331,6 @@ export default function Page() {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-6 space-y-1">
                             <label>ประเภทกิจกรรม</label>
                             <select
@@ -297,7 +357,6 @@ export default function Page() {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-6 space-y-1">
                             <label>สถานะ</label>
                             <select
@@ -330,7 +389,7 @@ export default function Page() {
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-center gap-2">
-                  <a href="/admin/event">
+                  <a href="/admin/calendar">
                     <Button type="button" className="flex" variant="outline">
                       <ArrowLeft className="h-4 w-4 mr-2" />
                       ยกเลิก
