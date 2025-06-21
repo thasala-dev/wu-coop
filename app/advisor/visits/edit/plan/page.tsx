@@ -125,9 +125,6 @@ export default function EditVisitPlanPage() {
         studentIds: selectedStudents,
       };
 
-      // In a real app, you would send this data to your API
-      console.log("Updating visit plan:", updatedVisitPlan);
-
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 

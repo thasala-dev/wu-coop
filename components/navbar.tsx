@@ -43,10 +43,10 @@ export function Navbar({
 }: NavbarProps) {
   // กำหนดสีตามประเภทผู้ใช้
   const headerColors = {
-    student: "bg-gradient-to-r from-blue-600 to-blue-700",
-    advisor: "bg-gradient-to-r from-purple-600 to-purple-700",
-    mentor: "bg-gradient-to-r from-green-600 to-green-700",
-    admin: "bg-gradient-to-r from-red-600 to-red-700",
+    student: "bg-gradient-to-r from-sky-500 to-sky-600",
+    advisor: "bg-gradient-to-r from-fuchsia-500 to-fuchsia-600",
+    mentor: "bg-gradient-to-r from-lime-500 to-lime-600",
+    admin: "bg-gradient-to-r from-rose-500 to-rose-600",
   };
 
   const headerColor = headerColors[userType];
@@ -99,7 +99,7 @@ export function Navbar({
                 >
                   <Bell className="h-5 w-5" />
                   {notificationCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500">
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-rose-500">
                       {notificationCount}
                     </Badge>
                   )}

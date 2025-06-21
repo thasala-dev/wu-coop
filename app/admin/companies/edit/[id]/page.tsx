@@ -83,8 +83,6 @@ export default function Page() {
     const data = await response.json();
     setLoading(false);
     if (data.success) {
-      console.log(data);
-
       const company = data.data;
       setValue("name", company.name);
       setValue("businessType", company.business_type);

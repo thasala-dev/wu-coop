@@ -51,25 +51,6 @@ export default function Home() {
     },
   });
 
-  useEffect(() => {
-    if (user) {
-      switch (user.role) {
-        case "student":
-          router.push("/student/dashboard");
-          break;
-        case "mentor":
-          router.push("/mentor/dashboard");
-          break;
-        case "advisor":
-          router.push("/advisor/dashboard");
-          break;
-        case "admin":
-          router.push("/admin/dashboard");
-          break;
-      }
-    }
-  }, [user, router]);
-
   // if (isLoading) {
   //   return (
   //     <div className="flex items-center justify-center min-h-screen">
@@ -81,13 +62,13 @@ export default function Home() {
   const getButtonClass = () => {
     switch (role) {
       case "student":
-        return "bg-blue-600 hover:bg-blue-700";
+        return "bg-sky-600 hover:bg-sky-700";
       case "mentor":
-        return "bg-green-600 hover:bg-green-700";
+        return "bg-lime-600 hover:bg-lime-700";
       case "advisor":
-        return "bg-purple-600 hover:bg-purple-700";
+        return "bg-fuchsia-600 hover:bg-fuchsia-700";
       case "admin":
-        return "bg-red-600 hover:bg-red-700";
+        return "bg-rose-600 hover:bg-rose-700";
       default:
         return "bg-gray-600 hover:bg-gray-700";
     }
@@ -145,33 +126,30 @@ export default function Home() {
                   <TabsList className="grid grid-cols-4 mb-4 bg-green-100 shadow-sm">
                     <TabsTrigger
                       value="student"
-                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-blue-600 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-sky-600 data-[state=active]:bg-sky-100 data-[state=active]:text-sky-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
-                      <GraduationCap className="w-4 h-4 text-blue-600" />
+                      <GraduationCap className="w-4 h-4 text-sky-600" />
                       <span className="hidden sm:inline">นักศึกษา</span>
-                    </TabsTrigger>
-
+                    </TabsTrigger>{" "}
                     <TabsTrigger
                       value="mentor"
-                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-green-600 data-[state=active]:bg-green-100 data-[state=active]:text-green-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-lime-600 data-[state=active]:bg-lime-100 data-[state=active]:text-lime-600 data-[state=active]:font-bold rounded-md px-2 py-1 hover:bg-lime-50"
                     >
-                      <Briefcase className="w-4 h-4 text-green-600" />
+                      <Briefcase className="w-4 h-4 text-lime-600" />
                       <span className="hidden sm:inline">แหล่งฝึก</span>
                     </TabsTrigger>
-
                     <TabsTrigger
                       value="advisor"
-                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-purple-600 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-fuchsia-600 data-[state=active]:bg-fuchsia-100 data-[state=active]:text-fuchsia-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
-                      <School className="w-4 h-4 text-purple-600" />
+                      <School className="w-4 h-4 text-fuchsia-600" />
                       <span className="hidden sm:inline">อาจารย์</span>
                     </TabsTrigger>
-
                     <TabsTrigger
                       value="admin"
-                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-red-600 data-[state=active]:bg-red-100 data-[state=active]:text-red-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-rose-600 data-[state=active]:bg-rose-100 data-[state=active]:text-rose-600 data-[state=active]:font-bold rounded-md px-2 py-1"
                     >
-                      <ShieldCheck className="w-4 h-4 text-red-600" />
+                      <ShieldCheck className="w-4 h-4 text-rose-600" />
                       <span className="hidden sm:inline">แอดมิน</span>
                     </TabsTrigger>
                   </TabsList>

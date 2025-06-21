@@ -300,8 +300,6 @@ export default function AdminStudentsPage() {
   };
 
   const confirmDelete = () => {
-    // In a real app, you would delete the student here
-    console.log(`Deleting student ${studentToDelete}`);
     setShowDeleteDialog(false);
     setStudentToDelete(null);
   };

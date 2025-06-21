@@ -43,7 +43,6 @@ export default function AdminDashboard() {
       });
       setLoading(false);
     }
-    console.log("Dashboard Data:", data);
   }
   return (
     <div className="min-h-screen bg-gray-50">

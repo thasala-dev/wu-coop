@@ -8,13 +8,13 @@ import Loading from "@/components/loading";
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isLoading) return;
-    if (!user) return;
-    fetchData();
-  }, [isLoading]);
+  // useEffect(() => {
+  //   if (isLoading) return;
+  //   if (!user) return;
+  //   fetchData();
+  // }, [isLoading]);
 
   async function fetchData() {
     setLoading(true);
@@ -31,7 +31,6 @@ export default function DashboardPage() {
     if (res.success) {
       setLoading(false);
     }
-    console.log("Dashboard Data:", res);
   }
 
   return (

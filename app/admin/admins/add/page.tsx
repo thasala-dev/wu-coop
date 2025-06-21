@@ -13,6 +13,7 @@ import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import CustomAvatar from "@/components/avatar";
 import { callUploadApi, callDeleteApi } from "@/lib/file-api";
+import AvatarDesign from "@/components/AvatarDesign";
 
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
@@ -25,8 +26,6 @@ const formSchema = z.object({
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [currentImageUrl, setCurrentImageUrl] = useState<string>("");
-  const [initialImageUrl, setInitialImageUrl] = useState<string>("");
 
   const { toast } = useToast();
   const router = useRouter();
@@ -47,57 +46,12 @@ export default function Page() {
     },
   });
 
-  // --- Handlers สำหรับการจัดการไฟล์ ---
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFile(event.target.files ? event.target.files[0] : null);
-    if (event.target.files && event.target.files[0]) {
-      setCurrentImageUrl(URL.createObjectURL(event.target.files[0]));
-      setValue("image", ""); // Clear image field until upload
-    } else {
-      setCurrentImageUrl(initialImageUrl); // Revert if file selection is cancelled
-      setValue("image", initialImageUrl);
-    }
-  };
-
-  const handleImageDeleteClick = async () => {
-    setSelectedFile(null);
-    setCurrentImageUrl("");
-    setValue("image", "");
-  };
-
-  // --- Handler สำหรับการส่งฟอร์มหลัก ---
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    let finalImageUrl = values.image || "";
-    let hasUploadError = false;
 
     try {
-      // 1. อัพโหลดไฟล์ถ้ามี
-      if (selectedFile) {
-        const uploadResult = await callUploadApi(selectedFile, "admins");
-        if (uploadResult.filePath) {
-          finalImageUrl = uploadResult.filePath;
-          setSelectedFile(null);
-          setCurrentImageUrl(finalImageUrl);
-        } else {
-          hasUploadError = true;
-        }
-      }
+      const payload = values;
 
-      if (hasUploadError) {
-        setLoading(false);
-        toast({
-          title: "อัปโหลดรูปไม่สำเร็จ",
-          description: "กรุณาลองใหม่อีกครั้ง",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // 2. เตรียมข้อมูลสำหรับส่ง
-      const payload = { ...values, image: finalImageUrl };
-
-      // 3. ส่งข้อมูลไปที่ API
       const response = await fetch("/api/admin", {
         method: "POST",
         headers: {
@@ -171,42 +125,14 @@ export default function Page() {
                               ข้อมูลทั่วไป
                             </div>
                           </div>
-                          {/* ส่วนการอัปโหลดรูปภาพ (ดีไซน์ใหม่) */}
                           <div className="sm:col-span-12 flex flex-col items-center justify-center text-center">
-                            <div className="flex flex-row items-center justify-center gap-4">
-                              <div className="relative flex items-center justify-center">
-                                <input
-                                  id="image-upload"
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleFileChange}
-                                  className="hidden"
-                                />
-                                <label
-                                  htmlFor="image-upload"
-                                  className="cursor-pointer"
-                                >
-                                  <CustomAvatar
-                                    id={`admin${getValues("username")}`}
-                                    image={currentImageUrl}
-                                    size="32"
-                                  />
-                                </label>
-                                {currentImageUrl && (
-                                  <Button
-                                    type="button"
-                                    onClick={handleImageDeleteClick}
-                                    variant="destructive"
-                                    size="icon"
-                                    className="absolute -top-2 -right-2 h-7 w-7 rounded-full shadow bg-white border border-gray-200"
-                                    disabled={loading}
-                                    title="ลบรูปภาพ"
-                                  >
-                                    <Trash2 className="h-4 w-4 text-red-600" />
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
+                            <AvatarDesign
+                              value={getValues("image")}
+                              setValue={(val: any) => {
+                                setValue("image", val);
+                              }}
+                              size="32"
+                            />
                           </div>
                           <div className="sm:col-span-12">
                             <label>ชื่อผู้ดูแลระบบ</label>

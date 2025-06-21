@@ -84,7 +84,6 @@ export default function CompanyPage() {
       body: JSON.stringify(form),
     });
 
-    console.log("Form Data:", form);
     const data = await response.json();
     setLoading(false);
     if (data.success) {
@@ -153,8 +152,6 @@ export default function CompanyPage() {
     setData(res.data);
     setCalendar(res.calendar);
     setRegist(res.regist);
-
-    console.log("Company Data:", res.calendar);
 
     setLoading(false);
   }

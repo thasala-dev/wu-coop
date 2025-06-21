@@ -232,7 +232,6 @@ export default function AdminMatching() {
 
     setLoading(true);
     try {
-      console.log("Selected Students:", selectedStudents);
       const response = await fetch(
         `/api/calendar/${calendarSelected}/regist-intern`,
         {

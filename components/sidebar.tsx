@@ -45,10 +45,10 @@ export function Sidebar({
   };
 
   const colors = {
-    student: "blue",
-    advisor: "purple",
-    mentor: "green",
-    admin: "red",
+    student: "sky",
+    advisor: "fuchsia",
+    mentor: "lime",
+    admin: "rose",
   };
 
   const menuIcons = {
@@ -215,7 +215,7 @@ export function Sidebar({
         onClick={onClickClose}
         className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
           activePage === page
-            ? `bg-${colors[userType]}-100 text-${colors[userType]}-700 font-medium shadow-sm`
+            ? `bg-${colors[userType]}-100 text-${colors[userType]}-600 font-medium border-1 border-${colors[userType]}-600 shadow-sm`
             : `text-gray-600 hover:bg-${colors[userType]}-50 hover:text-${colors[userType]}-600`
         }`}
       >
@@ -237,7 +237,7 @@ export function Sidebar({
           className={`bg-white shadow-none border-${colors[userType]}-100 shadow-sm`}
         >
           <CardHeader
-            className={`bg-gradient-to-r from-${colors[userType]}-600 to-${colors[userType]}-700 p-4 rounded-t-lg`}
+            className={`bg-gradient-to-r from-${colors[userType]}-500 to-${colors[userType]}-600 p-4 rounded-t-lg`}
           >
             <div className="flex items-center gap-2">
               <CardTitle
@@ -257,7 +257,7 @@ export function Sidebar({
 
       {/* Mobile Header */}
       <div
-        className={`md:hidden flex items-center justify-between px-4 py-3 bg-gradient-to-r from-${colors[userType]}-600 to-${colors[userType]}-700 rounded-lg shadow-sm`}
+        className={`md:hidden flex items-center justify-between px-4 py-3 bg-gradient-to-r from-${colors[userType]}-500 to-${colors[userType]}-600 rounded-lg shadow-sm`}
       >
         <div className="flex items-center gap-2">
           {menuIcons[userType]}
@@ -279,7 +279,7 @@ export function Sidebar({
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg p-4 overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
-            <span className={`font-bold text-${colors[userType]}-700 text-lg`}>
+            <span className={`font-bold text-${colors[userType]}-600 text-lg`}>
               {menuTitles[userType]}
             </span>
             <button onClick={() => setMobileMenuOpen(false)}>

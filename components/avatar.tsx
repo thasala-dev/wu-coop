@@ -14,21 +14,21 @@ interface Props {
   avatar?: boolean;
 }
 
-export default function CustomAvatar({
-  id,
-  image,
-  size = "12",
-  avatar = false,
-}: Props) {
-  if (image && avatar) {
-    return (
-      <MainAvatar className={`h-${size} w-${size} rounded`}>
-        <AvatarImage src={image} alt={id} style={{ objectFit: "cover" }} />
-        <AvatarFallback className="rounded-md bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200">
-          <UserIcon className="h-6 w-6 text-white" />
-        </AvatarFallback>
-      </MainAvatar>
-    );
+const fromQueryString = (queryString: any) => {
+  return queryString
+    .replace(/^\?/, "")
+    .split("&")
+    .reduce((acc: any, pair: string) => {
+      const [key, value] = pair.split("=").map(decodeURIComponent);
+      acc[key] = value;
+      return acc;
+    }, {});
+};
+
+export default function CustomAvatar({ id, image, size = "12" }: Props) {
+  let cfg = id;
+  if (image) {
+    cfg = fromQueryString(image);
   }
   return (
     <>
@@ -36,7 +36,7 @@ export default function CustomAvatar({
         id={id}
         shape="rounded"
         className={`h-${size} w-${size}`}
-        {...genConfig(id)}
+        {...genConfig(cfg)}
       />
     </>
   );

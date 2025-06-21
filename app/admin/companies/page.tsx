@@ -74,7 +74,6 @@ export default function CompaniesPage() {
     if (res.success) {
       setData(res.data || []);
       setLoading(false);
-      console.log("Fetched data:", res.data);
     }
   }
 

@@ -16,6 +16,8 @@ import Loading from "@/components/loading";
 import Sidebar from "@/components/sidebar";
 import CustomAvatar from "@/components/avatar";
 import { callUploadApi, callDeleteApi } from "@/lib/file-api";
+import AvatarDesign from "@/components/AvatarDesign";
+import { exit } from "process";
 
 const formSchema = z.object({
   fullname: z.string().min(1, "กรุณากรอกชื่อ-นามสกุล"),
@@ -49,10 +51,6 @@ const years = Array.from(
 export default function Page({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(false);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [currentImageUrl, setCurrentImageUrl] = useState<string>("");
-  const [initialImageUrl, setInitialImageUrl] = useState<string>("");
-
   const { toast } = useToast();
   const router = useRouter();
   const {
@@ -79,41 +77,13 @@ export default function Page({ params }: { params: { id: string } }) {
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    let finalImageUrl = values.image || "";
-    let hasUploadError = false;
-
     try {
-      // 1. อัพโหลดไฟล์ถ้ามี
-      if (selectedFile) {
-        const uploadResult = await callUploadApi(selectedFile, "students");
-        if (uploadResult.filePath) {
-          finalImageUrl = uploadResult.filePath;
-          setSelectedFile(null);
-          setCurrentImageUrl(finalImageUrl);
-        } else {
-          hasUploadError = true;
-        }
-      }
-
-      if (hasUploadError) {
-        setLoading(false);
-        toast({
-          title: "อัปโหลดรูปไม่สำเร็จ",
-          description: "กรุณาลองใหม่อีกครั้ง",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // 2. เตรียมข้อมูลสำหรับส่ง
       const payload = {
         ...values,
-        image: finalImageUrl,
         username: values.student_id,
         password: values.student_id,
       };
 
-      // 3. ส่งข้อมูลไปที่ API
       const response = await fetch("/api/student", {
         method: "POST",
         headers: {
@@ -147,23 +117,6 @@ export default function Page({ params }: { params: { id: string } }) {
       });
     }
   }
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFile(event.target.files ? event.target.files[0] : null);
-    if (event.target.files && event.target.files[0]) {
-      setCurrentImageUrl(URL.createObjectURL(event.target.files[0]));
-      setValue("image", ""); // Clear image field until upload
-    } else {
-      setCurrentImageUrl(initialImageUrl); // Revert if file selection is cancelled
-      setValue("image", initialImageUrl);
-    }
-  };
-
-  const handleImageDeleteClick = async () => {
-    setSelectedFile(null);
-    setCurrentImageUrl("");
-    setValue("image", "");
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -206,40 +159,13 @@ export default function Page({ params }: { params: { id: string } }) {
                             </h2>
                           </div>
                           <div className="sm:col-span-12 flex flex-col items-center justify-center text-center">
-                            <div className="flex flex-row items-center justify-center gap-4">
-                              <div className="relative flex items-center justify-center">
-                                <input
-                                  id="image-upload"
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleFileChange}
-                                  className="hidden"
-                                />
-                                <label
-                                  htmlFor="image-upload"
-                                  className="cursor-pointer"
-                                >
-                                  <CustomAvatar
-                                    id={`student${getValues("student_id")}`}
-                                    image={currentImageUrl}
-                                    size="32"
-                                  />
-                                </label>
-                                {currentImageUrl && (
-                                  <Button
-                                    type="button"
-                                    onClick={handleImageDeleteClick}
-                                    variant="destructive"
-                                    size="icon"
-                                    className="absolute -top-2 -right-2 h-7 w-7 rounded-full shadow bg-white border border-gray-200"
-                                    disabled={loading}
-                                    title="ลบรูปภาพ"
-                                  >
-                                    <Trash2 className="h-4 w-4 text-red-600" />
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
+                            <AvatarDesign
+                              value={getValues("image")}
+                              setValue={(val: any) => {
+                                setValue("image", val);
+                              }}
+                              size="32"
+                            />
                           </div>
                           <div className="sm:col-span-6">
                             <label>ชื่อ-นามสกุล</label>

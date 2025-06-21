@@ -31,6 +31,7 @@ export async function PUT(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     const body = await request.json();
+
     const sql = neon(`${process.env.DATABASE_URL}`);
     const data = await sql(
       `UPDATE user_admin SET

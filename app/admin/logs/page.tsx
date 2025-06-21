@@ -22,12 +22,14 @@ import {
   Trash2,
   Edit,
   Eye,
+  Building,
 } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import CustomAvatar from "@/components/avatar";
 import TableList from "@/components/TableList";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
@@ -64,7 +66,6 @@ export default function CompaniesPage() {
     if (res.success) {
       setData(res.data || []);
       setLoading(false);
-      console.log("Fetched data:", res.data);
     }
   }
 
@@ -128,11 +129,21 @@ export default function CompaniesPage() {
                         render: (row: any) => {
                           return (
                             <div className="flex items-center gap-3">
-                              <CustomAvatar
-                                id={`${row.user_role}${row.username}`}
-                                image={row.image}
-                                size="8"
-                              />
+                              {row.user_role === "mentor" ? (
+                                <Avatar className="h-8 w-8 rounded-md border border-gray-200">
+                                  <AvatarImage src={row.image} alt={row.name} />
+                                  <AvatarFallback className="rounded-md bg-gray-100 text-gray-600">
+                                    <Building className="h-6 w-6 text-gray-500" />
+                                  </AvatarFallback>
+                                </Avatar>
+                              ) : (
+                                <CustomAvatar
+                                  id={`${row.user_role}${row.username}`}
+                                  image={row.image}
+                                  size="8"
+                                />
+                              )}
+
                               <div>
                                 <div>{row.fullname}</div>
                               </div>

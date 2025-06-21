@@ -238,7 +238,6 @@ export default function AdminCalendar() {
 
   useEffect(() => {
     if (calendarSelected) {
-      // selectCalendar(calendarSelected);
       filterEvents();
     }
   }, [calendarSelected, events]);
@@ -260,11 +259,6 @@ export default function AdminCalendar() {
         },
       });
       const data = await response.json();
-      if (data.success) {
-        console.log("Selected calendar:", data.data);
-      } else {
-        console.error("Error selecting calendar:", data.message);
-      }
     }
   }
 
@@ -364,7 +358,6 @@ export default function AdminCalendar() {
       if (data.success) {
         const formattedEvents = formatEventData(data.data || []);
         setEvents(formattedEvents);
-        console.log("Fetched events:", formattedEvents);
       } else {
         console.error("Error fetching events:", data.message);
       }

@@ -16,6 +16,7 @@ import Loading from "@/components/loading";
 import Sidebar from "@/components/sidebar";
 import CustomAvatar from "@/components/avatar";
 import { callUploadApi, callDeleteApi } from "@/lib/file-api";
+import AvatarDesign from "@/components/AvatarDesign";
 
 const formSchema = z.object({
   fullname: z.string().min(1, "กรุณากรอกชื่อ-นามสกุล"),
@@ -36,6 +37,7 @@ const formSchema = z.object({
   gpa: z.string(),
 
   password: z.string(),
+  image: z.string().optional(),
 });
 
 const years = Array.from(
@@ -53,6 +55,13 @@ export default function Page() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [currentImageUrl, setCurrentImageUrl] = useState<string>("");
   const [initialImageUrl, setInitialImageUrl] = useState<string>(""); // To track original image for deletion
+
+  // Helper function to safely display error messages
+  const getErrorMessage = (error: any) => {
+    if (!error) return "";
+    if (typeof error.message === "string") return error.message;
+    return String(error.message || "Invalid input");
+  };
 
   const { toast } = useToast();
   const router = useRouter();
@@ -77,6 +86,7 @@ export default function Page() {
       gpa: "",
 
       password: "",
+      image: "",
     },
   });
 
@@ -109,8 +119,6 @@ export default function Page() {
       setValue("password", "");
 
       setValue("image", data.data.image || "");
-      setCurrentImageUrl(data.data.image || "");
-      setInitialImageUrl(data.data.image || "");
     } else {
       toast({
         title: "ไม่พบข้อมูลนักศึกษา",
@@ -120,55 +128,25 @@ export default function Page() {
     }
     setLoading(false);
   }
-
   async function onSubmit(values: any) {
     values.username = values.student_id;
     setLoading(true);
-
-    let finalImageUrl = values.image; // Start with the image URL from the form (could be current or empty)
-    let hasUploadError = false;
-    let hasDeleteError = false;
-
     try {
-      if (selectedFile) {
-        const uploadResult = await callUploadApi(selectedFile, "students");
-        if (uploadResult.filePath) {
-          finalImageUrl = uploadResult.filePath;
-          setSelectedFile(null);
-          setCurrentImageUrl(finalImageUrl); // Update current display
-        } else {
-          hasUploadError = true;
-          finalImageUrl = initialImageUrl;
-        }
-      }
-
-      if (hasUploadError) {
-        setLoading(false);
-        return; // Stop form submission if image upload failed
-      }
-
-      if (initialImageUrl && initialImageUrl !== finalImageUrl) {
-        try {
-          const deleteResult = await callDeleteApi(initialImageUrl);
-          if (deleteResult.message.includes("success")) {
-          } else {
-            hasDeleteError = true;
-          }
-        } catch (deleteError) {
-          hasDeleteError = true;
-          console.error("Error deleting old image:", deleteError);
-          toast({
-            title: "เกิดข้อผิดพลาดในการลบรูปภาพเก่า",
-            description: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อลบรูปภาพเก่าได้",
-            variant: "destructive",
-          });
-        }
-      }
-
-      // 3. Prepare payload for main form submission
-      const payload = { ...values, image: finalImageUrl }; // Ensure 'image' field reflects the latest status
+      const payload = { ...values };
       if (payload.password === "") {
         delete payload.password; // ลบ password ออกจาก payload หากเป็นค่าว่าง
+      }
+
+      // ตรวจสอบและจัดการค่า image ก่อนส่งไปยังเซิร์ฟเวอร์
+      if (payload.image && typeof payload.image === "object") {
+        try {
+          // แปลงออบเจ็กต์เป็น JSON string
+          payload.image = JSON.stringify(payload.image);
+        } catch (error) {
+          console.error("Error processing avatar image:", error);
+          // กรณีแปลงไม่ได้ ให้ใช้ค่าว่าง
+          payload.image = "";
+        }
       }
 
       // 4. Submit main form data
@@ -204,24 +182,6 @@ export default function Page() {
       setLoading(false);
     }
   }
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFile(event.target.files ? event.target.files[0] : null);
-    // When a new file is selected, clear currentImageUrl visually until uploaded
-    if (event.target.files && event.target.files[0]) {
-      setCurrentImageUrl(URL.createObjectURL(event.target.files[0]));
-      setValue("image", ""); // Clear image field in form until successful upload
-    } else {
-      setCurrentImageUrl(initialImageUrl); // Revert if file selection is cancelled
-      setValue("image", initialImageUrl);
-    }
-  };
-
-  const handleImageDeleteClick = async () => {
-    setSelectedFile(null);
-    setCurrentImageUrl("");
-    setValue("image", "");
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -265,40 +225,13 @@ export default function Page() {
                           </div>
 
                           <div className="sm:col-span-12 flex flex-col items-center justify-center text-center">
-                            <div className="flex flex-row items-center justify-center gap-4">
-                              <div className="relative flex items-center justify-center">
-                                <input
-                                  id="image-upload"
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleFileChange}
-                                  className="hidden"
-                                />
-                                <label
-                                  htmlFor="image-upload"
-                                  className="cursor-pointer"
-                                >
-                                  <CustomAvatar
-                                    id={`admin${getValues("username")}`}
-                                    image={currentImageUrl}
-                                    size="32"
-                                  />
-                                </label>
-                                {currentImageUrl && (
-                                  <Button
-                                    type="button"
-                                    onClick={handleImageDeleteClick}
-                                    variant="destructive"
-                                    size="icon"
-                                    className="absolute -top-2 -right-2 h-7 w-7 rounded-full shadow bg-white border border-gray-200"
-                                    disabled={loading}
-                                    title="ลบรูปภาพ"
-                                  >
-                                    <Trash2 className="h-4 w-4 text-red-600" />
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
+                            <AvatarDesign
+                              value={getValues("image")}
+                              setValue={(val: any) => {
+                                setValue("image", val);
+                              }}
+                              size="32"
+                            />
                           </div>
 
                           <div className="sm:col-span-6">
@@ -314,10 +247,10 @@ export default function Page() {
                                   : "")
                               }
                               placeholder="กรุณากรอกชื่อ-นามสกุล"
-                            />
+                            />{" "}
                             {errors.fullname && (
                               <p className="text-sm text-red-600">
-                                {errors.fullname.message}
+                                {getErrorMessage(errors.fullname)}
                               </p>
                             )}
                           </div>
@@ -334,10 +267,10 @@ export default function Page() {
                                   : "")
                               }
                               placeholder="กรุณากรอกรหัสนักศึกษา"
-                            />
+                            />{" "}
                             {errors.student_id && (
                               <p className="text-sm text-red-600">
-                                {errors.student_id.message}
+                                {getErrorMessage(errors.student_id)}
                               </p>
                             )}
                           </div>
@@ -352,10 +285,10 @@ export default function Page() {
                                 (errors.email ? "border-red-600  border-2" : "")
                               }
                               placeholder="กรุณากรอกอีเมล"
-                            />
+                            />{" "}
                             {errors.email && (
                               <p className="text-sm text-red-600">
-                                {errors.email.message}
+                                {getErrorMessage(errors.email)}
                               </p>
                             )}
                           </div>
@@ -372,10 +305,10 @@ export default function Page() {
                                   : "")
                               }
                               placeholder="กรุณากรอกเบอร์โทรศัพท์"
-                            />
+                            />{" "}
                             {errors.mobile && (
                               <p className="text-sm text-red-600">
-                                {errors.mobile.message}
+                                {getErrorMessage(errors.mobile)}
                               </p>
                             )}
                           </div>
@@ -394,11 +327,10 @@ export default function Page() {
                               </option>
                               <option value="SCI">สาย SCI</option>
                               <option value="CARE">สาย CARE</option>
-                            </select>
-
+                            </select>{" "}
                             {errors.major && (
                               <p className="text-sm text-red-600">
-                                {errors.major.message}
+                                {getErrorMessage(errors.major)}
                               </p>
                             )}
                           </div>
@@ -422,11 +354,10 @@ export default function Page() {
                                   {y}
                                 </option>
                               ))}
-                            </select>
-
+                            </select>{" "}
                             {errors.std_year && (
                               <p className="text-sm text-red-600">
-                                {errors.std_year.message}
+                                {getErrorMessage(errors.std_year)}
                               </p>
                             )}
                           </div>

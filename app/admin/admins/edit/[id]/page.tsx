@@ -14,11 +14,12 @@ import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { callUploadApi, callDeleteApi } from "@/lib/file-api";
 import CustomAvatar from "@/components/avatar";
+import AvatarDesign from "@/components/AvatarDesign";
 
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
   fullname: z.string().min(1, "กรุณากรอกชื่อผู้ดูแลระบบ"),
-  image: z.string().optional(), // URL รูปภาพ, optional
+  image: z.string().optional(),
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้"),
   password: z.string().optional().or(z.literal("")), // รหัสผ่าน, optional หรือค่าว่าง
 });
@@ -26,10 +27,6 @@ const formSchema = z.object({
 // --- Component หลัก ---
 export default function Page() {
   const [loading, setLoading] = useState(true);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [currentImageUrl, setCurrentImageUrl] = useState<string>("");
-  const [initialImageUrl, setInitialImageUrl] = useState<string>(""); // To track original image for deletion
-
   const params = useParams();
   const id = params?.id as string;
 
@@ -67,8 +64,6 @@ export default function Page() {
           const advisorData = data.data;
           setValue("fullname", advisorData.fullname);
           setValue("image", advisorData.image || "");
-          setCurrentImageUrl(advisorData.image || "");
-          setInitialImageUrl(advisorData.image || ""); // Store initial image URL
           setValue("username", advisorData.username);
           // ไม่ต้อง setValue 'password' ที่ดึงมาจาก API เพราะมันไม่ควรถูกแสดง
         } else {
@@ -93,76 +88,14 @@ export default function Page() {
     fetchData();
   }, [id, setValue, toast]);
 
-  // --- Handlers สำหรับการจัดการไฟล์ ---
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFile(event.target.files ? event.target.files[0] : null);
-    // When a new file is selected, clear currentImageUrl visually until uploaded
-    if (event.target.files && event.target.files[0]) {
-      setCurrentImageUrl(URL.createObjectURL(event.target.files[0]));
-      setValue("image", ""); // Clear image field in form until successful upload
-    } else {
-      setCurrentImageUrl(initialImageUrl); // Revert if file selection is cancelled
-      setValue("image", initialImageUrl);
-    }
-  };
-
-  const handleImageDeleteClick = async () => {
-    setSelectedFile(null);
-    setCurrentImageUrl("");
-    setValue("image", "");
-  };
-
-  // --- Handler สำหรับการส่งฟอร์มหลัก ---
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-
-    let finalImageUrl = values.image; // Start with the image URL from the form (could be current or empty)
-    let hasUploadError = false;
-    let hasDeleteError = false;
-
     try {
-      if (selectedFile) {
-        const uploadResult = await callUploadApi(selectedFile, "admins");
-        if (uploadResult.filePath) {
-          finalImageUrl = uploadResult.filePath;
-          setSelectedFile(null);
-          setCurrentImageUrl(finalImageUrl); // Update current display
-        } else {
-          hasUploadError = true;
-          finalImageUrl = initialImageUrl;
-        }
-      }
-
-      if (hasUploadError) {
-        setLoading(false);
-        return; // Stop form submission if image upload failed
-      }
-
-      if (initialImageUrl && initialImageUrl !== finalImageUrl) {
-        try {
-          const deleteResult = await callDeleteApi(initialImageUrl);
-          if (deleteResult.message.includes("success")) {
-          } else {
-            hasDeleteError = true;
-          }
-        } catch (deleteError) {
-          hasDeleteError = true;
-          console.error("Error deleting old image:", deleteError);
-          toast({
-            title: "เกิดข้อผิดพลาดในการลบรูปภาพเก่า",
-            description: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อลบรูปภาพเก่าได้",
-            variant: "destructive",
-          });
-        }
-      }
-
-      // 3. Prepare payload for main form submission
-      const payload = { ...values, image: finalImageUrl }; // Ensure 'image' field reflects the latest status
+      const payload = values;
       if (payload.password === "") {
-        delete payload.password; // ลบ password ออกจาก payload หากเป็นค่าว่าง
+        delete payload.password;
       }
 
-      // 4. Submit main form data
       const response = await fetch(`/api/admin/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -196,7 +129,6 @@ export default function Page() {
     }
   }
 
-  // --- Render UI ---
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto p-2">
@@ -238,42 +170,14 @@ export default function Page() {
                         </h2>
                       </div>
 
-                      {/* ส่วนการอัปโหลดรูปภาพ (ดีไซน์ใหม่) */}
                       <div className="sm:col-span-12 flex flex-col items-center justify-center text-center">
-                        <div className="flex flex-row items-center justify-center gap-4">
-                          <div className="relative flex items-center justify-center">
-                            <input
-                              id="image-upload"
-                              type="file"
-                              accept="image/*"
-                              onChange={handleFileChange}
-                              className="hidden"
-                            />
-                            <label
-                              htmlFor="image-upload"
-                              className="cursor-pointer"
-                            >
-                              <CustomAvatar
-                                id={`admin${getValues("username")}`}
-                                image={currentImageUrl}
-                                size="32"
-                              />
-                            </label>
-                            {currentImageUrl && (
-                              <Button
-                                type="button"
-                                onClick={handleImageDeleteClick}
-                                variant="destructive"
-                                size="icon"
-                                className="absolute -top-2 -right-2 h-7 w-7 rounded-full shadow bg-white border border-gray-200"
-                                disabled={loading}
-                                title="ลบรูปภาพ"
-                              >
-                                <Trash2 className="h-4 w-4 text-red-600" />
-                              </Button>
-                            )}
-                          </div>
-                        </div>
+                        <AvatarDesign
+                          value={getValues("image")}
+                          setValue={(val: any) => {
+                            setValue("image", val);
+                          }}
+                          size="32"
+                        />
                       </div>
 
                       <div className="sm:col-span-12">
