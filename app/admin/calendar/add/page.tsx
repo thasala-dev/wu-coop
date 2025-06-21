@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useState } from "react";
-import { ArrowLeft, Edit, ChevronRight, Save } from "lucide-react";
+import { ArrowLeft, Edit, ChevronRight, Save, Calendar } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -19,6 +19,15 @@ import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { th } from "date-fns/locale";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อแหล่งฝึกงาน"),
@@ -33,11 +42,24 @@ export default function Page({ params }: any) {
   const { toast } = useToast();
   const router = useRouter();
   const years = ["2568", "2569", "2570"];
+
+  // Add state for date pickers
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
+  // Helper function to safely display error messages
+  const getErrorMessage = (error: any) => {
+    if (!error) return "";
+    if (typeof error.message === "string") return error.message;
+    return String(error.message || "Invalid input");
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
+    setValue,
   } = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,10 +121,10 @@ export default function Page({ params }: any) {
               </Button>
               <div className="flex items-center gap-1 text-sm text-gray-500">
                 <a href="/admin/calendar" className="hover:text-gray-900">
-                  รอบฝึกงาน
+                  ผลัดฝึกงาน
                 </a>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-gray-900">เพิ่มรอบฝึกงาน</span>
+                <span className="text-gray-900">เพิ่มผลัดฝึกงาน</span>
               </div>
             </div>
 
@@ -115,11 +137,11 @@ export default function Page({ params }: any) {
                         <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
                           <div className="sm:col-span-12">
                             <div className="font-semibold tracking-tight text-lg">
-                              ข้อมูลรอบฝึกงาน
+                              ข้อมูลผลัดฝึกงาน
                             </div>
                           </div>
                           <div className="sm:col-span-6 space-y-1">
-                            <label>ชื่อรอบฝึกงาน</label>
+                            <label>ชื่อผลัดฝึกงาน</label>
                             <input
                               id="name"
                               type="text"
@@ -132,11 +154,10 @@ export default function Page({ params }: any) {
                             />
                             {errors.name && (
                               <p className="text-sm text-red-600">
-                                {errors.name.message}
+                                {getErrorMessage(errors.name)}
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-3">
                             <label>ภาคการศึกษา</label>
                             <select
@@ -159,7 +180,7 @@ export default function Page({ params }: any) {
 
                             {errors.semester && (
                               <p className="text-sm text-red-600">
-                                {errors.semester.message}
+                                {getErrorMessage(errors.semester)}
                               </p>
                             )}
                           </div>
@@ -185,47 +206,127 @@ export default function Page({ params }: any) {
 
                             {errors.year && (
                               <p className="text-sm text-red-600">
-                                {errors.year.message}
+                                {getErrorMessage(errors.year)}
                               </p>
                             )}
-                          </div>
+                          </div>{" "}
                           <div className="sm:col-span-4">
                             <label>วันที่เริ่มต้น</label>
-                            <input
-                              id="startDate"
-                              type="date"
-                              {...register("startDate")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.startDate
-                                  ? "border-red-600  border-2"
-                                  : "")
-                              }
-                              placeholder="วันที่เริ่มต้น"
-                            />
+                            <div>
+                              <input
+                                type="hidden"
+                                {...register("startDate")}
+                                value={
+                                  startDate
+                                    ? format(startDate, "yyyy-MM-dd")
+                                    : ""
+                                }
+                              />
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !startDate && "text-muted-foreground",
+                                      errors.startDate
+                                        ? "border-red-600 border-2"
+                                        : ""
+                                    )}
+                                  >
+                                    <Calendar className="mr-2 h-4 w-4" />
+                                    {startDate ? (
+                                      format(startDate, "d MMMM yyyy", {
+                                        locale: th,
+                                      })
+                                    ) : (
+                                      <span>เลือกวันที่เริ่มต้น</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto p-0 shadow-md rounded-md"
+                                  align="start"
+                                >
+                                  <CalendarComponent
+                                    selected={startDate || undefined}
+                                    onSelect={(date: Date | null) => {
+                                      setStartDate(date);
+                                      if (date) {
+                                        setValue(
+                                          "startDate",
+                                          format(date, "yyyy-MM-dd")
+                                        );
+                                      }
+                                    }}
+                                    locale={th}
+                                    className="rounded-md"
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
                             {errors.startDate && (
                               <p className="text-sm text-red-600">
-                                {errors.startDate.message}
+                                {getErrorMessage(errors.startDate)}
                               </p>
                             )}
                           </div>
                           <div className="sm:col-span-4">
                             <label>วันที่สิ้นสุด</label>
-                            <input
-                              id="endDate"
-                              type="date"
-                              {...register("endDate")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.endDate
-                                  ? "border-red-600  border-2"
-                                  : "")
-                              }
-                              placeholder="วันที่สิ้นสุด"
-                            />
+                            <div>
+                              <input
+                                type="hidden"
+                                {...register("endDate")}
+                                value={
+                                  endDate ? format(endDate, "yyyy-MM-dd") : ""
+                                }
+                              />
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !endDate && "text-muted-foreground",
+                                      errors.endDate
+                                        ? "border-red-600 border-2"
+                                        : ""
+                                    )}
+                                  >
+                                    <Calendar className="mr-2 h-4 w-4" />
+                                    {endDate ? (
+                                      format(endDate, "d MMMM yyyy", {
+                                        locale: th,
+                                      })
+                                    ) : (
+                                      <span>เลือกวันที่สิ้นสุด</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto p-0 shadow-md rounded-md"
+                                  align="start"
+                                >
+                                  <CalendarComponent
+                                    selected={endDate || undefined}
+                                    onSelect={(date: Date | null) => {
+                                      setEndDate(date);
+                                      if (date) {
+                                        setValue(
+                                          "endDate",
+                                          format(date, "yyyy-MM-dd")
+                                        );
+                                      }
+                                    }}
+                                    locale={th}
+                                    className="rounded-md"
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
                             {errors.endDate && (
                               <p className="text-sm text-red-600">
-                                {errors.endDate.message}
+                                {getErrorMessage(errors.endDate)}
                               </p>
                             )}
                           </div>
@@ -252,7 +353,7 @@ export default function Page({ params }: any) {
 
                             {errors.statusId && (
                               <p className="text-sm text-red-600">
-                                {errors.statusId.message}
+                                {getErrorMessage(errors.statusId)}
                               </p>
                             )}
                           </div>

@@ -34,7 +34,7 @@ const formSchema = z.object({
     .optional()
     .or(z.literal("")),
   major: z.string(),
-  std_year: z.string().min(1, "กรุณาเลือกกลุ่มรหัสนักศึกษา"),
+  std_year: z.string().min(1, "กรุณาเลือกปีรหัส"),
   address: z.string(),
   gpa: z.string(),
 
@@ -270,7 +270,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             )}
                           </div>
                           <div className="sm:col-span-3">
-                            <label>กลุ่มรหัสนักศึกษา</label>
+                            <label>ปีรหัส</label>
                             <select
                               id="std_year"
                               {...register("std_year")}
@@ -282,7 +282,7 @@ export default function Page({ params }: { params: { id: string } }) {
                               }
                             >
                               <option value="" disabled>
-                                เลือกกลุ่มรหัสนักศึกษา
+                                เลือกปีรหัส
                               </option>
                               {years.map((y) => (
                                 <option key={y} value={y}>

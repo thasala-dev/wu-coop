@@ -54,7 +54,7 @@ export default function AdminDashboard() {
             <Tabs defaultValue="overview">
               <TabsList className="mb-4">
                 <TabsTrigger value="overview">ภาพรวม</TabsTrigger>
-                <TabsTrigger value="cycles">รอบฝึกงาน</TabsTrigger>
+                <TabsTrigger value="cycles">ผลัดฝึกงาน</TabsTrigger>
                 <TabsTrigger value="stats">สถิติ</TabsTrigger>
               </TabsList>
 
@@ -322,8 +322,8 @@ export default function AdminDashboard() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                      <CardTitle className="text-xl">รอบฝึกงาน</CardTitle>
-                      <CardDescription>จัดการรอบฝึกงานทั้งหมด</CardDescription>
+                      <CardTitle className="text-xl">ผลัดฝึกงาน</CardTitle>
+                      <CardDescription>จัดการผลัดฝึกงานทั้งหมด</CardDescription>
                     </div>
                   </CardHeader>
                   <CardContent>

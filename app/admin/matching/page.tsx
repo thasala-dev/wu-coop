@@ -47,8 +47,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import CustomAvatar from "@/components/avatar";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function AdminMatching() {
+  const { log } = useAuth();
+
   const [loading, setLoading] = useState(true);
   const [calendars, setCalendars] = useState<any[]>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
@@ -134,17 +137,26 @@ export default function AdminMatching() {
     setDialogOpen(false);
     setLoading(true);
     if (dialogType === "link") {
+      const companyId = info.intern.find(
+        (item: any) => item.id === selectedId
+      ).company_id;
       const response = await fetch(`/api/registIntern/${selectedId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          company_id: info.intern.find((item: any) => item.id === selectedId)
-            .company_id,
+          company_id: companyId,
           register_date: new Date().toISOString(),
         }),
       });
       const data = await response.json();
       if (response.ok && data.success) {
+        await log(
+          `จับคู่นักศึกษา ${
+            info.intern.find((item: any) => item.id === selectedId).fullname
+          } กับแหล่งฝึกงาน ${
+            info.company.find((item: any) => item.company_id == companyId).name
+          } สำเร็จ`
+        );
         toast({
           title: "จับคู่สำเร็จ",
           description: "ดำเนินการจับคู่นักศึกษาและแหล่งฝึกงานเรียบร้อยแล้ว",
@@ -163,6 +175,11 @@ export default function AdminMatching() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
+        await log(
+          `ยกเลิกจับคู่นักศึกษา ${
+            info.intern.find((item: any) => item.id === selectedId).fullname
+          } กับแหล่งฝึกงาน`
+        );
         toast({
           title: "ยกเลิกจับคู่สำเร็จ",
           description:
@@ -341,9 +358,9 @@ export default function AdminMatching() {
               <CardHeader className="pb-3">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle className="text-xl">รอบฝึกงาน</CardTitle>
+                    <CardTitle className="text-xl">ผลัดฝึกงาน</CardTitle>
                     <CardDescription>
-                      เลือกรอบฝึกงานที่ต้องการจัดการการจับคู่
+                      เลือกผลัดฝึกงานที่ต้องการจัดการการจับคู่
                     </CardDescription>
                   </div>
                 </div>
@@ -793,7 +810,7 @@ export default function AdminMatching() {
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm text-gray-500 mb-4">
-              กรุณาเลือกแหล่งฝึกและกำหนดจำนวนรับเพื่อนำเข้าไปยังรอบฝึกงานนี้
+              กรุณาเลือกแหล่งฝึกและกำหนดจำนวนรับเพื่อนำเข้าไปยังผลัดฝึกงานนี้
             </p>
             <div className="grid grid-cols-1 gap-4">
               <Select

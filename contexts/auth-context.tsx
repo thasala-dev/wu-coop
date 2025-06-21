@@ -18,6 +18,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   isAdmin: () => boolean;
   isCustomer: () => boolean;
+  log: (message: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,6 +51,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkAuth();
   }, []);
 
+  const log = async (message: string): Promise<void> => {
+    try {
+      await fetch("/api/log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: message,
+          user_id: user.id,
+          user_role: user.role,
+        }),
+      });
+    } catch (error) {
+      console.error("Log error:", error);
+    }
+  };
   // ฟังก์ชันเข้าสู่ระบบ
   const login = async (
     username: string,
@@ -110,6 +128,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await fetch("/api/auth/logout", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user }),
       });
 
       // ลบข้อมูลผู้ใช้จาก state และ cookie
@@ -145,7 +167,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, logout, isAdmin, isCustomer }}
+      value={{ user, isLoading, login, logout, isAdmin, isCustomer, log }}
     >
       {children}
     </AuthContext.Provider>

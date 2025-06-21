@@ -273,7 +273,7 @@ export default function StudentDetailPage() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                    ชั้นปีที่ {student.year}
+                    ปีรหัสที่ {student.year}
                   </Badge>
                   {student.status === "active" && (
                     <Badge className="bg-green-500">กำลังฝึกงาน</Badge>

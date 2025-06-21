@@ -402,9 +402,9 @@ export default function AdminCalendar() {
               <CardHeader className="pb-3">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle className="text-xl">รอบฝึกงานศึกษา</CardTitle>
+                    <CardTitle className="text-xl">ผลัดฝึกงาน</CardTitle>
                     <CardDescription>
-                      เลือกรอบฝึกงานศึกษาที่ต้องการจัดการ
+                      เลือกผลัดฝึกงานที่ต้องการจัดการ
                     </CardDescription>
                   </div>
                   <a href={`/admin/calendar/add`}>
@@ -419,8 +419,8 @@ export default function AdminCalendar() {
                 <Tabs defaultValue="select">
                   <div>
                     <TabsList>
-                      <TabsTrigger value="select">แสดงรอบฝึกงาน</TabsTrigger>
-                      <TabsTrigger value="manage">จัดการรอบฝึกงาน</TabsTrigger>
+                      <TabsTrigger value="select">แสดงผลัดฝึกงาน</TabsTrigger>
+                      <TabsTrigger value="manage">จัดการผลัดฝึกงาน</TabsTrigger>
                     </TabsList>
                   </div>
 
@@ -488,7 +488,7 @@ export default function AdminCalendar() {
                       meta={[
                         {
                           key: "name",
-                          content: "รอบฝึกงาน",
+                          content: "ผลัดฝึกงาน",
                         },
                         {
                           key: "semester",
@@ -620,7 +620,7 @@ export default function AdminCalendar() {
                           }}
                         >
                           <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="เลือกรอบฝึกงาน" />
+                            <SelectValue placeholder="เลือกผลัดฝึกงาน" />
                           </SelectTrigger>
                           <SelectContent>
                             {calendars.map((cal: any) => (
@@ -675,7 +675,7 @@ export default function AdminCalendar() {
                             },
                             {
                               key: "term",
-                              content: "รอบฝึกงาน",
+                              content: "ผลัดฝึกงาน",
                               render: (event: any) => {
                                 return getCalendarTermById(event.calendar_id);
                               },
@@ -876,7 +876,7 @@ export default function AdminCalendar() {
                             ))
                           ) : (
                             <div className="text-center text-gray-500 py-8">
-                              ไม่พบกิจกรรมในรอบฝึกงานศึกษานี้
+                              ไม่พบกิจกรรมในผลัดฝึกงานนี้
                             </div>
                           )}
                         </div>

@@ -268,7 +268,7 @@ export default function StudentDetailPage() {
                       <div className="flex items-center gap-2">
                         <User className="h-4 w-4 text-gray-500" />
                         <span>
-                          {student.faculty} ชั้นปีที่ {student.year}
+                          {student.faculty} ปีรหัสที่ {student.year}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -341,7 +341,7 @@ export default function StudentDetailPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-medium text-gray-500">
-                          ชั้นปี
+                          ปีรหัส
                         </h3>
                         <p>{student.year}</p>
                       </div>

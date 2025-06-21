@@ -360,7 +360,7 @@ export default function AdminStudentsPage() {
                   }}
                 >
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="เลือกรอบฝึกงาน" />
+                    <SelectValue placeholder="เลือกผลัดฝึกงาน" />
                   </SelectTrigger>
                   <SelectContent>
                     {calendars.map((cal: any) => (
@@ -564,17 +564,17 @@ export default function AdminStudentsPage() {
                           </div>
                           <div>
                             <label className="text-xs font-medium text-gray-500 mb-1.5 block">
-                              ชั้นปี
+                              ปีรหัส
                             </label>
                             <Select
                               value={selectedYear}
                               onValueChange={setSelectedYear}
                             >
                               <SelectTrigger className="h-8 text-sm rounded-md border-gray-200">
-                                <SelectValue placeholder="ทุกชั้นปี" />
+                                <SelectValue placeholder="ทุกปีรหัส" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="all">ทุกชั้นปี</SelectItem>
+                                <SelectItem value="all">ทุกปีรหัส</SelectItem>
                                 <SelectItem value="4">ปี 4</SelectItem>
                                 <SelectItem value="5">ปี 5</SelectItem>
                                 <SelectItem value="6">ปี 6</SelectItem>
@@ -688,7 +688,7 @@ export default function AdminStudentsPage() {
                                   )}
                                 </p>
                                 <p>
-                                  <span className="text-gray-500">ชั้นปี:</span>{" "}
+                                  <span className="text-gray-500">ปีรหัส:</span>{" "}
                                   {student.std_year}
                                 </p>
                                 <p>
@@ -786,7 +786,7 @@ export default function AdminStudentsPage() {
                           },
                           {
                             key: "std_year",
-                            content: "ชั้นปี",
+                            content: "ปีรหัส",
                           },
                           {
                             key: "gpa",

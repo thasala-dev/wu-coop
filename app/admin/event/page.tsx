@@ -270,7 +270,7 @@ export default function Page() {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="w-[250px]">ชื่อกิจกรรม</TableHead>
-                        <TableHead>รอบฝึกงาน</TableHead>
+                        <TableHead>ผลัดฝึกงาน</TableHead>
                         <TableHead>ประเภทกิจกรรม</TableHead>
                         <TableHead>วันที่</TableHead>
                         <TableHead>สถานะ</TableHead>

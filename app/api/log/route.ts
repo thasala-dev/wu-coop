@@ -1,11 +1,37 @@
 import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { title, user_id, user_role } = body;
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    await sql(
+      "INSERT INTO log (title, user_id, user_role) VALUES ($1, $2, $3)",
+      [title, user_id, user_role]
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: "ดำเนินการสำเร็จ",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, message: "เกิดข้อผิดพลาดในการออกจากระบบ" },
+      { status: 500 }
+    );
+  }
+}
 
 export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const start = searchParams.get("start");
+    const end = searchParams.get("end");
+
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data =
-      await sql(`SELECT log.id, log.user_id, log.user_role, log.title, log.created_at,
+
+    // Build query with date filters
+    let query = `SELECT log.id, log.user_id, log.user_role, log.title, log.created_at,
       case
         when log.user_role = 'admin' then user_admin.fullname
         when log.user_role = 'advisor' then user_advisor.fullname
@@ -32,7 +58,25 @@ export async function GET(request: Request) {
       LEFT JOIN user_advisor ON log.user_id = user_advisor.id
       LEFT JOIN user_student ON log.user_id = user_student.id
       LEFT JOIN user_company ON log.user_id = user_company.id
-      ORDER BY log.created_at DESC`);
+      WHERE 1=1`;
+
+    // Add date range conditions if provided
+    const params: any[] = [];
+
+    if (start) {
+      query += ` AND DATE(log.created_at) >= $1`;
+      params.push(start);
+    }
+
+    if (end) {
+      query += ` AND DATE(log.created_at) <= $${params.length + 1}`;
+      params.push(end);
+    }
+
+    query += ` ORDER BY log.created_at DESC`;
+
+    const data = await sql(query, params);
+
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",

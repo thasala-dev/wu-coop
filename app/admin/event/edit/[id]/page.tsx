@@ -22,7 +22,7 @@ const formSchema = z.object({
   description: z.string().optional(),
   eventDate: z.string().min(1, "กรุณาเลือกวันที่จัดกิจกรรม"),
   location: z.string().min(1, "กรุณากรอกสถานที่จัดกิจกรรม"),
-  calendarId: z.string().min(1, "กรุณาเลือกรอบฝึกงาน"),
+  calendarId: z.string().min(1, "กรุณาเลือกผลัดฝึกงาน"),
   typeId: z.string().min(1, "กรุณาเลือกประเภทกิจกรรม"),
   statusId: z.string().min(1, "กรุณาเลือกสถานะ"),
 });
@@ -71,7 +71,7 @@ export default function Page() {
       const response = await fetch("/api/calendar");
       if (!response.ok) {
         toast({
-          title: "ไม่สามารถโหลดข้อมูลรอบฝึกงานได้",
+          title: "ไม่สามารถโหลดข้อมูลผลัดฝึกงานได้",
           description: "เกิดข้อผิดพลาดในการดึงข้อมูล",
           variant: "destructive",
         });
@@ -84,7 +84,7 @@ export default function Page() {
     } catch (error) {
       toast({
         title: "เกิดข้อผิดพลาด",
-        description: "ไม่สามารถดึงข้อมูลรอบฝึกงานได้",
+        description: "ไม่สามารถดึงข้อมูลผลัดฝึกงานได้",
         variant: "destructive",
       });
     }
@@ -228,7 +228,7 @@ export default function Page() {
                           </div>
 
                           <div className="sm:col-span-4 space-y-1">
-                            <label>รอบฝึกงาน</label>
+                            <label>ผลัดฝึกงาน</label>
                             <select
                               id="calendarId"
                               {...register("calendarId")}
@@ -240,7 +240,7 @@ export default function Page() {
                               }
                             >
                               <option value="" disabled>
-                                เลือกรอบฝึกงาน
+                                เลือกผลัดฝึกงาน
                               </option>
                               {calendars.map((calendar) => (
                                 <option key={calendar.id} value={calendar.id}>

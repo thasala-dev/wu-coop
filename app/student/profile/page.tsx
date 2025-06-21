@@ -449,7 +449,7 @@ export default function StudentProfile() {
                                   htmlFor="std_year"
                                   className="text-sm font-medium"
                                 >
-                                  ชั้นปี
+                                  ปีรหัส
                                 </label>
                                 <Select
                                   value={formData.std_year.toString()}
@@ -458,7 +458,7 @@ export default function StudentProfile() {
                                   }
                                 >
                                   <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="เลือกชั้นปี" />
+                                    <SelectValue placeholder="เลือกปีรหัส" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="1">ปี 1</SelectItem>
@@ -585,7 +585,7 @@ export default function StudentProfile() {
                               <div className="space-y-4">
                                 <div>
                                   <h4 className="text-sm font-medium text-gray-500">
-                                    ชั้นปี
+                                    ปีรหัส
                                   </h4>
                                   <p className="font-medium">
                                     {profileData.std_year

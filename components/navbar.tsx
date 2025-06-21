@@ -70,8 +70,6 @@ export function Navbar({
   if (!mounted) return null;
   if (!user) return null;
 
-  const config = genConfig(user.role + user?.username);
-
   return (
     <header className={`${headerColor} shadow-md sticky top-0 z-50 `}>
       <div className="container mx-auto px-4 py-3">

@@ -344,7 +344,7 @@ export default function AdminStudentDetailPage({
                         <div className="flex items-center gap-2 text-gray-600">
                           <BookOpen className="h-4 w-4 text-gray-400" />
                           <span>
-                            ชั้นปีที่ {student.year} | เกรดเฉลี่ย {student.gpa}
+                            ปีรหัสที่ {student.year} | เกรดเฉลี่ย {student.gpa}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-600">
@@ -464,7 +464,7 @@ export default function AdminStudentDetailPage({
                               </dd>
                             </div>
                             <div className="flex flex-col">
-                              <dt className="text-gray-500">ชั้นปี</dt>
+                              <dt className="text-gray-500">ปีรหัส</dt>
                               <dd>{student.year}</dd>
                             </div>
                             <div className="flex flex-col">
