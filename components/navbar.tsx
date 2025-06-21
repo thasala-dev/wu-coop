@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Bell,
+  Bell, // เพิ่มกลับมาเนื่องจากยังต้องใช้ชั่วคราว
   ChevronDown,
   LogOut,
   Settings,
@@ -15,6 +15,7 @@ import {
   Zap,
   Pill,
 } from "lucide-react";
+import { NotificationBell } from "@/components/notification-bell";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,55 +86,14 @@ export function Navbar({
                 สำนักเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์
               </span>
             </h1>
-          </Link>
-
+          </Link>{" "}
           <div className="flex items-center gap-1">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-white/20 relative"
-                >
-                  <Bell className="h-5 w-5" />
-                  {notificationCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-rose-500">
-                      {notificationCount}
-                    </Badge>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80">
-                <DropdownMenuLabel>การแจ้งเตือน</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {notificationCount > 0 ? (
-                  <div className="max-h-80 overflow-auto">
-                    <div className="p-3 hover:bg-gray-100 cursor-pointer border-b">
-                      <div className="font-medium">
-                        มีเอกสารใหม่รอการตรวจสอบ
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        2 ชั่วโมงที่แล้ว
-                      </div>
-                    </div>
-                    <div className="p-3 hover:bg-gray-100 cursor-pointer border-b">
-                      <div className="font-medium">
-                        กำหนดส่งรายงานความก้าวหน้า
-                      </div>
-                      <div className="text-sm text-gray-500">1 วันที่แล้ว</div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="py-4 px-2 text-center text-gray-500">
-                    <p>ไม่มีการแจ้งเตือนใหม่</p>
-                  </div>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="justify-center">
-                  ดูการแจ้งเตือนทั้งหมด
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* แทนที่ระบบการแจ้งเตือนเดิมด้วย NotificationBell component */}
+            <div className="text-white hover:bg-white/20 rounded-md">
+              <NotificationBell />
+            </div>
+
+            {/* ยังคงใช้ DropdownMenu สำหรับโปรไฟล์ผู้ใช้ */}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -162,14 +122,6 @@ export function Navbar({
                   <DropdownMenuItem>
                     <UserIcon className="mr-2 h-4 w-4" />
                     <span>โปรไฟล์</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    <span>ข้อความ</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>ตั้งค่า</span>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

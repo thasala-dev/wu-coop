@@ -101,7 +101,7 @@ export function Sidebar({
       {
         href: "/advisor/visits",
         page: "visits",
-        label: "การนิเทศน์",
+        label: "การนิเทศ",
         icon: MapPinIcon,
       },
       {
@@ -181,6 +181,18 @@ export function Sidebar({
         page: "matching",
       },
       {
+        label: "การนิเทศ",
+        href: "/admin/supervision",
+        icon: MapPinIcon,
+        page: "supervision",
+      },
+      {
+        label: "ประเมินผล",
+        href: "/admin/evaluations",
+        icon: FileText,
+        page: "evaluations",
+      },
+      {
         label: "รายงาน",
         href: "/admin/reports",
         icon: BarChart,
@@ -198,12 +210,13 @@ export function Sidebar({
         icon: FileText,
         page: "logs",
       },
-      {
-        label: "ตั้งค่าระบบ",
-        href: "/admin/settings",
-        icon: Settings,
-        page: "settings",
-      },
+
+      // {
+      //   label: "ตั้งค่าระบบ",
+      //   href: "/admin/settings",
+      //   icon: Settings,
+      //   page: "settings",
+      // },
     ],
   };
 
