@@ -2,7 +2,7 @@
 import Avatar, { genConfig } from "react-nice-avatar";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Palette, Shuffle } from "lucide-react";
+import { Ban, Palette, Shuffle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,15 +21,23 @@ const options = {
     "#F28B67", // warm tan
     "#FFD7C2", // pale
     "#A8755A", // deep brown
-    "#F7E7CE", // fair
+    "#E0AC69", // new 1
+    "#FFDBB4", // new 2
+    "#C68642", // new 3
+    "#D9B48F", // new 4
+    "#F3E0D3", // new 5
   ],
   hairColor: [
-    "#2C1B18", // dark brown
-    "#705446", // medium brown
-    "#B58143", // light brown/blonde
-    "#D6B370", // golden blonde
-    "#A55728", // auburn
-    "#4B3F2A", // ash brown
+    "#1E293B", // navy blue
+    "#F59E42", // orange
+    "#E11D48", // pink/red
+    "#10B981", // teal green
+    "#FACC15", // yellow
+    "#64748B", // slate gray
+    "#8B5CF6", // new 1 (purple)
+    "#F472B6", // new 2 (pink)
+    "#22D3EE", // new 3 (cyan)
+    "#F87171", // new 4 (red)
   ],
   hatColor: [
     "#1E293B", // navy blue
@@ -38,6 +46,10 @@ const options = {
     "#10B981", // teal green
     "#FACC15", // yellow
     "#64748B", // slate gray
+    "#8B5CF6", // new 1 (purple)
+    "#F472B6", // new 2 (pink)
+    "#22D3EE", // new 3 (cyan)
+    "#F87171", // new 4 (red)
   ],
   shirtColor: [
     "#2563EB", // blue
@@ -46,6 +58,10 @@ const options = {
     "#FBBF24", // yellow
     "#A78BFA", // purple
     "#6B7280", // gray
+    "#F472B6", // new 1 (pink)
+    "#F59E42", // new 2 (orange)
+    "#10B981", // new 3 (teal)
+    "#E5E7EB", // new 4 (light gray)
   ],
   bgColor: [
     "#F3F4F6", // light gray
@@ -54,6 +70,9 @@ const options = {
     "#D1FAE5", // mint green
     "#FDE68A", // light gold
     "#FECACA", // soft pink
+    "#C7D2FE", // new 1 (light blue)
+    "#BBF7D0", // new 2 (light green)
+    "#FBCFE8", // new 3 (light pink)
   ],
 
   earSize: ["small", "big"],
@@ -209,6 +228,56 @@ export default function AvatarDesign({ value, setValue, size = "12" }: Props) {
                     ))}
                   </div>
                 </div>
+
+                {/* Hat Style */}
+                <div className="space-y-1">
+                  <label className="text-sm font-medium">รูปแบบหมวก</label>
+                  <div className="flex flex-wrap gap-2">
+                    {options.hatStyle.map((style) => (
+                      <Button
+                        key={style}
+                        variant={cfg.hatStyle === style ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => {
+                          const newCfg = { ...cfg, hatStyle: style };
+                          setCfg(newCfg);
+                          if (setValue) handleSetValue(newCfg);
+                        }}
+                      >
+                        {style === "none" ? (
+                          <Ban className="h-12 w-12" />
+                        ) : (
+                          style
+                        )}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hat Color (only show if hat style is not none) */}
+                {cfg.hatStyle !== "none" && (
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium">สีหมวก</label>
+                    <div className="flex flex-wrap gap-2">
+                      {options.hatColor.map((color) => (
+                        <button
+                          key={color}
+                          className={`w-8 h-8 rounded-full border-2 ${
+                            cfg.hatColor === color
+                              ? "border-blue-500"
+                              : "border-transparent"
+                          }`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => {
+                            const newCfg = { ...cfg, hatColor: color };
+                            setCfg(newCfg);
+                            if (setValue) handleSetValue(newCfg);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Hair Style */}
                 <div className="space-y-1">
@@ -367,52 +436,6 @@ export default function AvatarDesign({ value, setValue, size = "12" }: Props) {
                   </div>
                 </div>
 
-                {/* Hat Style */}
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">รูปแบบหมวก</label>
-                  <div className="flex flex-wrap gap-2">
-                    {options.hatStyle.map((style) => (
-                      <Button
-                        key={style}
-                        variant={cfg.hatStyle === style ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => {
-                          const newCfg = { ...cfg, hatStyle: style };
-                          setCfg(newCfg);
-                          if (setValue) handleSetValue(newCfg);
-                        }}
-                      >
-                        {style === "none" ? "ไม่มีหมวก" : style}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Hat Color (only show if hat style is not none) */}
-                {cfg.hatStyle !== "none" && (
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium">สีหมวก</label>
-                    <div className="flex flex-wrap gap-2">
-                      {options.hatColor.map((color) => (
-                        <button
-                          key={color}
-                          className={`w-8 h-8 rounded-full border-2 ${
-                            cfg.hatColor === color
-                              ? "border-blue-500"
-                              : "border-transparent"
-                          }`}
-                          style={{ backgroundColor: color }}
-                          onClick={() => {
-                            const newCfg = { ...cfg, hatColor: color };
-                            setCfg(newCfg);
-                            if (setValue) handleSetValue(newCfg);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* Glasses Style */}
                 <div className="space-y-1">
                   <label className="text-sm font-medium">รูปแบบแว่นตา</label>
@@ -430,7 +453,11 @@ export default function AvatarDesign({ value, setValue, size = "12" }: Props) {
                           if (setValue) handleSetValue(newCfg);
                         }}
                       >
-                        {style === "none" ? "ไม่มีแว่น" : style}
+                        {style === "none" ? (
+                          <Ban className="h-12 w-12" />
+                        ) : (
+                          style
+                        )}
                       </Button>
                     ))}
                   </div>
