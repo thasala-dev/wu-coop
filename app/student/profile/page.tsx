@@ -245,7 +245,7 @@ export default function StudentProfile() {
   if (isLoading || !profileData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-sky-600" />
         <span className="ml-2 text-lg">กำลังโหลดข้อมูล...</span>
       </div>
     );
@@ -258,8 +258,8 @@ export default function StudentProfile() {
           <Sidebar activePage="profile" userType="student" />
 
           <div className="md:col-span-4">
-            <Card className="border-blue-200 shadow-md overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+            <Card className="border-sky-200 shadow-md overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-sky-500 to-sky-600 text-white">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-xl">ข้อมูลส่วนตัว</CardTitle>
                   <Button
@@ -267,14 +267,14 @@ export default function StudentProfile() {
                     onClick={() => setIsEditing(!isEditing)}
                     className={
                       isEditing
-                        ? "bg-white text-blue-700"
-                        : "bg-white text-blue-700"
+                        ? "bg-white text-sky-700"
+                        : "bg-white text-sky-700"
                     }
                   >
                     {isEditing ? "ยกเลิกการแก้ไข" : "แก้ไขข้อมูล"}
                   </Button>
                 </div>
-                <CardDescription className="text-blue-100">
+                <CardDescription className="text-sky-100">
                   ข้อมูลส่วนตัวของนักศึกษาฝึกงาน
                 </CardDescription>
               </CardHeader>
@@ -480,7 +480,7 @@ export default function StudentProfile() {
                           <div className="mt-6 flex justify-end">
                             <Button
                               type="submit"
-                              className="bg-blue-600 hover:bg-blue-700"
+                              className="bg-sky-600 hover:bg-sky-700"
                               disabled={isSaving}
                             >
                               {isSaving ? (
