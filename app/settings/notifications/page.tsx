@@ -24,7 +24,7 @@ export default function NotificationSettingsPage() {
             กลับหน้าหลัก
           </Button>
         </Link>
-        <h1 className="text-2xl font-bold">การตั้งค่าบัญชี</h1>
+        <h1 className="text-xl font-bold">การตั้งค่าบัญชี</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

@@ -260,7 +260,7 @@ export default function MentorEvaluations() {
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="text-3xl font-bold text-blue-600">
+                            <div className="text-xl font-bold text-blue-600">
                               0/5
                             </div>
                             <p className="text-sm text-gray-500 mt-1">
@@ -276,7 +276,7 @@ export default function MentorEvaluations() {
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="text-3xl font-bold text-orange-600">
+                            <div className="text-xl font-bold text-orange-600">
                               0/5
                             </div>
                             <p className="text-sm text-gray-500 mt-1">
@@ -292,7 +292,7 @@ export default function MentorEvaluations() {
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="text-3xl font-bold text-gray-400">
+                            <div className="text-xl font-bold text-gray-400">
                               0/5
                             </div>
                             <p className="text-sm text-gray-500 mt-1">

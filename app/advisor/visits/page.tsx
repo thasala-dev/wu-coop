@@ -663,7 +663,7 @@ export default function AdvisorVisits() {
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="text-3xl font-bold text-purple-600">
+                            <div className="text-xl font-bold text-purple-600">
                               {totalVisits}
                             </div>
                             <p className="text-sm text-gray-500 mt-1">
@@ -693,7 +693,7 @@ export default function AdvisorVisits() {
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="text-3xl font-bold text-purple-600">
+                            <div className="text-xl font-bold text-purple-600">
                               {totalDistance} กม.
                             </div>
                             <p className="text-sm text-gray-500 mt-1">
@@ -723,7 +723,7 @@ export default function AdvisorVisits() {
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="text-3xl font-bold text-purple-600">
+                            <div className="text-xl font-bold text-purple-600">
                               {completedVisits}
                             </div>
                             <p className="text-sm text-gray-500 mt-1">

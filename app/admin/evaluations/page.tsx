@@ -46,7 +46,7 @@ export default function AdminEvaluations() {
           <div className="md:col-span-4">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h1 className="text-2xl font-bold">แบบประเมิน</h1>
+                <h1 className="text-xl font-bold">แบบประเมิน</h1>
                 <p className="text-gray-500">จัดการแบบประเมินทั้งหมดในระบบ</p>
               </div>
               <Link href="/admin/evaluations/new">

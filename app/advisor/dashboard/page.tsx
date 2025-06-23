@@ -44,7 +44,7 @@ export default function AdvisorDashboard() {
                       <CardDescription>ภาคการศึกษาที่ 1/2567</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-3xl font-bold text-purple-600">
+                      <div className="text-xl font-bold text-purple-600">
                         12
                       </div>
                       <p className="text-sm text-gray-500 mt-1">
@@ -75,9 +75,7 @@ export default function AdvisorDashboard() {
                       <CardDescription>ในอีก 30 วันข้างหน้า</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-3xl font-bold text-purple-600">
-                        4
-                      </div>
+                      <div className="text-xl font-bold text-purple-600">4</div>
                       <p className="text-sm text-gray-500 mt-1">
                         นักศึกษาที่ต้องนิเทศ
                       </p>
@@ -99,9 +97,7 @@ export default function AdvisorDashboard() {
                       <CardDescription>แบบประเมินความก้าวหน้า</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-3xl font-bold text-purple-600">
-                        3
-                      </div>
+                      <div className="text-xl font-bold text-purple-600">3</div>
                       <p className="text-sm text-gray-500 mt-1">
                         รายการที่รอการตรวจสอบ
                       </p>
@@ -639,7 +635,7 @@ export default function AdvisorDashboard() {
                                 </CardTitle>
                               </CardHeader>
                               <CardContent>
-                                <div className="text-3xl font-bold text-purple-600">
+                                <div className="text-xl font-bold text-purple-600">
                                   4/12
                                 </div>
                                 <p className="text-sm text-gray-500 mt-1">
@@ -655,7 +651,7 @@ export default function AdvisorDashboard() {
                                 </CardTitle>
                               </CardHeader>
                               <CardContent>
-                                <div className="text-3xl font-bold text-green-600">
+                                <div className="text-xl font-bold text-green-600">
                                   0/12
                                 </div>
                                 <p className="text-sm text-gray-500 mt-1">
@@ -671,7 +667,7 @@ export default function AdvisorDashboard() {
                                 </CardTitle>
                               </CardHeader>
                               <CardContent>
-                                <div className="text-3xl font-bold text-gray-600">
+                                <div className="text-xl font-bold text-gray-600">
                                   0 กม.
                                 </div>
                                 <p className="text-sm text-gray-500 mt-1">

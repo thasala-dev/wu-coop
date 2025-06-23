@@ -341,7 +341,7 @@ export default function AdminStudentsPage() {
           <div className="md:col-span-4 gap">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
               <div>
-                <h1 className="text-2xl font-light tracking-tight text-gray-900">
+                <h1 className="text-xl font-light tracking-tight text-gray-900">
                   นักศึกษาทั้งหมด
                 </h1>
                 <p className="text-sm text-gray-500 mt-1">
@@ -391,7 +391,7 @@ export default function AdminStudentsPage() {
                       <p className="text-sm font-medium text-gray-500">
                         {stat.title}
                       </p>
-                      <p className="text-2xl font-semibold">{stat.value}</p>
+                      <p className="text-xl font-semibold">{stat.value}</p>
                     </div>
                   </CardContent>
                 </Card>

@@ -170,7 +170,7 @@ export default function MentorStudentsPage() {
               <CardHeader>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle className="text-2xl">
+                    <CardTitle className="text-xl">
                       นักศึกษาในความดูแล
                     </CardTitle>
                     <CardDescription>

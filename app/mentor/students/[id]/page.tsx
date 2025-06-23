@@ -265,7 +265,7 @@ export default function StudentDetailPage() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-2xl">{student.name}</CardTitle>
+                    <CardTitle className="text-xl">{student.name}</CardTitle>
                     <CardDescription className="text-base">
                       {student.id} • {student.department} • {student.position}
                     </CardDescription>

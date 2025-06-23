@@ -152,7 +152,7 @@ export default function SupervisionPage() {
           <div className="md:col-span-4">
             <div className="flex flex-col">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4">
-                <h1 className="text-2xl font-bold mb-2 md:mb-0">การนิเทศ</h1>
+                <h1 className="text-xl font-bold mb-2 md:mb-0">การนิเทศ</h1>
 
                 <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
                   <div className="relative w-full md:w-64">

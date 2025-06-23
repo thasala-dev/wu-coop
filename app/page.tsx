@@ -25,6 +25,7 @@ import {
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
+import Loading from "@/components/loading";
 
 const loginSchema = z.object({
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
@@ -50,14 +51,28 @@ export default function Home() {
       password: "",
     },
   });
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <p className="text-gray-500">กำลังโหลด...</p>
-  //     </div>
-  //   );
-  // }
+  useEffect(() => {
+    // หากมี user อยู่แล้ว ให้ redirect ไปยังหน้า dashboard ตาม role
+    if (user) {
+      switch (user.role) {
+        case "student":
+          router.push("/student/dashboard");
+          break;
+        case "mentor":
+          router.push("/mentor/dashboard");
+          break;
+        case "advisor":
+          router.push("/advisor/dashboard");
+          break;
+        case "admin":
+          router.push("/admin/dashboard");
+          break;
+        default:
+          router.push("/dashboard");
+          break;
+      }
+    }
+  }, [user, router]);
 
   const getButtonClass = () => {
     switch (role) {
@@ -93,10 +108,14 @@ export default function Home() {
           break;
       }
     }
-  }
-
+  } // แสดงหน้า login เฉพาะเมื่อไม่มี user หรือกำลังออกจากระบบ
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 z-20">
+          <Loader2 className="animate-spin h-8 w-8 text-green-600" />
+        </div>
+      )}
       <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200 opacity-90" />
       <div className="container relative z-10 mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center">
@@ -112,7 +131,7 @@ export default function Home() {
 
           <Card className="w-full rounded-xl max-w-md shadow-xl bg-white backdrop-blur-md bg-opacity-60  border-0">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold text-green-700">
+              <CardTitle className="text-xl font-bold text-green-700">
                 เข้าสู่ระบบ
               </CardTitle>
               <CardDescription className="text-sm text-green-700/50">

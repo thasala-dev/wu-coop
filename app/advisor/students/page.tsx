@@ -195,7 +195,7 @@ export default function AdvisorStudentsPage() {
         <div className="md:col-span-3">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">นักศึกษาในที่ปรึกษา</CardTitle>
+              <CardTitle className="text-xl">นักศึกษาในที่ปรึกษา</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col md:flex-row gap-4 mb-6">

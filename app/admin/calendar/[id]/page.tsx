@@ -197,7 +197,7 @@ export default function CompanyPage({ params }: any) {
               >
                 <ArrowLeftIcon className="h-5 w-5" />
               </Link>
-              <h1 className="text-2xl font-bold">รายละเอียดแหล่งฝึกงาน</h1>
+              <h1 className="text-xl font-bold">รายละเอียดแหล่งฝึกงาน</h1>
             </div>
             <Button>
               <PencilIcon className="h-4 w-4 mr-2" />

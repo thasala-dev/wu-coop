@@ -226,7 +226,7 @@ export default function EvaluationsPage() {
 
           <div className="md:col-span-4">
             <div className="flex flex-col gap-2">
-              <h1 className="text-3xl font-bold tracking-tight">
+              <h1 className="text-xl font-bold tracking-tight">
                 การประเมินนักศึกษา
               </h1>
               <p className="text-muted-foreground">
@@ -244,7 +244,7 @@ export default function EvaluationsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold">{totalEvaluations}</div>
+                    <div className="text-xl font-bold">{totalEvaluations}</div>
                     <div className="p-2 bg-blue-100 text-blue-700 rounded-full">
                       <ClipboardCheck className="h-5 w-5" />
                     </div>
@@ -260,7 +260,7 @@ export default function EvaluationsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold">{averageScore}/100</div>
+                    <div className="text-xl font-bold">{averageScore}/100</div>
                     <div className="p-2 bg-emerald-100 text-emerald-700 rounded-full">
                       <BarChart4 className="h-5 w-5" />
                     </div>
@@ -276,7 +276,7 @@ export default function EvaluationsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold">
+                    <div className="text-xl font-bold">
                       {completedEvaluations}
                     </div>
                     <div className="p-2 bg-emerald-100 text-emerald-700 rounded-full">
@@ -294,7 +294,7 @@ export default function EvaluationsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold">
+                    <div className="text-xl font-bold">
                       {pendingEvaluations + inProgressEvaluations}
                     </div>
                     <div className="p-2 bg-amber-100 text-amber-700 rounded-full">

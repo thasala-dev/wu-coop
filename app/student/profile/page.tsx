@@ -27,6 +27,7 @@ import { Loader2, Save, User, Camera } from "lucide-react";
 import { callUploadApi } from "@/lib/file-api";
 import AvatarDesign from "@/components/AvatarDesign";
 import CustomAvatar from "@/components/avatar";
+import Loading from "@/components/loading";
 
 const currentYear = new Date().getFullYear() + 543;
 const years = Array.from({ length: currentYear - 2562 + 1 }, (_, i) =>
@@ -157,98 +158,8 @@ export default function StudentProfile() {
     }
   };
 
-  // Profile image upload handlers
-  const handleProfileImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Check file type
-    if (!file.type.startsWith("image/")) {
-      toast({
-        title: "ไฟล์ไม่ถูกต้อง",
-        description: "กรุณาอัพโหลดไฟล์รูปภาพเท่านั้น",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "ไฟล์มีขนาดใหญ่เกินไป",
-        description: "กรุณาอัพโหลดไฟล์ขนาดไม่เกิน 5MB",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      const response = await callUploadApi(file);
-
-      if (response.filePath) {
-        // Update profile with new image path
-        const updateResponse = await fetch(`/api/student/${user.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ image: response.filePath }),
-        });
-
-        const updateData = await updateResponse.json();
-
-        if (updateData.success) {
-          setProfileData({
-            ...profileData,
-            image: response.filePath,
-          });
-          setFormData({
-            ...formData,
-            image: response.filePath,
-          });
-          toast({
-            title: "อัพโหลดสำเร็จ",
-            description: "อัพเดตรูปโปรไฟล์เรียบร้อยแล้ว",
-            variant: "success",
-          });
-        } else {
-          toast({
-            title: "อัพเดตไม่สำเร็จ",
-            description: "ไม่สามารถอัพเดตรูปโปรไฟล์ได้ กรุณาลองใหม่อีกครั้ง",
-            variant: "destructive",
-          });
-        }
-      } else {
-        throw new Error(response.error || "ไม่สามารถอัพโหลดไฟล์ได้");
-      }
-    } catch (error) {
-      console.error("Error uploading profile image:", error);
-      toast({
-        title: "อัพโหลดไม่สำเร็จ",
-        description: "ไม่สามารถอัพโหลดรูปโปรไฟล์ได้ กรุณาลองใหม่อีกครั้ง",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
-      // Clear the file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
-  };
-
   if (isLoading || !profileData) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-sky-600" />
-        <span className="ml-2 text-lg">กำลังโหลดข้อมูล...</span>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
@@ -566,7 +477,7 @@ export default function StudentProfile() {
                                   </h4>
                                   <p className="font-medium">
                                     {profileData.std_year
-                                      ? `ปี ${profileData.std_year}`
+                                      ? `รหัส ${profileData.std_year}`
                                       : "-"}
                                   </p>
                                 </div>

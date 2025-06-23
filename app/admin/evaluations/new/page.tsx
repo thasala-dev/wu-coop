@@ -55,7 +55,7 @@ export default function NewEvaluation() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-2xl font-bold">สร้างแบบประเมินใหม่</h1>
+                <h1 className="text-xl font-bold">สร้างแบบประเมินใหม่</h1>
                 <p className="text-gray-500">
                   กรอกข้อมูลและสร้างหัวข้อการประเมิน
                 </p>

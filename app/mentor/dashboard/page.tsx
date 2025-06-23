@@ -5,16 +5,24 @@ import Sidebar from "@/components/sidebar";
 import { useAuth } from "@/contexts/auth-context";
 import { useEffect, useState } from "react";
 import Loading from "@/components/loading";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [calendars, setCalendars] = useState<any>([]);
+  const [calendarSelected, setCalendarSelected] = useState<any>(null);
 
-  // useEffect(() => {
-  //   if (isLoading) return;
-  //   if (!user) return;
-  //   fetchData();
-  // }, [isLoading]);
+  useEffect(() => {
+    if (isLoading) return;
+    fetchData();
+  }, [isLoading]);
 
   async function fetchData() {
     setLoading(true);
@@ -29,6 +37,13 @@ export default function DashboardPage() {
     }
     const res = await response.json();
     if (res.success) {
+      setCalendars(res.calendar);
+      let findActive = res.calendar.find((cal: any) => cal.active_id === 1);
+      if (findActive) {
+        setCalendarSelected(findActive.id.toString());
+      } else {
+        setCalendarSelected(res.calendar[0]?.id.toString() || null);
+      }
       setLoading(false);
     }
   }
@@ -43,28 +58,72 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
                 <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full p-6">
-                  <h2 className="font-semibold tracking-tight text-2xl">
-                    ภาพรวม
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    สรุปข้อมูลการฝึกงานของนักศึกษา
-                  </p>
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
+                    <div>
+                      <h2 className="font-semibold tracking-tight text-xl">
+                        ภาพรวม
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        สรุปข้อมูลการฝึกงานของนักศึกษา
+                      </p>
+                    </div>
+                    <div className="mt-4 flex items-center gap-2">
+                      <Select
+                        value={
+                          calendarSelected ? calendarSelected.toString() : ""
+                        }
+                        onValueChange={(value) => {
+                          setCalendarSelected(value || null);
+                        }}
+                      >
+                        <SelectTrigger className="w-[300px]">
+                          <SelectValue placeholder="เลือกผลัดฝึกงาน" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {calendars.map((cal: any) => (
+                            <SelectItem key={cal.id} value={cal.id.toString()}>
+                              {cal.name} ปีการศึกษา {cal.semester}/{cal.year} (
+                              {new Date(cal.start_date).toLocaleDateString(
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}{" "}
+                              -{" "}
+                              {new Date(cal.end_date).toLocaleDateString(
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                              )
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
                   <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="border rounded-md p-4">
                       <div className="font-medium">จำนวนนักศึกษา</div>
-                      <div className="text-3xl font-semibold">15 คน</div>
+                      <div className="text-xl font-semibold">15 คน</div>
                     </div>
                     <div className="border rounded-md p-4">
                       <div className="font-medium">
                         จำนวนนักศึกษาที่ต้องติดตาม
                       </div>
-                      <div className="text-3xl font-semibold">3 คน</div>
+                      <div className="text-xl font-semibold">3 คน</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full p-6 mt-4">
-                  <h2 className="font-semibold tracking-tight text-2xl">
+                  <h2 className="font-semibold tracking-tight text-xl">
                     นักศึกษาล่าสุด
                   </h2>
                   <p className="text-sm text-muted-foreground">
@@ -135,7 +194,7 @@ export default function DashboardPage() {
 
               <div>
                 <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full p-6">
-                  <h2 className="font-semibold tracking-tight text-2xl">
+                  <h2 className="font-semibold tracking-tight text-xl">
                     การประเมินที่ต้องทำ
                   </h2>
                   <p className="text-sm text-muted-foreground">

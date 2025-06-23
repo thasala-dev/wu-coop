@@ -102,7 +102,7 @@ export default function AdminReportsPage() {
       <AdminSidebar activePage="reports" />
       <div className="flex-1 p-8">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-800">รายงานทั้งหมด</h1>
+          <h1 className="text-xl font-bold text-gray-800">รายงานทั้งหมด</h1>
         </div>
 
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">

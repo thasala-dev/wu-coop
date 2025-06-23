@@ -32,7 +32,7 @@ export default function StudentDashboard() {
 
           <div className="md:col-span-4">
             <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold text-blue-800">
+              <h1 className="text-xl font-bold text-blue-800">
                 แดชบอร์ดนักศึกษา
               </h1>
               <div className="flex items-center space-x-2">

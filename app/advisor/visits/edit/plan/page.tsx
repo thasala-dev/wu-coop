@@ -170,7 +170,7 @@ export default function EditVisitPlanPage() {
             <ChevronLeft className="h-4 w-4 mr-1" />
             กลับ
           </Button>
-          <h1 className="text-2xl font-bold">แก้ไขแผนการลงพื้นที่</h1>
+          <h1 className="text-xl font-bold">แก้ไขแผนการลงพื้นที่</h1>
         </div>
 
         <form onSubmit={handleSubmit}>

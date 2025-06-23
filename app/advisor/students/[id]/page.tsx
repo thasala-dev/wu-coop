@@ -250,7 +250,7 @@ export default function StudentDetailPage() {
                   <div className="flex-1">
                     <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
                       <div>
-                        <h1 className="text-2xl font-bold">{student.name}</h1>
+                        <h1 className="text-xl font-bold">{student.name}</h1>
                         <p className="text-gray-500">
                           รหัสนักศึกษา: {student.studentId}
                         </p>

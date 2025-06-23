@@ -28,7 +28,7 @@ export default function SettingsPage() {
 
         <div className="md:col-span-3">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold">ตั้งค่าระบบ</h1>
+            <h1 className="text-xl font-bold">ตั้งค่าระบบ</h1>
             <p className="text-gray-500">จัดการการตั้งค่าต่างๆ ของระบบฝึกงาน</p>
           </div>
 

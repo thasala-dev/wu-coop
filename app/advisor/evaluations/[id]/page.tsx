@@ -302,7 +302,7 @@ export default function EvaluationDetailPage({
             <AvatarFallback>{evaluation.studentName.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="text-2xl font-bold">{evaluation.studentName}</h1>
+            <h1 className="text-xl font-bold">{evaluation.studentName}</h1>
             <div className="flex items-center gap-2 text-muted-foreground">
               <span>{evaluation.studentId}</span>
               <span>•</span>
@@ -585,7 +585,7 @@ export default function EvaluationDetailPage({
                       ประเมินเมื่อ {evaluation.submittedDate}
                     </p>
                   </div>
-                  <div className="text-2xl font-bold text-emerald-700">
+                  <div className="text-xl font-bold text-emerald-700">
                     {evaluation.score}/100
                   </div>
                 </div>

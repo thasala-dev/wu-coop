@@ -69,7 +69,7 @@ export default function AdminDashboard() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-3xl font-bold text-blue-600">
+                      <div className="text-xl font-bold text-blue-600">
                         {data.currentCalendar?.name}
                       </div>
                       <p className="text-sm text-gray-500 mt-1">
@@ -92,13 +92,13 @@ export default function AdminDashboard() {
                       <div className="mt-4 pt-4 border-t flex justify-between text-sm">
                         <div>
                           <div className="font-medium">นักศึกษา</div>
-                          <div className="text-2xl font-bold text-gray-900">
+                          <div className="text-xl font-bold text-gray-900">
                             {data.currentCalendar?.total_intern}
                           </div>
                         </div>
                         <div>
                           <div className="font-medium">แหล่งฝึกงาน</div>
-                          <div className="text-2xl font-bold text-gray-900">
+                          <div className="text-xl font-bold text-gray-900">
                             {data.currentCalendar?.total_regist}
                           </div>
                         </div>

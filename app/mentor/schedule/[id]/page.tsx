@@ -312,7 +312,7 @@ export default function AppointmentDetailPage() {
               <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-2xl">
+                    <CardTitle className="text-xl">
                       {appointment.title}
                     </CardTitle>
                     {appointment.status === "upcoming" ? (

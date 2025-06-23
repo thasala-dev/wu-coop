@@ -317,7 +317,7 @@ export default function CompanyPage() {
               >
                 <ArrowLeftIcon className="h-5 w-5" />
               </Link>
-              <h1 className="text-2xl font-bold">รายละเอียดแหล่งฝึกงาน</h1>
+              <h1 className="text-xl font-bold">รายละเอียดแหล่งฝึกงาน</h1>
             </div>
             <Button
               onClick={() => router.push(`/admin/companies/edit/${param_id}`)}

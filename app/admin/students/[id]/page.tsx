@@ -281,7 +281,7 @@ export default function AdminStudentDetailPage({
 
                   <div className="pt-16 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                      <h1 className="text-2xl font-medium">{student.name}</h1>
+                      <h1 className="text-xl font-medium">{student.name}</h1>
                       <p className="text-gray-500 text-sm">
                         {student.studentId}
                       </p>
