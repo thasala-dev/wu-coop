@@ -237,8 +237,58 @@ export default function AdminStudentDetailPage({
 }: {
   params: { id: string };
 }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [student, setStudent] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("overview");
+
+  React.useEffect(() => {
+    fetchStudentData();
+  }, []);
+
+  const fetchStudentData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/student/${params.id}`);
+      const data = await response.json();
+      if (data.success) {
+        setStudent(data.data);
+      } else {
+        console.error("Failed to fetch student data:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto p-2">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <Sidebar activePage="students" userType="admin" />
+            <Loading />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!student) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto p-2">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <Sidebar activePage="students" userType="admin" />
+            <div className="md:col-span-4 text-center py-12">
+              <p>ไม่พบข้อมูลนักศึกษา</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

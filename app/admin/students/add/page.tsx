@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Edit, ChevronRight, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,14 @@ const formSchema = z.object({
   std_year: z.string().min(1, "กรุณาเลือกปีรหัส"),
   address: z.string(),
   gpa: z.string(),
+  advisor_id: z.string().optional(),
+  emergency_contact_name: z.string().optional(),
+  emergency_contact_phone: z
+    .string()
+    .regex(/^\d{10}$/, "กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง")
+    .optional()
+    .or(z.literal("")),
+  emergency_contact_relation: z.string().optional(),
 
   image: z.string().optional(),
 });
@@ -48,6 +56,7 @@ const years = Array.from({ length: currentYear - 2562 + 1 }, (_, i) =>
 
 export default function Page({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(false);
+  const [advisors, setAdvisors] = useState<any[]>([]);
 
   const { toast } = useToast();
   const router = useRouter();
@@ -69,10 +78,30 @@ export default function Page({ params }: { params: { id: string } }) {
       std_year: "",
       address: "",
       gpa: "",
+      advisor_id: "",
+      emergency_contact_name: "",
+      emergency_contact_phone: "",
+      emergency_contact_relation: "",
 
       image: "",
     },
   });
+
+  // Fetch advisors on component mount
+  React.useEffect(() => {
+    const fetchAdvisors = async () => {
+      try {
+        const response = await fetch("/api/advisor");
+        const data = await response.json();
+        if (data.success) {
+          setAdvisors(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching advisors:", error);
+      }
+    };
+    fetchAdvisors();
+  }, []);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
@@ -243,8 +272,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                 {errors.mobile.message}
                               </p>
                             )}
-                          </div>
-                          <div className="sm:col-span-6">
+                          </div>                          <div className="sm:col-span-6">
                             <label>สาขาวิชา</label>
                             <select
                               id="major"
@@ -268,6 +296,30 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.major && (
                               <p className="text-sm text-red-600">
                                 {errors.major.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-6">
+                            <label>อาจารย์ที่ปรึกษา</label>
+                            <select
+                              id="advisor_id"
+                              {...register("advisor_id")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.advisor_id ? "border-red-600  border-2" : "")
+                              }
+                            >
+                              <option value="">เลือกอาจารย์ที่ปรึกษา</option>
+                              {advisors.map((advisor) => (
+                                <option key={advisor.id} value={advisor.id}>
+                                  {advisor.fullname}
+                                </option>
+                              ))}
+                            </select>
+
+                            {errors.advisor_id && (
+                              <p className="text-sm text-red-600">
+                                {errors.advisor_id.message}
                               </p>
                             )}
                           </div>
@@ -317,9 +369,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                 {errors.gpa.message}
                               </p>
                             )}
-                          </div>
-
-                          <div className="sm:col-span-12">
+                          </div>                          <div className="sm:col-span-12">
                             <label>ที่อยู่ที่ติดต่อได้</label>
                             <input
                               id="address"
@@ -336,6 +386,83 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.address && (
                               <p className="text-sm text-red-600">
                                 {errors.address.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-12">
+                            <h3 className="font-semibold text-md mb-4 border-t pt-4">
+                              ข้อมูลผู้ติดต่อกรณีฉุกเฉิน
+                            </h3>
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label>ชื่อผู้ติดต่อกรณีฉุกเฉิน</label>
+                            <input
+                              id="emergency_contact_name"
+                              type="text"
+                              {...register("emergency_contact_name")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.emergency_contact_name
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกชื่อผู้ติดต่อกรณีฉุกเฉิน"
+                            />
+                            {errors.emergency_contact_name && (
+                              <p className="text-sm text-red-600">
+                                {errors.emergency_contact_name.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label>เบอร์โทรผู้ติดต่อกรณีฉุกเฉิน</label>
+                            <input
+                              id="emergency_contact_phone"
+                              type="text"
+                              {...register("emergency_contact_phone")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.emergency_contact_phone
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกเบอร์โทรศัพท์"
+                            />
+                            {errors.emergency_contact_phone && (
+                              <p className="text-sm text-red-600">
+                                {errors.emergency_contact_phone.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label>ความสัมพันธ์</label>
+                            <select
+                              id="emergency_contact_relation"
+                              {...register("emergency_contact_relation")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.emergency_contact_relation
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                            >
+                              <option value="">เลือกความสัมพันธ์</option>
+                              <option value="บิดา">บิดา</option>
+                              <option value="มารดา">มารดา</option>
+                              <option value="ผู้ปกครอง">ผู้ปกครอง</option>
+                              <option value="พี่ชาย">พี่ชาย</option>
+                              <option value="พี่สาว">พี่สาว</option>
+                              <option value="น้องชาย">น้องชาย</option>
+                              <option value="น้องสาว">น้องสาว</option>
+                              <option value="อื่นๆ">อื่นๆ</option>
+                            </select>
+                            {errors.emergency_contact_relation && (
+                              <p className="text-sm text-red-600">
+                                {errors.emergency_contact_relation.message}
                               </p>
                             )}
                           </div>

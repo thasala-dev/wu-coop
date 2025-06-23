@@ -131,6 +131,7 @@ export default function AdminStudentsPage() {
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<any>([]);
   const [calendars, setCalendars] = useState<any>([]);
+  const [advisors, setAdvisors] = useState<any>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
   const [stats, setStats] = useState<any>([
     { status: "completed", count: 0, percentage: 0 },
@@ -141,10 +142,22 @@ export default function AdminStudentsPage() {
   ]);
 
   const [totalCompanies, setTotalCompanies] = useState(0);
-
   useEffect(() => {
     fetchCalendar();
+    fetchAdvisors();
   }, []);
+
+  async function fetchAdvisors() {
+    try {
+      const response = await fetch("/api/advisor");
+      const data = await response.json();
+      if (data.success) {
+        setAdvisors(data.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching advisors:", error);
+    }
+  }
 
   useEffect(() => {
     if (!calendarSelected) return;
@@ -278,11 +291,9 @@ export default function AdminStudentsPage() {
 
     // Faculty filter
     const matchesFaculty =
-      selectedFaculty === "all" || student.faculty === selectedFaculty;
-
-    // Advisor filter
+      selectedFaculty === "all" || student.faculty === selectedFaculty;    // Advisor filter
     const matchesAdvisor =
-      selectedAdvisor === "all" || student.advisor === selectedAdvisor;
+      selectedAdvisor === "all" || student.advisor_name === selectedAdvisor;
 
     return (
       matchesSearch &&
@@ -610,18 +621,13 @@ export default function AdminStudentsPage() {
                             >
                               <SelectTrigger className="h-8 text-sm rounded-md border-gray-200">
                                 <SelectValue placeholder="ทุกอาจารย์" />
-                              </SelectTrigger>
-                              <SelectContent>
+                              </SelectTrigger>                              <SelectContent>
                                 <SelectItem value="all">ทุกอาจารย์</SelectItem>
-                                <SelectItem value="ผศ.ดร.สมชาย ใจดี">
-                                  ผศ.ดร.สมชาย ใจดี
-                                </SelectItem>
-                                <SelectItem value="รศ.ดร.วิมล ศรีสุข">
-                                  รศ.ดร.วิมล ศรีสุข
-                                </SelectItem>
-                                <SelectItem value="ผศ.ดร.นภา ใจงาม">
-                                  ผศ.ดร.นภา ใจงาม
-                                </SelectItem>
+                                {advisors.map((advisor: any) => (
+                                  <SelectItem key={advisor.id} value={advisor.fullname}>
+                                    {advisor.fullname}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </div>
@@ -706,12 +712,11 @@ export default function AdminStudentsPage() {
                                   {student.company_name || (
                                     <i className="text-xs">(ไม่มีข้อมูล)</i>
                                   )}
-                                </p>
-                                <p>
+                                </p>                                <p>
                                   <span className="text-gray-500">
                                     อาจารย์ที่ปรึกษา:
                                   </span>{" "}
-                                  {student.advisor || (
+                                  {student.advisor_name || (
                                     <i className="text-xs">(ไม่มีข้อมูล)</i>
                                   )}
                                 </p>
@@ -791,10 +796,20 @@ export default function AdminStudentsPage() {
                           {
                             key: "gpa",
                             content: "เกรดเฉลี่ย",
-                          },
-                          {
+                          },                          {
                             key: "company_name",
                             content: "แหล่งฝึกงาน",
+                          },
+                          {
+                            key: "advisor_name",
+                            content: "อาจารย์ที่ปรึกษา",
+                            render: (item: any) => (
+                              <span className="text-sm">
+                                {item.advisor_name || (
+                                  <i className="text-xs text-gray-400">(ไม่มีข้อมูล)</i>
+                                )}
+                              </span>
+                            ),
                           },
                           {
                             key: "status",

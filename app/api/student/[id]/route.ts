@@ -4,15 +4,27 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
+    console.log("GET student by ID:", id);
+    
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql("SELECT * FROM user_student WHERE id = $1", [id]);
+    const data = await sql(
+      `SELECT std.*, advisor.fullname AS advisor_name 
+       FROM user_student std
+       LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
+       WHERE std.id = $1`, 
+      [id]
+    );
+
+    console.log("Query result:", data);
 
     if (data.length === 0) {
+      console.log("No student found for ID:", id);
       return NextResponse.json(
         { success: false, message: "ไม่พบข้อมูลผู้ใช้งาน" },
         { status: 404 }
       );
     } else {
+      console.log("Student found:", data[0]);
       return NextResponse.json({
         success: true,
         message: "ดำเนินการสำเร็จ",
@@ -20,6 +32,7 @@ export async function GET(request: NextRequest) {
       });
     }
   } catch (error) {
+    console.error("Error in GET /api/student/[id]:", error);
     return NextResponse.json(
       { success: false, message: "เกิดข้อผิดพลาด" },
       { status: 500 }
@@ -31,6 +44,8 @@ export async function PUT(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     const body = await request.json();
+    console.log("PUT student ID:", id, "with body:", body);
+    
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     const updateFields = [];
@@ -69,10 +84,25 @@ export async function PUT(request: NextRequest) {
     if (body.address !== undefined) {
       updateFields.push(`address = $${paramCount++}`);
       params.push(body.address);
-    }
-    if (body.gpa !== undefined) {
+    }    if (body.gpa !== undefined) {
       updateFields.push(`gpa = $${paramCount++}`);
       params.push(body.gpa);
+    }
+    if (body.advisor_id !== undefined) {
+      updateFields.push(`advisor_id = $${paramCount++}`);
+      params.push(body.advisor_id === "" ? null : body.advisor_id);
+    }
+    if (body.emergency_contact_name !== undefined) {
+      updateFields.push(`emergency_contact_name = $${paramCount++}`);
+      params.push(body.emergency_contact_name);
+    }
+    if (body.emergency_contact_phone !== undefined) {
+      updateFields.push(`emergency_contact_phone = $${paramCount++}`);
+      params.push(body.emergency_contact_phone);
+    }
+    if (body.emergency_contact_relation !== undefined) {
+      updateFields.push(`emergency_contact_relation = $${paramCount++}`);
+      params.push(body.emergency_contact_relation);
     }
     if (body.image !== undefined) {
       updateFields.push(`image = $${paramCount++}`);
@@ -98,12 +128,16 @@ export async function PUT(request: NextRequest) {
         { success: false, message: "ไม่มีข้อมูลที่จะอัปเดต" },
         { status: 400 }
       );
-    }
-
-    const query = `UPDATE user_student SET ${updateFields.join(
+    }    const query = `UPDATE user_student SET ${updateFields.join(
       ", "
     )} WHERE id = $1 RETURNING *`;
+    
+    console.log("Update query:", query);
+    console.log("Update params:", params);
+    
     const data = await sql(query, params);
+    
+    console.log("Update result:", data);
 
     return NextResponse.json({
       success: true,
