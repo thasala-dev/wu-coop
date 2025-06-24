@@ -31,10 +31,19 @@ const formSchema = z.object({
     .regex(/^\d{10}$/, "กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง")
     .optional()
     .or(z.literal("")),
+  faculty: z.string().optional(),
   major: z.string(),
   std_year: z.string().min(1, "กรุณาเลือกปีรหัส"),
   address: z.string(),
   gpa: z.string(),
+  advisor_id: z.string().optional(),
+  emergency_contact_name: z.string().optional(),
+  emergency_contact_phone: z
+    .string()
+    .regex(/^\d{10}$/, "กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง")
+    .optional()
+    .or(z.literal("")),
+  emergency_contact_relation: z.string().optional(),
 
   password: z.string(),
   image: z.string().optional(),
@@ -47,6 +56,7 @@ const years = Array.from({ length: currentYear - 2562 + 1 }, (_, i) =>
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
+  const [advisors, setAdvisors] = useState<any[]>([]);
   const params = useParams();
   const id = params?.id as string;
 
@@ -82,55 +92,95 @@ export default function Page() {
       std_year: "",
       address: "",
       gpa: "",
+      advisor_id: "",
+      emergency_contact_name: "",
+      emergency_contact_phone: "",
+      emergency_contact_relation: "",
 
       password: "",
       image: "",
     },
   });
-
-  useEffect(() => {
-    fetchStudentData();
+  // Fetch advisors on component mount
+  React.useEffect(() => {
+    const fetchAdvisors = async () => {
+      try {
+        const response = await fetch("/api/advisor");
+        const data = await response.json();
+        if (data.success) {
+          setAdvisors(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching advisors:", error);
+      }
+    };
+    fetchAdvisors();
   }, []);
 
-  async function fetchStudentData() {
+  React.useEffect(() => {
+    fetchStudentData();
+  }, []);  async function fetchStudentData() {
     setLoading(true);
-    const response = await fetch(`/api/student/${id}`);
-    if (!response.ok) {
-      toast({
-        title: "ไม่สามารถโหลดข้อมูลนักศึกษาได้",
-        description: "เกิดข้อผิดพลาดในการดึงข้อมูลนักศึกษา",
-        variant: "destructive",
-      });
-      return;
-    }
-    const data = await response.json();
-    if (data.success) {
-      setValue("fullname", data.data.fullname);
-      setValue("student_id", data.data.student_id);
-      setValue("email", data.data.email || "");
-      setValue("mobile", data.data.mobile || "");
-      setValue("faculty", data.data.faculty || "");
-      setValue("major", data.data.major || "");
-      setValue("std_year", String(data.data.std_year) || "");
-      setValue("address", data.data.address || "");
-      setValue("gpa", data.data.gpa || "");
-      setValue("password", "");
+    try {
+      console.log("Fetching student data for ID:", id);
+      const response = await fetch(`/api/student/${id}`);
+      console.log("Response status:", response.status);
+      
+      if (!response.ok) {
+        toast({
+          title: "ไม่สามารถโหลดข้อมูลนักศึกษาได้",
+          description: "เกิดข้อผิดพลาดในการดึงข้อมูลนักศึกษา",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      const data = await response.json();
+      console.log("Fetched student data:", data);
+      
+      if (data.success) {
+        console.log("Setting form values with data:", data.data);
+        setValue("fullname", data.data.fullname);
+        setValue("student_id", data.data.student_id);
+        setValue("email", data.data.email || "");
+        setValue("mobile", data.data.mobile || "");
+        setValue("faculty", data.data.faculty || "");
+        setValue("major", data.data.major || "");
+        setValue("std_year", String(data.data.std_year) || "");
+        setValue("address", data.data.address || "");
+        setValue("gpa", data.data.gpa || "");
+        setValue("advisor_id", data.data.advisor_id ? String(data.data.advisor_id) : "");
+        setValue("emergency_contact_name", data.data.emergency_contact_name || "");
+        setValue("emergency_contact_phone", data.data.emergency_contact_phone || "");
+        setValue("emergency_contact_relation", data.data.emergency_contact_relation || "");
+        setValue("password", "");
 
-      setValue("image", data.data.image || "");
-    } else {
+        setValue("image", data.data.image || "");
+      } else {
+        toast({
+          title: "ไม่พบข้อมูลนักศึกษา",
+          description: data.message || "เกิดข้อผิดพลาด",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching student data:", error);
       toast({
-        title: "ไม่พบข้อมูลนักศึกษา",
-        description: data.message || "เกิดข้อผิดพลาด",
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลนักศึกษาได้",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }
-  async function onSubmit(values: any) {
+  }  async function onSubmit(values: any) {
+    console.log("Form submitted with values:", values);
     values.username = values.student_id;
     setLoading(true);
     try {
       const payload = { ...values };
+      console.log("Payload before processing:", payload);
+      
       if (payload.password === "") {
         delete payload.password; // ลบ password ออกจาก payload หากเป็นค่าว่าง
       }
@@ -147,6 +197,8 @@ export default function Page() {
         }
       }
 
+      console.log("Final payload:", payload);
+
       // 4. Submit main form data
       const response = await fetch(`/api/student/${id}`, {
         method: "PUT",
@@ -155,6 +207,8 @@ export default function Page() {
       });
 
       const data = await response.json();
+      console.log("API response:", data);
+      
       if (response.ok && data.success) {
         toast({
           title: "ดำเนินการสำเร็จ",
@@ -308,6 +362,28 @@ export default function Page() {
                               <p className="text-sm text-red-600">
                                 {getErrorMessage(errors.mobile)}
                               </p>
+                            )}                          </div>
+                          <div className="sm:col-span-6">
+                            <label>คณะ</label>
+                            <select
+                              id="faculty"
+                              {...register("faculty")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.faculty ? "border-red-600  border-2" : "")
+                              }
+                            >
+                              <option value="" disabled>
+                                เลือกคณะ
+                              </option>
+                              <option value="เภสัชศาสตร์">
+                                คณะเภสัชศาสตร์
+                              </option>
+                            </select>
+                            {errors.faculty && (
+                              <p className="text-sm text-red-600">
+                                {getErrorMessage(errors.faculty)}
+                              </p>
                             )}
                           </div>
                           <div className="sm:col-span-6">
@@ -329,10 +405,32 @@ export default function Page() {
                               <option value="CARE">
                                 สาขาวิชาการบริบาลทางเภสัชกรรม
                               </option>
-                            </select>{" "}
-                            {errors.major && (
+                            </select>{" "}                            {errors.major && (
                               <p className="text-sm text-red-600">
                                 {getErrorMessage(errors.major)}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-6">
+                            <label>อาจารย์ที่ปรึกษา</label>
+                            <select
+                              id="advisor_id"
+                              {...register("advisor_id")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.advisor_id ? "border-red-600  border-2" : "")
+                              }
+                            >
+                              <option value="">เลือกอาจารย์ที่ปรึกษา</option>
+                              {advisors.map((advisor) => (
+                                <option key={advisor.id} value={advisor.id}>
+                                  {advisor.fullname}
+                                </option>
+                              ))}
+                            </select>
+                            {errors.advisor_id && (
+                              <p className="text-sm text-red-600">
+                                {getErrorMessage(errors.advisor_id)}
                               </p>
                             )}
                           </div>
@@ -375,10 +473,9 @@ export default function Page() {
                                 (errors.gpa ? "border-red-600  border-2" : "")
                               }
                               placeholder="กรุณากรอก GPAX (เกรดเฉลี่ย)"
-                            />
-                            {errors.gpa && (
+                            />                            {errors.gpa && (
                               <p className="text-sm text-red-600">
-                                {errors.gpa.message}
+                                {getErrorMessage(errors.gpa)}
                               </p>
                             )}
                           </div>
@@ -396,10 +493,85 @@ export default function Page() {
                                   : "")
                               }
                               placeholder="กรุณากรอกที่อยู่ที่ติดต่อได้"
-                            />
-                            {errors.address && (
+                            />                            {errors.address && (
                               <p className="text-sm text-red-600">
-                                {errors.address.message}
+                                {getErrorMessage(errors.address)}
+                              </p>
+                            )}</div>
+
+                          <div className="sm:col-span-12">
+                            <h3 className="font-semibold text-md mb-4 border-t pt-4">
+                              ข้อมูลผู้ติดต่อกรณีฉุกเฉิน
+                            </h3>
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label>ชื่อผู้ติดต่อกรณีฉุกเฉิน</label>
+                            <input
+                              id="emergency_contact_name"
+                              type="text"
+                              {...register("emergency_contact_name")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.emergency_contact_name
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกชื่อผู้ติดต่อกรณีฉุกเฉิน"
+                            />
+                            {errors.emergency_contact_name && (
+                              <p className="text-sm text-red-600">
+                                {getErrorMessage(errors.emergency_contact_name)}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label>เบอร์โทรผู้ติดต่อกรณีฉุกเฉิน</label>
+                            <input
+                              id="emergency_contact_phone"
+                              type="text"
+                              {...register("emergency_contact_phone")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.emergency_contact_phone
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกเบอร์โทรศัพท์"
+                            />
+                            {errors.emergency_contact_phone && (
+                              <p className="text-sm text-red-600">
+                                {getErrorMessage(errors.emergency_contact_phone)}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label>ความสัมพันธ์</label>
+                            <select
+                              id="emergency_contact_relation"
+                              {...register("emergency_contact_relation")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.emergency_contact_relation
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                            >
+                              <option value="">เลือกความสัมพันธ์</option>
+                              <option value="บิดา">บิดา</option>
+                              <option value="มารดา">มารดา</option>
+                              <option value="ผู้ปกครอง">ผู้ปกครอง</option>
+                              <option value="พี่ชาย">พี่ชาย</option>
+                              <option value="พี่สาว">พี่สาว</option>
+                              <option value="น้องชาย">น้องชาย</option>
+                              <option value="น้องสาว">น้องสาว</option>
+                              <option value="อื่นๆ">อื่นๆ</option>
+                            </select>
+                            {errors.emergency_contact_relation && (
+                              <p className="text-sm text-red-600">
+                                {getErrorMessage(errors.emergency_contact_relation)}
                               </p>
                             )}
                           </div>
@@ -423,10 +595,9 @@ export default function Page() {
                                 errors.password ? "border-red-600 border-2" : ""
                               }`}
                               placeholder="กรุณากรอกรหัสผ่าน"
-                            />
-                            {errors.password && (
+                            />                            {errors.password && (
                               <p className="text-sm text-red-600">
-                                {errors.password.message}
+                                {getErrorMessage(errors.password)}
                               </p>
                             )}
                           </div>

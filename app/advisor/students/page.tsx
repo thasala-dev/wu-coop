@@ -26,6 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import AdvisorSidebar from "@/components/advisor-sidebar";
+import Sidebar from "@/components/sidebar";
 
 // Mock data for students
 const students = [
@@ -190,7 +191,7 @@ export default function AdvisorStudentsPage() {
   return (
     <div className="container mx-auto p-2">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <AdvisorSidebar activePage="students" />
+          <Sidebar activePage="dashboard" userType="advisor" />
 
         <div className="md:col-span-3">
           <Card>

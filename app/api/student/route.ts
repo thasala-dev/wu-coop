@@ -6,10 +6,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     let calendarId = searchParams.get("calendarId");
 
-    const sql = neon(`${process.env.DATABASE_URL}`);
-    if (!calendarId || typeof calendarId !== "string") {
+    const sql = neon(`${process.env.DATABASE_URL}`);    if (!calendarId || typeof calendarId !== "string") {
       const data = await sql(
-        `SELECT * from user_student ORDER BY updated_at DESC`
+        `SELECT std.*, advisor.fullname AS advisor_name 
+         FROM user_student std
+         LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
+         ORDER BY std.updated_at DESC`
       );
 
       return NextResponse.json({
@@ -17,10 +19,10 @@ export async function GET(request: NextRequest) {
         message: "ดำเนินการสำเร็จ",
         data: data,
       });
-    }
-
-    const data = await sql(
+    }    const data = await sql(
       `SELECT std.id, std.fullname, std.student_id, std.mobile, std.faculty, std.major, std.std_year, std.address, std.gpa, std.image,
+      std.advisor_id, std.emergency_contact_name, std.emergency_contact_phone, std.emergency_contact_relation,
+      advisor.fullname AS advisor_name,
       intern.id AS regist_id,
       intern.company_id,
       com.name AS company_name,
@@ -32,6 +34,7 @@ export async function GET(request: NextRequest) {
         else 3
       end as status_id
       FROM user_student std
+      LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
       LEFT JOIN regist_intern intern ON std.id = intern.student_id 
         and intern.calendar_id = $1
       LEFT join user_company com on intern.company_id = com.id
@@ -128,11 +131,30 @@ export async function POST(request: Request) {
       columns.push("address");
       values.push(`$${paramCount++}`);
       params.push(body.address);
-    }
-    if (body.gpa !== undefined) {
+    }    if (body.gpa !== undefined) {
       columns.push("gpa");
       values.push(`$${paramCount++}`);
       params.push(body.gpa);
+    }
+    if (body.advisor_id !== undefined && body.advisor_id !== "") {
+      columns.push("advisor_id");
+      values.push(`$${paramCount++}`);
+      params.push(body.advisor_id);
+    }
+    if (body.emergency_contact_name !== undefined) {
+      columns.push("emergency_contact_name");
+      values.push(`$${paramCount++}`);
+      params.push(body.emergency_contact_name);
+    }
+    if (body.emergency_contact_phone !== undefined) {
+      columns.push("emergency_contact_phone");
+      values.push(`$${paramCount++}`);
+      params.push(body.emergency_contact_phone);
+    }
+    if (body.emergency_contact_relation !== undefined) {
+      columns.push("emergency_contact_relation");
+      values.push(`$${paramCount++}`);
+      params.push(body.emergency_contact_relation);
     }
     if (body.image !== undefined) {
       columns.push("image");
