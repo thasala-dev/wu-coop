@@ -52,14 +52,6 @@ export function Navbar({
 
   const headerColor = headerColors[userType];
 
-  // กำหนดตัวอักษรแรกของ Avatar
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-  };
   const [mounted, setMounted] = useState(false);
   const { data: session, status } = useSession();
   const user = session?.user;

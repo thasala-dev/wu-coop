@@ -18,6 +18,8 @@ interface LogoutButtonProps {
   className?: string;
   showText?: boolean;
   callbackUrl?: string;
+  userId?: string;
+  userRole?: string;
 }
 
 export default function LogoutButton({
@@ -25,6 +27,8 @@ export default function LogoutButton({
   className = "",
   showText = true,
   callbackUrl = "/",
+  userId,
+  userRole,
 }: LogoutButtonProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -41,6 +45,8 @@ export default function LogoutButton({
           },
           body: JSON.stringify({
             title: "ผู้ใช้ออกจากระบบ",
+            user_id: userId,
+            user_role: userRole,
           }),
         });
       } catch (error) {

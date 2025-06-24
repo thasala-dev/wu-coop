@@ -41,6 +41,10 @@ export function Navbar({ userType, notificationCount = 0 }: NavbarProps) {
   const [config, setConfig] = useState<any>(null);
 
   const userName = session?.user?.fullname || session?.user?.name || "ผู้ใช้";
+  const userId = session?.user?.id;
+  const userRole = session?.user?.role;
+
+  console.log("Navbar userName:", session);
 
   // กำหนดสีตามประเภทผู้ใช้
   const headerColors = {
@@ -147,6 +151,8 @@ export function Navbar({ userType, notificationCount = 0 }: NavbarProps) {
                     className="w-full cursor-pointer justify-start"
                     variant="ghost"
                     showText={true}
+                    userId={userId}
+                    userRole={userRole}
                   />
                 </DropdownMenuItem>
               </DropdownMenuContent>
