@@ -76,7 +76,7 @@ export default function DashboardPage() {
                           setCalendarSelected(value || null);
                         }}
                       >
-                        <SelectTrigger className="w-[300px]">
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="เลือกผลัดฝึกงาน" />
                         </SelectTrigger>
                         <SelectContent>

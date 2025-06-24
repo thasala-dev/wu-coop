@@ -52,7 +52,6 @@ export default function Home() {
     },
   });
   useEffect(() => {
-    // หากมี user อยู่แล้ว ให้ redirect ไปยังหน้า dashboard ตาม role
     if (user) {
       switch (user.role) {
         case "student":
@@ -108,7 +107,7 @@ export default function Home() {
           break;
       }
     }
-  } // แสดงหน้า login เฉพาะเมื่อไม่มี user หรือกำลังออกจากระบบ
+  }
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
       {isLoading && (
