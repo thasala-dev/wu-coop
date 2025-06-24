@@ -21,10 +21,17 @@ import {
   Briefcase,
   Pill,
   ShieldCheck,
+  Map,
+  ClipboardCheck,
+  MapPin,
+  ClipboardIcon,
+  CircleCheck,
+  HelpCircle,
   MapPinIcon,
 } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSession } from "next-auth/react";
 
 interface SidebarProps {
   userType: "student" | "advisor" | "mentor" | "admin";
@@ -36,6 +43,7 @@ export function Sidebar({
   activePage = "dashboard",
 }: SidebarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   const menuTitles = {
     student: "เมนูสำหรับนักศึกษา",

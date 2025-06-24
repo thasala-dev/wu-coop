@@ -1,26 +1,19 @@
 "use client";
 
-import { Navbar } from "@/components/navbar";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
-import { useEffect } from "react";
+import { Navbar } from "@/components/navbar-nextauth";
+import AuthGuard from "@/components/auth-guard";
 
-export default function RootLayout({
+export default function StudentLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-  const { user, isLoading } = useAuth();
-  useEffect(() => {
-    if (!user && !isLoading) {
-      router.push("/");
-    }
-  }, [user, isLoading]);
   return (
-    <div>
-      <Navbar userType="student" />
-      {children}
-    </div>
+    <AuthGuard requiredRole="student">
+      <div>
+        <Navbar userType="student" />
+        {children}
+      </div>
+    </AuthGuard>
   );
 }

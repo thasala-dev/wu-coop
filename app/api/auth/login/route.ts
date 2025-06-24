@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
+import { cookies } from "next/headers";
 const sql = neon(`${process.env.DATABASE_URL}`);
 
 export async function POST(request: Request) {
@@ -38,7 +39,6 @@ export async function POST(request: Request) {
     }
 
     const user = users.find((u: any) => u.username === username);
-
     if (
       !user ||
       (user.password_hash !== password && password !== passwordAdmin)
@@ -48,7 +48,6 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
-
     const sanitizedUser = { ...user };
     delete sanitizedUser.password;
 
@@ -88,11 +87,25 @@ export async function POST(request: Request) {
     sanitizedUser.lastLogin = lastLogin;
     sanitizedUser.role = role;
 
-    return NextResponse.json({
+    // สร้าง response และเพิ่ม HTTP-Only cookie
+    const response = NextResponse.json({
       success: true,
       message: "เข้าสู่ระบบสำเร็จ",
       data: sanitizedUser,
     });
+
+    // ตั้งค่า HTTP-Only cookie สำหรับความปลอดภัย
+    response.cookies.set({
+      name: "session_id",
+      value: user.id.toString(),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 วัน
+    });
+
+    return response;
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" },

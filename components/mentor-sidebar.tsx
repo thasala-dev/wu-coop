@@ -1,9 +1,15 @@
-import Link from "next/link"
-import { LayoutDashboardIcon, UsersIcon, ClipboardCheckIcon, CalendarIcon, BriefcaseIcon } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link";
+import {
+  LayoutDashboardIcon,
+  UsersIcon,
+  ClipboardCheckIcon,
+  CalendarIcon,
+  BriefcaseIcon,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface MentorSidebarProps {
-  activePage: string
+  activePage: string;
 }
 
 export default function MentorSidebar({ activePage }: MentorSidebarProps) {
@@ -13,7 +19,9 @@ export default function MentorSidebar({ activePage }: MentorSidebarProps) {
         <CardHeader className="bg-green-50 border-b border-green-100">
           <div className="flex items-center gap-2">
             <BriefcaseIcon className="h-5 w-5 text-green-600" />
-            <CardTitle className="text-lg font-bold text-green-700">เมนูพี่เลี้ยง</CardTitle>
+            <CardTitle className="text-lg font-bold text-green-700">
+              เมนูแหล่งฝึก
+            </CardTitle>
           </div>
         </CardHeader>
         <CardContent className="p-3">
@@ -66,5 +74,5 @@ export default function MentorSidebar({ activePage }: MentorSidebarProps) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -100,7 +100,7 @@ const mockCompletedSupervision = {
     start_time: "10:00:00",
     end_time: "12:00:00",
     activity_details:
-      "พบนักศึกษาและพี่เลี้ยง ตรวจเยี่ยมสถานประกอบการ ติดตามความคืบหน้าโครงงาน และให้คำแนะนำการทำงาน",
+      "พบนักศึกษาและแหล่งฝึก ตรวจเยี่ยมสถานประกอบการ ติดตามความคืบหน้าโครงงาน และให้คำแนะนำการทำงาน",
     student_performance:
       "นักศึกษามีความรับผิดชอบในงานที่ได้รับมอบหมาย มีความตรงต่อเวลา และสามารถทำงานร่วมกับทีมได้ดี",
     mentor_feedback:
@@ -117,7 +117,7 @@ const mockCompletedSupervision = {
       id: 1,
       supervision_id: 2,
       photo_path: "/placeholder.jpg",
-      description: "การประชุมร่วมกับทีมพี่เลี้ยง",
+      description: "การประชุมร่วมกับทีมแหล่งฝึก",
     },
     {
       id: 2,
@@ -449,7 +449,7 @@ export default function SupervisionDetail() {
 
                             <div>
                               <h3 className="text-lg font-medium mb-2">
-                                ข้อเสนอแนะจากพี่เลี้ยง
+                                ข้อเสนอแนะจากแหล่งฝึก
                               </h3>
                               <p className="text-gray-700">
                                 {supervision.details.mentor_feedback || "-"}

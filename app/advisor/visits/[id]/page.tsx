@@ -59,30 +59,12 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
     transportation: "รถยนต์ส่วนตัว",
     term: "1/2567",
     objectives:
-      "ติดตามความก้าวหน้าการปฏิบัติงานของนักศึกษา และประเมินผลการปฏิบัติงานร่วมกับพี่เลี้ยง",
-    notes: "นัดหมายผ่านทางอีเมลและโทรศัพท์กับพี่เลี้ยงเรียบร้อยแล้ว",
+      "ติดตามความก้าวหน้าการปฏิบัติงานของนักศึกษา และประเมินผลการปฏิบัติงานร่วมกับแหล่งฝึก",
+    notes: "นัดหมายผ่านทางอีเมลและโทรศัพท์กับแหล่งฝึกเรียบร้อยแล้ว",
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">
-              ระบบฝึกงาน (อาจารย์ที่ปรึกษา)
-            </h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">ผศ.ดร. วิชาญ นักสอน</span>
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  ออกจากระบบ
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdvisorSidebar activePage="visits" />
@@ -219,7 +201,7 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg flex items-center gap-2">
                           <UserIcon className="h-5 w-5 text-blue-500" />
-                          ข้อมูลพี่เลี้ยง
+                          ข้อมูลแหล่งฝึก
                         </CardTitle>
                       </CardHeader>
                       <CardContent>

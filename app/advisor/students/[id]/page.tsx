@@ -134,7 +134,7 @@ const studentData = {
       title: "ปัญหาการปรับตัว",
       description: "นักศึกษามีปัญหาในการปรับตัวกับสภาพแวดล้อมการทำงานในช่วงแรก",
       status: "resolved",
-      resolution: "ได้พูดคุยกับพี่เลี้ยงและนักศึกษา ให้คำแนะนำในการปรับตัว",
+      resolution: "ได้พูดคุยกับแหล่งฝึกและนักศึกษา ให้คำแนะนำในการปรับตัว",
     },
   ],
   evaluations: {
@@ -417,7 +417,7 @@ export default function StudentDetailPage() {
                       </div>
                       <div className="pt-4 border-t">
                         <h3 className="text-sm font-medium text-gray-500 mb-2">
-                          ข้อมูลพี่เลี้ยง
+                          ข้อมูลแหล่งฝึก
                         </h3>
                         <p className="font-medium">{student.mentor.name}</p>
                         <p className="text-sm text-gray-500">

@@ -16,14 +16,16 @@ export async function POST(request: Request) {
         user.id,
         user.role,
       ]
-    );
-
-    (await cookies()).delete("user");
-
-    return NextResponse.json({
+    ); // สร้าง response และลบทั้ง client-side และ HTTP-only cookies
+    const response = NextResponse.json({
       success: true,
       message: "ออกจากระบบสำเร็จ",
     });
+
+    // ลบ HTTP-only cookie
+    response.cookies.delete("session_id");
+
+    return response;
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "เกิดข้อผิดพลาดในการออกจากระบบ" },

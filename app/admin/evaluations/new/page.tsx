@@ -24,24 +24,6 @@ import AdminSidebar from "@/components/admin-sidebar";
 export default function NewEvaluation() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">
-              ระบบฝึกงาน (ผู้ดูแลระบบ)
-            </h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">ผู้ดูแลระบบ</span>
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  ออกจากระบบ
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdminSidebar activePage="evaluations" />
@@ -91,7 +73,7 @@ export default function NewEvaluation() {
                           <SelectContent>
                             <SelectItem value="student">นักศึกษา</SelectItem>
                             <SelectItem value="advisor">อาจารย์</SelectItem>
-                            <SelectItem value="mentor">พี่เลี้ยง</SelectItem>
+                            <SelectItem value="mentor">แหล่งฝึก</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

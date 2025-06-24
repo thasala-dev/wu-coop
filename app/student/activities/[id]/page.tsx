@@ -169,24 +169,6 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
       <Toaster />
       {loading && <Loading />}
 
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">
-              ระบบฝึกงาน (นักศึกษา)
-            </h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">นายสมชาย ใจดี</span>
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  ออกจากระบบ
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <StudentSidebar activePage="activities" />

@@ -77,7 +77,7 @@ const initialVisitPlan = {
   startTime: "09:00",
   endTime: "12:00",
   studentIds: ["1", "2"],
-  notes: "พบนักศึกษาและพี่เลี้ยง ติดตามความก้าวหน้าโครงงาน",
+  notes: "พบนักศึกษาและแหล่งฝึก ติดตามความก้าวหน้าโครงงาน",
   isOnline: false,
 };
 

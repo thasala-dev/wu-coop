@@ -10,13 +10,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
-  CalendarIcon,
-  ClipboardListIcon,
-  UserIcon,
-  MapPinIcon,
-  CarIcon,
+  Calendar as CalendarIcon,
+  ClipboardList as ClipboardListIcon,
+  User as UserIcon,
+  MapPin as MapPinIcon,
+  Car as CarIcon,
 } from "lucide-react";
-import AdvisorSidebar from "@/components/advisor-sidebar";
 import Sidebar from "@/components/sidebar";
 
 export default function AdvisorDashboard() {
@@ -300,7 +299,7 @@ export default function AdvisorDashboard() {
                         </div>
                         <div>
                           <h3 className="font-medium">
-                            ประชุมกับพี่เลี้ยงนักศึกษา
+                            ประชุมกับแหล่งฝึกนักศึกษา
                           </h3>
                           <p className="text-sm text-gray-600">
                             เวลา 13:00-15:00 น. ผ่านระบบประชุมออนไลน์

@@ -9,7 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BuildingIcon, FileSpreadsheetIcon } from "lucide-react";
+import {
+  Building as BuildingIcon,
+  FileSpreadsheet as FileSpreadsheetIcon,
+} from "lucide-react";
 import Sidebar from "@/components/sidebar";
 import { useEffect, useState } from "react";
 import Loading from "@/components/loading";

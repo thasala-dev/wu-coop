@@ -3,7 +3,7 @@ import "@/app/globals.css";
 import { Sarabun } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
-import { AuthProvider } from "@/contexts/auth-context";
+import NextAuthProvider from "@/contexts/next-auth-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 const sarabun = Sarabun({
@@ -40,7 +40,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>{children}</AuthProvider>
+          <NextAuthProvider>{children}</NextAuthProvider>
           <Toaster />
         </ThemeProvider>
       </body>

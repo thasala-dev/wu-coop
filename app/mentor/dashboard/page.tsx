@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/sidebar";
-import { useAuth } from "@/contexts/auth-context";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Loading from "@/components/loading";
 import {
@@ -14,17 +14,20 @@ import {
 } from "@/components/ui/select";
 
 export default function DashboardPage() {
-  const { user, isLoading } = useAuth();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoading = status === "loading";
   const [loading, setLoading] = useState(false);
   const [calendars, setCalendars] = useState<any>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
-
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !user) return;
     fetchData();
-  }, [isLoading]);
+  }, [isLoading, user]);
 
   async function fetchData() {
+    if (!user) return;
+
     setLoading(true);
     const response = await fetch(`/api/mentor/${user.id}/dashboard`, {
       method: "GET",

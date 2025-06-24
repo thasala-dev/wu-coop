@@ -70,14 +70,14 @@ export default function AppointmentDetailPage({
       {
         id: 2,
         name: "ภญ.สุดา รักษาดี",
-        role: "พี่เลี้ยง",
+        role: "แหล่งฝึก",
         avatar: "/placeholder.svg?height=40&width=40",
       },
     ],
     agenda: [
       {
         time: "10:00 - 10:15",
-        title: "พบปะพี่เลี้ยงและนักศึกษา",
+        title: "พบปะแหล่งฝึกและนักศึกษา",
         description: "แนะนำตัวและพูดคุยเบื้องต้น",
       },
       {
@@ -87,8 +87,8 @@ export default function AppointmentDetailPage({
       },
       {
         time: "10:45 - 11:15",
-        title: "พี่เลี้ยงให้ข้อมูลและความเห็น",
-        description: "พี่เลี้ยงให้ข้อมูลเกี่ยวกับการปฏิบัติงานของนักศึกษา",
+        title: "แหล่งฝึกให้ข้อมูลและความเห็น",
+        description: "แหล่งฝึกให้ข้อมูลเกี่ยวกับการปฏิบัติงานของนักศึกษา",
       },
       {
         time: "11:15 - 11:45",
@@ -116,7 +116,7 @@ export default function AppointmentDetailPage({
       },
     ],
     notes:
-      "นักศึกษามีความตั้งใจในการฝึกงาน พี่เลี้ยงให้ความเห็นว่านักศึกษาปรับตัวได้ดี มีความรับผิดชอบ แต่ควรพัฒนาทักษะการสื่อสารให้มากขึ้น",
+      "นักศึกษามีความตั้งใจในการฝึกงาน แหล่งฝึกให้ความเห็นว่านักศึกษาปรับตัวได้ดี มีความรับผิดชอบ แต่ควรพัฒนาทักษะการสื่อสารให้มากขึ้น",
   };
 
   // Function to render appointment type badge
@@ -172,24 +172,6 @@ export default function AppointmentDetailPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">
-              ระบบฝึกงาน (อาจารย์ที่ปรึกษา)
-            </h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">ผศ.ดร. วิชาญ นักสอน</span>
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  ออกจากระบบ
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdvisorSidebar activePage="schedule" />

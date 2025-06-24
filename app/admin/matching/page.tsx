@@ -47,10 +47,29 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import CustomAvatar from "@/components/avatar";
-import { useAuth } from "@/contexts/auth-context";
+import { useSession } from "next-auth/react";
 
 export default function AdminMatching() {
-  const { log } = useAuth();
+  const { data: session } = useSession();
+
+  // สร้างฟังก์ชัน log เอง
+  const recordLog = async (message: string) => {
+    try {
+      await fetch("/api/log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: message,
+          user_id: session?.user?.id,
+          user_role: session?.user?.role,
+        }),
+      });
+    } catch (error) {
+      console.error("Log error:", error);
+    }
+  };
 
   const [loading, setLoading] = useState(true);
   const [calendars, setCalendars] = useState<any[]>([]);
@@ -150,7 +169,7 @@ export default function AdminMatching() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        await log(
+        await recordLog(
           `จับคู่นักศึกษา ${
             info.intern.find((item: any) => item.id === selectedId).fullname
           } กับแหล่งฝึกงาน ${
@@ -175,7 +194,7 @@ export default function AdminMatching() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        await log(
+        await recordLog(
           `ยกเลิกจับคู่นักศึกษา ${
             info.intern.find((item: any) => item.id === selectedId).fullname
           } กับแหล่งฝึกงาน`
