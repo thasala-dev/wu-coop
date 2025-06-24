@@ -30,22 +30,22 @@ const handler = NextAuth({
           let users = [];
           if (role === "admin") {
             users = await sql(
-              "SELECT * FROM user_admin WHERE username = $1 and status_id != 2",
+              "SELECT * FROM user_admin WHERE username = $1 and status_id != 2 and flag_del = 0",
               [username]
             );
           } else if (role === "mentor") {
             users = await sql(
-              "SELECT * FROM user_company WHERE username = $1 and status_id != 2",
+              "SELECT * FROM user_company WHERE username = $1 and status_id != 2 and flag_del = 0",
               [username]
             );
           } else if (role === "advisor") {
             users = await sql(
-              "SELECT * FROM user_advisor WHERE username = $1 and status_id != 2",
+              "SELECT * FROM user_advisor WHERE username = $1 and status_id != 2 and flag_del = 0",
               [username]
             );
           } else if (role === "student") {
             users = await sql(
-              "SELECT * FROM user_student WHERE username = $1 and status_id != 2",
+              "SELECT * FROM user_student WHERE username = $1 and status_id != 2 and flag_del = 0",
               [username]
             );
           }
