@@ -40,44 +40,22 @@ import {
 
 // Schema สำหรับตรวจสอบการกรอกฟอร์ม
 const formSchema = z.object({
-  registInternId: z.string().min(1, "กรุณาเลือกนักศึกษา"),
-  advisorId: z.string().min(1, "กรุณาเลือกอาจารย์นิเทศ"),
-  scheduledDate: z.string().min(1, "กรุณาเลือกวันที่นิเทศ"),
+  regist_intern_id: z.string().min(1, "กรุณาเลือกนักศึกษา"),
+  advisor_id: z.string().min(1, "กรุณาเลือกอาจารย์นิเทศ"),
+  scheduled_date: z.string().min(1, "กรุณาเลือกวันที่นิเทศ"),
+  visit_type: z.string().optional(),
+  comments: z.string().optional(),
 });
 
-// ข้อมูลตัวอย่าง
-const mockStudents = [
-  {
-    id: "101",
-    name: "นายทดสอบ ระบบ",
-    student_id: "64000001",
-    company: "บริษัท เอบีซี จำกัด",
-  },
-  {
-    id: "102",
-    name: "นางสาวสมศรี เรียนดี",
-    student_id: "64000002",
-    company: "บริษัท เทคโนโลยีไทย จำกัด",
-  },
-  {
-    id: "103",
-    name: "นายมานะ ตั้งใจ",
-    student_id: "64000003",
-    company: "บริษัท ซอฟต์แวร์ไทย จำกัด",
-  },
-];
 
-const mockAdvisors = [
-  { id: "301", name: "อาจารย์ใจดี มากมาย" },
-  { id: "302", name: "ผศ.ดร.สมชาย สอนเก่ง" },
-  { id: "303", name: "รศ.ดร.สมศรี วิจัยเด่น" },
-];
 
 export default function AddSupervision() {
   const [scheduledDate, setScheduledDate] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
-  const [students, setStudents] = useState(mockStudents);
-  const [advisors, setAdvisors] = useState(mockAdvisors);
+  const [students, setStudents] = useState<any[]>([]);
+  const [advisors, setAdvisors] = useState<any[]>([]);
+  const [calendars, setCalendars] = useState<any[]>([]);
+  const [selectedCalendar, setSelectedCalendar] = useState<string>("");
   const { toast } = useToast();
   const router = useRouter();
 
@@ -87,7 +65,6 @@ export default function AddSupervision() {
     if (typeof error.message === "string") return error.message;
     return String(error.message || "Invalid input");
   };
-
   const {
     register,
     handleSubmit,
@@ -97,71 +74,134 @@ export default function AddSupervision() {
   } = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      registInternId: "",
-      advisorId: "",
-      scheduledDate: "",
+      regist_intern_id: "",
+      advisor_id: "",
+      scheduled_date: "",
+      visit_type: "",
+      comments: "",
     },
   });
+  // ฟังก์ชั่นสำหรับดึงข้อมูลปฏิทินฝึกงาน
+  const fetchCalendars = async () => {
+    try {
+      const response = await fetch('/api/calendar');
+      const data = await response.json();
+      if (data.success) {
+        setCalendars(data.data);
+        // เลือกปฏิทินล่าสุดโดยอัตโนมัติถ้ามี
+        if (data.data.length > 0) {
+          setSelectedCalendar(data.data[0].id);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching calendars:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลปฏิทินฝึกงานได้",
+        variant: "destructive",
+      });
+    }
+  };
 
   // ฟังก์ชั่นสำหรับดึงข้อมูลนักศึกษาที่ลงทะเบียนฝึกงาน
-  const fetchRegisteredStudents = async () => {
+  const fetchRegisteredStudents = async (calendarId: string) => {
+    if (!calendarId) return;
+    
     try {
-      // ในอนาคตจะใช้ API จริง
-      // const response = await fetch('/api/regist-intern');
-      // const data = await response.json();
-      // if (data.success) {
-      //   setStudents(data.data);
-      // }
+      setLoading(true);
+      const response = await fetch(`/api/calendar/${calendarId}/info`);
+      const data = await response.json();
+      
+      if (data.success) {
+        // นำข้อมูลนักศึกษาที่มีการจับคู่กับบริษัทแล้วมาใช้
+        const matchedStudents = data.intern
+          .filter((item: any) => item.company_id !== null)
+          .map((item: any) => {
+            const company = data.company.find((c: any) => c.company_id === item.company_id);
+            return {
+              id: item.id, // regist_intern_id
+              name: item.fullname,
+              student_id: item.student_code,
+              company: company ? company.name : 'ไม่ระบุบริษัท'
+            };
+          });
+          
+        setStudents(matchedStudents);
+      }
     } catch (error) {
       console.error("Error fetching registered students:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลนักศึกษาได้",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   // ฟังก์ชั่นสำหรับดึงข้อมูลอาจารย์
   const fetchAdvisors = async () => {
     try {
-      // ในอนาคตจะใช้ API จริง
-      // const response = await fetch('/api/advisors');
-      // const data = await response.json();
-      // if (data.success) {
-      //   setAdvisors(data.data);
-      // }
+      const response = await fetch('/api/advisor');
+      const data = await response.json();
+      if (data.success) {
+        const advisorsList = data.data.map((advisor: any) => ({
+          id: advisor.id,
+          name: advisor.fullname
+        }));
+        setAdvisors(advisorsList);
+      }
     } catch (error) {
       console.error("Error fetching advisors:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลอาจารย์นิเทศได้",
+        variant: "destructive",
+      });
     }
   };
-
   useEffect(() => {
-    fetchRegisteredStudents();
+    fetchCalendars();
     fetchAdvisors();
   }, []);
-
+  
+  // เมื่อมีการเลือกปฏิทินใหม่ ให้ดึงข้อมูลนักศึกษาที่ลงทะเบียนในปฏิทินนั้น
+  useEffect(() => {
+    if (selectedCalendar) {
+      fetchRegisteredStudents(selectedCalendar);
+    }
+  }, [selectedCalendar]);
   // เมื่อกดปุ่มบันทึก
   const onSubmit = async (values: any) => {
     setLoading(true);
     try {
-      // ในอนาคตจะใช้ API จริง
-      // const response = await fetch("/api/supervisions", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(values),
-      // });
-      // const data = await response.json();
-
-      // จำลองการส่งข้อมูล
-      console.log("Submitted values:", values);
-
-      setTimeout(() => {
+      console.log("ส่งข้อมูล:", values);
+      
+      const response = await fetch("/api/supervision", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
         toast({
           title: "บันทึกข้อมูลสำเร็จ",
           description: "เพิ่มรายการนิเทศเรียบร้อยแล้ว",
           variant: "success",
         });
         router.push("/admin/supervision");
-        setLoading(false);
-      }, 1000);
+      } else {
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: data.message || "ไม่สามารถบันทึกข้อมูลได้",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Error adding supervision:", error);
       toast({
@@ -169,6 +209,7 @@ export default function AddSupervision() {
         description: "ไม่สามารถบันทึกข้อมูลได้ โปรดลองอีกครั้ง",
         variant: "destructive",
       });
+    } finally {
       setLoading(false);
     }
   };
@@ -210,24 +251,48 @@ export default function AddSupervision() {
                   <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-6">
                       <div className="font-medium mb-2">ข้อมูลการนิเทศ</div>
+                    </div>                    <div className="sm:col-span-6 space-y-1">
+                      <label
+                        htmlFor="calendarId"
+                        className="block text-sm font-medium"
+                      >
+                        ปฏิทินฝึกงาน <span className="text-red-500">*</span>
+                      </label>
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedCalendar(value);
+                        }}
+                        defaultValue={selectedCalendar}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="เลือกปฏิทินฝึกงาน" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {calendars.map((calendar) => (
+                            <SelectItem key={calendar.id} value={calendar.id}>
+                              {calendar.name} ({format(new Date(calendar.start_date), "d MMM yyyy", { locale: th })} - {format(new Date(calendar.end_date), "d MMM yyyy", { locale: th })})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="sm:col-span-6 space-y-1">
                       <label
-                        htmlFor="registInternId"
+                        htmlFor="regist_intern_id"
                         className="block text-sm font-medium"
                       >
                         นักศึกษา <span className="text-red-500">*</span>
                       </label>
                       <Select
                         onValueChange={(value) =>
-                          setValue("registInternId", value)
+                          setValue("regist_intern_id", value)
                         }
                       >
                         <SelectTrigger
                           className={cn(
                             "w-full",
-                            errors.registInternId
+                            errors.regist_intern_id
                               ? "border-red-600 border-2"
                               : ""
                           )}
@@ -249,28 +314,26 @@ export default function AddSupervision() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <input type="hidden" {...register("registInternId")} />
-                      {errors.registInternId && (
+                      <input type="hidden" {...register("regist_intern_id")} />
+                      {errors.regist_intern_id && (
                         <p className="text-sm text-red-600">
-                          {getErrorMessage(errors.registInternId)}
+                          {getErrorMessage(errors.regist_intern_id)}
                         </p>
                       )}
-                    </div>
-
-                    <div className="sm:col-span-6 space-y-1">
+                    </div>                    <div className="sm:col-span-6 space-y-1">
                       <label
-                        htmlFor="advisorId"
+                        htmlFor="advisor_id"
                         className="block text-sm font-medium"
                       >
                         อาจารย์นิเทศ <span className="text-red-500">*</span>
                       </label>
                       <Select
-                        onValueChange={(value) => setValue("advisorId", value)}
+                        onValueChange={(value) => setValue("advisor_id", value)}
                       >
                         <SelectTrigger
                           className={cn(
                             "w-full",
-                            errors.advisorId ? "border-red-600 border-2" : ""
+                            errors.advisor_id ? "border-red-600 border-2" : ""
                           )}
                         >
                           <SelectValue placeholder="เลือกอาจารย์นิเทศ" />
@@ -283,22 +346,20 @@ export default function AddSupervision() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <input type="hidden" {...register("advisorId")} />
-                      {errors.advisorId && (
+                      <input type="hidden" {...register("advisor_id")} />
+                      {errors.advisor_id && (
                         <p className="text-sm text-red-600">
-                          {getErrorMessage(errors.advisorId)}
+                          {getErrorMessage(errors.advisor_id)}
                         </p>
                       )}
-                    </div>
-
-                    <div className="sm:col-span-6 space-y-1">
+                    </div>                    <div className="sm:col-span-6 space-y-1">
                       <label className="block text-sm font-medium">
                         วันที่นิเทศ <span className="text-red-500">*</span>
                       </label>
                       <div>
                         <input
                           type="hidden"
-                          {...register("scheduledDate")}
+                          {...register("scheduled_date")}
                           value={
                             scheduledDate
                               ? format(scheduledDate, "yyyy-MM-dd")
@@ -312,7 +373,7 @@ export default function AddSupervision() {
                               className={cn(
                                 "w-full justify-start text-left font-normal",
                                 !scheduledDate && "text-muted-foreground",
-                                errors.scheduledDate
+                                errors.scheduled_date
                                   ? "border-red-600 border-2"
                                   : ""
                               )}
@@ -337,7 +398,7 @@ export default function AddSupervision() {
                                 setScheduledDate(date);
                                 if (date) {
                                   setValue(
-                                    "scheduledDate",
+                                    "scheduled_date",
                                     format(date, "yyyy-MM-dd")
                                   );
                                 }
@@ -348,11 +409,46 @@ export default function AddSupervision() {
                           </PopoverContent>
                         </Popover>
                       </div>
-                      {errors.scheduledDate && (
+                      {errors.scheduled_date && (
                         <p className="text-sm text-red-600">
-                          {getErrorMessage(errors.scheduledDate)}
-                        </p>
-                      )}
+                          {getErrorMessage(errors.scheduled_date)}
+                        </p>                      )}
+                    </div>
+
+                    <div className="sm:col-span-6 space-y-1">
+                      <label
+                        htmlFor="visit_type"
+                        className="block text-sm font-medium"
+                      >
+                        รูปแบบการนิเทศ
+                      </label>
+                      <Select
+                        onValueChange={(value) => setValue("visit_type", value)}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="เลือกรูปแบบการนิเทศ" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="onsite">นิเทศ ณ สถานประกอบการ</SelectItem>
+                          <SelectItem value="online">นิเทศออนไลน์</SelectItem>
+                          <SelectItem value="hybrid">นิเทศแบบผสมผสาน</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <input type="hidden" {...register("visit_type")} />
+                    </div>
+
+                    <div className="sm:col-span-6 space-y-1">
+                      <label
+                        htmlFor="comments"
+                        className="block text-sm font-medium"
+                      >
+                        หมายเหตุ
+                      </label>
+                      <textarea
+                        {...register("comments")}
+                        className="w-full p-2 border rounded-md h-24"
+                        placeholder="บันทึกรายละเอียดเพิ่มเติม (ถ้ามี)"
+                      />
                     </div>
                   </div>
                 </CardContent>

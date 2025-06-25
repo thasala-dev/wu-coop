@@ -4,24 +4,18 @@ import { neon } from "@neondatabase/serverless";
 // GET /api/supervision/[id] - ดึงข้อมูลการนิเทศตาม ID
 export async function GET(request: NextRequest, { params }: any) {
   try {
-    const {id} = params;
+    const { id } = params;
     const sql = neon(`${process.env.DATABASE_URL}`);
     
     // ดึงข้อมูลการนิเทศพร้อมข้อมูลที่เกี่ยวข้อง
     const data = await sql(
-      `SELECT 
-        sup.id, sup.regist_intern_id, sup.advisor_id, sup.scheduled_date, 
-        sup.start_time, sup.end_time, sup.visit_type, sup.comments, sup.status,
-        sup.created_at, sup.updated_at,
-        ri.id as ri_id, ri.student_id as ri_student_id, ri.calendar_id as ri_calendar_id, 
-        ri.company_id as ri_company_id,
-        std.fullname as student_name, std.student_id as student_code, 
-        std.faculty as student_faculty, std.major as student_major, 
-        std.mobile as student_mobile, std.email as student_email,
-        adv.fullname as advisor_name, adv.mobile as advisor_mobile, 
-        adv.email as advisor_email,
-        com.name as company_name, com.address as company_address, 
-        com.contact_name, com.contact_phone, com.contact_email
+      `SELECT sup.*, 
+              ri.student_id, ri.calendar_id, ri.company_id,
+              std.fullname AS student_name, std.student_id AS student_code, 
+              std.faculty, std.major, std.mobile AS student_mobile, std.email AS student_email,
+              adv.fullname AS advisor_name, adv.mobile AS advisor_mobile, adv.email AS advisor_email,
+              com.name AS company_name, com.address AS company_address, 
+              com.contact_name, com.contact_phone, com.contact_email
        FROM supervisions sup
        JOIN regist_intern ri ON sup.regist_intern_id = ri.id
        JOIN user_student std ON ri.student_id = std.id
@@ -69,19 +63,10 @@ export async function PUT(request: NextRequest, { params }: any) {
       updateFields.push(`advisor_id = $${paramCount++}`);
       queryParams.push(body.advisor_id);
     }
-      if (body.scheduled_date !== undefined) {
+    
+    if (body.scheduled_date !== undefined) {
       updateFields.push(`scheduled_date = $${paramCount++}`);
       queryParams.push(body.scheduled_date);
-    }
-    
-    if (body.start_time !== undefined) {
-      updateFields.push(`start_time = $${paramCount++}`);
-      queryParams.push(body.start_time);
-    }
-    
-    if (body.end_time !== undefined) {
-      updateFields.push(`end_time = $${paramCount++}`);
-      queryParams.push(body.end_time);
     }
     
     if (body.status !== undefined) {

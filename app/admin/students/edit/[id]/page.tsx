@@ -363,29 +363,7 @@ export default function Page() {
                                 {getErrorMessage(errors.mobile)}
                               </p>
                             )}                          </div>
-                          <div className="sm:col-span-6">
-                            <label>คณะ</label>
-                            <select
-                              id="faculty"
-                              {...register("faculty")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.faculty ? "border-red-600  border-2" : "")
-                              }
-                            >
-                              <option value="" disabled>
-                                เลือกคณะ
-                              </option>
-                              <option value="เภสัชศาสตร์">
-                                คณะเภสัชศาสตร์
-                              </option>
-                            </select>
-                            {errors.faculty && (
-                              <p className="text-sm text-red-600">
-                                {getErrorMessage(errors.faculty)}
-                              </p>
-                            )}
-                          </div>
+                          
                           <div className="sm:col-span-6">
                             <label>สาขาวิชา</label>
                             <select

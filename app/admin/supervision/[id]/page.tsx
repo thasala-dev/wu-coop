@@ -1,137 +1,84 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import {
   ArrowLeft,
   ChevronRight,
   Calendar,
-  User,
+  Clock,
+  MapPin,
   Building,
+  User,
+  Phone,
+  Mail,
   Edit,
-  FileText,
-  Image as ImageIcon,
+  ExternalLink,
 } from "lucide-react";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Sidebar from "@/components/sidebar";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+import { format, parseISO } from "date-fns";
 import { th } from "date-fns/locale";
-import Image from "next/image";
 
-// ข้อมูลตัวอย่าง
-const mockSupervision = {
-  id: 1,
-  student: {
-    id: 101,
-    name: "นายทดสอบ ระบบ",
-    student_id: "64000001",
-    program: "วิศวกรรมซอฟต์แวร์",
-    faculty: "วิทยาศาสตร์และเทคโนโลยี",
-  },
-  company: {
-    id: 201,
-    name: "บริษัท เอบีซี จำกัด",
-    address: "123 ถนนพหลโยธิน แขวงจตุจักร เขตจตุจักร กรุงเทพฯ 10900",
-    contact_person: "คุณสมหมาย ใจดี",
-    contact_phone: "02-123-4567",
-    contact_email: "sommai@abc.co.th",
-  },
-  advisor: {
-    id: 301,
-    name: "อาจารย์ใจดี มากมาย",
-    phone: "081-234-5678",
-    email: "jaidee@university.ac.th",
-  },
-  scheduled_date: "2025-06-28",
-  status: 1, // 1=รอดำเนินการ
-  details: {
-    visit_date: null,
-    start_time: null,
-    end_time: null,
-    activity_details: "",
-    student_performance: "",
-    mentor_feedback: "",
-    advisor_feedback: "",
-    issues: "",
-    next_goals: "",
-  },
-  photos: [],
-};
+interface SupervisionDetail {
+  id: number;
+  regist_intern_id: number;
+  advisor_id: number;
+  scheduled_date: string;
+  start_time: string;
+  end_time: string;
+  visit_type: string;
+  comments: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+  
+  // Regist Intern info
+  ri_id: number;
+  ri_student_id: number;
+  ri_calendar_id: number;
+  ri_company_id: number;
 
-// ข้อมูลตัวอย่างสำหรับการนิเทศที่เสร็จสิ้นแล้ว
-const mockCompletedSupervision = {
-  id: 2,
-  student: {
-    id: 102,
-    name: "นางสาวสมศรี เรียนดี",
-    student_id: "64000002",
-    program: "วิทยาการคอมพิวเตอร์",
-    faculty: "วิทยาศาสตร์และเทคโนโลยี",
-  },
-  company: {
-    id: 202,
-    name: "บริษัท เทคโนโลยีไทย จำกัด",
-    address: "456 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110",
-    contact_person: "คุณมานี รักงาน",
-    contact_phone: "02-987-6543",
-    contact_email: "manee@thaitech.co.th",
-  },
-  advisor: {
-    id: 302,
-    name: "ผศ.ดร.สมชาย สอนเก่ง",
-    phone: "089-876-5432",
-    email: "somchai@university.ac.th",
-  },
-  scheduled_date: "2025-06-18",
-  status: 2, // 2=เสร็จสิ้น
-  details: {
-    visit_date: "2025-06-18",
-    start_time: "10:00:00",
-    end_time: "12:00:00",
-    activity_details:
-      "พบนักศึกษาและพี่เลี้ยง ตรวจเยี่ยมสถานประกอบการ ติดตามความคืบหน้าโครงงาน และให้คำแนะนำการทำงาน",
-    student_performance:
-      "นักศึกษามีความรับผิดชอบในงานที่ได้รับมอบหมาย มีความตรงต่อเวลา และสามารถทำงานร่วมกับทีมได้ดี",
-    mentor_feedback:
-      "นักศึกษามีความกระตือรือร้นในการเรียนรู้ สามารถปรับตัวเข้ากับทีมได้เร็ว แต่ควรพัฒนาทักษะการสื่อสารให้มากขึ้น",
-    advisor_feedback:
-      "นักศึกษามีพัฒนาการที่ดี ควรฝึกฝนทักษะการนำเสนอและการสื่อสารให้มากขึ้น รวมถึงเรียนรู้เทคโนโลยีใหม่ๆ ที่เกี่ยวข้องกับงาน",
-    issues:
-      "นักศึกษายังไม่คุ้นเคยกับการใช้เครื่องมือบางอย่างในการพัฒนาซอฟต์แวร์",
-    next_goals:
-      "ฝึกฝนการใช้ Git และ CI/CD ให้คล่องมากขึ้น พัฒนาทักษะการนำเสนอโดยการฝึกซ้อมก่อนนำเสนองาน",
-  },
-  photos: [
-    {
-      id: 1,
-      supervision_id: 2,
-      photo_path: "/placeholder.jpg",
-      description: "การประชุมร่วมกับทีมพี่เลี้ยง",
-    },
-    {
-      id: 2,
-      supervision_id: 2,
-      photo_path: "/placeholder.jpg",
-      description: "นักศึกษานำเสนอความคืบหน้าโครงงาน",
-    },
-  ],
-};
+  // Student info
+  student_name: string;
+  student_code: string;
+  student_faculty: string;
+  student_major: string;
+  student_mobile: string;
+  student_email: string;
 
-export default function SupervisionDetail() {
+  // Advisor info
+  advisor_name: string;
+  advisor_mobile: string;
+  advisor_email: string;
+
+  // Company info
+  company_name: string;
+  company_address: string;
+  contact_name: string;
+  contact_phone: string;
+  contact_email: string;
+}
+
+export default function SupervisionDetailPage() {
   const params = useParams();
   const id = params?.id as string;
-  const [supervision, setSupervision] = useState<any>(null);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const [supervision, setSupervision] = useState<SupervisionDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -139,29 +86,306 @@ export default function SupervisionDetail() {
   }, []);
 
   const fetchSupervisionDetail = async () => {
-    setLoading(true);
     try {
-      // ในอนาคตจะใช้ API จริง
-      // const response = await fetch(`/api/supervision/${id}`);
-      // const data = await response.json();
-      // if (data.success) {
-      //   setSupervision(data.data);
-      // }
+      setLoading(true);
+      const response = await fetch(`/api/supervision/${id}`);
+      const data = await response.json();
 
-      // จำลองการดึงข้อมูล
-      setTimeout(() => {
-        // สำหรับการทดสอบ แสดงข้อมูลการนิเทศที่เสร็จสิ้นแล้ว
-        setSupervision(id === "2" ? mockCompletedSupervision : mockSupervision);
-        setLoading(false);
-      }, 500);
+      if (data.success) {
+        setSupervision(data.data);
+      } else {
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: "ไม่พบข้อมูลการนิเทศที่ต้องการ",
+          variant: "destructive",
+        });
+        router.push("/admin/supervision");
+      }
     } catch (error) {
       console.error("Error fetching supervision detail:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลการนิเทศได้",
+        variant: "destructive",
+      });
+    } finally {
       setLoading(false);
     }
   };
 
   // ฟังก์ชั่นแปลง Date เป็น String ในรูปแบบไทย
   const formatToThaiDate = (dateString: string) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return format(date, "d MMMM yyyy", { locale: th });
+  };
+
+  // ฟังก์ชั่นแสดงสถานะการนิเทศ
+  const renderStatus = (status: number) => {
+    switch (status) {
+      case 1:
+        return <Badge className="bg-yellow-500">รอดำเนินการ</Badge>;
+      case 2:
+        return <Badge className="bg-green-500">เสร็จสิ้น</Badge>;
+      case 3:
+        return <Badge className="bg-red-500">ยกเลิก</Badge>;
+      default:
+        return <Badge className="bg-gray-500">ไม่ระบุ</Badge>;
+    }
+  };
+
+  // ฟังก์ชั่นแปลงเวลา
+  const formatTime = (timeString: string) => {
+    if (!timeString) return "-";
+    return timeString.substring(0, 5);
+  };
+  
+  // ฟังก์ชั่นแปลงประเภทการนิเทศ
+  const renderVisitType = (type: string) => {
+    switch (type) {
+      case "onsite":
+        return "นิเทศ ณ สถานประกอบการ";
+      case "online":
+        return "นิเทศออนไลน์";
+      case "hybrid":
+        return "นิเทศแบบผสมผสาน";
+      default:
+        return "ไม่ระบุ";
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (!supervision) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="text-center">
+          <h2 className="text-xl font-bold mb-2">ไม่พบข้อมูลการนิเทศ</h2>
+          <Button asChild>
+            <Link href="/admin/supervision">กลับไปยังรายการการนิเทศ</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto p-0 md:p-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <Sidebar activePage="supervision" userType="admin" />
+
+          <div className="md:col-span-4">
+            <div className="flex items-center gap-3 mb-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-full"
+                asChild
+              >
+                <a href="/admin/supervision">
+                  <ArrowLeft className="h-4 w-4" />
+                </a>
+              </Button>
+              <div className="flex items-center gap-1 text-sm text-gray-500">
+                <a href="/admin/supervision" className="hover:text-gray-900">
+                  การนิเทศ
+                </a>
+                <ChevronRight className="h-3 w-3" />
+                <span className="text-gray-900">รายละเอียดการนิเทศ</span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-xl font-bold">รายละเอียดการนิเทศ</h1>
+
+              <div className="flex gap-2">
+                <Link
+                  href={`/admin/supervision/edit/${supervision.id}`}
+                  passHref
+                >
+                  <Button>
+                    <Edit className="h-4 w-4 mr-2" />
+                    แก้ไข
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            <Card className="mb-6">
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>ข้อมูลการนิเทศ</CardTitle>
+                  <div>{renderStatus(supervision.status)}</div>
+                </div>
+              </CardHeader>
+
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium flex items-center">
+                      <Calendar className="h-5 w-5 mr-2 text-blue-500" />
+                      รายละเอียดการนิเทศ
+                    </h3>
+
+                    <div className="grid grid-cols-3 gap-2 text-sm">
+                      <div className="font-medium text-gray-500">
+                        วันที่นัดหมาย:
+                      </div>
+                      <div className="col-span-2">
+                        {formatToThaiDate(supervision.scheduled_date)}
+                      </div>
+
+                      <div className="font-medium text-gray-500">
+                        เวลาเริ่มต้น:
+                      </div>
+                      <div className="col-span-2">
+                        {formatTime(supervision.start_time)} น.
+                      </div>
+
+                      <div className="font-medium text-gray-500">
+                        เวลาสิ้นสุด:
+                      </div>
+                      <div className="col-span-2">
+                        {formatTime(supervision.end_time)} น.
+                      </div>
+                      
+                      <div className="font-medium text-gray-500">
+                        ประเภทการนิเทศ:
+                      </div>
+                      <div className="col-span-2">
+                        {renderVisitType(supervision.visit_type)}
+                      </div>
+                      
+                      <div className="font-medium text-gray-500">
+                        หมายเหตุ:
+                      </div>
+                      <div className="col-span-2">
+                        {supervision.comments || "-"}
+                      </div>
+                    </div>
+
+                    <h3 className="text-lg font-medium flex items-center mt-6">
+                      <User className="h-5 w-5 mr-2 text-blue-500" />
+                      นักศึกษา
+                    </h3>
+
+                    <div className="grid grid-cols-3 gap-2 text-sm">
+                      <div className="font-medium text-gray-500">
+                        ชื่อ-นามสกุล:
+                      </div>
+                      <div className="col-span-2">
+                        {supervision.student_name || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">
+                        รหัสนักศึกษา:
+                      </div>
+                      <div className="col-span-2">
+                        {supervision.student_code || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">สาขาวิชา:</div>
+                      <div className="col-span-2">
+                        {supervision.student_major || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">คณะ:</div>
+                      <div className="col-span-2">
+                        {supervision.student_faculty || "-"}
+                      </div>
+                      
+                      <div className="font-medium text-gray-500">เบอร์โทรศัพท์:</div>
+                      <div className="col-span-2">
+                        {supervision.student_mobile || "-"}
+                      </div>
+                      
+                      <div className="font-medium text-gray-500">อีเมล:</div>
+                      <div className="col-span-2">
+                        {supervision.student_email || "-"}
+                      </div>
+                    </div>
+
+                    <h3 className="text-lg font-medium flex items-center mt-6">
+                      <User className="h-5 w-5 mr-2 text-blue-500" />
+                      อาจารย์นิเทศ
+                    </h3>
+
+                    <div className="grid grid-cols-3 gap-2 text-sm">
+                      <div className="font-medium text-gray-500">
+                        ชื่อ-นามสกุล:
+                      </div>
+                      <div className="col-span-2">
+                        {supervision.advisor_name || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">
+                        เบอร์โทรศัพท์:
+                      </div>
+                      <div className="col-span-2">
+                        {supervision.advisor_mobile || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">อีเมล:</div>
+                      <div className="col-span-2">
+                        {supervision.advisor_email || "-"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium flex items-center">
+                      <Building className="h-5 w-5 mr-2 text-blue-500" />
+                      สถานประกอบการ
+                    </h3>
+
+                    <div className="grid grid-cols-3 gap-2 text-sm">
+                      <div className="font-medium text-gray-500">
+                        ชื่อบริษัท:
+                      </div>
+                      <div className="col-span-2">
+                        {supervision.company_name || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">ที่อยู่:</div>
+                      <div className="col-span-2">
+                        {supervision.company_address || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">
+                        ผู้ประสานงาน:
+                      </div>
+                      <div className="col-span-2">
+                        {supervision.contact_name || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">
+                        เบอร์โทรศัพท์:
+                      </div>
+                      <div className="col-span-2">
+                        {supervision.contact_phone || "-"}
+                      </div>
+
+                      <div className="font-medium text-gray-500">อีเมล:</div>
+                      <div className="col-span-2">
+                        {supervision.contact_email || "-"}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>  );
+}
     if (!dateString) return "-";
     const date = new Date(dateString);
     return format(date, "d MMMM yyyy", { locale: th });
