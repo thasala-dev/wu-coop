@@ -10,8 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import StudentSidebar from "@/components/student-sidebar";
-import { Sidebar } from "@/components/sidebar";
+import Sidebar from "@/components/sidebar";
 import {
   Bell,
   BookOpen,

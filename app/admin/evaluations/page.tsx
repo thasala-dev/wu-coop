@@ -10,38 +10,20 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
-  PlusIcon,
-  FileEditIcon,
-  EyeIcon,
-  TrashIcon,
-  ClipboardCheckIcon,
+  Plus as PlusIcon,
+  FileEdit as FileEditIcon,
+  Eye as EyeIcon,
+  Trash as TrashIcon,
+  ClipboardCheck as ClipboardCheckIcon,
 } from "lucide-react";
-import AdminSidebar from "@/components/admin-sidebar";
+import Sidebar from "@/components/sidebar";
 
 export default function AdminEvaluations() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-bold text-gray-800">
-              ระบบฝึกงาน (ผู้ดูแลระบบ)
-            </h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">ผู้ดูแลระบบ</span>
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  ออกจากระบบ
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          <AdminSidebar activePage="evaluations" />
+          <Sidebar activePage="evaluations" userType="admin" />
 
           <div className="md:col-span-4">
             <div className="flex justify-between items-center mb-6">
@@ -62,7 +44,7 @@ export default function AdminEvaluations() {
                 <TabsTrigger value="all">ทั้งหมด</TabsTrigger>
                 <TabsTrigger value="student">นักศึกษา</TabsTrigger>
                 <TabsTrigger value="advisor">อาจารย์</TabsTrigger>
-                <TabsTrigger value="mentor">พี่เลี้ยง</TabsTrigger>
+                <TabsTrigger value="mentor">แหล่งฝึก</TabsTrigger>
               </TabsList>
 
               <TabsContent value="all">
@@ -91,11 +73,11 @@ export default function AdminEvaluations() {
                                   variant="outline"
                                   className="bg-blue-50 text-blue-700 hover:bg-blue-50"
                                 >
-                                  พี่เลี้ยง
+                                  แหล่งฝึก
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับพี่เลี้ยงประเมินนักศึกษา •{" "}
+                                สำหรับแหล่งฝึกประเมินนักศึกษา •{" "}
                                 {"10 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">
@@ -481,14 +463,14 @@ export default function AdminEvaluations() {
               <TabsContent value="mentor">
                 <Card>
                   <CardHeader>
-                    <CardTitle>แบบประเมินสำหรับพี่เลี้ยง</CardTitle>
+                    <CardTitle>แบบประเมินสำหรับแหล่งฝึก</CardTitle>
                     <CardDescription>
-                      แบบประเมินที่พี่เลี้ยงต้องทำ
+                      แบบประเมินที่แหล่งฝึกต้องทำ
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {/* แบบประเมินพี่เลี้ยงที่ 1 */}
+                      {/* แบบประเมินแหล่งฝึกที่ 1 */}
                       <div className="border rounded-lg p-4 hover:bg-gray-50">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-start gap-3">
@@ -504,11 +486,11 @@ export default function AdminEvaluations() {
                                   variant="outline"
                                   className="bg-blue-50 text-blue-700 hover:bg-blue-50"
                                 >
-                                  พี่เลี้ยง
+                                  แหล่งฝึก
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-500 mt-1">
-                                สำหรับพี่เลี้ยงประเมินนักศึกษา •{" "}
+                                สำหรับแหล่งฝึกประเมินนักศึกษา •{" "}
                                 {"10 หัวข้อการประเมิน"}
                               </p>
                               <div className="flex gap-2 mt-2">

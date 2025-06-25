@@ -48,7 +48,7 @@ export function UserHeader({
   const systemNames = {
     student: "ระบบฝึกงาน (นักศึกษา)",
     advisor: "ระบบฝึกงาน (อาจารย์ที่ปรึกษา)",
-    mentor: "ระบบฝึกงาน (พี่เลี้ยง)",
+    mentor: "ระบบฝึกงาน (แหล่งฝึก)",
     admin: "ระบบฝึกงาน (ผู้ดูแลระบบ)",
   };
 

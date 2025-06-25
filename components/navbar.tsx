@@ -26,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/contexts/auth-context";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Avatar, { genConfig } from "react-nice-avatar";
 import CustomAvatar from "@/components/avatar";
@@ -52,16 +52,10 @@ export function Navbar({
 
   const headerColor = headerColors[userType];
 
-  // กำหนดตัวอักษรแรกของ Avatar
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-  };
   const [mounted, setMounted] = useState(false);
-  const { user, logout, isLoading } = useAuth();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoading = status === "loading";
   const router = useRouter();
 
   useEffect(() => {
@@ -88,13 +82,9 @@ export function Navbar({
             </h1>
           </Link>{" "}
           <div className="flex items-center gap-1">
-            {/* แทนที่ระบบการแจ้งเตือนเดิมด้วย NotificationBell component */}
-            <div className="text-white hover:bg-white/20 rounded-md">
+            {/* <div className="text-white hover:bg-white/20 rounded-md">
               <NotificationBell />
-            </div>
-
-            {/* ยังคงใช้ DropdownMenu สำหรับโปรไฟล์ผู้ใช้ */}
-
+            </div> */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -124,8 +114,11 @@ export function Navbar({
                     <span>โปรไฟล์</span>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => logout()} disabled={isLoading}>
+                <DropdownMenuSeparator />{" "}
+                <DropdownMenuItem
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  disabled={isLoading}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>ออกจากระบบ</span>
                 </DropdownMenuItem>

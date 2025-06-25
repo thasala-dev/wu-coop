@@ -30,6 +30,7 @@ import {
   LinkIcon,
   PlusIcon,
   SearchIcon,
+  Trash2,
   UserIcon,
   XIcon,
 } from "lucide-react";
@@ -47,10 +48,29 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import CustomAvatar from "@/components/avatar";
-import { useAuth } from "@/contexts/auth-context";
+import { useSession } from "next-auth/react";
 
 export default function AdminMatching() {
-  const { log } = useAuth();
+  const { data: session } = useSession();
+
+  // สร้างฟังก์ชัน log เอง
+  const recordLog = async (message: string) => {
+    try {
+      await fetch("/api/log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: message,
+          user_id: session?.user?.id,
+          user_role: session?.user?.role,
+        }),
+      });
+    } catch (error) {
+      console.error("Log error:", error);
+    }
+  };
 
   const [loading, setLoading] = useState(true);
   const [calendars, setCalendars] = useState<any[]>([]);
@@ -112,12 +132,21 @@ export default function AdminMatching() {
     const res = await response.json();
     if (res.success) {
       setCalendars(res.data);
+
+      let findActive = res.data.find((cal: any) => cal.active_id === 1);
+      if (findActive) {
+        setCalendarSelected(findActive.id.toString());
+      } else {
+        setCalendarSelected(res.data[0]?.id.toString() || null);
+      }
     }
     setLoading(false);
   }
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState<"link" | "unlink" | null>(null);
+  const [dialogType, setDialogType] = useState<
+    "link" | "unlink" | "remove" | null
+  >(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   async function handleLink(id: string) {
@@ -129,6 +158,12 @@ export default function AdminMatching() {
   async function handleUnlink(id: string) {
     setSelectedId(id);
     setDialogType("unlink");
+    setDialogOpen(true);
+  }
+
+  async function removeItem(id: string) {
+    setSelectedId(id);
+    setDialogType("remove");
     setDialogOpen(true);
   }
 
@@ -150,7 +185,7 @@ export default function AdminMatching() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        await log(
+        await recordLog(
           `จับคู่นักศึกษา ${
             info.intern.find((item: any) => item.id === selectedId).fullname
           } กับแหล่งฝึกงาน ${
@@ -175,7 +210,7 @@ export default function AdminMatching() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        await log(
+        await recordLog(
           `ยกเลิกจับคู่นักศึกษา ${
             info.intern.find((item: any) => item.id === selectedId).fullname
           } กับแหล่งฝึกงาน`
@@ -184,6 +219,25 @@ export default function AdminMatching() {
           title: "ยกเลิกจับคู่สำเร็จ",
           description:
             "ดำเนินการยกเลิกการจับคู่นักศึกษาและแหล่งฝึกงานเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        fetchInterns();
+      }
+    } else if (dialogType === "remove") {
+      const response = await fetch(`/api/registIntern/${selectedId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        await recordLog(
+          `นำออกนักศึกษา ${
+            info.intern.find((item: any) => item.id === selectedId).fullname
+          }`
+        );
+        toast({
+          title: "นำออกสำเร็จ",
+          description: "นักศึกษาได้ถูกนำออกจากแหล่งฝึกงานเรียบร้อยแล้ว",
           variant: "success",
         });
         fetchInterns();
@@ -374,7 +428,7 @@ export default function AdminMatching() {
                     render={(cal: any) => (
                       <Card
                         className={`cursor-pointer hover:border-blue-300 transition-colors ${
-                          cal.id === calendarSelected
+                          cal.id == calendarSelected
                             ? "border-blue-500 bg-blue-50"
                             : ""
                         }`}
@@ -434,7 +488,6 @@ export default function AdminMatching() {
                       <CardTitle className="text-xl">
                         จัดการการจับคู่นักศึกษากับแหล่งฝึก
                       </CardTitle>
-                      <CardDescription>ภาคการศึกษาที่ 1/2567</CardDescription>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <Button onClick={() => setStudentImportModal(true)}>
@@ -558,14 +611,25 @@ export default function AdminMatching() {
                             className: "text-center",
                             sort: false,
                             render: (item: any) => (
-                              <Button
-                                size="sm"
-                                onClick={() => handleLink(item.id)}
-                                disabled={!item.company_id}
-                              >
-                                <Link2 className="h-4 w-4 mr-1" />
-                                จับคู่
-                              </Button>
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleLink(item.id)}
+                                  disabled={!item.company_id}
+                                >
+                                  <Link2 className="h-3.5 w-3.5" />
+                                  จับคู่
+                                </Button>
+
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => removeItem(item.id)}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                  นำออก
+                                </Button>
+                              </div>
                             ),
                           },
                         ]}
@@ -573,6 +637,7 @@ export default function AdminMatching() {
                           (item: any) => !item.register_date
                         )}
                         loading={loading}
+                        setItemLenge="5"
                       />
                     </TabsContent>
 
@@ -637,7 +702,7 @@ export default function AdminMatching() {
                                 variant="destructive"
                                 onClick={() => handleUnlink(item.id)}
                               >
-                                <Link2Off className="h-4 w-4 mr-1" />
+                                <Link2Off className="h-3.5 w-3.5" />
                                 ยกเลิกจับคู่
                               </Button>
                             ),
@@ -660,31 +725,40 @@ export default function AdminMatching() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
+            {" "}
             <DialogTitle>
               <span className="flex items-center gap-2">
                 <InfoIcon className="h-5 w-5" />
                 {dialogType === "link"
                   ? "ยืนยันการจับคู่นักศึกษา"
-                  : "ยืนยันการยกเลิกจับคู่"}
+                  : dialogType === "unlink"
+                  ? "ยืนยันการยกเลิกจับคู่"
+                  : "ยืนยันการนำนักศึกษาออก"}
               </span>
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             {dialogType === "link"
               ? "คุณต้องการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"
-              : "คุณต้องการยกเลิกการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"}
+              : dialogType === "unlink"
+              ? "คุณต้องการยกเลิกการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"
+              : "คุณต้องการนำนักศึกษาออกจากผลัดฝึกนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้"}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              <XIcon className="h-4 w-4 mr-1" />
+              <XIcon className="h-3.5 w-3.5" />
               ยกเลิก
             </Button>
             <Button
               onClick={confirmAction}
               disabled={loading}
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className={
+                dialogType === "link" || dialogType === "unlink"
+                  ? "bg-green-600 hover:bg-green-700 text-white"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              }
             >
-              <CheckIcon className="h-4 w-4 mr-1" />
+              <CheckIcon className="h-3.5 w-3.5" />
               ยืนยัน
             </Button>
           </DialogFooter>
@@ -781,6 +855,7 @@ export default function AdminMatching() {
               ]}
               data={info.student}
               loading={loading}
+              setItemLenge="5"
             />
           </div>
           <DialogFooter>
@@ -788,7 +863,7 @@ export default function AdminMatching() {
               variant="outline"
               onClick={() => setStudentImportModal(false)}
             >
-              <XIcon className="h-4 w-4 mr-1" />
+              <XIcon className="h-3.5 w-3.5" />
               ยกเลิก
             </Button>
             <Button
@@ -796,7 +871,7 @@ export default function AdminMatching() {
               disabled={loading || !selectedStudents.length}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
-              <CheckIcon className="h-4 w-4 mr-1" />
+              <CheckIcon className="h-3.5 w-3.5" />
               นำเข้า
             </Button>
           </DialogFooter>
@@ -846,7 +921,7 @@ export default function AdminMatching() {
               variant="outline"
               onClick={() => setCompanyImportModal(false)}
             >
-              <XIcon className="h-4 w-4 mr-1" />
+              <XIcon className="h-3.5 w-3.5" />
               ยกเลิก
             </Button>
             <Button
@@ -856,7 +931,7 @@ export default function AdminMatching() {
               }
               className="bg-green-600 hover:bg-green-700 text-white"
             >
-              <CheckIcon className="h-4 w-4 mr-1" />
+              <CheckIcon className="h-3.5 w-3.5" />
               นำเข้า
             </Button>
           </DialogFooter>

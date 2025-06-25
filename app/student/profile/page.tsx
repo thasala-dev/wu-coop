@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/contexts/auth-context";
+import { useSession } from "next-auth/react";
 import Sidebar from "@/components/sidebar";
 import {
   Card,
@@ -35,7 +35,9 @@ const years = Array.from({ length: currentYear - 2562 + 1 }, (_, i) =>
 );
 
 export default function StudentProfile() {
-  const { user, isLoading } = useAuth();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoading = status === "loading";
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -54,7 +56,6 @@ export default function StudentProfile() {
     gpa: "",
     image: "",
   });
-
   // Fetch student profile data
   useEffect(() => {
     if (user?.id) {
@@ -63,6 +64,8 @@ export default function StudentProfile() {
   }, [user]);
 
   const fetchProfileData = async () => {
+    if (!user?.id) return;
+
     try {
       const response = await fetch(`/api/student/${user.id}`);
       const data = await response.json();
@@ -113,9 +116,18 @@ export default function StudentProfile() {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user?.id) {
+      toast({
+        title: "ไม่สามารถบันทึกข้อมูลได้",
+        description: "กรุณาเข้าสู่ระบบอีกครั้ง",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
 
     try {

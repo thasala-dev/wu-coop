@@ -121,7 +121,7 @@ const evaluationData = {
     },
     {
       id: "a2",
-      name: "แบบประเมินจากพี่เลี้ยง.pdf",
+      name: "แบบประเมินจากแหล่งฝึก.pdf",
       size: "1.8 MB",
       date: "11 มิ.ย. 2566",
     },

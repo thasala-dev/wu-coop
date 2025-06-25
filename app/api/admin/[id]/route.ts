@@ -55,3 +55,38 @@ export async function PUT(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const id = request.nextUrl.pathname.split("/").pop();
+    const sql = neon(`${process.env.DATABASE_URL}`);
+
+    // Soft delete by setting flag_del to 1
+    const result = await sql(
+      `UPDATE user_admin SET
+      flag_del = 1
+      WHERE id = $1
+      RETURNING *`,
+      [id]
+    );
+
+    if (result.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "ไม่พบข้อมูลหรือข้อมูลถูกลบไปแล้ว" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "ลบข้อมูลสำเร็จ",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error deleting admin:", error);
+    return NextResponse.json(
+      { success: false, message: "เกิดข้อผิดพลาดในการลบข้อมูล" },
+      { status: 500 }
+    );
+  }
+}

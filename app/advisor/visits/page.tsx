@@ -43,8 +43,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "lucide-react";
-import AdvisorSidebar from "@/components/advisor-sidebar";
-import { useAuth } from "@/contexts/auth-context";
+import Sidebar from "@/components/sidebar";
+import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 import {
   formatVisitDateTime,
@@ -95,7 +95,8 @@ interface Calendar {
 }
 
 export default function AdvisorVisits() {
-  const { user } = useAuth();
+  const { data: session } = useSession();
+  const user = session?.user;
   const { toast } = useToast();
 
   // State for visits data
@@ -304,7 +305,7 @@ export default function AdvisorVisits() {
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          <AdvisorSidebar activePage="visits" />
+          <Sidebar userType="advisor" activePage="visits" />
 
           <div className="md:col-span-4">
             <Card>

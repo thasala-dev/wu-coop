@@ -8,10 +8,19 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   PlusIcon,
   SearchIcon,
@@ -35,6 +44,8 @@ export default function CompaniesPage() {
   const [filterData, setFilterData] = useState<any>([]);
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("all");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [adminToDelete, setAdminToDelete] = useState<number | null>(null);
   useEffect(() => {
     fetchData();
   }, []);
@@ -63,6 +74,38 @@ export default function CompaniesPage() {
       setData(res.data || []);
       setLoading(false);
     }
+  }
+  // Show delete confirmation dialog
+  function confirmDelete(id: number) {
+    setAdminToDelete(id);
+    setShowDeleteDialog(true);
+  }
+
+  // Handle delete after confirmation
+  async function handleDeleteConfirmed() {
+    if (!adminToDelete) return;
+
+    setLoading(true);
+    setShowDeleteDialog(false);
+
+    const response = await fetch(`/api/admin/${adminToDelete}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const res = await response.json();
+    if (res.success) {
+      // Refresh data after successful deletion
+      fetchData();
+    } else {
+      alert("ไม่สามารถลบข้อมูลได้: " + res.message);
+      setLoading(false);
+    }
+
+    // Reset admin to delete
+    setAdminToDelete(null);
   }
 
   // Function to render status badge
@@ -261,11 +304,12 @@ export default function CompaniesPage() {
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-3.5 w-3.5" />
                                 </Button>
-                              </Link>
+                              </Link>{" "}
                               <Button
                                 variant="destructive"
                                 size="sm"
                                 className="bg-red-600 hover:bg-red-700 text-white"
+                                onClick={() => confirmDelete(row.id)}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
                               </Button>
@@ -283,6 +327,34 @@ export default function CompaniesPage() {
           </Tabs>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>ยืนยันการลบผู้ดูแลระบบ</DialogTitle>
+            <DialogDescription>
+              คุณต้องการลบผู้ดูแลระบบนี้ใช่หรือไม่?
+              การดำเนินการนี้ไม่สามารถย้อนกลับได้
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+            >
+              ยกเลิก
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirmed}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              ยืนยันการลบ
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

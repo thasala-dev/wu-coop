@@ -673,7 +673,7 @@ export default function SupervisionDetailPage() {
 
                             <div>
                               <h3 className="text-lg font-medium mb-2">
-                                ข้อเสนอแนะจากพี่เลี้ยง
+                                ข้อเสนอแนะจากแหล่งฝึก
                               </h3>
                               <p className="text-gray-700">
                                 {supervision.details.mentor_feedback || "-"}

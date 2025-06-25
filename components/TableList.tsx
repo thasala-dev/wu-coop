@@ -28,6 +28,7 @@ interface TableListProps<T = any> {
   exports?: boolean;
   disableSearch?: boolean;
   customSearchSlot?: ReactNode;
+  setItemLenge?: string;
 }
 
 const iconList = [
@@ -46,13 +47,16 @@ const TableList = <
   exports,
   disableSearch,
   customSearchSlot,
+  setItemLenge,
 }: TableListProps<T>) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<{ key: string; order: "asc" | "desc" | "" }>(
     { key: "", order: "" }
   );
-  const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(
+    Number(setItemLenge) || 20
+  );
 
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);

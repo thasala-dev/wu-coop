@@ -410,7 +410,7 @@ export default function CompanyPage({ params }: any) {
                           <th className="text-left py-3 px-4">นักศึกษา</th>
                           <th className="text-left py-3 px-4">สาขาวิชา</th>
                           <th className="text-left py-3 px-4">ตำแหน่ง</th>
-                          <th className="text-left py-3 px-4">พี่เลี้ยง</th>
+                          <th className="text-left py-3 px-4">แหล่งฝึก</th>
                           <th className="text-left py-3 px-4">ระยะเวลา</th>
                           <th className="text-left py-3 px-4">สถานะ</th>
                         </tr>

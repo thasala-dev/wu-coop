@@ -22,10 +22,11 @@ import {
   ShieldCheck,
   Pill,
 } from "lucide-react";
-import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 import Loading from "@/components/loading";
+import { signIn, useSession } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
@@ -37,13 +38,15 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function Home() {
   const [role, setRole] = useState("student");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { user, login, isLoading } = useAuth();
+  const { toast } = useToast();
+  const { data: session, status } = useSession();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -51,28 +54,16 @@ export default function Home() {
       password: "",
     },
   });
+
+  // ตรวจสอบว่ามี session แล้วหรือไม่
   useEffect(() => {
-    // หากมี user อยู่แล้ว ให้ redirect ไปยังหน้า dashboard ตาม role
-    if (user) {
-      switch (user.role) {
-        case "student":
-          router.push("/student/dashboard");
-          break;
-        case "mentor":
-          router.push("/mentor/dashboard");
-          break;
-        case "advisor":
-          router.push("/advisor/dashboard");
-          break;
-        case "admin":
-          router.push("/admin/dashboard");
-          break;
-        default:
-          router.push("/dashboard");
-          break;
-      }
+    if (session?.user) {
+      console.log("Session detected, user:", session.user);
+      const redirectTo = `/${session.user.role}/dashboard`;
+      console.log("Redirecting to:", redirectTo);
+      router.replace(redirectTo);
     }
-  }, [user, router]);
+  }, [session, router]);
 
   const getButtonClass = () => {
     switch (role) {
@@ -90,32 +81,57 @@ export default function Home() {
   };
 
   async function onSubmit(values: LoginFormData) {
-    const success = await login(values.username, values.password, role);
+    console.log("Attempting login with NextAuth...");
+    setIsLoading(true);
 
-    if (success) {
-      switch (role) {
-        case "student":
-          router.push("/student/dashboard");
-          break;
-        case "mentor":
-          router.push("/mentor/dashboard");
-          break;
-        case "advisor":
-          router.push("/advisor/dashboard");
-          break;
-        case "admin":
-          router.push("/admin/dashboard");
-          break;
+    try {
+      const result = await signIn("credentials", {
+        username: values.username,
+        password: values.password,
+        role: role,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        console.error("Login error:", result.error);
+        toast({
+          title: "เข้าสู่ระบบไม่สำเร็จ",
+          description: "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง",
+          variant: "destructive",
+        });
+      } else {
+        console.log("Login successful with NextAuth");
+        toast({
+          title: "เข้าสู่ระบบสำเร็จ",
+          variant: "success",
+        });
+
+        // NextAuth จะโหลด session ใหม่โดยอัตโนมัติ และ useEffect ด้านบนจะทำการ redirect
       }
+    } catch (error) {
+      console.error("Login exception:", error);
+      toast({
+        title: "เข้าสู่ระบบไม่สำเร็จ",
+        description: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-  } // แสดงหน้า login เฉพาะเมื่อไม่มี user หรือกำลังออกจากระบบ
+  }
+
+  // แสดง loading ระหว่างตรวจสอบ session
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 z-20">
-          <Loader2 className="animate-spin h-8 w-8 text-green-600" />
-        </div>
-      )}
+      {isLoading && <Loading />}
       <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200 opacity-90" />
       <div className="container relative z-10 mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center">
@@ -145,113 +161,110 @@ export default function Home() {
                   <TabsList className="grid grid-cols-4 mb-4 bg-green-100 shadow-sm">
                     <TabsTrigger
                       value="student"
-                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-sky-600 data-[state=active]:bg-sky-100 data-[state=active]:text-sky-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="data-[state=active]:bg-sky-500 data-[state=active]:text-white"
                     >
-                      <GraduationCap className="w-4 h-4 text-sky-600" />
-                      <span className="hidden sm:inline">นักศึกษา</span>
-                    </TabsTrigger>{" "}
+                      <GraduationCap className="hidden sm:block h-4 w-4 mr-2" />{" "}
+                      นักศึกษา
+                    </TabsTrigger>
                     <TabsTrigger
                       value="mentor"
-                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-lime-600 data-[state=active]:bg-lime-100 data-[state=active]:text-lime-600 data-[state=active]:font-bold rounded-md px-2 py-1 hover:bg-lime-50"
+                      className="data-[state=active]:bg-lime-500 data-[state=active]:text-white"
                     >
-                      <Briefcase className="w-4 h-4 text-lime-600" />
-                      <span className="hidden sm:inline">แหล่งฝึก</span>
+                      <Briefcase className="hidden sm:block h-4 w-4 mr-2" />{" "}
+                      แหล่งฝึก
                     </TabsTrigger>
                     <TabsTrigger
                       value="advisor"
-                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-fuchsia-600 data-[state=active]:bg-fuchsia-100 data-[state=active]:text-fuchsia-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="data-[state=active]:bg-fuchsia-500 data-[state=active]:text-white"
                     >
-                      <School className="w-4 h-4 text-fuchsia-600" />
-                      <span className="hidden sm:inline">อาจารย์</span>
+                      <School className="hidden sm:block h-4 w-4 mr-2" />{" "}
+                      อาจารย์
                     </TabsTrigger>
                     <TabsTrigger
                       value="admin"
-                      className="flex items-center gap-2 data-[state=active]:border data-[state=active]:border-rose-600 data-[state=active]:bg-rose-100 data-[state=active]:text-rose-600 data-[state=active]:font-bold rounded-md px-2 py-1"
+                      className="data-[state=active]:bg-rose-500 data-[state=active]:text-white"
                     >
-                      <ShieldCheck className="w-4 h-4 text-rose-600" />
-                      <span className="hidden sm:inline">แอดมิน</span>
+                      <ShieldCheck className="hidden sm:block h-4 w-4 mr-2" />{" "}
+                      ผู้ดูแล
                     </TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value={role} className="space-y-4">
-                    <div className="space-y-1">
-                      <label htmlFor="username" className="text-sm font-medium">
-                        {role === "student" ? "รหัสนักศึกษา" : "ชื่อผู้ใช้งาน"}
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="username"
+                        className="text-sm font-medium text-gray-700 block"
+                      >
+                        ชื่อผู้ใช้งาน
                       </label>
                       <input
-                        id="username"
                         type="text"
+                        id="username"
+                        placeholder="กรอกชื่อผู้ใช้งาน"
+                        className="px-3 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         {...register("username")}
-                        className="w-full p-2 border rounded-md"
-                        placeholder={`กรอก${
-                          role === "student" ? "รหัสนักศึกษา" : "ชื่อผู้ใช้งาน"
-                        }`}
                       />
                       {errors.username && (
-                        <p className="text-sm text-red-600">
+                        <p className="text-red-500 text-xs mt-1">
                           {errors.username.message}
                         </p>
                       )}
-                    </div>{" "}
-                    <div className="space-y-1">
-                      <label htmlFor="password" className="text-sm font-medium">
+                    </div>
+
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="password"
+                        className="text-sm font-medium text-gray-700 block"
+                      >
                         รหัสผ่าน
                       </label>
                       <div className="relative">
                         <input
-                          id="password"
                           type={showPassword ? "text" : "password"}
-                          {...register("password")}
-                          className="w-full p-2 border rounded-md pr-10"
+                          id="password"
                           placeholder="กรอกรหัสผ่าน"
+                          className="px-3 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          {...register("password")}
                         />
                         <button
                           type="button"
-                          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
-                            <EyeOff className="h-5 w-5" />
+                            <EyeOff className="h-4 w-4 text-gray-400" />
                           ) : (
-                            <Eye className="h-5 w-5" />
+                            <Eye className="h-4 w-4 text-gray-400" />
                           )}
                         </button>
                       </div>
                       {errors.password && (
-                        <p className="text-sm text-red-600">
+                        <p className="text-red-500 text-xs mt-1">
                           {errors.password.message}
                         </p>
                       )}
                     </div>
+
                     <Button
                       type="submit"
-                      className={`${getButtonClass()} w-full hover:opacity-90 transition-all`}
                       disabled={isLoading}
+                      className={`w-full py-2 rounded-md text-white transition duration-300 ${getButtonClass()}`}
                     >
                       {isLoading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          กำลังเข้าสู่ระบบ...
-                        </>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       ) : (
-                        <>
-                          <LogIn className="h-4 w-4" />
-                          เข้าสู่ระบบ
-                        </>
+                        <LogIn className="h-4 w-4 mr-2" />
                       )}
+                      เข้าสู่ระบบ
                     </Button>
-                  </TabsContent>
+                  </div>
                 </Tabs>
               </form>
             </CardContent>
 
-            <CardFooter className="text-center text-sm">
-              <span className="mx-auto">
-                พบปัญหาการเข้าสู่ระบบ?{" "}
-                <Link href="#" className="text-green-600 hover:underline">
-                  ติดต่อผู้ดูแลระบบ
-                </Link>
-              </span>
+            <CardFooter className="flex justify-center text-sm text-green-700/70">
+              <Pill className="h-4 w-4 mr-1" />
+              ระบบฝึกงาน สำนักวิชาเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์
             </CardFooter>
           </Card>
         </div>
