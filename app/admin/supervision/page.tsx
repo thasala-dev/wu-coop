@@ -1,18 +1,35 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   Plus,
   FileText,
   Calendar,
   Search,
-  ChevronLeft,
-  ChevronRight,
   MoreHorizontal,
   Filter,
   RefreshCcw,
+  CheckIcon,
+  InfoIcon,
+  Link2,
+  Link2Off,
+  LinkIcon,
+  PlusIcon,
+  UserIcon,
+  XIcon,
+  BuildingIcon,
+  Save,
+  CalendarIcon
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -30,51 +47,127 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Sidebar from "@/components/sidebar";
-import Link from "next/link";
+import Loading from "@/components/loading";
 import { format } from "date-fns";
 import { th } from "date-fns/locale";
+import { useToast } from "@/hooks/use-toast";
+import TableList from "@/components/TableList";
+import CardList from "@/components/CardList";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/auth-context";
 
 // Interface สำหรับข้อมูลการนิเทศ
 interface SupervisionItem {
   id: number;
-  student: {
-    id: number;
-    name: string;
-    student_id: string;
-  };
-  company: {
-    id: number;
-    name: string;
-  };
-  advisor: {
-    id: number;
-    name: string;
-  };
+  regist_intern_id: number;
+  advisor_id: number;
+  student_name: string;
+  student_code: string;
+  company_name: string;
+  advisor_name: string;
   scheduled_date: string;
+  start_time: string;
+  end_time: string;
+  visit_type: string;
+  comments: string;
   status: number;
 }
 
-// ข้อมูลเริ่มต้นสำหรับการแสดงผล - จะถูกแทนที่ด้วยข้อมูลจาก API
-const initialSupervisions: SupervisionItem[] = [];
-
 export default function SupervisionPage() {
-  const [supervisions, setSupervisions] =
-    useState<SupervisionItem[]>(initialSupervisions);
+  const { log } = useAuth();
+  const { toast } = useToast();
+  
+  const [loading, setLoading] = useState(true);
+  const [calendars, setCalendars] = useState<any[]>([]);
+  const [calendarSelected, setCalendarSelected] = useState<any>(null);
+  const [supervisions, setSupervisions] = useState<SupervisionItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [loading, setLoading] = useState(false);
+  const [students, setStudents] = useState<any[]>([]);
+  const [advisors, setAdvisors] = useState<any[]>([]);
+  // Modal states
+  const [addSupervisionModal, setAddSupervisionModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<string>("");
+  const [selectedAdvisor, setSelectedAdvisor] = useState<string>("");
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(null);
+  const [startTime, setStartTime] = useState<string>("09:00");
+  const [endTime, setEndTime] = useState<string>("12:00");
+  const [visitType, setVisitType] = useState<string>("");
+  const [comments, setComments] = useState<string>("");
 
-  // โหลดข้อมูลการนิเทศเมื่อโหลดหน้า
+  // Fetch calendars when page loads
   useEffect(() => {
-    fetchSupervisions();
+    fetchCalendars();
+    fetchAdvisors();
   }, []);
 
-  // ฟังก์ชั่นสำหรับดึงข้อมูลการนิเทศทั้งหมดจาก API
-  const fetchSupervisions = async () => {
+  // Fetch supervisions when calendar is selected
+  useEffect(() => {
+    if (calendarSelected) {
+      fetchSupervisions();
+      fetchStudents();
+    }
+  }, [calendarSelected]);
+
+  // Fetch all calendars
+  const fetchCalendars = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/supervision");
+      const response = await fetch("/api/calendar", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const res = await response.json();
+      if (res.success) {
+        setCalendars(res.data);
+      }
+    } catch (error) {
+      console.error("Error fetching calendars:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลปฏิทินฝึกงานได้",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch supervisions for the selected calendar
+  const fetchSupervisions = async () => {
+    if (!calendarSelected) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/supervision?calendarId=${calendarSelected}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = await response.json();
 
       if (data.success) {
@@ -84,32 +177,97 @@ export default function SupervisionPage() {
       }
     } catch (error) {
       console.error("Error fetching supervisions:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลการนิเทศได้",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
+  
+  // Fetch students for the selected calendar
+  const fetchStudents = async () => {
+    if (!calendarSelected) return;
+    
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/calendar/${calendarSelected}/info`);
+      const data = await response.json();
+      
+      if (data.success) {
+        // Only use students that are matched with companies
+        const matchedStudents = data.intern
+          .filter((item: any) => item.company_id !== null)
+          .map((item: any) => {
+            const company = data.company.find((c: any) => c.company_id === item.company_id);
+            return {
+              id: item.id, // regist_intern_id
+              name: item.fullname,
+              student_id: item.student_code,
+              company: company ? company.name : 'ไม่ระบุบริษัท'
+            };
+          });
+          
+        setStudents(matchedStudents);
+      }
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลนักศึกษาได้",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Fetch advisors
+  const fetchAdvisors = async () => {
+    try {
+      const response = await fetch('/api/advisor');
+      const data = await response.json();
+      if (data.success) {
+        const advisorsList = data.data.map((advisor: any) => ({
+          id: advisor.id,
+          name: advisor.fullname
+        }));
+        setAdvisors(advisorsList);
+      }
+    } catch (error) {
+      console.error("Error fetching advisors:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลอาจารย์นิเทศได้",
+        variant: "destructive",
+      });
+    }
+  };
 
-  // ฟังก์ชั่นการค้นหา
+  // Handle search input
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  // ฟังก์ชั่นการกรองข้อมูลตามสถานะ
+  // Handle status filter
   const handleStatusFilter = (status: string) => {
     setStatusFilter(status);
   };
-  // กรองข้อมูลตามการค้นหาและสถานะ
+  
+  // Filter supervisions by search and status
   const filteredSupervisions = supervisions.filter(
     (supervision: SupervisionItem) => {
       const matchesSearch =
-        supervision.student.name
+        supervision.student_name
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        supervision.student.student_id.includes(searchQuery) ||
-        supervision.company.name
+        supervision.student_code.includes(searchQuery) ||
+        supervision.company_name
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        supervision.advisor.name
+        supervision.advisor_name
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
 
@@ -122,202 +280,593 @@ export default function SupervisionPage() {
       return matchesSearch && matchesStatus;
     }
   );
-
-  // ฟังก์ชั่นแสดงสถานะการนิเทศ
+  
+  // Render status badge
   const renderStatus = (status: number) => {
     switch (status) {
       case 1:
-        return <Badge className="bg-yellow-500">รอดำเนินการ</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">รอดำเนินการ</Badge>;
       case 2:
-        return <Badge className="bg-green-500">เสร็จสิ้น</Badge>;
+        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">เสร็จสิ้น</Badge>;
       case 3:
-        return <Badge className="bg-red-500">ยกเลิก</Badge>;
+        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">ยกเลิก</Badge>;
       default:
-        return <Badge className="bg-gray-500">ไม่ระบุ</Badge>;
+        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">ไม่ระบุ</Badge>;
     }
   };
-
-  // ฟังก์ชั่นแปลง Date เป็น String ในรูปแบบไทย
+  // Format date to Thai format
   const formatToThaiDate = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, "d MMMM yyyy", { locale: th });
   };
+    // Format time for display
+  const formatTime = (timeString: string) => {
+    if (!timeString) return "";
+    
+    // If timeString is already in HH:MM format, just return it
+    if (timeString.includes(":") && timeString.length <= 8) {
+      return timeString;
+    }
+    
+    // Otherwise try to parse it as a date
+    try {
+      const date = new Date(timeString);
+      if (isNaN(date.getTime())) {
+        return timeString; // Return original if parsing fails
+      }
+      return format(date, "HH:mm", { locale: th });
+    } catch (e) {
+      return timeString;
+    }
+  };
+  
+  // Get calendar status badge
+  const getStatusBadge = (status: number) => {
+    switch (status) {
+      case 1:
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            กำลังดำเนินการ
+          </Badge>
+        );
+      case 2:
+        return (
+          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+            กำลังจะมาถึง
+          </Badge>
+        );
+      case 4:
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            เสร็จสิ้น
+          </Badge>
+        );
+      case 3:
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            วางแผน
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            ไม่ระบุ
+          </Badge>
+        );
+    }
+  };
+  // Reset add supervision form
+  const resetAddSupervisionForm = () => {
+    setSelectedStudent("");
+    setSelectedAdvisor("");
+    setScheduledDate(null);
+    setStartTime("09:00");
+    setEndTime("12:00");
+    setVisitType("");
+    setComments("");
+  };
+  
+  // Open add supervision modal
+  const handleOpenAddSupervisionModal = () => {
+    resetAddSupervisionForm();
+    setAddSupervisionModal(true);
+  };
+    // Handle add supervision form submission
+  const handleAddSupervision = async () => {
+    if (!selectedStudent) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาเลือกนักศึกษา",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!selectedAdvisor) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาเลือกอาจารย์นิเทศ",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!scheduledDate) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาเลือกวันที่นิเทศ",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!startTime) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาระบุเวลาเริ่มต้น",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!endTime) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาระบุเวลาสิ้นสุด",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate that end time is after start time
+    if (startTime >= endTime) {
+      toast({
+        title: "ข้อมูลไม่ถูกต้อง",
+        description: "เวลาสิ้นสุดต้องมากกว่าเวลาเริ่มต้น",
+        variant: "destructive",
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      const formattedDate = format(scheduledDate, "yyyy-MM-dd");
+      
+      const response = await fetch("/api/supervision", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          regist_intern_id: selectedStudent,
+          advisor_id: selectedAdvisor,
+          scheduled_date: formattedDate,
+          start_time: startTime,
+          end_time: endTime,
+          visit_type: visitType || null,
+          comments: comments || null,
+          status: 1 // Default to pending
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        const student = students.find(s => s.id === selectedStudent);
+        const advisor = advisors.find(a => a.id === selectedAdvisor);
+          await log(
+          `เพิ่มการนิเทศสำหรับนักศึกษา ${student?.name || selectedStudent} โดยอาจารย์ ${advisor?.name || selectedAdvisor} วันที่ ${formatToThaiDate(formattedDate)} เวลา ${startTime}-${endTime} น.`
+        );
+        
+        toast({
+          title: "บันทึกข้อมูลสำเร็จ",
+          description: "เพิ่มรายการนิเทศเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        
+        setAddSupervisionModal(false);
+        resetAddSupervisionForm();
+        fetchSupervisions();
+      } else {
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: data.message || "ไม่สามารถบันทึกข้อมูลได้",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error adding supervision:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถบันทึกข้อมูลได้ โปรดลองอีกครั้ง",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-0 md:p-4">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <main className="container mx-auto p-2">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="supervision" userType="admin" />
+          {loading && <Loading />}
 
           <div className="md:col-span-4">
-            <div className="flex flex-col">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4">
-                <h1 className="text-xl font-bold mb-2 md:mb-0">การนิเทศ</h1>
-
-                <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                  <div className="relative w-full md:w-64">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-                    <Input
-                      placeholder="ค้นหาชื่อ รหัสนักศึกษา บริษัท..."
-                      className="pl-8 w-full"
-                      value={searchQuery}
-                      onChange={handleSearch}
-                    />
+            {/* Calendar Selector */}
+            <Card className="mb-6">
+              <CardHeader className="pb-3">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <CardTitle className="text-xl">ผลัดฝึกงาน</CardTitle>
+                    <CardDescription>
+                      เลือกผลัดฝึกงานที่ต้องการจัดการการนิเทศ
+                    </CardDescription>
                   </div>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="gap-1">
-                        <Filter className="h-4 w-4" />
-                        สถานะ
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem
-                        onClick={() => handleStatusFilter("all")}
-                      >
-                        ทั้งหมด
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleStatusFilter("pending")}
-                      >
-                        รอดำเนินการ
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleStatusFilter("completed")}
-                      >
-                        เสร็จสิ้น
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleStatusFilter("cancelled")}
-                      >
-                        ยกเลิก
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <Button
-                    onClick={fetchSupervisions}
-                    variant="outline"
-                    className="gap-1"
-                  >
-                    <RefreshCcw className="h-4 w-4" />
-                    รีเฟรช
-                  </Button>
-
-                  <Link href="/admin/supervision/add" passHref>
-                    <Button className="gap-1">
-                      <Plus className="h-4 w-4" />
-                      เพิ่มการนิเทศ
-                    </Button>
-                  </Link>
                 </div>
-              </div>
+              </CardHeader>
+              <CardContent>
+                <div>
+                  <CardList
+                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
+                    data={calendars}
+                    pageLength={4}
+                    render={(cal: any) => (
+                      <Card
+                        className={`cursor-pointer hover:border-blue-300 transition-colors ${
+                          cal.id === calendarSelected
+                            ? "border-blue-500 bg-blue-50"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          setCalendarSelected(cal.id);
+                        }}
+                      >
+                        <CardHeader className="p-4 pb-0">
+                          <div className="flex justify-between items-start">
+                            <CardTitle className="text-md">
+                              {cal.semester}/{cal.year}
+                            </CardTitle>
+                            {getStatusBadge(cal.status_id || 1)}
+                          </div>
+                          <CardTitle className="text-lg">{cal.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <p className="text-sm text-gray-600">
+                            {cal.start_date
+                              ? new Date(cal.start_date).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )
+                              : ""}{" "}
+                            -{" "}
+                            {cal.end_date
+                              ? new Date(cal.end_date).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )
+                              : ""}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
+            {/* Students List and Supervision Management */}
+            {calendarSelected && (
               <Card>
                 <CardHeader>
-                  <CardTitle>รายการการนิเทศ</CardTitle>
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                      <CardTitle>การนิเทศนักศึกษา</CardTitle>
+                      <CardDescription>
+                        จัดการการนิเทศนักศึกษาที่ลงทะเบียนในผลัดฝึกงานที่เลือก
+                      </CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="relative w-64">
+                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+                        <Input
+                          placeholder="ค้นหาชื่อ รหัสนักศึกษา บริษัท..."
+                          className="pl-8 w-full"
+                          value={searchQuery}
+                          onChange={handleSearch}
+                        />
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" className="gap-1">
+                            <Filter className="h-4 w-4" />
+                            สถานะ
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem
+                            onClick={() => handleStatusFilter("all")}
+                          >
+                            ทั้งหมด
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleStatusFilter("pending")}
+                          >
+                            รอดำเนินการ
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleStatusFilter("completed")}
+                          >
+                            เสร็จสิ้น
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleStatusFilter("cancelled")}
+                          >
+                            ยกเลิก
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <Button
+                        onClick={fetchSupervisions}
+                        variant="outline"
+                        className="gap-1"
+                      >
+                        <RefreshCcw className="h-4 w-4" />
+                        รีเฟรช
+                      </Button>
+                      <Button
+                        onClick={handleOpenAddSupervisionModal}
+                        className="gap-1"
+                      >
+                        <Plus className="h-4 w-4" />
+                        เพิ่มการนิเทศ
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  {loading ? (
-                    <div className="flex justify-center items-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                    </div>
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-12">#</TableHead>
-                            <TableHead>นักศึกษา</TableHead>
-                            <TableHead>สถานประกอบการ</TableHead>
-                            <TableHead>อาจารย์นิเทศ</TableHead>
-                            <TableHead>วันที่นิเทศ</TableHead>
-                            <TableHead>สถานะ</TableHead>
-                            <TableHead className="w-24">จัดการ</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {" "}
-                          {filteredSupervisions.length > 0 ? (
-                            filteredSupervisions.map(
-                              (supervision: SupervisionItem, index: number) => (
-                                <TableRow key={supervision.id}>
-                                  <TableCell>{index + 1}</TableCell>
-                                  <TableCell>
-                                    <div className="font-medium">
-                                      {supervision.student.name}
-                                    </div>
-                                    <div className="text-sm text-gray-500">
-                                      {supervision.student.student_id}
-                                    </div>
-                                  </TableCell>
-                                  <TableCell>
-                                    {supervision.company.name}
-                                  </TableCell>
-                                  <TableCell>
-                                    {supervision.advisor.name}
-                                  </TableCell>
-                                  <TableCell>
-                                    {formatToThaiDate(
-                                      supervision.scheduled_date
-                                    )}
-                                  </TableCell>
-                                  <TableCell>
-                                    {renderStatus(supervision.status)}
-                                  </TableCell>
-                                  <TableCell>
-                                    <DropdownMenu>
-                                      <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon">
-                                          <MoreHorizontal className="h-4 w-4" />
-                                        </Button>
-                                      </DropdownMenuTrigger>
-                                      <DropdownMenuContent align="end">
-                                        <Link
-                                          href={`/admin/supervision/${supervision.id}`}
-                                          passHref
-                                        >
-                                          <DropdownMenuItem>
-                                            <FileText className="mr-2 h-4 w-4" />
-                                            ดูรายละเอียด
-                                          </DropdownMenuItem>
-                                        </Link>
-                                        <Link
-                                          href={`/admin/supervision/edit/${supervision.id}`}
-                                          passHref
-                                        >
-                                          <DropdownMenuItem>
-                                            <Calendar className="mr-2 h-4 w-4" />
-                                            แก้ไข
-                                          </DropdownMenuItem>
-                                        </Link>
-                                      </DropdownMenuContent>
-                                    </DropdownMenu>
-                                  </TableCell>
-                                </TableRow>
-                              )
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12">#</TableHead>
+                          <TableHead>นักศึกษา</TableHead>
+                          <TableHead>สถานประกอบการ</TableHead>
+                          <TableHead>อาจารย์นิเทศ</TableHead>
+                          <TableHead>วันที่นิเทศ</TableHead>
+                          <TableHead>รูปแบบ</TableHead>
+                          <TableHead>สถานะ</TableHead>
+                          <TableHead className="w-24">จัดการ</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredSupervisions.length > 0 ? (
+                          filteredSupervisions.map(
+                            (supervision: SupervisionItem, index: number) => (
+                              <TableRow key={supervision.id}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>
+                                  <div className="font-medium">
+                                    {supervision.student_name}
+                                  </div>
+                                  <div className="text-sm text-gray-500">
+                                    {supervision.student_code}
+                                  </div>
+                                </TableCell>
+                                <TableCell>{supervision.company_name}</TableCell>
+                                <TableCell>{supervision.advisor_name}</TableCell>                                <TableCell>
+                                  {formatToThaiDate(supervision.scheduled_date)}
+                                  <div className="text-sm text-gray-500">
+                                    {formatTime(supervision.start_time)} - {formatTime(supervision.end_time)} น.
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  {supervision.visit_type === "onsite"
+                                    ? "ณ สถานประกอบการ"
+                                    : supervision.visit_type === "online"
+                                    ? "ออนไลน์"
+                                    : supervision.visit_type === "hybrid"
+                                    ? "ผสมผสาน"
+                                    : "ไม่ระบุ"}
+                                </TableCell>
+                                <TableCell>
+                                  {renderStatus(supervision.status)}
+                                </TableCell>
+                                <TableCell>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="icon">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <Link
+                                        href={`/admin/supervision/${supervision.id}`}
+                                        passHref
+                                      >
+                                        <DropdownMenuItem>
+                                          <FileText className="mr-2 h-4 w-4" />
+                                          ดูรายละเอียด
+                                        </DropdownMenuItem>
+                                      </Link>
+                                      <Link
+                                        href={`/admin/supervision/edit/${supervision.id}`}
+                                        passHref
+                                      >
+                                        <DropdownMenuItem>
+                                          <Calendar className="mr-2 h-4 w-4" />
+                                          แก้ไข
+                                        </DropdownMenuItem>
+                                      </Link>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </TableCell>
+                              </TableRow>
                             )
-                          ) : (
-                            <TableRow>
-                              <TableCell
-                                colSpan={7}
-                                className="text-center py-4"
-                              >
-                                ไม่พบข้อมูลการนิเทศ
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  )}
+                          )
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={8} className="text-center py-4">
+                              ไม่พบข้อมูลการนิเทศ
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </CardContent>
               </Card>
-            </div>
+            )}
           </div>
         </div>
-      </div>
+      </main>
+      
+      {/* Add Supervision Modal */}
+      <Dialog open={addSupervisionModal} onOpenChange={setAddSupervisionModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>เพิ่มการนิเทศ</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">นักศึกษา</label>
+              <Select onValueChange={setSelectedStudent} value={selectedStudent}>
+                <SelectTrigger>
+                  <SelectValue placeholder="เลือกนักศึกษา" />
+                </SelectTrigger>
+                <SelectContent>
+                  {students.map((student) => (
+                    <SelectItem key={student.id} value={student.id}>
+                      <div>
+                        <div>
+                          {student.name} ({student.student_id})
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {student.company}
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">อาจารย์นิเทศ</label>
+              <Select onValueChange={setSelectedAdvisor} value={selectedAdvisor}>
+                <SelectTrigger>
+                  <SelectValue placeholder="เลือกอาจารย์นิเทศ" />
+                </SelectTrigger>
+                <SelectContent>
+                  {advisors.map((advisor) => (
+                    <SelectItem key={advisor.id} value={advisor.id}>
+                      {advisor.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>            <div className="space-y-2">
+              <label className="text-sm font-medium">วันที่นิเทศ</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !scheduledDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {scheduledDate ? (
+                      format(scheduledDate, "d MMMM yyyy", {
+                        locale: th,
+                      })
+                    ) : (
+                      <span>เลือกวันที่นิเทศ</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto p-0 shadow-md rounded-md"
+                  align="start"
+                >
+                  <CalendarComponent
+                    selected={scheduledDate || undefined}
+                    onSelect={(date: Date | null) => {
+                      setScheduledDate(date);
+                    }}
+                    locale={th}
+                    className="rounded-md"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">เวลาเริ่มต้น</label>
+                <Input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">เวลาสิ้นสุด</label>
+                <Input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">รูปแบบการนิเทศ</label>
+              <Select onValueChange={setVisitType} value={visitType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="เลือกรูปแบบการนิเทศ" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="onsite">นิเทศ ณ สถานประกอบการ</SelectItem>
+                  <SelectItem value="online">นิเทศออนไลน์</SelectItem>
+                  <SelectItem value="hybrid">นิเทศแบบผสมผสาน</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">หมายเหตุ</label>
+              <textarea
+                value={comments}
+                onChange={(e) => setComments(e.target.value)}
+                className="w-full p-2 border rounded-md h-24"
+                placeholder="บันทึกรายละเอียดเพิ่มเติม (ถ้ามี)"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddSupervisionModal(false)}>
+              ยกเลิก
+            </Button>
+            <Button onClick={handleAddSupervision} disabled={loading}>
+              <Save className="h-4 w-4 mr-2" />
+              {loading ? "กำลังบันทึก..." : "บันทึก"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
