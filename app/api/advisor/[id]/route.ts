@@ -35,11 +35,13 @@ export async function PUT(request: NextRequest) {
     const data = await sql(
       `UPDATE user_advisor SET
       fullname = $2,
-      image = $3,
-      username = $4
+      email = $3,
+      mobile = $4,
+      image = $5,
+      username = $6
       WHERE id = $1
       RETURNING *`,
-      [id, body.fullname, body.image || null, body.username || null]
+      [id, body.fullname, body.email || null, body.mobile || null, body.image || null, body.username || null]
     );
 
     return NextResponse.json({

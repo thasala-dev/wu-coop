@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: any) {
         std.mobile as student_mobile, std.email as student_email,
         adv.fullname as advisor_name, adv.mobile as advisor_mobile, 
         adv.email as advisor_email,
-        com.name as company_name, com.address as company_address, 
+        com.name as company_name, com.contact_address  as company_address, 
         com.contact_name, com.contact_phone, com.contact_email
        FROM supervisions sup
        JOIN regist_intern ri ON sup.regist_intern_id = ri.id

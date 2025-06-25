@@ -36,10 +36,10 @@ export async function POST(request: Request) {
 
     const data = await sql(
       `INSERT INTO user_advisor 
-      (username, password_hash, fullname, image) 
-      VALUES ($1, $2, $3, $4)
+      (username, password_hash, fullname, email, mobile, image) 
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *`,
-      [body.username, body.password, body.fullname, body.image || null]
+      [body.username, body.password, body.fullname, body.email || null, body.mobile || null, body.image || null]
     );
     return NextResponse.json({
       success: true,

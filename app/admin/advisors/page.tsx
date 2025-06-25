@@ -257,6 +257,13 @@ export default function CompaniesPage() {
                                 <div className="text-sm text-gray-500">
                                   Username: {row.username}
                                 </div>
+                                {(row.email || row.mobile) && (
+                                  <div className="text-sm text-gray-500">
+                                    {row.email && <span>อีเมล: {row.email}</span>}
+                                    {row.email && row.mobile && <span> | </span>}
+                                    {row.mobile && <span>Tel: {row.mobile}</span>}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           );
@@ -305,11 +312,7 @@ export default function CompaniesPage() {
                         render: (row: any) => {
                           return (
                             <div className="flex justify-end gap-2">
-                              <Link href={`/admin/advisors/${row.id}`}>
-                                <Button variant="outline" size="sm">
-                                  <Eye className="h-3.5 w-3.5" />
-                                </Button>
-                              </Link>
+                              
                               <Link href={`/admin/advisors/edit/${row.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-3.5 w-3.5" />

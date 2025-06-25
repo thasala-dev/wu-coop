@@ -18,6 +18,8 @@ import AvatarDesign from "@/components/AvatarDesign";
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
   fullname: z.string().min(1, "กรุณากรอกชื่ออาจารย์นิเทศ"),
+  email: z.string().email("กรุณากรอกอีเมลที่ถูกต้อง").min(1, "กรุณากรอกอีเมล"),
+  mobile: z.string().min(10, "กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก").max(10, "เบอร์โทรศัพท์ต้องเป็น 10 หลัก"),
   image: z.string().optional(),
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
   password: z.string().min(1, "กรุณากรอกรหัสผ่าน"),
@@ -38,6 +40,8 @@ export default function Page() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullname: "",
+      email: "",
+      mobile: "",
       image: "",
       username: "",
       password: "",
@@ -153,6 +157,49 @@ export default function Page() {
                             {errors.fullname && (
                               <p className="text-sm text-red-600">
                                 {errors.fullname.message}
+                              </p>
+                            )}
+                          </div>
+                          
+                          <div className="sm:col-span-6">
+                            <label>อีเมล</label>
+                            <input
+                              id="email"
+                              type="email"
+                              {...register("email")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.email
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกอีเมล"
+                            />
+                            {errors.email && (
+                              <p className="text-sm text-red-600">
+                                {errors.email.message}
+                              </p>
+                            )}
+                          </div>
+                          
+                          <div className="sm:col-span-6">
+                            <label>เบอร์โทรศัพท์</label>
+                            <input
+                              id="mobile"
+                              type="tel"
+                              {...register("mobile")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.mobile
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกเบอร์โทรศัพท์ 10 หลัก"
+                              maxLength={10}
+                            />
+                            {errors.mobile && (
+                              <p className="text-sm text-red-600">
+                                {errors.mobile.message}
                               </p>
                             )}
                           </div>

@@ -22,6 +22,8 @@ const formSchema = z.object({
   image: z.string().optional(),
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้"),
   password: z.string().optional().or(z.literal("")), // รหัสผ่าน, optional หรือค่าว่าง
+  email: z.string().email("กรุณากรอกอีเมลที่ถูกต้อง").optional().or(z.literal("")),
+  mobile: z.string().optional().or(z.literal("")),
 });
 
 // --- Component หลัก ---
@@ -47,6 +49,8 @@ export default function Page() {
       image: "",
       username: "",
       password: "",
+      email: "",
+      mobile: "",
     },
   });
 
@@ -66,6 +70,8 @@ export default function Page() {
           setValue("fullname", advisorData.fullname);
           setValue("image", advisorData.image || "");
           setValue("username", advisorData.username);
+          setValue("email", advisorData.email || "");
+          setValue("mobile", advisorData.mobile || "");
           // ไม่ต้อง setValue 'password' ที่ดึงมาจาก API เพราะมันไม่ควรถูกแสดง
         } else {
           toast({
@@ -199,6 +205,42 @@ export default function Page() {
                         {errors.fullname && (
                           <p className="text-sm text-red-600">
                             {errors.fullname.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="sm:col-span-6">
+                        <label htmlFor="email">อีเมล</label>
+                        <input
+                          id="email"
+                          type="email"
+                          {...register("email")}
+                          className={`w-full p-2 border rounded-md ${
+                            errors.email ? "border-red-600 border-2" : ""
+                          }`}
+                          placeholder="กรุณากรอกอีเมล"
+                        />
+                        {errors.email && (
+                          <p className="text-sm text-red-600">
+                            {errors.email.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="sm:col-span-6">
+                        <label htmlFor="mobile">เบอร์โทรศัพท์</label>
+                        <input
+                          id="mobile"
+                          type="text"
+                          {...register("mobile")}
+                          className={`w-full p-2 border rounded-md ${
+                            errors.mobile ? "border-red-600 border-2" : ""
+                          }`}
+                          placeholder="กรุณากรอกเบอร์โทรศัพท์"
+                        />
+                        {errors.mobile && (
+                          <p className="text-sm text-red-600">
+                            {errors.mobile.message}
                           </p>
                         )}
                       </div>

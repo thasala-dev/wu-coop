@@ -61,6 +61,7 @@ import { th } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import TableList from "@/components/TableList";
 import CardList from "@/components/CardList";
+import { useSession } from "next-auth/react";
 import {
   Dialog,
   DialogContent,
@@ -75,7 +76,6 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/contexts/auth-context";
 
 // Interface สำหรับข้อมูลการนิเทศ
 interface SupervisionItem {
@@ -95,7 +95,7 @@ interface SupervisionItem {
 }
 
 export default function SupervisionPage() {
-  const { log } = useAuth();
+  const { data: session } = useSession();
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(true);
@@ -299,25 +299,30 @@ export default function SupervisionPage() {
     const date = new Date(dateString);
     return format(date, "d MMMM yyyy", { locale: th });
   };
-    // Format time for display
+  // Format time for display
   const formatTime = (timeString: string) => {
     if (!timeString) return "";
     
-    // If timeString is already in HH:MM format, just return it
-    if (timeString.includes(":") && timeString.length <= 8) {
-      return timeString;
+    // ถ้าเป็นรูปแบบ HH:MM:SS หรือ HH:MM ให้ใช้ได้เลย
+    if (typeof timeString === 'string' && timeString.match(/^\d{1,2}:\d{2}(:\d{2})?$/)) {
+      return timeString.substring(0, 5); // เอาแค่ HH:MM
     }
     
-    // Otherwise try to parse it as a date
+    // ถ้าเป็น timestamp ให้แปลงเป็น time
     try {
       const date = new Date(timeString);
-      if (isNaN(date.getTime())) {
-        return timeString; // Return original if parsing fails
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleTimeString('th-TH', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          hour12: false 
+        });
       }
-      return format(date, "HH:mm", { locale: th });
     } catch (e) {
-      return timeString;
+      console.error("Error formatting time:", e);
     }
+    
+    return timeString.toString().substring(0, 5) || "";
   };
   
   // Get calendar status badge
@@ -453,7 +458,9 @@ export default function SupervisionPage() {
       if (response.ok && data.success) {
         const student = students.find(s => s.id === selectedStudent);
         const advisor = advisors.find(a => a.id === selectedAdvisor);
-          await log(
+        
+        // Log activity (you can implement your own logging system here)
+        console.log(
           `เพิ่มการนิเทศสำหรับนักศึกษา ${student?.name || selectedStudent} โดยอาจารย์ ${advisor?.name || selectedAdvisor} วันที่ ${formatToThaiDate(formattedDate)} เวลา ${startTime}-${endTime} น.`
         );
         

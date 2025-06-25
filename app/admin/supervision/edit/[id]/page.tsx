@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import {
   ArrowLeft,
   ChevronRight,
@@ -41,8 +42,8 @@ import {
 // Schema สำหรับตรวจสอบการกรอกฟอร์ม
 const formSchema = z
   .object({
-    registInternId: z.string().min(1, "กรุณาเลือกนักศึกษา"),
-    advisorId: z.string().min(1, "กรุณาเลือกอาจารย์นิเทศ"),
+    registInternId: z.string().optional(), // ไม่บังคับเพราะไม่ให้แก้ไข
+    advisorId: z.string().optional(), // ไม่บังคับเพราะไม่ให้แก้ไข
     scheduledDate: z.string().min(1, "กรุณาเลือกวันที่นิเทศ"),
     start_time: z.string().min(1, "กรุณาระบุเวลาเริ่มต้น"),
     end_time: z.string().min(1, "กรุณาระบุเวลาสิ้นสุด"),
@@ -103,13 +104,16 @@ const mockSupervision = {
 };
 
 export default function EditSupervision() {
+  const { data: session } = useSession();
   const params = useParams();
   const id = params?.id as string;
   const [scheduledDate, setScheduledDate] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
-  const [students, setStudents] = useState(mockStudents);
-  const [advisors, setAdvisors] = useState(mockAdvisors);
+  const [students, setStudents] = useState<any[]>([]);
+  const [advisors, setAdvisors] = useState<any[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedAdvisor, setSelectedAdvisor] = useState<any>(null);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -222,8 +226,43 @@ export default function EditSupervision() {
         setValue("status", supervisionData.status.toString());
         
         if (supervisionData.scheduled_date) {
-          setScheduledDate(parse(supervisionData.scheduled_date, "yyyy-MM-dd", new Date()));
+          try {
+            const parsedDate = parse(supervisionData.scheduled_date, "yyyy-MM-dd", new Date());
+            if (!isNaN(parsedDate.getTime())) {
+              setScheduledDate(parsedDate);
+            } else {
+              // ถ้า parse ไม่ได้ ให้ลองใช้ new Date
+              const fallbackDate = new Date(supervisionData.scheduled_date);
+              if (!isNaN(fallbackDate.getTime())) {
+                setScheduledDate(fallbackDate);
+              }
+            }
+          } catch (error) {
+            console.error("Error parsing scheduled_date:", error);
+            // ถ้าแปลงไม่ได้ ให้ลองใช้ new Date
+            try {
+              const fallbackDate = new Date(supervisionData.scheduled_date);
+              if (!isNaN(fallbackDate.getTime())) {
+                setScheduledDate(fallbackDate);
+              }
+            } catch (e) {
+              console.error("Error with fallback date parsing:", e);
+            }
+          }
         }
+        
+        // ตั้งค่าข้อมูลนักศึกษาและอาจารย์ที่เลือกแล้ว
+        setSelectedStudent({
+          id: supervisionData.regist_intern_id,
+          name: supervisionData.student_name,
+          student_code: supervisionData.student_code,
+          company: supervisionData.company_name
+        });
+        
+        setSelectedAdvisor({
+          id: supervisionData.advisor_id,
+          name: supervisionData.advisor_name
+        });
         
         setLoadingData(false);
       } else {
@@ -351,84 +390,40 @@ export default function EditSupervision() {
                     </div>
 
                     <div className="sm:col-span-6 space-y-1">
-                      <label
-                        htmlFor="registInternId"
-                        className="block text-sm font-medium"
-                      >
-                        นักศึกษา <span className="text-red-500">*</span>
+                      <label className="block text-sm font-medium">
+                        นักศึกษา
                       </label>
-                      <Select
-                        defaultValue={watch("registInternId")}
-                        onValueChange={(value) =>
-                          setValue("registInternId", value)
-                        }
-                      >
-                        <SelectTrigger
-                          className={cn(
-                            "w-full",
-                            errors.registInternId
-                              ? "border-red-600 border-2"
-                              : ""
-                          )}
-                        >
-                          <SelectValue placeholder="เลือกนักศึกษาที่ลงทะเบียนฝึกงาน" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {students.map((student) => (
-                            <SelectItem key={student.id} value={student.id}>
-                              <div>
-                                <div>
-                                  {student.name} ({student.student_id})
-                                </div>
-                                <div className="text-sm text-gray-500">
-                                  {student.company}
-                                </div>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="w-full p-3 border border-gray-300 rounded-md bg-gray-50">
+                        {selectedStudent ? (
+                          <div>
+                            <div className="font-medium">
+                              {selectedStudent.name} ({selectedStudent.student_code})
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {selectedStudent.company}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-gray-500">กำลังโหลด...</span>
+                        )}
+                      </div>
                       <input type="hidden" {...register("registInternId")} />
-                      {errors.registInternId && (
-                        <p className="text-sm text-red-600">
-                          {getErrorMessage(errors.registInternId)}
-                        </p>
-                      )}
                     </div>
 
                     <div className="sm:col-span-6 space-y-1">
-                      <label
-                        htmlFor="advisorId"
-                        className="block text-sm font-medium"
-                      >
-                        อาจารย์นิเทศ <span className="text-red-500">*</span>
+                      <label className="block text-sm font-medium">
+                        อาจารย์นิเทศ
                       </label>
-                      <Select
-                        defaultValue={watch("advisorId")}
-                        onValueChange={(value) => setValue("advisorId", value)}
-                      >
-                        <SelectTrigger
-                          className={cn(
-                            "w-full",
-                            errors.advisorId ? "border-red-600 border-2" : ""
-                          )}
-                        >
-                          <SelectValue placeholder="เลือกอาจารย์นิเทศ" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {advisors.map((advisor) => (
-                            <SelectItem key={advisor.id} value={advisor.id}>
-                              {advisor.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="w-full p-3 border border-gray-300 rounded-md bg-gray-50">
+                        {selectedAdvisor ? (
+                          <div className="font-medium">
+                            {selectedAdvisor.name}
+                          </div>
+                        ) : (
+                          <span className="text-gray-500">กำลังโหลด...</span>
+                        )}
+                      </div>
                       <input type="hidden" {...register("advisorId")} />
-                      {errors.advisorId && (
-                        <p className="text-sm text-red-600">
-                          {getErrorMessage(errors.advisorId)}
-                        </p>
-                      )}
                     </div>
 
                     <div className="sm:col-span-6 space-y-1">
@@ -440,7 +435,7 @@ export default function EditSupervision() {
                           type="hidden"
                           {...register("scheduledDate")}
                           value={
-                            scheduledDate
+                            scheduledDate && scheduledDate instanceof Date && !isNaN(scheduledDate.getTime())
                               ? format(scheduledDate, "yyyy-MM-dd")
                               : ""
                           }
@@ -458,7 +453,7 @@ export default function EditSupervision() {
                               )}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />
-                              {scheduledDate ? (
+                              {scheduledDate && scheduledDate instanceof Date && !isNaN(scheduledDate.getTime()) ? (
                                 format(scheduledDate, "d MMMM yyyy", {
                                   locale: th,
                                 })
@@ -475,11 +470,13 @@ export default function EditSupervision() {
                               selected={scheduledDate || undefined}
                               onSelect={(date: Date | null) => {
                                 setScheduledDate(date);
-                                if (date) {
+                                if (date && !isNaN(date.getTime())) {
                                   setValue(
                                     "scheduledDate",
                                     format(date, "yyyy-MM-dd")
                                   );
+                                } else {
+                                  setValue("scheduledDate", "");
                                 }
                               }}
                               locale={th}
