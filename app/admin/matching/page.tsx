@@ -49,6 +49,12 @@ import {
 } from "@/components/ui/dialog";
 import CustomAvatar from "@/components/avatar";
 import { useSession } from "next-auth/react";
+import { set } from "date-fns";
+
+const currentYear = new Date().getFullYear() + 543;
+const years = Array.from({ length: currentYear - 2562 + 1 }, (_, i) =>
+  (currentYear - i).toString().slice(-2)
+);
 
 export default function AdminMatching() {
   const { data: session } = useSession();
@@ -81,6 +87,9 @@ export default function AdminMatching() {
     student: [],
     companyList: [],
   });
+  const [filterStudent, setFilterStudent] = useState<any>([]);
+  const [filterYear, setFilterYear] = useState<string>("all");
+  const [filterMajor, setFilterMajor] = useState<string>("all");
   const { toast } = useToast();
   // Modal states
   const [studentImportModal, setStudentImportModal] = useState(false);
@@ -88,6 +97,15 @@ export default function AdminMatching() {
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<string>("placeholder");
   const [capacity, setCapacity] = useState<string>("1");
+
+  const filteredStudents = (year: any, major: any) => {
+    const data = info.student.filter((student: any) => {
+      const matchesYear = year === "all" || student.std_year == year;
+      const matchesMajor = major === "all" || student.major == major;
+      return matchesYear && matchesMajor;
+    });
+    setFilterStudent(data);
+  };
 
   useEffect(() => {
     fetchData();
@@ -117,6 +135,8 @@ export default function AdminMatching() {
         student: res.student,
         companyList: res.companyList,
       });
+
+      setFilterStudent(res.student);
     }
     setLoading(false);
   }
@@ -775,28 +795,44 @@ export default function AdminMatching() {
           </DialogHeader>
           <div>
             <div className="flex gap-2 w-full md:w-auto mb-4 flex-row-reverse">
-              <Select>
+              <Select
+                // defaultValue={
+                //   calendarSelected ? calendarSelected.toString() : ""
+                // }
+                onValueChange={(value) => {
+                  setFilterYear(value);
+                  filteredStudents(value, filterMajor);
+                }}
+              >
                 <SelectTrigger className="w-full md:w-[180px]">
                   <SelectValue placeholder="รหัสนักศึกษา" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">ทุกรหัส</SelectItem>
-                  <SelectItem value="cs">68</SelectItem>
-                  <SelectItem value="ee">67</SelectItem>
-                  <SelectItem value="ie">66</SelectItem>
-                  <SelectItem value="me">65</SelectItem>
+                  {years.map((y) => (
+                    <SelectItem key={y} value={y}>
+                      {y}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <Select>
+              <Select
+                onValueChange={(value) => {
+                  setFilterMajor(value);
+                  filteredStudents(filterYear, value);
+                }}
+              >
                 <SelectTrigger className="w-full md:w-[180px]">
                   <SelectValue placeholder="ทุกสาขาวิชา" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">ทุกสาขาวิชา</SelectItem>
-                  <SelectItem value="cs">วิศวกรรมคอมพิวเตอร์</SelectItem>
-                  <SelectItem value="ee">วิศวกรรมไฟฟ้า</SelectItem>
-                  <SelectItem value="ie">วิศวกรรมอุตสาหการ</SelectItem>
-                  <SelectItem value="me">วิศวกรรมเครื่องกล</SelectItem>
+                  <SelectItem value="SCI">
+                    สาขาวิชาเภสัชกรรมอุตสาหการ
+                  </SelectItem>
+                  <SelectItem value="CARE">
+                    สาขาวิชาการบริบาลทางเภสัชกรรม
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -848,12 +884,11 @@ export default function AdminMatching() {
                       ) : (
                         <PlusIcon className="h-4 w-4" />
                       )}
-                      {/* {selectedStudents.includes(item.id) ? "ยกเลิก" : "เลือก"} */}
                     </Button>
                   ),
                 },
               ]}
-              data={info.student}
+              data={filterStudent}
               loading={loading}
               setItemLenge="5"
             />

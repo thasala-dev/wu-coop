@@ -21,6 +21,7 @@ const formSchema = z.object({
   businessType: z.string().min(1, "กรุณาเลือกประเภทธุรกิจ"),
   detail: z.string().min(1, "กรุณากรอกรายละเอียดแหล่งฝึกงาน"),
   location: z.string().min(1, "กรุณากรอกที่อยู่แหล่งฝึกงาน"),
+  image: z.string(),
 
   establishYear: z.string(),
   totalEmployees: z.string(),
@@ -46,6 +47,7 @@ export default function Page({ params }: { params: { id: string } }) {
     handleSubmit,
     formState: { errors },
     setError,
+    watch,
   } = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,6 +59,7 @@ export default function Page({ params }: { params: { id: string } }) {
       totalEmployees: "",
       joinedYear: "",
       website: "",
+      image: "",
       contactName: "",
       contactPosition: "",
       contactEmail: "",
@@ -134,6 +137,49 @@ export default function Page({ params }: { params: { id: string } }) {
                               ข้อมูลทั่วไป
                             </div>
                           </div>
+                          <div className="sm:col-span-12">
+                            <label>URL รูปภาพโลโก้</label>
+                            <input
+                              id="image"
+                              type="url"
+                              {...register("image")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.image ? "border-red-600  border-2" : "")
+                              }
+                              placeholder="กรุณากรอก URL รูปภาพโลโก้บริษัท"
+                            />
+                            {errors.image && (
+                              <p className="text-sm text-red-600">
+                                {typeof errors.image?.message === "string"
+                                  ? errors.image.message
+                                  : "กรุณาตรวจสอบ URL รูปภาพ"}
+                              </p>
+                            )}
+
+                            {/* Image Preview */}
+                            <div className="mt-2 flex justify-center">
+                              {watch("image") && (
+                                <div className="mt-2">
+                                  <p className="text-sm font-medium mb-1 text-center">
+                                    ตัวอย่างรูปภาพ:
+                                  </p>
+                                  <div className="relative w-32 h-32 border rounded-md overflow-hidden mx-auto">
+                                    <img
+                                      src={watch("image")}
+                                      alt="Company Logo Preview"
+                                      className="w-full h-full object-contain"
+                                      onError={(e) => {
+                                        e.currentTarget.src =
+                                          "/placeholder-logo.svg";
+                                        e.currentTarget.onerror = null;
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                           <div className="sm:col-span-6">
                             <label>ชื่อแหล่งฝึกงาน</label>
                             <input
@@ -148,7 +194,9 @@ export default function Page({ params }: { params: { id: string } }) {
                             />
                             {errors.name && (
                               <p className="text-sm text-red-600">
-                                {errors.name.message}
+                                {typeof errors.name?.message === "string"
+                                  ? errors.name.message
+                                  : "กรุณากรอกชื่อแหล่งฝึกงาน"}
                               </p>
                             )}
                           </div>

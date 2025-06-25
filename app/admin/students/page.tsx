@@ -63,6 +63,7 @@ import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import CardList from "@/components/CardList";
 import CustomAvatar from "@/components/avatar";
+import { useToast } from "@/hooks/use-toast";
 import TableList from "@/components/TableList";
 import Link from "next/link";
 
@@ -128,6 +129,7 @@ let statsData = [
 ];
 
 export default function AdminStudentsPage() {
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<any>([]);
   const [calendars, setCalendars] = useState<any>([]);
@@ -291,7 +293,7 @@ export default function AdminStudentsPage() {
 
     // Faculty filter
     const matchesFaculty =
-      selectedFaculty === "all" || student.faculty === selectedFaculty;    // Advisor filter
+      selectedFaculty === "all" || student.faculty === selectedFaculty; // Advisor filter
     const matchesAdvisor =
       selectedAdvisor === "all" || student.advisor_name === selectedAdvisor;
 
@@ -305,14 +307,49 @@ export default function AdminStudentsPage() {
   });
 
   // Handle delete confirmation
-  const handleDeleteClick = (studentId: string) => {
-    setStudentToDelete(studentId);
+  const handleDeleteClick = (id: string) => {
+    setStudentToDelete(id);
     setShowDeleteDialog(true);
   };
 
-  const confirmDelete = () => {
-    setShowDeleteDialog(false);
-    setStudentToDelete(null);
+  const confirmDelete = async () => {
+    if (!studentToDelete) return;
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(`/api/student/${studentToDelete}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "ลบข้อมูลสำเร็จ",
+          description: "ข้อมูลนักศึกษาถูกลบออกจากระบบเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        // Refresh the student list
+        fetchStudents(calendarSelected);
+      } else {
+        throw new Error(result.message || "ไม่สามารถลบข้อมูลได้");
+      }
+    } catch (error: any) {
+      console.error("Error deleting student:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: error.message || "ไม่สามารถลบข้อมูลนักศึกษาได้",
+        variant: "destructive",
+      });
+    } finally {
+      setShowDeleteDialog(false);
+      setStudentToDelete(null);
+      setLoading(false);
+    }
   };
 
   const badgeClasses = (id: number) => {
@@ -621,10 +658,14 @@ export default function AdminStudentsPage() {
                             >
                               <SelectTrigger className="h-8 text-sm rounded-md border-gray-200">
                                 <SelectValue placeholder="ทุกอาจารย์" />
-                              </SelectTrigger>                              <SelectContent>
+                              </SelectTrigger>{" "}
+                              <SelectContent>
                                 <SelectItem value="all">ทุกอาจารย์</SelectItem>
                                 {advisors.map((advisor: any) => (
-                                  <SelectItem key={advisor.id} value={advisor.fullname}>
+                                  <SelectItem
+                                    key={advisor.id}
+                                    value={advisor.fullname}
+                                  >
                                     {advisor.fullname}
                                   </SelectItem>
                                 ))}
@@ -712,7 +753,8 @@ export default function AdminStudentsPage() {
                                   {student.company_name || (
                                     <i className="text-xs">(ไม่มีข้อมูล)</i>
                                   )}
-                                </p>                                <p>
+                                </p>{" "}
+                                <p>
                                   <span className="text-gray-500">
                                     อาจารย์ที่ปรึกษา:
                                   </span>{" "}
@@ -796,7 +838,8 @@ export default function AdminStudentsPage() {
                           {
                             key: "gpa",
                             content: "เกรดเฉลี่ย",
-                          },                          {
+                          },
+                          {
                             key: "company_name",
                             content: "แหล่งฝึกงาน",
                           },
@@ -806,7 +849,9 @@ export default function AdminStudentsPage() {
                             render: (item: any) => (
                               <span className="text-sm">
                                 {item.advisor_name || (
-                                  <i className="text-xs text-gray-400">(ไม่มีข้อมูล)</i>
+                                  <i className="text-xs text-gray-400">
+                                    (ไม่มีข้อมูล)
+                                  </i>
                                 )}
                               </span>
                             ),
@@ -840,6 +885,7 @@ export default function AdminStudentsPage() {
                                     variant="destructive"
                                     size="sm"
                                     className="bg-red-600 hover:bg-red-700 text-white"
+                                    onClick={() => handleDeleteClick(row.id)}
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </Button>

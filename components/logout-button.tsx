@@ -18,7 +18,7 @@ interface LogoutButtonProps {
   className?: string;
   showText?: boolean;
   callbackUrl?: string;
-  userId?: string;
+  userId?: string | number;
   userRole?: string;
 }
 

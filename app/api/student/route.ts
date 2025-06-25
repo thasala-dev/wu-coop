@@ -6,11 +6,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     let calendarId = searchParams.get("calendarId");
 
-    const sql = neon(`${process.env.DATABASE_URL}`);    if (!calendarId || typeof calendarId !== "string") {
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    if (!calendarId || typeof calendarId !== "string") {
       const data = await sql(
         `SELECT std.*, advisor.fullname AS advisor_name 
          FROM user_student std
          LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
+         WHERE std.flag_del = 0
          ORDER BY std.updated_at DESC`
       );
 
@@ -19,7 +21,9 @@ export async function GET(request: NextRequest) {
         message: "ดำเนินการสำเร็จ",
         data: data,
       });
-    }    const data = await sql(
+    }
+
+    const data = await sql(
       `SELECT std.id, std.fullname, std.student_id, std.mobile, std.faculty, std.major, std.std_year, std.address, std.gpa, std.image,
       std.advisor_id, std.emergency_contact_name, std.emergency_contact_phone, std.emergency_contact_relation,
       advisor.fullname AS advisor_name,
@@ -39,6 +43,7 @@ export async function GET(request: NextRequest) {
         and intern.calendar_id = $1
       LEFT join user_company com on intern.company_id = com.id
       LEFT JOIN calendar cal ON intern.calendar_id = cal.id
+      WHERE std.flag_del = 0
       ORDER BY std.updated_at DESC`,
       [calendarId]
     );
@@ -131,7 +136,8 @@ export async function POST(request: Request) {
       columns.push("address");
       values.push(`$${paramCount++}`);
       params.push(body.address);
-    }    if (body.gpa !== undefined) {
+    }
+    if (body.gpa !== undefined) {
       columns.push("gpa");
       values.push(`$${paramCount++}`);
       params.push(body.gpa);

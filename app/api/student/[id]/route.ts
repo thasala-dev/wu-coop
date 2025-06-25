@@ -5,13 +5,13 @@ export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     console.log("GET student by ID:", id);
-    
+
     const sql = neon(`${process.env.DATABASE_URL}`);
     const data = await sql(
       `SELECT std.*, advisor.fullname AS advisor_name 
        FROM user_student std
        LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
-       WHERE std.id = $1`, 
+       WHERE std.id = $1`,
       [id]
     );
 
@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
     const body = await request.json();
     console.log("PUT student ID:", id, "with body:", body);
-    
+
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     const updateFields = [];
@@ -84,7 +84,8 @@ export async function PUT(request: NextRequest) {
     if (body.address !== undefined) {
       updateFields.push(`address = $${paramCount++}`);
       params.push(body.address);
-    }    if (body.gpa !== undefined) {
+    }
+    if (body.gpa !== undefined) {
       updateFields.push(`gpa = $${paramCount++}`);
       params.push(body.gpa);
     }
@@ -128,15 +129,16 @@ export async function PUT(request: NextRequest) {
         { success: false, message: "ไม่มีข้อมูลที่จะอัปเดต" },
         { status: 400 }
       );
-    }    const query = `UPDATE user_student SET ${updateFields.join(
+    }
+    const query = `UPDATE user_student SET ${updateFields.join(
       ", "
     )} WHERE id = $1 RETURNING *`;
-    
+
     console.log("Update query:", query);
     console.log("Update params:", params);
-    
+
     const data = await sql(query, params);
-    
+
     console.log("Update result:", data);
 
     return NextResponse.json({
@@ -148,6 +150,43 @@ export async function PUT(request: NextRequest) {
     console.error("Error updating student:", error);
     return NextResponse.json(
       { success: false, message: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const id = request.nextUrl.pathname.split("/").pop();
+    console.log("DELETE student ID:", id);
+
+    const sql = neon(`${process.env.DATABASE_URL}`);
+
+    // Soft delete by setting flag_del to 1
+    const result = await sql(
+      `UPDATE user_student SET
+      flag_del = 1
+      WHERE id = $1
+      RETURNING *`,
+      [id]
+    );
+
+    if (result.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "ไม่พบข้อมูลหรือข้อมูลถูกลบไปแล้ว" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "ลบข้อมูลสำเร็จ",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error deleting student:", error);
+    return NextResponse.json(
+      { success: false, message: "เกิดข้อผิดพลาดในการลบข้อมูล" },
       { status: 500 }
     );
   }

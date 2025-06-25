@@ -18,14 +18,14 @@ export async function GET(request: NextRequest, { params }: any) {
       `SELECT reg.id, reg.company_id, com.name, reg.total
       FROM regist_company reg
       INNER JOIN user_company com ON reg.company_id = com.id
-      WHERE reg.calendar_id = $1`,
+      WHERE reg.calendar_id = $1 and com.flag_del = 0`,
       [id]
     ); // Get students not already in the regist_intern table for this calendar
     const student = await sql(
       `SELECT us.* 
        FROM user_student us
        LEFT JOIN regist_intern ri ON us.id = ri.student_id AND ri.calendar_id = $1
-       WHERE ri.id IS NULL`,
+       WHERE ri.id IS NULL and us.flag_del = 0`,
       [id]
     );
 
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: any) {
       `SELECT uc.* 
        FROM user_company uc
        LEFT JOIN regist_company rc ON uc.id = rc.company_id AND rc.calendar_id = $1
-       WHERE rc.id IS NULL`,
+       WHERE rc.id IS NULL and uc.flag_del = 0`,
       [id]
     );
 

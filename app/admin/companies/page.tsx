@@ -41,12 +41,26 @@ import { companyType } from "@/lib/global";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import TableList from "@/components/TableList";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
   const [filterData, setFilterData] = useState<any>([]);
   const [role, setRole] = useState("all");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletingCompany, setDeletingCompany] = useState<any>(null);
+  const { toast } = useToast();
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -76,6 +90,50 @@ export default function CompaniesPage() {
       setLoading(false);
     }
   }
+  const handleDeleteClick = (company: any) => {
+    setDeletingCompany(company);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingCompany) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/company/${deletingCompany.id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "ลบข้อมูลสำเร็จ",
+          description: "ลบข้อมูลแหล่งฝึกงานเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        // Refresh data
+        fetchData();
+      } else {
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: result.message || "ไม่สามารถลบข้อมูลได้",
+          variant: "destructive",
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถลบข้อมูลได้ โปรดลองอีกครั้ง",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
+
+    setDeleteDialogOpen(false);
+    setDeletingCompany(null);
+  };
 
   // Function to render status badge
   const renderStatusBadge = (status: string) => {
@@ -279,6 +337,7 @@ export default function CompaniesPage() {
                                 variant="destructive"
                                 size="sm"
                                 className="bg-red-600 hover:bg-red-700 text-white"
+                                onClick={() => handleDeleteClick(row)}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
                               </Button>
@@ -296,6 +355,35 @@ export default function CompaniesPage() {
           </Tabs>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>ยืนยันการลบข้อมูล</DialogTitle>
+            <DialogDescription>
+              คุณแน่ใจหรือว่าต้องการลบข้อมูลแหล่งฝึกงานนี้?
+              การกระทำนี้ไม่สามารถย้อนคืนได้
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              className="w-full sm:w-auto"
+            >
+              ยกเลิก
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmDelete}
+              className="w-full sm:w-auto"
+            >
+              ลบข้อมูล
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

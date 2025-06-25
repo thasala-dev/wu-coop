@@ -44,8 +44,6 @@ export function Navbar({ userType, notificationCount = 0 }: NavbarProps) {
   const userId = session?.user?.id;
   const userRole = session?.user?.role;
 
-  console.log("Navbar userName:", session);
-
   // กำหนดสีตามประเภทผู้ใช้
   const headerColors = {
     student: "bg-gradient-to-r from-sky-500 to-sky-600",

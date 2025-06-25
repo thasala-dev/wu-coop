@@ -93,6 +93,11 @@ const TableList = <
         setItemsPerPage(Number(storedItems));
       }
     }
+
+    if (setItemLenge) {
+      const numValue = Number(setItemLenge);
+      setItemsPerPage(numValue);
+    }
   }, []);
 
   const updateItemsPerPage = (value: number | string) => {
@@ -155,21 +160,24 @@ const TableList = <
           )}
         </div>
         <div className="flex gap-1">
-          <div className="hidden md:flex gap-1 items-center">
-            <label className="block text-sm font-medium text-gray-900 dark:text-gray-300"></label>
-            <select
-              value={itemsPerPage}
-              onChange={(e) => {
-                updateItemsPerPage(e.target.value);
-              }}
-              className="w-30 h-7 text-sm px-3 py-1 border border-gray-300 rounded-md bg-white dark:bg-gray-800"
-            >
-              <option value={10}>10 รายการ/หน้า</option>
-              <option value={20}>20 รายการ/หน้า</option>
-              <option value={50}>50 รายการ/หน้า</option>
-              <option value={100}>100 รายการ/หน้า</option>
-            </select>
-          </div>
+          {!setItemLenge && (
+            <div className="hidden md:flex gap-1 items-center">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-300"></label>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => {
+                  updateItemsPerPage(e.target.value);
+                }}
+                className="w-30 h-7 text-sm px-3 py-1 border border-gray-300 rounded-md bg-white dark:bg-gray-800"
+              >
+                <option value={10}>10 รายการ/หน้า</option>
+                <option value={20}>20 รายการ/หน้า</option>
+                <option value={50}>50 รายการ/หน้า</option>
+                <option value={100}>100 รายการ/หน้า</option>
+              </select>
+            </div>
+          )}
+
           {/* เพิ่มการเช็ค disableSearch */}
           {disableSearch ? (
             customSearchSlot

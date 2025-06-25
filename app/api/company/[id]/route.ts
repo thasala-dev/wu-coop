@@ -46,7 +46,8 @@ export async function PUT(request: NextRequest) {
       contact_email = $11,
       contact_phone = $12,
       contact_address = $13,
-      detail = $14
+      detail = $14,
+      image = $15
       WHERE id = $1
       RETURNING *`,
       [
@@ -64,6 +65,7 @@ export async function PUT(request: NextRequest) {
         body.contactPhone || null,
         body.contactAddress || null,
         body.detail || null,
+        body.image || null,
       ]
     );
     return NextResponse.json({
@@ -74,6 +76,38 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "เกิดข้อผิดพลาด" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const id = request.nextUrl.pathname.split("/").pop();
+    const sql = neon(`${process.env.DATABASE_URL}`);
+
+    // Soft delete: Set flag_del = 1 instead of removing the record
+    const data = await sql(
+      `UPDATE user_company SET flag_del = 1 WHERE id = $1 RETURNING *`,
+      [id]
+    );
+
+    if (data.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "ไม่พบข้อมูล" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "ลบข้อมูลสำเร็จ",
+      data: data[0],
+    });
+  } catch (error) {
+    console.error("Error deleting company:", error);
+    return NextResponse.json(
+      { success: false, message: "เกิดข้อผิดพลาดในการลบข้อมูล" },
       { status: 500 }
     );
   }

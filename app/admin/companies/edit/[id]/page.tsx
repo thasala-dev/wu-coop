@@ -21,6 +21,7 @@ const formSchema = z.object({
   businessType: z.string().min(1, "กรุณาเลือกประเภทธุรกิจ"),
   detail: z.string().min(1, "กรุณากรอกรายละเอียดแหล่งฝึกงาน"),
   location: z.string().min(1, "กรุณากรอกที่อยู่แหล่งฝึกงาน"),
+  image: z.string(),
 
   establishYear: z.string(),
   totalEmployees: z.string(),
@@ -47,6 +48,7 @@ export default function Page() {
     formState: { errors },
     setError,
     setValue,
+    watch,
   } = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,6 +60,7 @@ export default function Page() {
       totalEmployees: "",
       joinedYear: "",
       website: "",
+      image: "",
       contactName: "",
       contactPosition: "",
       contactEmail: "",
@@ -92,6 +95,7 @@ export default function Page() {
       setValue("totalEmployees", company.total_employees || "");
       setValue("joinedYear", company.joined_year || "");
       setValue("website", company.website || "");
+      setValue("image", company.image || "");
       setValue("contactName", company.contact_name);
       setValue("contactPosition", company.contact_position);
       setValue("contactEmail", company.contact_email || "");
@@ -173,6 +177,49 @@ export default function Page() {
                               ข้อมูลทั่วไป
                             </div>
                           </div>
+                          <div className="sm:col-span-12">
+                            <label>URL รูปภาพโลโก้ (ไม่บังคับ)</label>
+                            <input
+                              id="image"
+                              type="url"
+                              {...register("image")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.image ? "border-red-600  border-2" : "")
+                              }
+                              placeholder="กรุณากรอก URL รูปภาพโลโก้บริษัท"
+                            />
+                            {errors.image && (
+                              <p className="text-sm text-red-600">
+                                {typeof errors.image?.message === "string"
+                                  ? errors.image.message
+                                  : "กรุณาตรวจสอบ URL รูปภาพ"}
+                              </p>
+                            )}
+
+                            {/* Image Preview */}
+                            <div className="mt-2 flex justify-center">
+                              {watch("image") && (
+                                <div className="mt-2">
+                                  <p className="text-sm font-medium mb-1 text-center">
+                                    ตัวอย่างรูปภาพ:
+                                  </p>
+                                  <div className="relative w-32 h-32 border rounded-md overflow-hidden mx-auto">
+                                    <img
+                                      src={watch("image")}
+                                      alt="Company Logo Preview"
+                                      className="w-full h-full object-contain"
+                                      onError={(e) => {
+                                        e.currentTarget.src =
+                                          "/placeholder-logo.svg";
+                                        e.currentTarget.onerror = null;
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                           <div className="sm:col-span-6">
                             <label>ชื่อแหล่งฝึกงาน</label>
                             <input
@@ -187,7 +234,9 @@ export default function Page() {
                             />
                             {errors.name && (
                               <p className="text-sm text-red-600">
-                                {errors.name.message}
+                                {typeof errors.name?.message === "string"
+                                  ? errors.name.message
+                                  : "กรุณากรอกชื่อแหล่งฝึกงาน"}
                               </p>
                             )}
                           </div>
@@ -217,7 +266,10 @@ export default function Page() {
 
                             {errors.businessType && (
                               <p className="text-sm text-red-600">
-                                {errors.businessType.message}
+                                {typeof errors.businessType?.message ===
+                                "string"
+                                  ? errors.businessType.message
+                                  : "กรุณาเลือกประเภทแหล่งฝึก"}
                               </p>
                             )}
                           </div>
@@ -237,7 +289,9 @@ export default function Page() {
                             />
                             {errors.detail && (
                               <p className="text-sm text-red-600">
-                                {errors.detail.message}
+                                {typeof errors.detail?.message === "string"
+                                  ? errors.detail.message
+                                  : "กรุณากรอกรายละเอียดแหล่งฝึกงาน"}
                               </p>
                             )}
                           </div>
@@ -266,7 +320,9 @@ export default function Page() {
 
                             {errors.location && (
                               <p className="text-sm text-red-600">
-                                {errors.location.message}
+                                {typeof errors.location?.message === "string"
+                                  ? errors.location.message
+                                  : "กรุณากรอกที่อยู่แหล่งฝึกงาน"}
                               </p>
                             )}
                           </div>
@@ -286,7 +342,10 @@ export default function Page() {
                             />
                             {errors.establishYear && (
                               <p className="text-sm text-red-600">
-                                {errors.establishYear.message}
+                                {typeof errors.establishYear?.message ===
+                                "string"
+                                  ? errors.establishYear.message
+                                  : "กรุณาตรวจสอบปีที่ก่อตั้ง"}
                               </p>
                             )}
                           </div>
@@ -306,7 +365,10 @@ export default function Page() {
                             />
                             {errors.totalEmployees && (
                               <p className="text-sm text-red-600">
-                                {errors.totalEmployees.message}
+                                {typeof errors.totalEmployees?.message ===
+                                "string"
+                                  ? errors.totalEmployees.message
+                                  : "กรุณาตรวจสอบจำนวนพนักงาน"}
                               </p>
                             )}
                           </div>
@@ -326,7 +388,9 @@ export default function Page() {
                             />
                             {errors.joinedYear && (
                               <p className="text-sm text-red-600">
-                                {errors.joinedYear.message}
+                                {typeof errors.joinedYear?.message === "string"
+                                  ? errors.joinedYear.message
+                                  : "กรุณาตรวจสอบปีที่เข้าร่วม"}
                               </p>
                             )}
                           </div>
@@ -346,7 +410,9 @@ export default function Page() {
                             />
                             {errors.website && (
                               <p className="text-sm text-red-600">
-                                {errors.website.message}
+                                {typeof errors.website?.message === "string"
+                                  ? errors.website.message
+                                  : "กรุณาตรวจสอบ URL เว็บไซต์"}
                               </p>
                             )}
                           </div>
@@ -372,7 +438,9 @@ export default function Page() {
                             />
                             {errors.contactName && (
                               <p className="text-sm text-red-600">
-                                {errors.contactName.message}
+                                {typeof errors.contactName?.message === "string"
+                                  ? errors.contactName.message
+                                  : "กรุณากรอกชื่อผู้ประสานงาน"}
                               </p>
                             )}
                           </div>
@@ -392,7 +460,10 @@ export default function Page() {
                             />
                             {errors.contactPosition && (
                               <p className="text-sm text-red-600">
-                                {errors.contactPosition.message}
+                                {typeof errors.contactPosition?.message ===
+                                "string"
+                                  ? errors.contactPosition.message
+                                  : "กรุณากรอกตำแหน่งผู้ประสานงาน"}
                               </p>
                             )}
                           </div>
@@ -412,7 +483,10 @@ export default function Page() {
                             />
                             {errors.contactEmail && (
                               <p className="text-sm text-red-600">
-                                {errors.contactEmail.message}
+                                {typeof errors.contactEmail?.message ===
+                                "string"
+                                  ? errors.contactEmail.message
+                                  : "กรุณาตรวจสอบอีเมลผู้ประสานงาน"}
                               </p>
                             )}
                           </div>
@@ -432,7 +506,10 @@ export default function Page() {
                             />
                             {errors.contactPhone && (
                               <p className="text-sm text-red-600">
-                                {errors.contactPhone.message}
+                                {typeof errors.contactPhone?.message ===
+                                "string"
+                                  ? errors.contactPhone.message
+                                  : "กรุณากรอกเบอร์โทรศัพท์ผู้ประสานงาน"}
                               </p>
                             )}
                           </div>
@@ -452,7 +529,10 @@ export default function Page() {
                             />
                             {errors.contactAddress && (
                               <p className="text-sm text-red-600">
-                                {errors.contactAddress.message}
+                                {typeof errors.contactAddress?.message ===
+                                "string"
+                                  ? errors.contactAddress.message
+                                  : "กรุณากรอกที่อยู่ผู้ประสานงาน"}
                               </p>
                             )}
                           </div>
