@@ -703,7 +703,7 @@ export default function AdminStudentsPage() {
                       render={(student: any) => (
                         <Card className="overflow-hidden border-gray-200 hover:border-gray-300 transition-colors bg-white">
                           <CardContent className="p-0">
-                            <div className="p-5">
+                            <div className="p-3">
                               <div className="flex items-start gap-3">
                                 <CustomAvatar
                                   id={`student${student.student_id}`}
@@ -716,16 +716,23 @@ export default function AdminStudentsPage() {
                                       <h3 className="font-medium text-base truncate">
                                         {student.fullname}
                                       </h3>
-                                      <p className="text-sm text-gray-500 mt-0.5">
-                                        {student.student_id}
-                                      </p>
+                                      <div className="text-sm text-gray-500 mt-0.5">
+                                        {badgeClasses(student.status_id)}
+                                      </div>
                                     </div>
-                                    {badgeClasses(student.status_id)}
                                   </div>
                                 </div>
                               </div>
 
                               <div className="mt-4 space-y-1 text-sm text-gray-600">
+                                <p>
+                                  <span className="text-gray-500">
+                                    รหัสนักศึกษา:
+                                  </span>{" "}
+                                  {student.student_id || (
+                                    <i className="text-xs">(ไม่มีข้อมูล)</i>
+                                  )}
+                                </p>
                                 <p>
                                   <span className="text-gray-500">
                                     สาขาวิชา:

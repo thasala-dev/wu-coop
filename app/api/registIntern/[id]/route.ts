@@ -8,7 +8,8 @@ export async function PUT(request: NextRequest, { params }: any) {
     const updateFields = [];
 
     let paramCount = 2;
-    const parameters = [id];    if (body.company_id !== undefined) {
+    const parameters = [id];
+    if (body.company_id !== undefined) {
       updateFields.push(`company_id = $${paramCount++}`);
       parameters.push(body.company_id);
     }
@@ -17,10 +18,15 @@ export async function PUT(request: NextRequest, { params }: any) {
       updateFields.push(`register_date = $${paramCount++}`);
       parameters.push(body.register_date);
     }
-    
+
     if (body.advisor_id !== undefined) {
       updateFields.push(`advisor_id = $${paramCount++}`);
       parameters.push(body.advisor_id);
+    }
+
+    if (body.evaluation_type !== undefined) {
+      updateFields.push(`evaluation_type = $${paramCount++}`);
+      parameters.push(body.evaluation_type);
     }
 
     updateFields.push(`updated_at = CURRENT_TIMESTAMP`);

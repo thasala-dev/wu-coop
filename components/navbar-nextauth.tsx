@@ -76,7 +76,7 @@ export function Navbar({ userType, notificationCount = 0 }: NavbarProps) {
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-white">
-            <img src="/icon.png" alt="Logo" className="h-8 w-8 text-white" />
+            <img src="/spm.png" alt="Logo" className="h-8 text-white" />
             <h1 className="text-xl font-bold text-white flex items-center gap-2">
               ระบบฝึกงาน{" "}
               <span className="hidden md:block">

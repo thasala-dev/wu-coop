@@ -31,51 +31,117 @@ export async function PUT(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     const body = await request.json();
+    console.log("PUT company ID:", id, "with body:", body);
+
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
-      `UPDATE user_company SET
-      name = $2,
-      business_type = $3,
-      location = $4,
-      establish_year = $5,
-      total_employees = $6,
-      joined_year = $7,
-      website = $8,
-      contact_name = $9,
-      contact_position = $10,
-      contact_email = $11,
-      contact_phone = $12,
-      contact_address = $13,
-      detail = $14,
-      image = $15
-      WHERE id = $1
-      RETURNING *`,
-      [
-        id,
-        body.name,
-        body.businessType,
-        body.location,
-        body.establishYear || null,
-        body.totalEmployees || null,
-        body.joinedYear || null,
-        body.website || null,
-        body.contactName,
-        body.contactPosition,
-        body.contactEmail || null,
-        body.contactPhone || null,
-        body.contactAddress || null,
-        body.detail || null,
-        body.image || null,
-      ]
-    );
+
+    const updateFields = [];
+    const params = [id];
+    let paramCount = 2;
+
+    // Add fields that are present in the request body
+    if (body.name !== undefined) {
+      updateFields.push(`name = $${paramCount++}`);
+      params.push(body.name);
+    }
+    if (body.businessType !== undefined) {
+      updateFields.push(`business_type = $${paramCount++}`);
+      params.push(body.businessType);
+    }
+    if (body.location !== undefined) {
+      updateFields.push(`location = $${paramCount++}`);
+      params.push(body.location);
+    }
+    if (body.establishYear !== undefined) {
+      updateFields.push(`establish_year = $${paramCount++}`);
+      params.push(body.establishYear || null);
+    }
+    if (body.totalEmployees !== undefined) {
+      updateFields.push(`total_employees = $${paramCount++}`);
+      params.push(body.totalEmployees || null);
+    }
+    if (body.joinedYear !== undefined) {
+      updateFields.push(`joined_year = $${paramCount++}`);
+      params.push(body.joinedYear || null);
+    }
+    if (body.website !== undefined) {
+      updateFields.push(`website = $${paramCount++}`);
+      params.push(body.website || null);
+    }
+    if (body.contactName !== undefined) {
+      updateFields.push(`contact_name = $${paramCount++}`);
+      params.push(body.contactName);
+    }
+    if (body.contactPosition !== undefined) {
+      updateFields.push(`contact_position = $${paramCount++}`);
+      params.push(body.contactPosition);
+    }
+    if (body.contactEmail !== undefined) {
+      updateFields.push(`contact_email = $${paramCount++}`);
+      params.push(body.contactEmail || null);
+    }
+    if (body.contactPhone !== undefined) {
+      updateFields.push(`contact_phone = $${paramCount++}`);
+      params.push(body.contactPhone || null);
+    }
+    if (body.contactAddress !== undefined) {
+      updateFields.push(`contact_address = $${paramCount++}`);
+      params.push(body.contactAddress || null);
+    }
+    if (body.detail !== undefined) {
+      updateFields.push(`detail = $${paramCount++}`);
+      params.push(body.detail || null);
+    }
+    if (body.image !== undefined) {
+      updateFields.push(`image = $${paramCount++}`);
+      params.push(body.image || null);
+    }
+
+    if (body.username !== undefined) {
+      updateFields.push(`username = $${paramCount++}`);
+      params.push(body.username);
+    }
+
+    if (body.password !== undefined) {
+      updateFields.push(`password_hash = $${paramCount++}`);
+      params.push(body.password);
+    }
+    if (body.evaluationType !== undefined) {
+      updateFields.push(`evaluation_type = $${paramCount++}`);
+      params.push(body.evaluationType || null);
+    }
+
+    // Add updated_at timestamp
+    updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
+
+    // If no fields to update, return
+    if (updateFields.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "ไม่มีข้อมูลที่จะอัปเดต" },
+        { status: 400 }
+      );
+    }
+
+    const query = `UPDATE user_company SET ${updateFields.join(
+      ", "
+    )} WHERE id = $1 RETURNING *`;
+
+    console.log("Update query:", query);
+    console.log("Update params:", params);
+
+    const data = await sql(query, params);
+
+    console.log("Update result:", data);
+
     return NextResponse.json({
       success: true,
-      message: "ดำเนินการสำเร็จ",
-      data: data,
+      message: "อัปเดตข้อมูลสำเร็จ",
+      data: data[0],
     });
   } catch (error) {
+    console.error("Error updating company:", error);
     return NextResponse.json(
-      { success: false, message: "เกิดข้อผิดพลาด" },
+      { success: false, message: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" },
       { status: 500 }
     );
   }

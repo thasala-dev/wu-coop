@@ -24,6 +24,7 @@ import {
   Star,
   Users,
   ChevronRight,
+  Trash2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,9 +40,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import AdminSidebar from "@/components/admin-sidebar";
 import Loading from "@/components/loading";
+import UnifiedSidebar from "@/components/unified-sidebar";
+import { useRouter, useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Sidebar from "@/components/sidebar";
+import CustomAvatar from "@/components/avatar";
 
 // Status mapping for display
 const statusMap = {
@@ -232,14 +245,16 @@ const quickStats = [
   },
 ];
 
-export default function AdminStudentDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function AdminStudentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [student, setStudent] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("overview");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const params = useParams();
+  const router = useRouter();
+  const { toast } = useToast();
+  const { data: session } = useSession();
 
   React.useEffect(() => {
     fetchStudentData();
@@ -249,17 +264,155 @@ export default function AdminStudentDetailPage({
     setLoading(true);
     try {
       const response = await fetch(`/api/student/${params.id}`);
-      const data = await response.json();
-      if (data.success) {
-        setStudent(data.data);
+
+      // Check if the response is OK
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Get the response text first
+      const responseText = await response.text();
+
+      // Try to parse the JSON
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error("Failed to parse JSON response:", e);
+        console.error("Response text:", responseText);
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: "ไม่สามารถอ่านข้อมูลจากเซิร์ฟเวอร์ได้",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (data && data.success) {
+        // Map database status to statusMap keys if needed
+        const studentData = data.data || {};
+
+        // If there's a status_id from database, map it to our status values
+        // This ensures we have a valid status key for the statusMap
+        if (studentData.status_id !== undefined) {
+          switch (studentData.status_id) {
+            case 0:
+              studentData.status = "pending";
+              break;
+            case 1:
+              studentData.status = "active";
+              break;
+            case 2:
+              studentData.status = "completed";
+              break;
+            case 3:
+              studentData.status = "issue";
+              break;
+            case 4:
+              studentData.status = "placed";
+              break;
+            default:
+              studentData.status = "pending";
+          }
+        }
+
+        // Ensure studentData has default values for arrays to avoid rendering errors
+        studentData.skills = studentData.skills || [];
+        studentData.interests = studentData.interests || [];
+        studentData.reports = studentData.reports || [];
+        studentData.evaluations = studentData.evaluations || [];
+        studentData.visits = studentData.visits || [];
+        studentData.activities = studentData.activities || [];
+        studentData.emergency = studentData.emergency || {};
+
+        setStudent(studentData);
       } else {
-        console.error("Failed to fetch student data:", data.message);
+        console.error(
+          "Failed to fetch student data:",
+          data?.message || "Unknown error"
+        );
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: "ไม่สามารถโหลดข้อมูลนักศึกษาได้",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error("Error fetching student data:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/student/${params.id}`, {
+        method: "DELETE",
+      });
+
+      // Check if the response is OK
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Get the response text first
+      const responseText = await response.text();
+
+      // Try to parse the JSON
+      let result;
+      try {
+        result = responseText ? JSON.parse(responseText) : {};
+      } catch (e) {
+        console.error("Failed to parse JSON response:", e);
+        console.error("Response text:", responseText);
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: "ไม่สามารถอ่านข้อมูลการตอบกลับจากเซิร์ฟเวอร์",
+          variant: "destructive",
+        });
+        setLoading(false);
+        setDeleteDialogOpen(false);
+        return;
+      }
+
+      if (result && result.success) {
+        toast({
+          title: "ลบข้อมูลสำเร็จ",
+          description: "ลบข้อมูลนักศึกษาเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        // Navigate back to students list
+        router.push("/admin/students");
+      } else {
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: result?.message || "ไม่สามารถลบข้อมูลได้",
+          variant: "destructive",
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error deleting student:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถลบข้อมูลได้ โปรดลองอีกครั้ง",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
+
+    setDeleteDialogOpen(false);
   };
 
   if (loading) {
@@ -267,7 +420,7 @@ export default function AdminStudentDetailPage({
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto p-2">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <Sidebar activePage="students" userType="admin" />
+            <UnifiedSidebar activePage="students" userType="admin" />
             <Loading />
           </div>
         </div>
@@ -280,7 +433,7 @@ export default function AdminStudentDetailPage({
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto p-2">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <Sidebar activePage="students" userType="admin" />
+            <UnifiedSidebar activePage="students" userType="admin" />
             <div className="md:col-span-4 text-center py-12">
               <p>ไม่พบข้อมูลนักศึกษา</p>
             </div>
@@ -322,18 +475,21 @@ export default function AdminStudentDetailPage({
               <div className="h-32 bg-gradient-to-r from-gray-900 to-gray-700"></div>
               <CardContent className="p-0">
                 <div className="px-6 pb-6 relative">
-                  <Avatar className="h-24 w-24 rounded-full border-4 border-white shadow-sm absolute -top-12">
-                    <AvatarImage src={student.avatar} alt={student.name} />
-                    <AvatarFallback className="text-xl">
-                      {student.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="h-24 w-24 rounded shadow-sm absolute -top-12">
+                    <CustomAvatar
+                      id={`student${student.student_id}`}
+                      image={student.image}
+                      size="24"
+                    />
+                  </div>
 
                   <div className="pt-16 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                      <h1 className="text-xl font-medium">{student.name}</h1>
+                      <h1 className="text-xl font-medium">
+                        {student.fullname}
+                      </h1>
                       <p className="text-gray-500 text-sm">
-                        {student.studentId}
+                        {student.student_id}
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -348,6 +504,14 @@ export default function AdminStudentDetailPage({
                         <Edit className="h-4 w-4 mr-1.5" />
                         <span>แก้ไขข้อมูล</span>
                       </Button>
+                      <Button
+                        onClick={handleDeleteClick}
+                        variant="destructive"
+                        className="h-9 px-3 rounded-md text-sm"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1.5" />
+                        <span>ลบข้อมูล</span>
+                      </Button>
                     </div>
                   </div>
 
@@ -356,21 +520,33 @@ export default function AdminStudentDetailPage({
                       <div className="flex items-center gap-2">
                         <Badge
                           className={`${
+                            student.status &&
                             statusMap[student.status as keyof typeof statusMap]
-                              .color
+                              ? statusMap[
+                                  student.status as keyof typeof statusMap
+                                ].color
+                              : "bg-gray-100 text-gray-700 border-gray-200"
                           } flex items-center gap-1 px-2.5 py-1 text-sm border`}
                         >
-                          {React.createElement(
-                            statusMap[student.status as keyof typeof statusMap]
-                              .icon,
-                            {
-                              className: "h-3.5 w-3.5",
-                            }
-                          )}
-                          {
-                            statusMap[student.status as keyof typeof statusMap]
-                              .label
-                          }
+                          {student.status &&
+                          statusMap[student.status as keyof typeof statusMap]
+                            ? React.createElement(
+                                statusMap[
+                                  student.status as keyof typeof statusMap
+                                ].icon,
+                                {
+                                  className: "h-3.5 w-3.5",
+                                }
+                              )
+                            : React.createElement(Clock, {
+                                className: "h-3.5 w-3.5",
+                              })}
+                          {student.status &&
+                          statusMap[student.status as keyof typeof statusMap]
+                            ? statusMap[
+                                student.status as keyof typeof statusMap
+                              ].label
+                            : "ไม่ระบุสถานะ"}
                         </Badge>
                         <span className="text-sm text-gray-500">
                           ระยะเวลาฝึกงาน: {student.startDate} -{" "}
@@ -394,7 +570,8 @@ export default function AdminStudentDetailPage({
                         <div className="flex items-center gap-2 text-gray-600">
                           <BookOpen className="h-4 w-4 text-gray-400" />
                           <span>
-                            ปีรหัสที่ {student.year} | เกรดเฉลี่ย {student.gpa}
+                            ปีรหัสที่ {student.std_year} | เกรดเฉลี่ย{" "}
+                            {student.gpa}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-600">
@@ -551,15 +728,18 @@ export default function AdminStudentDetailPage({
                                 ทักษะ
                               </h4>
                               <div className="flex flex-wrap gap-1.5">
-                                {student.skills.map((skill, index) => (
-                                  <Badge
-                                    key={index}
-                                    variant="secondary"
-                                    className="bg-gray-100 text-gray-800 hover:bg-gray-200 font-normal text-xs"
-                                  >
-                                    {skill}
-                                  </Badge>
-                                ))}
+                                {student.skills &&
+                                  student.skills.map(
+                                    (skill: string, index: number) => (
+                                      <Badge
+                                        key={index}
+                                        variant="secondary"
+                                        className="bg-gray-100 text-gray-800 hover:bg-gray-200 font-normal text-xs"
+                                      >
+                                        {skill}
+                                      </Badge>
+                                    )
+                                  )}
                               </div>
                             </div>
                             <div>
@@ -567,15 +747,18 @@ export default function AdminStudentDetailPage({
                                 ความสนใจ
                               </h4>
                               <div className="flex flex-wrap gap-1.5">
-                                {student.interests.map((interest, index) => (
-                                  <Badge
-                                    key={index}
-                                    variant="outline"
-                                    className="text-gray-700 font-normal text-xs border-gray-200"
-                                  >
-                                    {interest}
-                                  </Badge>
-                                ))}
+                                {student.interests &&
+                                  student.interests.map(
+                                    (interest: string, index: number) => (
+                                      <Badge
+                                        key={index}
+                                        variant="outline"
+                                        className="text-gray-700 font-normal text-xs border-gray-200"
+                                      >
+                                        {interest}
+                                      </Badge>
+                                    )
+                                  )}
                               </div>
                             </div>
                           </div>
@@ -632,15 +815,15 @@ export default function AdminStudentDetailPage({
                               <dt className="text-gray-500">
                                 ชื่อผู้ติดต่อฉุกเฉิน
                               </dt>
-                              <dd>{student.emergency.name}</dd>
+                              <dd>{student.emergency_contact_name}</dd>
                             </div>
                             <div className="flex flex-col">
                               <dt className="text-gray-500">ความสัมพันธ์</dt>
-                              <dd>{student.emergency.relation}</dd>
+                              <dd>{student.emergency_contact_relation}</dd>
                             </div>
                             <div className="flex flex-col">
                               <dt className="text-gray-500">เบอร์โทรศัพท์</dt>
-                              <dd>{student.emergency.phone}</dd>
+                              <dd>{student.emergency_contact_phone}</dd>
                             </div>
                           </dl>
                         </CardContent>
@@ -699,7 +882,7 @@ export default function AdminStudentDetailPage({
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
-                            {student.visits.map((visit) => (
+                            {student.visits.map((visit: any) => (
                               <div
                                 key={visit.id}
                                 className="border border-gray-200 rounded-lg p-3 bg-white"
@@ -743,7 +926,7 @@ export default function AdminStudentDetailPage({
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
-                            {student.activities.map((activity) => (
+                            {student.activities.map((activity: any) => (
                               <div
                                 key={activity.id}
                                 className="border border-gray-200 rounded-lg p-3 bg-white"
@@ -780,7 +963,7 @@ export default function AdminStudentDetailPage({
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
-                            {student.reports.map((report) => (
+                            {student.reports.map((report: any) => (
                               <div
                                 key={report.id}
                                 className="border border-gray-200 rounded-lg p-3 bg-white"
@@ -825,7 +1008,7 @@ export default function AdminStudentDetailPage({
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
-                            {student.evaluations.map((evaluation) => (
+                            {student.evaluations.map((evaluation: any) => (
                               <div
                                 key={evaluation.id}
                                 className="border border-gray-200 rounded-lg p-3 bg-white"
@@ -968,6 +1151,35 @@ export default function AdminStudentDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>ยืนยันการลบข้อมูล</DialogTitle>
+            <DialogDescription>
+              คุณแน่ใจหรือว่าต้องการลบข้อมูลนักศึกษานี้?
+              การกระทำนี้ไม่สามารถย้อนคืนได้
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              className="w-full sm:w-auto"
+            >
+              ยกเลิก
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmDelete}
+              className="w-full sm:w-auto"
+            >
+              ลบข้อมูล
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

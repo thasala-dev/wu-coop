@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,8 +18,29 @@ import {
   ClipboardCheck as ClipboardCheckIcon,
 } from "lucide-react";
 import Sidebar from "@/components/sidebar";
+import { useEffect, useState } from "react";
 
 export default function AdminEvaluations() {
+  const [loading, setLoading] = useState(true);
+  const [evalationList, setEvalationList] = useState([]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    setLoading(true);
+    const response = await fetch(`/api/evaluations_type`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const res = await response.json();
+    if (res.success) {
+      setEvalationList(res.data);
+    }
+    setLoading(false);
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
@@ -57,7 +79,61 @@ export default function AdminEvaluations() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {/* แบบประเมินที่ 1 */}
+                      {evalationList.map((item: any, index) => (
+                        <div
+                          key={index}
+                          className="border rounded-lg p-4 hover:bg-gray-50"
+                        >
+                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div className="flex items-start gap-3">
+                              <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-md flex items-center justify-center">
+                                <ClipboardCheckIcon className="h-5 w-5 text-blue-600" />
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-medium">{item.name}</h3>
+                                  <Badge
+                                    variant="outline"
+                                    className="bg-blue-50 text-blue-700 hover:bg-blue-50"
+                                  >
+                                    แหล่งฝึก
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-gray-500 mt-1">
+                                  สำหรับแหล่งฝึกประเมินนักศึกษา •{" "}
+                                  {"10 หัวข้อการประเมิน"}
+                                </p>
+                                <div className="flex gap-2 mt-2">
+                                  <span className="text-xs text-gray-500">
+                                    แก้ไขล่าสุด: 15 พ.ค. 2567
+                                  </span>
+                                  <span className="text-xs text-gray-500">
+                                    ใช้งาน: 38 ครั้ง
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="sm">
+                                <EyeIcon className="h-4 w-4 mr-1" />
+                                ดูตัวอย่าง
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                <FileEditIcon className="h-4 w-4 mr-1" />
+                                แก้ไข
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-red-500 hover:text-red-500 hover:bg-red-50"
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {/* แบบประเมินที่ 1
                       <div className="border rounded-lg p-4 hover:bg-gray-50">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-start gap-3">
@@ -110,7 +186,7 @@ export default function AdminEvaluations() {
                         </div>
                       </div>
 
-                      {/* แบบประเมินที่ 2 */}
+                     
                       <div className="border rounded-lg p-4 hover:bg-gray-50">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-start gap-3">
@@ -163,7 +239,7 @@ export default function AdminEvaluations() {
                         </div>
                       </div>
 
-                      {/* แบบประเมินที่ 3 */}
+                   
                       <div className="border rounded-lg p-4 hover:bg-gray-50">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-start gap-3">
@@ -216,7 +292,7 @@ export default function AdminEvaluations() {
                         </div>
                       </div>
 
-                      {/* แบบประเมินที่ 4 */}
+               
                       <div className="border rounded-lg p-4 hover:bg-gray-50">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-start gap-3">
@@ -267,7 +343,7 @@ export default function AdminEvaluations() {
                             </Button>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </CardContent>
                 </Card>

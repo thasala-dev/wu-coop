@@ -73,7 +73,7 @@ export function Navbar({
             href={`/${userType}/dashboard`}
             className="flex items-center gap-2"
           >
-            <img src="/icon.png" alt="Logo" className="h-8 w-8 text-white" />
+            <img src="/spm.png" alt="Logo" className="h-8 w-8 text-white" />
             <h1 className="text-xl font-bold text-white flex items-center gap-2">
               ระบบฝึกงาน{" "}
               <span className="hidden md:block">

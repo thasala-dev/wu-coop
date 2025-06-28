@@ -33,12 +33,14 @@ const formSchema = z.object({
   contactEmail: z.string(),
   contactPhone: z.string().min(1, "กรุณากรอกเบอร์โทรศัพท์ผู้ประสานงาน"),
   contactAddress: z.string(),
+  evaluationType: z.string().min(1, "กรุณาเลือกรูปแบบการประเมิน"),
 });
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const id = params?.id as string;
+  const [evaluationsType, setEvaluationsType] = useState<any[]>([]);
 
   const { toast } = useToast();
   const router = useRouter();
@@ -66,6 +68,10 @@ export default function Page() {
       contactEmail: "",
       contactPhone: "",
       contactAddress: "",
+      evaluationType: "",
+
+      username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
+      password: z.string(),
     },
   });
 
@@ -74,6 +80,12 @@ export default function Page() {
   }, []);
 
   async function fetchData() {
+    setLoading(true);
+    const res = await fetch(`/api/evaluations_type`);
+    if (!res.ok) return;
+    const evalations = await res.json();
+    setEvaluationsType(evalations.data || []);
+
     const response = await fetch(`/api/company/${id}`);
     if (!response.ok) {
       toast({
@@ -101,6 +113,9 @@ export default function Page() {
       setValue("contactEmail", company.contact_email || "");
       setValue("contactPhone", company.contact_phone);
       setValue("contactAddress", company.contact_address || "");
+      setValue("evaluationType", company.evaluation_type || "");
+      setValue("username", company.username);
+      setValue("password", ""); // Don't pre-fill password for security reasons
     } else {
       toast({
         title: "ไม่พบข้อมูล",
@@ -112,12 +127,18 @@ export default function Page() {
 
   async function onSubmit(values: any) {
     setLoading(true);
+
+    const payload = values;
+    if (payload.password === "") {
+      delete payload.password;
+    }
+
     const response = await fetch(`/api/company/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(values),
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
@@ -533,6 +554,86 @@ export default function Page() {
                                 "string"
                                   ? errors.contactAddress.message
                                   : "กรุณากรอกที่อยู่ผู้ประสานงาน"}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-12">
+                            <div className="font-semibold tracking-tight text-lg">
+                              ข้อมูลการประเมิน
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label>รูปแบบการประเมิน (ตั้งต้น)</label>
+                            <select
+                              id="evaluationType"
+                              {...register("evaluationType")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.evaluationType
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                            >
+                              <option value="" disabled>
+                                เลือกรูปแบบการประเมิน
+                              </option>
+                              {evaluationsType.map((item: any) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.group} - {item.name}
+                                </option>
+                              ))}
+                            </select>
+                            {errors.evaluationType && (
+                              <p className="text-sm text-red-600">
+                                {errors.evaluationType.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-12">
+                            <div className="font-semibold tracking-tight text-lg">
+                              ข้อมูลผู้ใช้งาน
+                            </div>
+                          </div>
+                          <div className="sm:col-span-6">
+                            <label>Username</label>
+                            <input
+                              id="username"
+                              type="text"
+                              {...register("username")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.username
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกชื่อผู้ใช้งาน"
+                            />
+                            {errors.username && (
+                              <p className="text-sm text-red-600">
+                                {errors.username.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-6">
+                            <label>Password</label>
+                            <input
+                              id="password"
+                              type="password"
+                              {...register("password")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.password
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกรหัสผ่าน"
+                            />
+                            {errors.password && (
+                              <p className="text-sm text-red-600">
+                                {errors.password.message}
                               </p>
                             )}
                           </div>

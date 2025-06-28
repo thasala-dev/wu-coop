@@ -123,7 +123,7 @@ export default function Home() {
   // แสดง loading ระหว่างตรวจสอบ session
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200 opacity-90">
         <Loading />
       </div>
     );
@@ -135,14 +135,9 @@ export default function Home() {
       <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200 opacity-90" />
       <div className="container relative z-10 mx-auto px-4 py-8">
         <div className="flex flex-col items-center justify-center">
-          <div className="mb-8 text-center text-green-700">
-            <div className="flex items-center justify-center gap-2">
-              <img src="/icon.png" alt="Logo" className="h-8 w-8 text-white" />
-              <h1 className="text-4xl font-bold mb-2">ระบบฝึกงาน</h1>
-            </div>
-            <p className="text-green-700/80 text-lg">
-              สำนักเภสัชศาสตร์ มหาวิทยาลัยวลัยลักษณ์
-            </p>
+          <div className="mb-8 flex flex-col items-center justify-center text-green-700">
+            <img src="/spm.png" alt="Logo" className="h-16 mb-2" />
+            <h1 className="text-4xl font-bold mb-2 text-center">ระบบฝึกงาน</h1>
           </div>
 
           <Card className="w-full rounded-xl max-w-md shadow-xl bg-white backdrop-blur-md bg-opacity-60  border-0">

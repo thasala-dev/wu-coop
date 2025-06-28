@@ -195,14 +195,20 @@ export default function AdminMatching() {
       const companyId = info.intern.find(
         (item: any) => item.id === selectedId
       ).company_id;
+      const selectedCompany = info.company.find(
+        (item: any) => item.company_id == companyId
+      );
+
       const response = await fetch(`/api/registIntern/${selectedId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           company_id: companyId,
           register_date: new Date().toISOString(),
+          evaluation_type: selectedCompany.evaluation_type,
         }),
       });
+
       const data = await response.json();
       if (response.ok && data.success) {
         await recordLog(
@@ -226,6 +232,7 @@ export default function AdminMatching() {
         body: JSON.stringify({
           company_id: null,
           register_date: null,
+          evaluation_type: null,
         }),
       });
       const data = await response.json();

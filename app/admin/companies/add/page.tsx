@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { ArrowLeft, Edit, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,6 +33,7 @@ const formSchema = z.object({
   contactEmail: z.string(),
   contactPhone: z.string().min(1, "กรุณากรอกเบอร์โทรศัพท์ผู้ประสานงาน"),
   contactAddress: z.string(),
+  evaluationType: z.string().min(1, "กรุณาเลือกรูปแบบการประเมิน"),
 
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
   password: z.string().min(1, "กรุณากรอกรหัสผ่าน"),
@@ -42,6 +43,8 @@ export default function Page({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+
+  const [evaluationsType, setEvaluationsType] = useState<any[]>([]);
   const {
     register,
     handleSubmit,
@@ -67,8 +70,22 @@ export default function Page({ params }: { params: { id: string } }) {
       contactAddress: "",
       username: "",
       password: "",
+      evaluationType: "",
     },
   });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    setLoading(true);
+    const res = await fetch(`/api/evaluations_type`);
+    if (!res.ok) return;
+    const evalations = await res.json();
+    setEvaluationsType(evalations.data || []);
+    setLoading(false);
+  }
 
   async function onSubmit(values: any) {
     setLoading(true);
@@ -461,6 +478,40 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.contactAddress && (
                               <p className="text-sm text-red-600">
                                 {errors.contactAddress.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="sm:col-span-12">
+                            <div className="font-semibold tracking-tight text-lg">
+                              ข้อมูลการประเมิน
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-6">
+                            <label>รูปแบบการประเมิน (ตั้งต้น)</label>
+                            <select
+                              id="evaluationType"
+                              {...register("evaluationType")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.evaluationType
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                            >
+                              <option value="" disabled>
+                                เลือกรูปแบบการประเมิน
+                              </option>
+                              {evaluationsType.map((item: any) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.group} - {item.name}
+                                </option>
+                              ))}
+                            </select>
+                            {errors.evaluationType && (
+                              <p className="text-sm text-red-600">
+                                {errors.evaluationType.message}
                               </p>
                             )}
                           </div>
