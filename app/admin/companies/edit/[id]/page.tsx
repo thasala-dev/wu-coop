@@ -6,15 +6,15 @@ import { ArrowLeft, Edit, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import AdminSidebar from "@/components/admin-sidebar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useParams } from "next/navigation";
 import { provinces, companyType } from "@/lib/global";
-import Sidebar from "@/components/sidebar";
+import UnifiedSidebar from "@/components/unified-sidebar";
 import Loading from "@/components/loading";
+import Sidebar from "@/components/sidebar";
 
 const formSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อแหล่งฝึกงาน"),
@@ -33,7 +33,11 @@ const formSchema = z.object({
   contactEmail: z.string(),
   contactPhone: z.string().min(1, "กรุณากรอกเบอร์โทรศัพท์ผู้ประสานงาน"),
   contactAddress: z.string(),
-  evaluationType: z.string().min(1, "กรุณาเลือกรูปแบบการประเมิน"),
+  evaluationType: z
+    .array(z.number())
+    .min(1, "กรุณาเลือกรูปแบบการประเมินอย่างน้อย 1 รูปแบบ"),
+  username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
+  password: z.string(),
 });
 
 export default function Page() {
@@ -68,10 +72,9 @@ export default function Page() {
       contactEmail: "",
       contactPhone: "",
       contactAddress: "",
-      evaluationType: "",
-
-      username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
-      password: z.string(),
+      evaluationType: [],
+      username: "",
+      password: "",
     },
   });
 
@@ -113,9 +116,26 @@ export default function Page() {
       setValue("contactEmail", company.contact_email || "");
       setValue("contactPhone", company.contact_phone);
       setValue("contactAddress", company.contact_address || "");
-      setValue("evaluationType", company.evaluation_type || "");
+
+      // Handle evaluationType - ensure it's always an array
+      let evaluationTypes = [];
+      if (company.evaluation_type) {
+        if (Array.isArray(company.evaluation_type)) {
+          evaluationTypes = company.evaluation_type;
+        } else if (typeof company.evaluation_type === "string") {
+          // If it's a comma-separated string, split it
+          evaluationTypes = company.evaluation_type
+            .split(",")
+            .map((id: string) => id.trim());
+        } else {
+          // If it's a single value, wrap it in an array
+          evaluationTypes = [company.evaluation_type.toString()];
+        }
+      }
+      setValue("evaluationType", evaluationTypes);
+
       setValue("username", company.username);
-      setValue("password", ""); // Don't pre-fill password for security reasons
+      setValue("password", "");
     } else {
       toast({
         title: "ไม่พบข้อมูล",
@@ -564,30 +584,60 @@ export default function Page() {
                             </div>
                           </div>
 
-                          <div className="sm:col-span-6">
-                            <label>รูปแบบการประเมิน (ตั้งต้น)</label>
-                            <select
-                              id="evaluationType"
-                              {...register("evaluationType")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.evaluationType
-                                  ? "border-red-600  border-2"
-                                  : "")
-                              }
-                            >
-                              <option value="" disabled>
-                                เลือกรูปแบบการประเมิน
-                              </option>
+                          <div className="sm:col-span-12">
+                            <label className="text-sm font-medium mb-3 block">
+                              รูปแบบการประเมิน (เลือกได้หลายรูปแบบ)
+                            </label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 border rounded-md bg-gray-50">
                               {evaluationsType.map((item: any) => (
-                                <option key={item.id} value={item.id}>
-                                  {item.group} - {item.name}
-                                </option>
+                                <div
+                                  key={item.id}
+                                  className="flex items-center space-x-3"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    id={`evaluation-${item.id}`}
+                                    value={item.id}
+                                    checked={watch("evaluationType")?.includes(
+                                      item.id
+                                    )}
+                                    onChange={(e) => {
+                                      const currentValues =
+                                        watch("evaluationType") || [];
+
+                                      if (e.target.checked) {
+                                        const newValues = [
+                                          ...currentValues,
+                                          item.id,
+                                        ];
+                                        setValue("evaluationType", newValues);
+                                      } else {
+                                        const newValues = currentValues.filter(
+                                          (id: string) => id !== item.id
+                                        );
+                                        setValue("evaluationType", newValues);
+                                      }
+                                    }}
+                                    className="h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                  />
+                                  <label
+                                    htmlFor={`evaluation-${item.id}`}
+                                    className="text-sm text-gray-700 cursor-pointer"
+                                  >
+                                    <span className="font-medium">
+                                      {item.group}
+                                    </span>{" "}
+                                    - {item.name}
+                                  </label>
+                                </div>
                               ))}
-                            </select>
+                            </div>
                             {errors.evaluationType && (
-                              <p className="text-sm text-red-600">
-                                {errors.evaluationType.message}
+                              <p className="text-sm text-red-600 mt-2">
+                                {typeof errors.evaluationType?.message ===
+                                "string"
+                                  ? errors.evaluationType.message
+                                  : "กรุณาเลือกรูปแบบการประเมินอย่างน้อย 1 รูปแบบ"}
                               </p>
                             )}
                           </div>
@@ -613,7 +663,9 @@ export default function Page() {
                             />
                             {errors.username && (
                               <p className="text-sm text-red-600">
-                                {errors.username.message}
+                                {typeof errors.username?.message === "string"
+                                  ? errors.username.message
+                                  : "กรุณากรอกชื่อผู้ใช้งาน"}
                               </p>
                             )}
                           </div>
@@ -633,7 +685,9 @@ export default function Page() {
                             />
                             {errors.password && (
                               <p className="text-sm text-red-600">
-                                {errors.password.message}
+                                {typeof errors.password?.message === "string"
+                                  ? errors.password.message
+                                  : "กรุณากรอกรหัสผ่าน"}
                               </p>
                             )}
                           </div>

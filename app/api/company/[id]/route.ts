@@ -13,10 +13,12 @@ export async function GET(request: NextRequest) {
         { status: 404 }
       );
     } else {
+      const companyData = { ...data[0] };
+
       return NextResponse.json({
         success: true,
         message: "ดำเนินการสำเร็จ",
-        data: data[0],
+        data: companyData,
       });
     }
   } catch (error) {
@@ -108,7 +110,7 @@ export async function PUT(request: NextRequest) {
     }
     if (body.evaluationType !== undefined) {
       updateFields.push(`evaluation_type = $${paramCount++}`);
-      params.push(body.evaluationType || null);
+      params.push(body.evaluationType || []);
     }
 
     // Add updated_at timestamp
