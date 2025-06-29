@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
           id,
           name,
           description,
+          file_path,
           file_type,
           file_size,
           updated_at

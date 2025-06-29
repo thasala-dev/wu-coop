@@ -149,41 +149,6 @@ export default function CompanyPage() {
   useEffect(() => {
     if (param_id) {
       fetchData();
-      // Set initial mock documents
-      setDocuments([
-        {
-          id: "1",
-          name: "สัญญาความร่วมมือ (MOU)",
-          type: "PDF",
-          size: "2.4 MB",
-          uploadDate: "15 มกราคม 2566",
-          status: "active",
-        },
-        {
-          id: "2",
-          name: "แบบประเมินนักศึกษา",
-          type: "DOCX",
-          size: "1.8 MB",
-          uploadDate: "20 มกราคม 2566",
-          status: "active",
-        },
-        {
-          id: "3",
-          name: "คู่มือการฝึกงาน",
-          type: "PDF",
-          size: "5.2 MB",
-          uploadDate: "25 มกราคม 2566",
-          status: "active",
-        },
-        {
-          id: "4",
-          name: "รายงานผลการฝึกงานปี 2565",
-          type: "PDF",
-          size: "3.7 MB",
-          uploadDate: "10 ตุลาคม 2565",
-          status: "archived",
-        },
-      ]);
     }
   }, [param_id]);
 
@@ -212,96 +177,28 @@ export default function CompanyPage() {
     setCalendar(res.calendar);
     setRegist(res.regist);
     setCurrent(res.current || null);
+    setDocuments(res.documents || []);
 
     setLoading(false);
   }
 
-  // Mock data for company with ID 2
-  const company = {
-    id: "2",
-    name: "แหล่งฝึกงาน ฟาร์มาเฮลท์แคร์ จำกัด",
-    logo: "https://logo.clearbit.com/pfizer.com",
-    industry: "เภสัชกรรม",
-    location: "นนทบุรี",
-    address: "99/9 ถนนติวานนท์ ตำบลบางกระสอ อำเภอเมือง จังหวัดนนทบุรี 11000",
-    website: "https://www.pharmahealth.co.th",
-    studentCapacity: 3,
-    activeStudents: 2,
-    status: "active",
-    contactPerson: "คุณสมหญิง รักดี",
-    contactPosition: "ผู้จัดการฝ่ายทรัพยากรบุคคล",
-    contactEmail: "somying@pharmahealth.co.th",
-    contactPhone: "02-234-5678",
-    description:
-      "แหล่งฝึกงาน ฟาร์มาเฮลท์แคร์ จำกัด เป็นแหล่งฝึกงานชั้นนำในอุตสาหกรรมเภสัชกรรมของประเทศไทย ก่อตั้งเมื่อปี พ.ศ. 2535 เรามุ่งมั่นในการวิจัยและพัฒนาผลิตภัณฑ์ยาและเวชภัณฑ์ที่มีคุณภาพสูง เพื่อสุขภาพที่ดีของคนไทย",
-    establishedYear: 1992,
-    employeeCount: 250,
-    cooperationSince: 2018,
+  // Function to format file size
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  // Mock data for students in this company
-  const students = [
-    {
-      id: "1",
-      name: "นายสมชาย ใจดี",
-      studentId: "6299999921",
-      avatar: "/placeholder.svg?height=40&width=40",
-      faculty: "เภสัชศาสตร์",
-      major: "เภสัชกรรมคลินิก",
-      startDate: "1 มิถุนายน 2566",
-      endDate: "30 กันยายน 2566",
-      status: "active",
-      position: "ผู้ช่วยเภสัชกร",
-      mentor: "ภญ.วิภาดา สุขใจ",
-    },
-    {
-      id: "2",
-      name: "นางสาวสมหญิง รักเรียน",
-      studentId: "6299999922",
-      avatar: "/placeholder.svg?height=40&width=40",
-      faculty: "เภสัชศาสตร์",
-      major: "เภสัชกรรมอุตสาหการ",
-      startDate: "1 มิถุนายน 2566",
-      endDate: "30 กันยายน 2566",
-      status: "active",
-      position: "ผู้ช่วยวิจัยและพัฒนา",
-      mentor: "ภก.ประเสริฐ นวัตกรรม",
-    },
-  ];
-
-  // Mock data for history
-  const history = [
-    {
-      year: "2565",
-      studentCount: 3,
-      completedCount: 3,
-      students: [
-        "นายวิชัย เรียนดี (เภสัชกรรมคลินิก)",
-        "นางสาวสุดา ตั้งใจ (เภสัชกรรมอุตสาหการ)",
-        "นายภาคิน พัฒนา (เภสัชกรรมคลินิก)",
-      ],
-    },
-    {
-      year: "2564",
-      studentCount: 2,
-      completedCount: 2,
-      students: [
-        "นางสาวพิมพ์ใจ ใฝ่รู้ (เภสัชกรรมคลินิก)",
-        "นายสมศักดิ์ ศึกษาดี (เภสัชกรรมอุตสาหการ)",
-      ],
-    },
-    {
-      year: "2563",
-      studentCount: 2,
-      completedCount: 2,
-      students: [
-        "นายธนา รักการค้า (เภสัชกรรมคลินิก)",
-        "นางสาวกมลา วิจัยดี (เภสัชกรรมอุตสาหการ)",
-      ],
-    },
-  ];
-
-  // Function to render status badge
+  // Function to format date
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
   const renderStatusBadge = (status: number) => {
     switch (status) {
       case 1:
@@ -350,26 +247,44 @@ export default function CompanyPage() {
         false // ไม่ต้องลดขนาดรูป
       );
 
+      console.log("Upload result:", uploadResult);
+
       if (!uploadResult.success) {
         throw new Error(uploadResult.error || "ไม่สามารถอัปโหลดไฟล์ได้");
       }
 
-      // เพิ่มเอกสารใหม่ใน mock data
-      const newDocument = {
-        id: (documents.length + 1).toString(),
+      // บันทึกข้อมูลเอกสารลงฐานข้อมูล
+      const documentData = {
         name: documentForm.name,
-        type: documentForm.type,
-        size: documentForm.size,
-        uploadDate: new Date().toLocaleDateString("th-TH"),
-        status: "active",
+        file_path: uploadResult.filePath || "",
+        file_type: documentForm.type,
+        file_size: documentForm.file.size,
+        mime_type: documentForm.file.type,
+        category: "general",
+        status: 1,
       };
 
-      setDocuments([...documents, newDocument]);
+      const response = await fetch(`/api/admin/company/${param_id}/documents`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(documentData),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || "ไม่สามารถบันทึกข้อมูลเอกสารได้");
+      }
+
+      // อัปเดตรายการเอกสาร
+      await fetchData();
 
       toast({
         title: "อัปโหลดเอกสารสำเร็จ",
         description: "เอกสารได้ถูกเพิ่มเรียบร้อยแล้ว",
-        variant: "default",
+        variant: "success",
       });
 
       // รีเซ็ตฟอร์ม
@@ -398,166 +313,263 @@ export default function CompanyPage() {
         <Sidebar activePage="companies" userType="admin" />
         {loading && <Loading />}
         <div className="md:col-span-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link
-                href="/admin/companies"
-                className="text-gray-500 hover:text-gray-700"
+          {/* Header Section with Gradient */}
+          <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 rounded-2xl p-8 mb-6 shadow-xl">
+            <div className="absolute inset-0 bg-black/20 rounded-2xl"></div>
+            <div className="relative z-10 flex items-center justify-between text-white">
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/admin/companies"
+                  className="text-white/80 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10"
+                >
+                  <ArrowLeftIcon className="h-6 w-6" />
+                </Link>
+                <div>
+                  <h1 className="text-3xl font-bold mb-2">
+                    รายละเอียดแหล่งฝึกงาน
+                  </h1>
+                  <p className="text-white/80 text-lg">
+                    จัดการข้อมูลและติดตามสถานะแหล่งฝึกงาน
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => router.push(`/admin/companies/edit/${param_id}`)}
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/20 text-white"
+                size="lg"
               >
-                <ArrowLeftIcon className="h-5 w-5" />
-              </Link>
-              <h1 className="text-xl font-bold">รายละเอียดแหล่งฝึกงาน</h1>
+                <PencilIcon className="h-5 w-5 mr-2" />
+                แก้ไขข้อมูล
+              </Button>
             </div>
-            <Button
-              onClick={() => router.push(`/admin/companies/edit/${param_id}`)}
-            >
-              <PencilIcon className="h-4 w-4 mr-2" />
-              แก้ไขข้อมูล
-            </Button>
           </div>
 
           <div className="flex flex-col md:flex-row gap-6">
-            <Card className="w-full md:w-2/3">
-              <CardHeader className="pb-2">
+            <Card className="w-full md:w-2/3 shadow-lg border-0">
+              <CardHeader className="pb-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-t-lg">
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16 rounded-md border border-gray-200">
-                    <AvatarImage src={data?.image} alt={data?.name} />
-                    <AvatarFallback className="rounded-md bg-gray-100 text-gray-600">
-                      <BuildingIcon className="h-6 w-6 text-gray-500" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-xl">{data?.name}</CardTitle>
-                    <CardDescription className="flex items-center gap-2 mt-1">
-                      <BuildingIcon className="h-4 w-4 text-gray-500" />
-                      <span>
-                        {companyType.find(
-                          (t) => t.value === data?.business_type
-                        )?.label || "-"}
+                  <div className="relative">
+                    <Avatar className="h-20 w-20 rounded-xl border-4 border-white shadow-lg">
+                      <AvatarImage src={data?.image} alt={data?.name} />
+                      <AvatarFallback className="rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl">
+                        <BuildingIcon className="h-8 w-8" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-lg">
+                      {renderStatusBadge(data?.status_id)}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
+                      {data?.name}
+                    </CardTitle>
+                    <CardDescription className="flex items-center gap-4 text-base">
+                      <span className="flex items-center gap-2">
+                        <BuildingIcon className="h-4 w-4 text-blue-600" />
+                        <span className="font-medium">
+                          {companyType.find(
+                            (t) => t.value === data?.business_type
+                          )?.label || "-"}
+                        </span>
                       </span>
-                      <span className="mx-1">•</span>
-                      <MapPinIcon className="h-4 w-4 text-gray-500" />
-                      <span>{data?.location}</span>
+                      <span className="flex items-center gap-2">
+                        <MapPinIcon className="h-4 w-4 text-green-600" />
+                        <span className="font-medium">{data?.location}</span>
+                      </span>
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="mt-2">{renderStatusBadge(data?.status_id)}</div>
-                <p className="mt-4 text-gray-700">{data?.detail}</p>
+              <CardContent className="pt-6">
+                {data?.detail && (
+                  <div className="mb-6 p-4 bg-gray-50 rounded-lg border-l-4 border-blue-500">
+                    <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                      <ClipboardIcon className="h-4 w-4 text-blue-600" />
+                      เกี่ยวกับแหล่งฝึกงาน
+                    </h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      {data.detail}
+                    </p>
+                  </div>
+                )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                  <div>
-                    <h3 className="font-medium text-gray-900">ข้อมูลทั่วไป</h3>
-                    <ul className="mt-2 space-y-2">
-                      <li className="flex items-start gap-2 text-sm">
-                        <BuildingIcon className="h-4 w-4 text-gray-500 mt-0.5" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+                      <BuildingIcon className="h-5 w-5 text-blue-600" />
+                      ข้อมูลองค์กร
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <CalendarIcon className="h-5 w-5 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">ปีที่ก่อตั้ง:</span>{" "}
-                          {data?.establish_year || (
-                            <i className="text-gray-600">ไม่ระบุ</i>
-                          )}
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2 text-sm">
-                        <UsersIcon className="h-4 w-4 text-gray-500 mt-0.5" />
-                        <div>
-                          <span className="text-gray-500">จำนวนพนักงาน:</span>{" "}
-                          {data?.total_employees} คน
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2 text-sm">
-                        <CalendarIcon className="h-4 w-4 text-gray-500 mt-0.5" />
-                        <div>
-                          <span className="text-gray-500">
-                            เริ่มร่วมโครงการฝึกงาน:
-                          </span>{" "}
-                          {data?.joined_year || (
-                            <i className="text-gray-600">ไม่ระบุ</i>
-                          )}
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2 text-sm">
-                        <UsersIcon className="h-4 w-4 text-gray-500 mt-0.5" />
-                        <div>
-                          <span className="text-gray-500">
-                            รับนักศึกษาสูงสุด:
-                          </span>{" "}
-                          {data?.joined_year || 0} คน
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2 text-sm">
-                        <GlobeIcon className="h-4 w-4 text-gray-500 mt-0.5" />
-                        <div>
-                          <span className="text-gray-500">เว็บไซต์:</span>{" "}
-                          <a
-                            href={data?.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
-                          >
-                            {data?.website || (
-                              <i className="text-gray-600">ไม่ระบุ</i>
+                          <span className="text-sm font-medium text-gray-500">
+                            ปีที่ก่อตั้ง
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.establish_year || (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
                             )}
-                          </a>
+                          </p>
                         </div>
-                      </li>
-                    </ul>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <UsersIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+                        <div>
+                          <span className="text-sm font-medium text-gray-500">
+                            จำนวนพนักงาน
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.total_employees ? (
+                              `${data.total_employees} คน`
+                            ) : (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <CalendarIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+                        <div>
+                          <span className="text-sm font-medium text-gray-500">
+                            เริ่มร่วมโครงการ
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.joined_year || (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <GlobeIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+                        <div>
+                          <span className="text-sm font-medium text-gray-500">
+                            เว็บไซต์
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.website ? (
+                              <a
+                                href={data.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                              >
+                                {data.website}
+                              </a>
+                            ) : (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <h3 className="font-medium text-gray-900">ข้อมูลติดต่อ</h3>
-                    <ul className="mt-2 space-y-2">
-                      <li className="flex items-start gap-2 text-sm">
-                        <UsersIcon className="h-4 w-4 text-gray-500 mt-0.5" />
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+                      <PhoneIcon className="h-5 w-5 text-green-600" />
+                      ข้อมูลติดต่อ
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <UsersIcon className="h-5 w-5 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">ผู้ประสานงาน:</span>{" "}
-                          {data?.contact_name}
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2 text-sm">
-                        <ClipboardIcon className="h-4 w-4 text-gray-500 mt-0.5" />
-                        <div>
-                          <span className="text-gray-500">ตำแหน่ง:</span>{" "}
-                          {data?.contact_position}
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2 text-sm">
-                        <MailIcon className="h-4 w-4 text-gray-500 mt-0.5" />
-                        <div>
-                          <span className="text-gray-500">อีเมล:</span>{" "}
-                          <a
-                            href={`mailto:${data?.contact_email}`}
-                            className="text-blue-600 hover:underline"
-                          >
-                            {data?.contact_email || (
-                              <i className="text-gray-600">ไม่ระบุ</i>
+                          <span className="text-sm font-medium text-gray-500">
+                            ผู้ประสานงาน
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.contact_name || (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
                             )}
-                          </a>
+                          </p>
                         </div>
-                      </li>
-                      <li className="flex items-start gap-2 text-sm">
-                        <PhoneIcon className="h-4 w-4 text-gray-500 mt-0.5" />
+                      </div>
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <ClipboardIcon className="h-5 w-5 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">โทรศัพท์:</span>{" "}
-                          <a
-                            href={`tel:${data?.contact_phone}`}
-                            className="text-blue-600 hover:underline"
-                          >
-                            {data?.contact_phone}
-                          </a>
+                          <span className="text-sm font-medium text-gray-500">
+                            ตำแหน่ง
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.contact_position || (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
+                            )}
+                          </p>
                         </div>
-                      </li>
-                      <li className="flex items-start gap-2 text-sm">
-                        <MapPinIcon className="h-4 w-4 text-gray-500 mt-0.5" />
+                      </div>
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <MailIcon className="h-5 w-5 text-gray-500 mt-0.5" />
                         <div>
-                          <span className="text-gray-500">ที่อยู่:</span>{" "}
-                          {data?.contact_address || (
-                            <i className="text-gray-600">ไม่ระบุ</i>
-                          )}
+                          <span className="text-sm font-medium text-gray-500">
+                            อีเมล
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.contact_email ? (
+                              <a
+                                href={`mailto:${data.contact_email}`}
+                                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                              >
+                                {data.contact_email}
+                              </a>
+                            ) : (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
+                            )}
+                          </p>
                         </div>
-                      </li>
-                    </ul>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <PhoneIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+                        <div>
+                          <span className="text-sm font-medium text-gray-500">
+                            โทรศัพท์
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.contact_phone ? (
+                              <a
+                                href={`tel:${data.contact_phone}`}
+                                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                              >
+                                {data.contact_phone}
+                              </a>
+                            ) : (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <MapPinIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+                        <div>
+                          <span className="text-sm font-medium text-gray-500">
+                            ที่อยู่
+                          </span>
+                          <p className="text-gray-900 font-medium">
+                            {data?.contact_address || (
+                              <span className="text-gray-500 italic">
+                                ไม่ระบุ
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -565,51 +577,74 @@ export default function CompanyPage() {
 
             <Card className="w-full md:w-1/3">
               <CardHeader>
-                <CardTitle className="text-lg">สถิติการรับนักศึกษา</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <UsersIcon className="h-5 w-5 text-blue-600" />
+                  สถิติการรับนักศึกษา
+                </CardTitle>
                 <CardDescription className="text-sm text-gray-500">
-                  {current?.name} ({current?.semester}/{current?.year})
+                  {current?.name
+                    ? `${current.name} (${current.semester}/${current.year})`
+                    : "ไม่มีรอบการฝึกงานที่ใช้งาน"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500">นักศึกษาปัจจุบัน</span>
-                    <span className="font-medium">
-                      {current?.intern.length}/{current?.total}
+                    <span className="font-medium text-lg">
+                      {current?.intern?.length || 0}/{current?.total || 0}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div className="w-full bg-gray-200 rounded-full h-3">
                     <div
-                      className="bg-green-600 h-2.5 rounded-full"
+                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
                       style={{
                         width: `${
-                          (current?.intern.length / current?.total) * 100 || 0
+                          current?.total
+                            ? (current.intern?.length / current.total) * 100
+                            : 0
                         }%`,
                       }}
                     ></div>
                   </div>
 
                   <div className="pt-4 border-t">
-                    <h4 className="font-medium mb-2">ประวัติการรับนักศึกษา</h4>
-                    <div className="space-y-3">
+                    <h4 className="font-medium mb-3 flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4 text-gray-500" />
+                      ประวัติการรับนักศึกษา
+                    </h4>
+                    <div className="space-y-3 max-h-48 overflow-y-auto">
                       {regist.length === 0 && (
                         <div className="text-gray-500 text-sm text-center py-4">
                           - ไม่มีข้อมูลการรับนักศึกษา -
                         </div>
                       )}
-                      {regist.map((item) => (
+                      {regist.slice(0, 5).map((item) => (
                         <div
                           key={item.id}
-                          className="flex justify-between items-center text-sm"
+                          className="flex justify-between items-center text-sm p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
                         >
-                          <span>
-                            {item.name} ({item.semester}/{item.year})
-                          </span>
-                          <span className="font-medium">
-                            {item.intern.length || 0}/{item.total} คน
-                          </span>
+                          <div>
+                            <div className="font-medium text-gray-900">
+                              {item.name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {item.semester}/{item.year}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-medium text-blue-600">
+                              {item.intern?.length || 0}/{item.total}
+                            </div>
+                            <div className="text-xs text-gray-500">คน</div>
+                          </div>
                         </div>
                       ))}
+                      {regist.length > 5 && (
+                        <div className="text-center text-sm text-gray-500 italic">
+                          และอีก {regist.length - 5} รายการ...
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -617,103 +652,174 @@ export default function CompanyPage() {
             </Card>
           </div>
 
-          <Tabs defaultValue="students" className="my-4">
-            <TabsList>
-              <TabsTrigger value="students">
-                นักศึกษาปัจจุบัน ({students.length})
+          <Tabs defaultValue="students" className="my-6">
+            <TabsList className="grid w-full grid-cols-3 bg-gray-100 rounded-xl p-1">
+              <TabsTrigger
+                value="students"
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <UsersIcon className="h-4 w-4 mr-2" />
+                นักศึกษาปัจจุบัน ({current?.intern?.length || 0})
               </TabsTrigger>
-              <TabsTrigger value="history">บันทึกการรับนักศึกษา</TabsTrigger>
-              <TabsTrigger value="documents">
+              <TabsTrigger
+                value="history"
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <CalendarIcon className="h-4 w-4 mr-2" />
+                บันทึกการรับนักศึกษา ({regist.length})
+              </TabsTrigger>
+              <TabsTrigger
+                value="documents"
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200"
+              >
+                <FileTextIcon className="h-4 w-4 mr-2" />
                 เอกสาร ({documents.length})
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="students">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle>นักศึกษาที่ฝึกงานอยู่ในปัจจุบัน</CardTitle>
+              <Card className="shadow-lg border-0">
+                <CardHeader className="pb-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2">
+                    <UsersIcon className="h-5 w-5 text-blue-600" />
+                    นักศึกษาที่ฝึกงานอยู่ในปัจจุบัน
+                  </CardTitle>
                   <CardDescription>
-                    รายชื่อนักศึกษาที่กำลังฝึกงานอยู่ที่แหล่งฝึกงานนี้
+                    {current?.name
+                      ? `รายชื่อนักศึกษาที่กำลังฝึกงานใน${current.name} (${current.semester}/${current.year})`
+                      : "ไม่มีรอบการฝึกงานที่ใช้งาน"}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-3 px-4">นักศึกษา</th>
-                          <th className="text-left py-3 px-4">สาขาวิชา</th>
-                          <th className="text-left py-3 px-4">ระยะเวลา</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {current?.intern.map((student: any, index: number) => (
-                          <tr key={index} className="border-b hover:bg-gray-50">
-                            <td className="py-3 px-4">
-                              <div className="flex items-center gap-3">
-                                <CustomAvatar
-                                  id={`student${student.student_id}`}
-                                  image={student.image}
-                                  size="8"
-                                />
-                                <div>
-                                  <div className="font-medium">
-                                    {student.fullname}
-                                  </div>
-                                  <div className="text-sm text-gray-500">
-                                    {student.student_id}
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <div>
-                                <div className="text-sm text-gray-500">
-                                  {student.major}
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <div className="text-sm">
-                                {new Date(
-                                  current.start_date
-                                ).toLocaleDateString("th-TH", {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                })}{" "}
-                                -{" "}
-                                {new Date(current.end_date).toLocaleDateString(
-                                  "th-TH",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  }
-                                )}
-                              </div>
-                            </td>
+                <CardContent className="pt-6">
+                  {!current ||
+                  !current.intern ||
+                  current.intern.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-full p-6 w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+                        <UsersIcon className="h-12 w-12 text-blue-600" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        ยังไม่มีนักศึกษา
+                      </h3>
+                      <p className="text-gray-500">
+                        {current
+                          ? "ยังไม่มีนักศึกษาลงทะเบียนฝึกงานในรอบนี้"
+                          : "ไม่มีรอบการฝึกงานที่ใช้งาน"}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-gray-200 bg-gray-50">
+                            <th className="text-left py-4 px-6 font-medium text-gray-900">
+                              นักศึกษา
+                            </th>
+                            <th className="text-left py-4 px-6 font-medium text-gray-900">
+                              สาขาวิชา
+                            </th>
+                            <th className="text-left py-4 px-6 font-medium text-gray-900">
+                              ระยะเวลา
+                            </th>
+                            <th className="text-left py-4 px-6 font-medium text-gray-900">
+                              สถานะ
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {current.intern.map((student: any, index: number) => (
+                            <tr
+                              key={index}
+                              className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200"
+                            >
+                              <td className="py-4 px-6">
+                                <div className="flex items-center gap-3">
+                                  <CustomAvatar
+                                    id={`student${student.student_id}`}
+                                    image={student.image}
+                                    size="10"
+                                  />
+                                  <div>
+                                    <div className="font-medium text-gray-900">
+                                      {student.fullname}
+                                    </div>
+                                    <div className="text-sm text-gray-500">
+                                      รหัสนักศึกษา: {student.student_id}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-4 px-6">
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {student.major}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    คณะเภสัชศาสตร์
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-4 px-6">
+                                <div className="text-sm text-gray-900">
+                                  {current.start_date && current.end_date ? (
+                                    <>
+                                      {new Date(
+                                        current.start_date
+                                      ).toLocaleDateString("th-TH", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      })}{" "}
+                                      -{" "}
+                                      {new Date(
+                                        current.end_date
+                                      ).toLocaleDateString("th-TH", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      })}
+                                    </>
+                                  ) : (
+                                    <span className="text-gray-500">
+                                      ไม่ระบุ
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="py-4 px-6">
+                                <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 hover:from-green-200 hover:to-emerald-200 border-green-200">
+                                  <CheckCircleIcon className="h-3 w-3 mr-1" />
+                                  กำลังฝึกงาน
+                                </Badge>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
 
             <TabsContent value="history" className="mt-4">
-              <Card>
-                <CardHeader className="pb-2">
+              <Card className="shadow-lg border-0">
+                <CardHeader className="pb-2 bg-gradient-to-r from-green-50 to-blue-50 rounded-t-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle>บันทึกการรับนักศึกษา</CardTitle>
+                      <CardTitle className="flex items-center gap-2">
+                        <CalendarIcon className="h-5 w-5 text-green-600" />
+                        บันทึกการรับนักศึกษา
+                      </CardTitle>
                       <CardDescription>
-                        ข้อมูลการรับนักศึกษาในปีการศึกษาที่ผ่านมา
+                        ข้อมูลการรับนักศึกษาในแต่ละรอบการฝึกงาน
                       </CardDescription>
                     </div>
 
-                    <Button onClick={() => handleAdd()}>
+                    <Button
+                      onClick={() => handleAdd()}
+                      className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white shadow-lg"
+                    >
                       <PlusIcon className="h-4 w-4 mr-2" />
                       เพิ่มรอบการรับนักศึกษา
                     </Button>
@@ -721,171 +827,309 @@ export default function CompanyPage() {
                 </CardHeader>
 
                 <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogContent>
+                  <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle>เพิ่มรอบการรับนักศึกษา</DialogTitle>
+                      <DialogTitle className="flex items-center gap-2">
+                        <PlusIcon className="h-5 w-5 text-green-600" />
+                        เพิ่มรอบการรับนักศึกษา
+                      </DialogTitle>
                       <DialogDescription>
-                        กรอกข้อมูลรอบการรับนักศึกษาใหม่
+                        กรอกข้อมูลรอบการรับนักศึกษาใหม่สำหรับแหล่งฝึกงานนี้
                       </DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          รอบการฝึกงาน
-                        </label>
-                        <select
-                          name="calendarId"
-                          value={form.calendarId}
-                          onChange={handleChange}
-                          required
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm py-2 px-3"
-                        >
-                          <option value="" disabled>
-                            เลือกรอบการฝึกงาน
-                          </option>
-                          {calendar?.length > 0 &&
-                            calendar.map((item: any) => (
-                              <option key={item.id} value={item.id}>
-                                {item.name} ({item.semester}/{item.year})
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          จำนวนนักศึกษา
-                        </label>
-                        <Input
-                          name="total"
-                          type="number"
-                          value={form.total}
-                          onChange={handleChange}
-                          placeholder="เช่น 3"
-                          required
-                        />
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="space-y-4">
+                        <div>
+                          <Label
+                            htmlFor="calendar-select"
+                            className="text-sm font-medium"
+                          >
+                            รอบการฝึกงาน <span className="text-red-500">*</span>
+                          </Label>
+                          <select
+                            id="calendar-select"
+                            name="calendarId"
+                            value={form.calendarId}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 px-3"
+                          >
+                            <option value="" disabled>
+                              เลือกรอบการฝึกงาน
+                            </option>
+                            {calendar?.length > 0 &&
+                              calendar.map((item: any) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.name} ({item.semester}/{item.year})
+                                </option>
+                              ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <Label
+                            htmlFor="student-total"
+                            className="text-sm font-medium"
+                          >
+                            จำนวนนักศึกษาที่รับ{" "}
+                            <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="student-total"
+                            name="total"
+                            type="number"
+                            min="1"
+                            max="20"
+                            value={form.total}
+                            onChange={handleChange}
+                            placeholder="เช่น 3"
+                            className="mt-1"
+                            required
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            ระบุจำนวนนักศึกษาที่แหล่งฝึกงานสามารถรับได้ในรอบนี้
+                          </p>
+                        </div>
                       </div>
 
-                      <DialogFooter>
+                      <DialogFooter className="gap-2">
                         <DialogClose asChild>
                           <Button type="button" variant="outline">
                             ยกเลิก
                           </Button>
                         </DialogClose>
-                        <Button type="submit">บันทึก</Button>
+                        <Button
+                          type="submit"
+                          className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                        >
+                          <PlusIcon className="h-4 w-4 mr-2" />
+                          เพิ่มรอบการรับ
+                        </Button>
                       </DialogFooter>
                     </form>
                   </DialogContent>
                 </Dialog>
 
-                <CardContent>
-                  <div className="space-y-6">
-                    {regist.length === 0 && (
-                      <div className="text-gray-500 text-sm text-center py-4">
-                        - ไม่มีข้อมูลการรับนักศึกษา -
+                <CardContent className="pt-6">
+                  {regist.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="bg-gradient-to-br from-green-100 to-blue-100 rounded-full p-6 w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+                        <CalendarIcon className="h-12 w-12 text-green-600" />
                       </div>
-                    )}
-                    {regist.map((item) => (
-                      <div key={item.id} className="border-t pt-4">
-                        <h3 className="font-medium text-lg">{item.name}</h3>
-                        <div className="text-sm text-gray-500">
-                          ภาคการศึกษา {item.semester} / {item.year}
-                        </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        ยังไม่มีข้อมูลการรับนักศึกษา
+                      </h3>
+                      <p className="text-gray-500 mb-4">
+                        เริ่มต้นด้วยการเพิ่มข้อมูลรอบการรับนักศึกษา
+                      </p>
+                      <Button
+                        onClick={() => handleAdd()}
+                        variant="outline"
+                        className="border-dashed border-2 border-gray-300 hover:border-green-500 hover:bg-green-50"
+                      >
+                        <PlusIcon className="h-4 w-4 mr-2" />
+                        เพิ่มรอบการรับแรก
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {regist.map((item) => (
+                        <Card
+                          key={item.id}
+                          className="border border-gray-200 hover:shadow-md transition-shadow"
+                        >
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <CardTitle className="text-lg text-gray-900">
+                                  {item.name}
+                                </CardTitle>
+                                <CardDescription className="flex items-center gap-4 mt-1">
+                                  <span className="flex items-center gap-1">
+                                    <CalendarIcon className="h-4 w-4" />
+                                    ภาคการศึกษา {item.semester} / {item.year}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <ClockIcon className="h-4 w-4" />
+                                    {item.start_date && item.end_date
+                                      ? `${formatDate(
+                                          item.start_date
+                                        )} - ${formatDate(item.end_date)}`
+                                      : "ไม่ระบุวันที่"}
+                                  </span>
+                                </CardDescription>
+                              </div>
+                              {item.active_id === 1 && (
+                                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                                  <CheckCircleIcon className="h-3 w-3 mr-1" />
+                                  รอบปัจจุบัน
+                                </Badge>
+                              )}
+                            </div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex items-center gap-6 mb-4">
+                              <div className="flex items-center gap-2">
+                                <div className="bg-blue-100 text-blue-800 px-3 py-1.5 rounded-full text-sm font-medium">
+                                  จำนวนที่รับ: {item.total} คน
+                                </div>
+                                <div className="bg-green-100 text-green-800 px-3 py-1.5 rounded-full text-sm font-medium">
+                                  ลงทะเบียนแล้ว: {item.intern?.length || 0} คน
+                                </div>
+                              </div>
+                            </div>
 
-                        <div className="flex items-center gap-4 mt-2 text-sm">
-                          <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-                            จำนวนที่รับ: {item.total} คน
-                          </div>
-                          <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full">
-                            จำนวนที่ลงทะเบียน: {item.intern.length} คน
-                          </div>
-                        </div>
-                        <div className="mt-3">
-                          <h4 className="text-gray-500 mb-1">
-                            รายชื่อนักศึกษา:
-                          </h4>
-                          <ul className="list-disc list-inside space-y-1">
-                            {item.intern.map((item: any, i: number) => (
-                              <li key={i} className="text-sm">
-                                {item.fullname}
-                                <span className="text-gray-500 ml-1">
-                                  ({item.student_id})
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                            {item.intern && item.intern.length > 0 && (
+                              <div>
+                                <h4 className="text-gray-700 font-medium mb-3 flex items-center gap-2">
+                                  <UsersIcon className="h-4 w-4" />
+                                  รายชื่อนักศึกษา:
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  {item.intern.map(
+                                    (student: any, i: number) => (
+                                      <div
+                                        key={i}
+                                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                                      >
+                                        <CustomAvatar
+                                          id={`history-student-${student.student_id}`}
+                                          image={student.image}
+                                          size="8"
+                                        />
+                                        <div>
+                                          <div className="font-medium text-gray-900 text-sm">
+                                            {student.fullname}
+                                          </div>
+                                          <div className="text-xs text-gray-500">
+                                            {student.student_id} •{" "}
+                                            {student.major}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
 
             <TabsContent value="documents" className="mt-4">
-              <Card>
-                <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                  <div>
-                    <CardTitle>เอกสารที่เกี่ยวข้อง</CardTitle>
-                    <CardDescription>
-                      เอกสารสำคัญที่เกี่ยวข้องกับแหล่งฝึกงานและการฝึกงาน
-                    </CardDescription>
+              <Card className="shadow-lg border-0">
+                <CardHeader className="pb-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-lg">
+                  <div className="flex flex-row items-center justify-between space-y-0">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <FileTextIcon className="h-5 w-5 text-purple-600" />
+                        เอกสารที่เกี่ยวข้อง
+                      </CardTitle>
+                      <CardDescription className="mt-1">
+                        เอกสารสำคัญที่เกี่ยวข้องกับแหล่งฝึกงานและการฝึกงาน
+                      </CardDescription>
+                    </div>
+                    <Button
+                      onClick={() => setDocumentDialogOpen(true)}
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
+                    >
+                      <UploadIcon className="h-4 w-4 mr-2" />
+                      เพิ่มเอกสาร
+                    </Button>
                   </div>
-                  <Button onClick={() => setDocumentDialogOpen(true)}>
-                    <UploadIcon className="h-4 w-4 mr-1" /> เพิ่มเอกสาร
-                  </Button>
                 </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-3 px-4">ชื่อเอกสาร</th>
-                          <th className="text-left py-3 px-4">ประเภท</th>
-                          <th className="text-left py-3 px-4">ขนาด</th>
-                          <th className="text-left py-3 px-4">วันที่อัปโหลด</th>
-                          <th className="text-left py-3 px-4">สถานะ</th>
-                          <th className="text-left py-3 px-4"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {documents.map((doc) => (
-                          <tr
-                            key={doc.id}
-                            className="border-b hover:bg-gray-50"
-                          >
-                            <td className="py-3 px-4">
-                              <div className="flex items-center gap-2">
-                                <FileTextIcon className="h-4 w-4 text-gray-500" />
-                                <span>{doc.name}</span>
+                <CardContent className="pt-6">
+                  {documents.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-full p-6 w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+                        <FileTextIcon className="h-12 w-12 text-purple-600" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        ยังไม่มีเอกสาร
+                      </h3>
+                      <p className="text-gray-500 mb-4">
+                        เริ่มต้นด้วยการอัปโหลดเอกสารสำคัญของแหล่งฝึกงาน
+                      </p>
+                      <Button
+                        onClick={() => setDocumentDialogOpen(true)}
+                        variant="outline"
+                        className="border-dashed border-2 border-gray-300 hover:border-purple-500 hover:bg-purple-50"
+                      >
+                        <UploadIcon className="h-4 w-4 mr-2" />
+                        อัปโหลดเอกสารแรก
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {documents.map((doc) => (
+                        <Card
+                          key={doc.id}
+                          className="group hover:shadow-xl transition-all duration-300 border-gray-200 hover:border-purple-200"
+                        >
+                          <CardHeader className="pb-3">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="p-3 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl">
+                                  <FileTextIcon className="h-6 w-6 text-purple-600" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h4
+                                    className="font-semibold text-gray-900 truncate"
+                                    title={doc.name}
+                                  >
+                                    {doc.name}
+                                  </h4>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <Badge
+                                      variant="secondary"
+                                      className="text-xs"
+                                    >
+                                      {doc.file_type}
+                                    </Badge>
+                                    <span className="text-xs text-gray-500">
+                                      {formatFileSize(doc.file_size)}
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <Badge variant="outline">{doc.type}</Badge>
-                            </td>
-                            <td className="py-3 px-4">{doc.size}</td>
-                            <td className="py-3 px-4">{doc.uploadDate}</td>
-                            <td className="py-3 px-4">
-                              {doc.status === "active" ? (
-                                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                                  ใช้งาน
-                                </Badge>
-                              ) : (
-                                <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
-                                  เก็บถาวร
-                                </Badge>
-                              )}
-                            </td>
-                            <td className="py-3 px-4">
-                              <Button variant="ghost" size="sm">
-                                <DownloadIcon className="h-4 w-4 mr-1" />{" "}
+                            </div>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                              <span>
+                                อัปโหลดเมื่อ: {formatDate(doc.updated_at)}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => {
+                                  // TODO: Implement download functionality
+                                  // toast({
+                                  //   title: "ฟีเจอร์ดาวน์โหลด",
+                                  //   description:
+                                  //     "ฟีเจอร์ดาวน์โหลดจะพร้อมใช้งานในเร็วๆ นี้",
+                                  //   variant: "default",
+                                  // });
+                                  window.open(doc.file_path, "_blank");
+                                }}
+                              >
+                                <DownloadIcon className="h-4 w-4 mr-1" />
                                 ดาวน์โหลด
                               </Button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
               {/* Document Upload Dialog */}
@@ -893,73 +1137,141 @@ export default function CompanyPage() {
                 open={documentDialogOpen}
                 onOpenChange={setDocumentDialogOpen}
               >
-                <DialogContent>
+                <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>เพิ่มเอกสารใหม่</DialogTitle>
+                    <DialogTitle className="flex items-center gap-2">
+                      <UploadIcon className="h-5 w-5 text-blue-600" />
+                      เพิ่มเอกสารใหม่
+                    </DialogTitle>
+                    <DialogDescription>
+                      อัปโหลดเอกสารที่เกี่ยวข้องกับแหล่งฝึกงาน เช่น
+                      สัญญาความร่วมมือ แบบประเมิน คู่มือการฝึกงาน
+                    </DialogDescription>
                   </DialogHeader>
-                  <form onSubmit={handleDocumentSubmit} className="space-y-4">
-                    <div>
-                      <Label>ชื่อเอกสาร</Label>
-                      <Input
-                        value={documentForm.name}
-                        onChange={(e) =>
-                          setDocumentForm((f) => ({
-                            ...f,
-                            name: e.target.value,
-                          }))
-                        }
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label>ประเภท</Label>
-                      <Select
-                        value={documentForm.type}
-                        onValueChange={(val) =>
-                          setDocumentForm((f) => ({ ...f, type: val }))
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="PDF">PDF</SelectItem>
-                          <SelectItem value="DOCX">DOCX</SelectItem>
-                          <SelectItem value="XLSX">XLSX</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label>ไฟล์</Label>
-                      <Input
-                        type="file"
-                        accept=".pdf,.docx,.xlsx"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file)
+                  <form onSubmit={handleDocumentSubmit} className="space-y-6">
+                    <div className="space-y-4">
+                      <div>
+                        <Label
+                          htmlFor="doc-name"
+                          className="text-sm font-medium"
+                        >
+                          ชื่อเอกสาร <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="doc-name"
+                          value={documentForm.name}
+                          onChange={(e) =>
                             setDocumentForm((f) => ({
                               ...f,
-                              file,
-                              size:
-                                (file.size / 1024 / 1024).toFixed(1) + " MB",
-                            }));
-                        }}
-                        required
-                      />
-                      {documentForm.file && (
-                        <div className="text-xs text-gray-500 mt-1">
-                          {documentForm.file.name} ({documentForm.size})
+                              name: e.target.value,
+                            }))
+                          }
+                          placeholder="เช่น สัญญาความร่วมมือ MOU 2567"
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <Label
+                          htmlFor="doc-type"
+                          className="text-sm font-medium"
+                        >
+                          ประเภทเอกสาร <span className="text-red-500">*</span>
+                        </Label>
+                        <Select
+                          value={documentForm.type}
+                          onValueChange={(val) =>
+                            setDocumentForm((f) => ({ ...f, type: val }))
+                          }
+                        >
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="เลือกประเภทเอกสาร" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="PDF">PDF</SelectItem>
+                            <SelectItem value="DOCX">Word Document</SelectItem>
+                            <SelectItem value="XLSX">
+                              Excel Spreadsheet
+                            </SelectItem>
+                            <SelectItem value="PPTX">PowerPoint</SelectItem>
+                            <SelectItem value="JPG">รูปภาพ (JPG)</SelectItem>
+                            <SelectItem value="PNG">รูปภาพ (PNG)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label
+                          htmlFor="doc-file"
+                          className="text-sm font-medium"
+                        >
+                          เลือกไฟล์ <span className="text-red-500">*</span>
+                        </Label>
+                        <div className="mt-1">
+                          <Input
+                            id="doc-file"
+                            type="file"
+                            accept=".pdf,.docx,.xlsx,.pptx,.jpg,.jpeg,.png"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file)
+                                setDocumentForm((f) => ({
+                                  ...f,
+                                  file,
+                                  size: formatFileSize(file.size),
+                                }));
+                            }}
+                            className="file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            required
+                          />
+                          {documentForm.file && (
+                            <div className="mt-2 p-3 bg-gray-50 rounded-md border">
+                              <div className="flex items-center gap-2 text-sm">
+                                <FileTextIcon className="h-4 w-4 text-gray-500" />
+                                <span className="font-medium text-gray-900">
+                                  {documentForm.file.name}
+                                </span>
+                                <Badge variant="secondary" className="text-xs">
+                                  {documentForm.size}
+                                </Badge>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      )}
+                        <p className="text-xs text-gray-500 mt-1">
+                          รองรับไฟล์: PDF, Word, Excel, PowerPoint, รูปภาพ
+                          (ขนาดไม่เกิน 10MB)
+                        </p>
+                      </div>
                     </div>
-                    <DialogFooter>
+
+                    <DialogFooter className="gap-2">
                       <DialogClose asChild>
-                        <Button type="button" variant="outline">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={uploadingFile}
+                        >
                           ยกเลิก
                         </Button>
                       </DialogClose>
-                      <Button type="submit" disabled={uploadingFile}>
-                        {uploadingFile ? "กำลังอัปโหลด..." : "อัปโหลด"}
+                      <Button
+                        type="submit"
+                        disabled={uploadingFile || !documentForm.file}
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                      >
+                        {uploadingFile ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            กำลังอัปโหลด...
+                          </>
+                        ) : (
+                          <>
+                            <UploadIcon className="h-4 w-4 mr-2" />
+                            อัปโหลดเอกสาร
+                          </>
+                        )}
                       </Button>
                     </DialogFooter>
                   </form>

@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
       `
       INSERT INTO company_documents (
         company_id, name, description, file_path, file_type, 
-        file_size, mime_type, category, status
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        file_size, mime_type
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *
     `,
       [
@@ -68,8 +68,6 @@ export async function POST(request: NextRequest) {
         body.file_type,
         body.file_size,
         body.mime_type,
-        body.category || "general",
-        body.status || 1,
       ]
     );
 
