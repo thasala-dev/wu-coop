@@ -617,7 +617,7 @@ export default function CompanyPage() {
             </Card>
           </div>
 
-          <Tabs defaultValue="students">
+          <Tabs defaultValue="students" className="my-4">
             <TabsList>
               <TabsTrigger value="students">
                 นักศึกษาปัจจุบัน ({students.length})
@@ -628,7 +628,7 @@ export default function CompanyPage() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="students" className="mt-4">
+            <TabsContent value="students">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle>นักศึกษาที่ฝึกงานอยู่ในปัจจุบัน</CardTitle>
