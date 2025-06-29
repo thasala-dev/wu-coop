@@ -27,6 +27,7 @@ import {
   DownloadIcon,
   PlusIcon,
   UploadIcon,
+  TrashIcon,
 } from "lucide-react";
 import UnifiedSidebar from "@/components/unified-sidebar";
 import { DocumentUploadDialog } from "@/components/document-upload-dialog";
@@ -50,7 +51,7 @@ import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { useToast } from "@/hooks/use-toast";
 import { companyType } from "@/lib/global";
-import { callUploadApi } from "@/lib/file-api";
+import { callUploadApi, callDeleteApi } from "@/lib/file-api";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -76,6 +77,7 @@ export default function CompanyPage() {
   const [documents, setDocuments] = useState<any[]>([]);
   const [documentDialogOpen, setDocumentDialogOpen] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [deletingFile, setDeletingFile] = useState<string | null>(null);
   const [documentForm, setDocumentForm] = useState({
     name: "",
     type: "PDF",
@@ -296,14 +298,71 @@ export default function CompanyPage() {
       });
 
       setDocumentDialogOpen(false);
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Error uploading document:", error);
       toast({
         title: "เกิดข้อผิดพลาด",
-        description: error.message || "ไม่สามารถอัปโหลดเอกสารได้",
+        description:
+          error instanceof Error ? error.message : "ไม่สามารถอัปโหลดเอกสารได้",
         variant: "destructive",
       });
     } finally {
       setUploadingFile(false);
+    }
+  };
+
+  // Handle document delete
+  const handleDocumentDelete = async (documentId: string, filePath: string) => {
+    if (!window.confirm("ต้องการลบเอกสารนี้ใช่หรือไม่?")) {
+      return;
+    }
+
+    setDeletingFile(documentId);
+
+    try {
+      // ลบไฟล์จาก storage ด้วย file-api
+      const deleteResult = await callDeleteApi(filePath);
+
+      if (!deleteResult.success) {
+        console.warn(
+          "Warning: Could not delete file from storage:",
+          deleteResult.error
+        );
+        // ไม่ throw error เพราะอาจจะยังลบ record ในฐานข้อมูลได้
+      }
+
+      // ลบข้อมูลในฐานข้อมูล (soft delete)
+      const response = await fetch(
+        `/api/admin/company/${param_id}/documents/${documentId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || "ไม่สามารถลบเอกสารได้");
+      }
+
+      // อัปเดตรายการเอกสาร
+      await fetchData();
+
+      toast({
+        title: "ลบเอกสารสำเร็จ",
+        description: "เอกสารได้ถูกลบเรียบร้อยแล้ว",
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description:
+          error instanceof Error ? error.message : "ไม่สามารถลบเอกสารได้",
+        variant: "destructive",
+      });
+    } finally {
+      setDeletingFile(null);
     }
   };
 
@@ -1105,24 +1164,38 @@ export default function CompanyPage() {
                                 อัปโหลดเมื่อ: {formatDate(doc.updated_at)}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between gap-2">
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 hover:text-blue-800 hover:bg-blue-50"
                                 onClick={() => {
-                                  // TODO: Implement download functionality
-                                  // toast({
-                                  //   title: "ฟีเจอร์ดาวน์โหลด",
-                                  //   description:
-                                  //     "ฟีเจอร์ดาวน์โหลดจะพร้อมใช้งานในเร็วๆ นี้",
-                                  //   variant: "default",
-                                  // });
                                   window.open(doc.file_path, "_blank");
                                 }}
                               >
                                 <DownloadIcon className="h-4 w-4 mr-1" />
                                 ดาวน์โหลด
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-800 hover:bg-red-50"
+                                onClick={() =>
+                                  handleDocumentDelete(doc.id, doc.file_path)
+                                }
+                                disabled={deletingFile === doc.id}
+                              >
+                                {deletingFile === doc.id ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600 mr-1"></div>
+                                    กำลังลบ...
+                                  </>
+                                ) : (
+                                  <>
+                                    <TrashIcon className="h-4 w-4 mr-1" />
+                                    ลบ
+                                  </>
+                                )}
                               </Button>
                             </div>
                           </CardContent>
