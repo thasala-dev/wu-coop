@@ -122,13 +122,6 @@ export default function AdminEvaluations() {
                                 <FileEditIcon className="h-4 w-4 mr-1" />
                                 แก้ไข
                               </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="text-red-500 hover:text-red-500 hover:bg-red-50"
-                              >
-                                <TrashIcon className="h-4 w-4" />
-                              </Button>
                             </div>
                           </div>
                         </div>
