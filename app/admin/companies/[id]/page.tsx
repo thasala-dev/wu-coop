@@ -26,8 +26,10 @@ import {
   ClockIcon,
   DownloadIcon,
   PlusIcon,
+  UploadIcon,
 } from "lucide-react";
-import AdminSidebar from "@/components/admin-sidebar";
+import UnifiedSidebar from "@/components/unified-sidebar";
+import { DocumentUploadDialog } from "@/components/document-upload-dialog";
 import Link from "next/link";
 import * as React from "react";
 import {
@@ -48,6 +50,18 @@ import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { useToast } from "@/hooks/use-toast";
 import { companyType } from "@/lib/global";
+import { callUploadApi } from "@/lib/file-api";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import CustomAvatar from "@/components/avatar";
+import { set } from "date-fns";
 
 export default function CompanyPage() {
   const [loading, setLoading] = useState(true);
@@ -58,6 +72,16 @@ export default function CompanyPage() {
   const [data, setData] = useState<any>(null);
   const [calendar, setCalendar] = useState<any[]>([]);
   const [regist, setRegist] = useState<any[]>([]);
+  const [current, setCurrent] = useState<any>(null);
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [documentDialogOpen, setDocumentDialogOpen] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [documentForm, setDocumentForm] = useState({
+    name: "",
+    type: "PDF",
+    size: "",
+    file: null as File | null,
+  });
 
   const router = useRouter();
 
@@ -125,6 +149,41 @@ export default function CompanyPage() {
   useEffect(() => {
     if (param_id) {
       fetchData();
+      // Set initial mock documents
+      setDocuments([
+        {
+          id: "1",
+          name: "สัญญาความร่วมมือ (MOU)",
+          type: "PDF",
+          size: "2.4 MB",
+          uploadDate: "15 มกราคม 2566",
+          status: "active",
+        },
+        {
+          id: "2",
+          name: "แบบประเมินนักศึกษา",
+          type: "DOCX",
+          size: "1.8 MB",
+          uploadDate: "20 มกราคม 2566",
+          status: "active",
+        },
+        {
+          id: "3",
+          name: "คู่มือการฝึกงาน",
+          type: "PDF",
+          size: "5.2 MB",
+          uploadDate: "25 มกราคม 2566",
+          status: "active",
+        },
+        {
+          id: "4",
+          name: "รายงานผลการฝึกงานปี 2565",
+          type: "PDF",
+          size: "3.7 MB",
+          uploadDate: "10 ตุลาคม 2565",
+          status: "archived",
+        },
+      ]);
     }
   }, [param_id]);
 
@@ -152,6 +211,7 @@ export default function CompanyPage() {
     setData(res.data);
     setCalendar(res.calendar);
     setRegist(res.regist);
+    setCurrent(res.current || null);
 
     setLoading(false);
   }
@@ -241,42 +301,6 @@ export default function CompanyPage() {
     },
   ];
 
-  // Mock data for documents
-  const documents = [
-    {
-      id: "1",
-      name: "สัญญาความร่วมมือ (MOU)",
-      type: "PDF",
-      size: "2.4 MB",
-      uploadDate: "15 มกราคม 2566",
-      status: "active",
-    },
-    {
-      id: "2",
-      name: "แบบประเมินนักศึกษา",
-      type: "DOCX",
-      size: "1.8 MB",
-      uploadDate: "20 มกราคม 2566",
-      status: "active",
-    },
-    {
-      id: "3",
-      name: "คู่มือการฝึกงาน",
-      type: "PDF",
-      size: "5.2 MB",
-      uploadDate: "25 มกราคม 2566",
-      status: "active",
-    },
-    {
-      id: "4",
-      name: "รายงานผลการฝึกงานปี 2565",
-      type: "PDF",
-      size: "3.7 MB",
-      uploadDate: "10 ตุลาคม 2565",
-      status: "archived",
-    },
-  ];
-
   // Function to render status badge
   const renderStatusBadge = (status: number) => {
     switch (status) {
@@ -300,6 +324,71 @@ export default function CompanyPage() {
         );
       default:
         return <Badge>{status}</Badge>;
+    }
+  };
+
+  // Handle document upload
+  const handleDocumentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!documentForm.file) {
+      toast({
+        title: "กรุณาเลือกไฟล์",
+        description: "กรุณาเลือกไฟล์ที่ต้องการอัปโหลด",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingFile(true);
+
+    try {
+      // อัปโหลดไฟล์ด้วย file-api
+      const uploadResult = await callUploadApi(
+        documentForm.file,
+        `company_${param_id}`,
+        false // ไม่ต้องลดขนาดรูป
+      );
+
+      if (!uploadResult.success) {
+        throw new Error(uploadResult.error || "ไม่สามารถอัปโหลดไฟล์ได้");
+      }
+
+      // เพิ่มเอกสารใหม่ใน mock data
+      const newDocument = {
+        id: (documents.length + 1).toString(),
+        name: documentForm.name,
+        type: documentForm.type,
+        size: documentForm.size,
+        uploadDate: new Date().toLocaleDateString("th-TH"),
+        status: "active",
+      };
+
+      setDocuments([...documents, newDocument]);
+
+      toast({
+        title: "อัปโหลดเอกสารสำเร็จ",
+        description: "เอกสารได้ถูกเพิ่มเรียบร้อยแล้ว",
+        variant: "default",
+      });
+
+      // รีเซ็ตฟอร์ม
+      setDocumentForm({
+        name: "",
+        type: "PDF",
+        size: "",
+        file: null,
+      });
+
+      setDocumentDialogOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: error.message || "ไม่สามารถอัปโหลดเอกสารได้",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingFile(false);
     }
   };
 
@@ -477,13 +566,16 @@ export default function CompanyPage() {
             <Card className="w-full md:w-1/3">
               <CardHeader>
                 <CardTitle className="text-lg">สถิติการรับนักศึกษา</CardTitle>
+                <CardDescription className="text-sm text-gray-500">
+                  {current?.name} ({current?.semester}/{current?.year})
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500">นักศึกษาปัจจุบัน</span>
                     <span className="font-medium">
-                      {company.activeStudents}/{company.studentCapacity}
+                      {current?.intern.length}/{current?.total}
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
@@ -491,8 +583,7 @@ export default function CompanyPage() {
                       className="bg-green-600 h-2.5 rounded-full"
                       style={{
                         width: `${
-                          (company.activeStudents / company.studentCapacity) *
-                          100
+                          (current?.intern.length / current?.total) * 100 || 0
                         }%`,
                       }}
                     ></div>
@@ -515,7 +606,7 @@ export default function CompanyPage() {
                             {item.name} ({item.semester}/{item.year})
                           </span>
                           <span className="font-medium">
-                            {item.reg_total || 0}/{item.total} คน
+                            {item.intern.length || 0}/{item.total} คน
                           </span>
                         </div>
                       ))}
@@ -552,64 +643,55 @@ export default function CompanyPage() {
                         <tr className="border-b">
                           <th className="text-left py-3 px-4">นักศึกษา</th>
                           <th className="text-left py-3 px-4">สาขาวิชา</th>
-                          <th className="text-left py-3 px-4">ตำแหน่ง</th>
-                          <th className="text-left py-3 px-4">แหล่งฝึก</th>
                           <th className="text-left py-3 px-4">ระยะเวลา</th>
-                          <th className="text-left py-3 px-4">สถานะ</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {students.map((student) => (
-                          <tr
-                            key={student.id}
-                            className="border-b hover:bg-gray-50"
-                          >
+                        {current?.intern.map((student: any, index: number) => (
+                          <tr key={index} className="border-b hover:bg-gray-50">
                             <td className="py-3 px-4">
                               <div className="flex items-center gap-3">
-                                <Avatar className="h-8 w-8">
-                                  <AvatarImage
-                                    src={student.avatar}
-                                    alt={student.name}
-                                  />
-                                  <AvatarFallback>
-                                    {student.name.charAt(0)}
-                                  </AvatarFallback>
-                                </Avatar>
+                                <CustomAvatar
+                                  id={`student${student.student_id}`}
+                                  image={student.image}
+                                  size="8"
+                                />
                                 <div>
                                   <div className="font-medium">
-                                    {student.name}
+                                    {student.fullname}
                                   </div>
                                   <div className="text-sm text-gray-500">
-                                    {student.studentId}
+                                    {student.student_id}
                                   </div>
                                 </div>
                               </div>
                             </td>
                             <td className="py-3 px-4">
                               <div>
-                                <div>{student.faculty}</div>
                                 <div className="text-sm text-gray-500">
                                   {student.major}
                                 </div>
                               </div>
                             </td>
-                            <td className="py-3 px-4">{student.position}</td>
-                            <td className="py-3 px-4">{student.mentor}</td>
                             <td className="py-3 px-4">
-                              <div>
-                                <div className="text-sm">
-                                  {student.startDate}
-                                </div>
-                                <div className="text-sm">
-                                  ถึง {student.endDate}
-                                </div>
+                              <div className="text-sm">
+                                {new Date(
+                                  current.start_date
+                                ).toLocaleDateString("th-TH", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}{" "}
+                                -{" "}
+                                {new Date(current.end_date).toLocaleDateString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )}
                               </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                                <CheckCircleIcon className="h-3 w-3 mr-1" />{" "}
-                                กำลังฝึกงาน
-                              </Badge>
                             </td>
                           </tr>
                         ))}
@@ -711,10 +793,10 @@ export default function CompanyPage() {
 
                         <div className="flex items-center gap-4 mt-2 text-sm">
                           <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-                            จำนวนนักศึกษา: {item.total} คน
+                            จำนวนที่รับ: {item.total} คน
                           </div>
                           <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full">
-                            สำเร็จการฝึกงาน: {item.total} คน
+                            จำนวนที่ลงทะเบียน: {item.intern.length} คน
                           </div>
                         </div>
                         <div className="mt-3">
@@ -722,11 +804,14 @@ export default function CompanyPage() {
                             รายชื่อนักศึกษา:
                           </h4>
                           <ul className="list-disc list-inside space-y-1">
-                            {/* {item.students.map((student, index) => (
-                              <li key={index} className="text-sm">
-                                {student}
+                            {item.intern.map((item: any, i: number) => (
+                              <li key={i} className="text-sm">
+                                {item.fullname}
+                                <span className="text-gray-500 ml-1">
+                                  ({item.student_id})
+                                </span>
                               </li>
-                            ))} */}
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -738,11 +823,16 @@ export default function CompanyPage() {
 
             <TabsContent value="documents" className="mt-4">
               <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle>เอกสารที่เกี่ยวข้อง</CardTitle>
-                  <CardDescription>
-                    เอกสารสำคัญที่เกี่ยวข้องกับแหล่งฝึกงานและการฝึกงาน
-                  </CardDescription>
+                <CardHeader className="pb-2 flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle>เอกสารที่เกี่ยวข้อง</CardTitle>
+                    <CardDescription>
+                      เอกสารสำคัญที่เกี่ยวข้องกับแหล่งฝึกงานและการฝึกงาน
+                    </CardDescription>
+                  </div>
+                  <Button onClick={() => setDocumentDialogOpen(true)}>
+                    <UploadIcon className="h-4 w-4 mr-1" /> เพิ่มเอกสาร
+                  </Button>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
@@ -798,6 +888,83 @@ export default function CompanyPage() {
                   </div>
                 </CardContent>
               </Card>
+              {/* Document Upload Dialog */}
+              <Dialog
+                open={documentDialogOpen}
+                onOpenChange={setDocumentDialogOpen}
+              >
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>เพิ่มเอกสารใหม่</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleDocumentSubmit} className="space-y-4">
+                    <div>
+                      <Label>ชื่อเอกสาร</Label>
+                      <Input
+                        value={documentForm.name}
+                        onChange={(e) =>
+                          setDocumentForm((f) => ({
+                            ...f,
+                            name: e.target.value,
+                          }))
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label>ประเภท</Label>
+                      <Select
+                        value={documentForm.type}
+                        onValueChange={(val) =>
+                          setDocumentForm((f) => ({ ...f, type: val }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="PDF">PDF</SelectItem>
+                          <SelectItem value="DOCX">DOCX</SelectItem>
+                          <SelectItem value="XLSX">XLSX</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>ไฟล์</Label>
+                      <Input
+                        type="file"
+                        accept=".pdf,.docx,.xlsx"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file)
+                            setDocumentForm((f) => ({
+                              ...f,
+                              file,
+                              size:
+                                (file.size / 1024 / 1024).toFixed(1) + " MB",
+                            }));
+                        }}
+                        required
+                      />
+                      {documentForm.file && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          {documentForm.file.name} ({documentForm.size})
+                        </div>
+                      )}
+                    </div>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button type="button" variant="outline">
+                          ยกเลิก
+                        </Button>
+                      </DialogClose>
+                      <Button type="submit" disabled={uploadingFile}>
+                        {uploadingFile ? "กำลังอัปโหลด..." : "อัปโหลด"}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </TabsContent>
           </Tabs>
         </div>

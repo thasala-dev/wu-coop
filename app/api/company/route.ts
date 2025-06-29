@@ -5,9 +5,10 @@ export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
     const data = await sql(
-      `SELECT company.*,
-      (select total from regist_company where calendar_id = cal.id AND company_id = company.id) as total_regist,
-      (select count(*) from regist_intern where calendar_id = cal.id AND company_id = company.id) as total_intern
+      `SELECT company.id,company.name,company.business_type,company.status_id,company.image,company.contact_name,company.last_login,
+      (SELECT total FROM regist_company WHERE calendar_id = cal.id AND company_id = company.id) AS total_regist,
+      (SELECT COUNT(*) FROM regist_intern WHERE calendar_id = cal.id AND company_id = company.id) AS total_intern,
+      company.id AS company_id
       FROM user_company company
       LEFT JOIN calendar cal ON cal.active_id = 1
       WHERE company.flag_del = 0

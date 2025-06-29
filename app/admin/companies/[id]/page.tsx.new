@@ -1,0 +1,1030 @@
+"use client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  BuildingIcon,
+  MapPinIcon,
+  PhoneIcon,
+  MailIcon,
+  GlobeIcon,
+  UsersIcon,
+  FileTextIcon,
+  CalendarIcon,
+  ClipboardIcon,
+  PencilIcon,
+  ArrowLeftIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ClockIcon,
+  DownloadIcon,
+  PlusIcon,
+  UploadIcon,
+} from "lucide-react";
+import Link from "next/link";
+import * as React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import UnifiedSidebar from "@/components/unified-sidebar";
+import Loading from "@/components/loading";
+import { useToast } from "@/hooks/use-toast";
+import { companyType } from "@/lib/global";
+import { callUploadApi, callDeleteApi } from "@/lib/file-api";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import CustomAvatar from "@/components/avatar";
+
+export default function CompanyPage() {
+  const [loading, setLoading] = useState(true);
+  const params = useParams();
+  const param_id = params?.id as string;
+  const { toast } = useToast();
+
+  const [data, setData] = useState<any>(null);
+  const [calendar, setCalendar] = useState<any[]>([]);
+  const [regist, setRegist] = useState<any[]>([]);
+  const [current, setCurrent] = useState<any>(null);
+  const [documents, setDocuments] = useState<any[]>([]);
+
+  const router = useRouter();
+
+  const [open, setOpen] = useState(false);
+  const [documentDialogOpen, setDocumentDialogOpen] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [form, setForm] = useState({
+    id: "",
+    calendarId: "",
+    companyId: "",
+    total: "",
+  });
+  const [documentForm, setDocumentForm] = useState({
+    name: "",
+    description: "",
+    category: "general",
+    file: null as File | null,
+  });
+
+  const handleChange = (e: React.ChangeEvent<any>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleDocumentFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setDocumentForm({ ...documentForm, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setDocumentForm({ ...documentForm, file });
+    }
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setDocumentForm({ ...documentForm, category: value });
+  };
+
+  const handleSubmitDocument = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!documentForm.file) {
+      toast({
+        title: "กรุณาเลือกไฟล์",
+        description: "กรุณาเลือกไฟล์ที่ต้องการอัปโหลด",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingFile(true);
+
+    try {
+      // อัปโหลดไฟล์ก่อน
+      const uploadResult = await callUploadApi(
+        documentForm.file,
+        `company_${param_id}`,
+        false // ไม่ต้องลดขนาดรูป
+      );
+
+      if (!uploadResult.success) {
+        throw new Error(uploadResult.error || "ไม่สามารถอัปโหลดไฟล์ได้");
+      }
+
+      // บันทึกข้อมูลเอกสารลงฐานข้อมูล
+      const documentData = {
+        name: documentForm.name,
+        description: documentForm.description,
+        file_path: uploadResult.filePath || "",
+        file_type: documentForm.file.type.split('/')[1].toUpperCase(),
+        file_size: documentForm.file.size,
+        category: documentForm.category,
+        uploaded_by: 1, // TODO: ใช้ user ID จริง
+      };
+
+      const response = await fetch(`/api/admin/company/${param_id}/documents`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(documentData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "อัปโหลดเอกสารสำเร็จ",
+          description: "เอกสารได้ถูกเพิ่มเรียบร้อยแล้ว",
+          variant: "default",
+        });
+        
+        // รีเฟรชข้อมูล
+        fetchData();
+        
+        // รีเซ็ตฟอร์ม
+        setDocumentForm({
+          name: "",
+          description: "",
+          category: "general",
+          file: null,
+        });
+        
+        // ปิด dialog
+        setDocumentDialogOpen(false);
+      } else {
+        throw new Error(result.message || "ไม่สามารถบันทึกข้อมูลเอกสารได้");
+      }
+    } catch (error: any) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: error.message || "ไม่สามารถอัปโหลดเอกสารได้",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingFile(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOpen(false);
+    const response = await fetch("/api/admin/regist_company", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const responseData = await response.json();
+    setLoading(false);
+    if (responseData.success) {
+      toast({
+        title: "ดำเนินการสำเร็จ",
+        description: responseData.message || "เกิดข้อผิดพลาด",
+        variant: "default",
+      });
+      fetchData();
+    } else {
+      toast({
+        title: "ดำเนินการไม่สำเร็จ",
+        description: responseData.message || "เกิดข้อผิดพลาด",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAdd = () => {
+    setOpen(true);
+    setForm({
+      id: "",
+      calendarId: "",
+      companyId: param_id,
+      total: "",
+    });
+  };
+
+  const handleAddDocument = () => {
+    setDocumentDialogOpen(true);
+    setDocumentForm({
+      name: "",
+      description: "",
+      category: "general",
+      file: null,
+    });
+  };
+
+  async function handleEdit(id: string) {
+    setOpen(true);
+    setForm({
+      id: id,
+      calendarId: "12345",
+      companyId: param_id,
+      total: "10",
+    });
+  }
+
+  useEffect(() => {
+    if (param_id) {
+      fetchData();
+    }
+  }, [param_id]);
+
+  async function fetchData() {
+    setLoading(true);
+
+    // Fetch company data
+    const response = await fetch(`/api/admin/company/${param_id}`);
+    if (!response.ok) {
+      toast({
+        title: "ไม่สามารถโหลดข้อมูลได้",
+        description: "เกิดข้อผิดพลาดในการดึงข้อมูล",
+        variant: "destructive",
+      });
+      return;
+    }
+    const res = await response.json();
+    if (!res) {
+      toast({
+        title: "ไม่พบข้อมูลแหล่งฝึกงาน",
+        description: "ไม่พบข้อมูลสำหรับแหล่งฝึกงานที่ระบุ",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setData(res.data);
+    setCalendar(res.calendar);
+    setRegist(res.regist);
+    setCurrent(res.current);
+    setDocuments(res.documents || []);
+
+    setLoading(false);
+  }
+
+  // Helper functions
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 B";
+    const k = 1024;
+    const sizes = ["B", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  };
+
+  const getCategoryName = (category: string) => {
+    const categories: { [key: string]: string } = {
+      contract: "สัญญา",
+      evaluation: "แบบประเมิน",
+      manual: "คู่มือ",
+      report: "รายงาน",
+      general: "ทั่วไป",
+    };
+    return categories[category] || "ทั่วไป";
+  };
+
+  // Function to render status badge
+  const renderStatusBadge = (status: number) => {
+    switch (status) {
+      case 1:
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            <CheckCircleIcon className="h-3 w-3 mr-1" /> ใช้งาน
+          </Badge>
+        );
+      case 2:
+        return (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            <XCircleIcon className="h-3 w-3 mr-1" /> ไม่ใช้งาน
+          </Badge>
+        );
+      case 0:
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            <ClockIcon className="h-3 w-3 mr-1" /> รอดำเนินการ
+          </Badge>
+        );
+      default:
+        return <Badge>{status}</Badge>;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+      <div className="container mx-auto py-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          <UnifiedSidebar activePage="companies" userType="admin" />
+          {loading && <Loading />}
+          <div className="md:col-span-4">
+            {/* Header Section */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/admin/companies"
+                    className="p-2 rounded-full hover:bg-white/50 transition-colors"
+                  >
+                    <ArrowLeftIcon className="h-5 w-5 text-gray-600" />
+                  </Link>
+                  <div>
+                    <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                      รายละเอียดแหล่งฝึกงาน
+                    </h1>
+                    <p className="text-gray-600 text-sm mt-1">
+                      จัดการข้อมูลและติดตามความคืบหน้าของแหล่งฝึกงาน
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() =>
+                    router.push(`/admin/companies/edit/${param_id}`)
+                  }
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                >
+                  <PencilIcon className="h-4 w-4 mr-2" />
+                  แก้ไขข้อมูล
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-6">
+              <Card className="w-full md:w-2/3 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-20 w-20 rounded-xl border-2 border-white shadow-lg">
+                      <AvatarImage src={data?.image} alt={data?.name} />
+                      <AvatarFallback className="rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                        <BuildingIcon className="h-8 w-8" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-grow">
+                      <CardTitle className="text-2xl text-gray-800">
+                        {data?.name}
+                      </CardTitle>
+                      <CardDescription className="flex items-center gap-3 mt-2 text-gray-600">
+                        <span className="flex items-center gap-1">
+                          <BuildingIcon className="h-4 w-4" />
+                          {companyType.find(
+                            (t) => t.value === data?.business_type
+                          )?.label || "-"}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <MapPinIcon className="h-4 w-4" />
+                          {data?.location}
+                        </span>
+                      </CardDescription>
+                      <div className="mt-3">
+                        {renderStatusBadge(data?.status_id)}
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6">
+                    <p className="text-gray-700 leading-relaxed">
+                      {data?.detail}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                        <BuildingIcon className="h-5 w-5 text-blue-600" />
+                        ข้อมูลทั่วไป
+                      </h3>
+                      <div className="space-y-3 pl-7">
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">ปีที่ก่อตั้ง:</span>
+                          <span className="font-medium">
+                            {data?.establish_year || (
+                              <i className="text-gray-400">ไม่ระบุ</i>
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">จำนวนพนักงาน:</span>
+                          <span className="font-medium">
+                            {data?.total_employees} คน
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">
+                            เข้าร่วมโครงการ:
+                          </span>
+                          <span className="font-medium">
+                            {data?.joined_year || (
+                              <i className="text-gray-400">ไม่ระบุ</i>
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">เว็บไซต์:</span>
+                          {data?.website ? (
+                            <a
+                              href={data.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline font-medium"
+                            >
+                              ดูเว็บไซต์
+                            </a>
+                          ) : (
+                            <i className="text-gray-400">ไม่ระบุ</i>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                        <UsersIcon className="h-5 w-5 text-green-600" />
+                        ข้อมูลติดต่อ
+                      </h3>
+                      <div className="space-y-3 pl-7">
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">ผู้ประสานงาน:</span>
+                          <span className="font-medium">
+                            {data?.contact_name}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">ตำแหน่ง:</span>
+                          <span className="font-medium">
+                            {data?.contact_position}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">อีเมล:</span>
+                          {data?.contact_email ? (
+                            <a
+                              href={`mailto:${data.contact_email}`}
+                              className="text-blue-600 hover:underline font-medium"
+                            >
+                              {data.contact_email}
+                            </a>
+                          ) : (
+                            <i className="text-gray-400">ไม่ระบุ</i>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">โทรศัพท์:</span>
+                          <a
+                            href={`tel:${data?.contact_phone}`}
+                            className="text-blue-600 hover:underline font-medium"
+                          >
+                            {data?.contact_phone}
+                          </a>
+                        </div>
+                        {data?.contact_address && (
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">ที่อยู่:</span>
+                            <span className="font-medium text-right max-w-xs">
+                              {data.contact_address}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="w-full md:w-1/3">
+                <CardHeader>
+                  <CardTitle className="text-lg">สถิติการรับนักศึกษา</CardTitle>
+                  <CardDescription className="text-sm text-gray-500">
+                    {current?.name} ({current?.semester}/{current?.year})
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500">นักศึกษาปัจจุบัน</span>
+                      <span className="font-medium">
+                        {current?.intern.length}/{current?.total}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className="bg-green-600 h-2.5 rounded-full"
+                        style={{
+                          width: `${
+                            (current?.intern.length / current?.total) * 100 || 0
+                          }%`,
+                        }}
+                      ></div>
+                    </div>
+
+                    <div className="pt-4 border-t">
+                      <h4 className="font-medium mb-2">
+                        ประวัติการรับนักศึกษา
+                      </h4>
+                      <div className="space-y-3">
+                        {regist.length === 0 && (
+                          <div className="text-gray-500 text-sm text-center py-4">
+                            - ไม่มีข้อมูลการรับนักศึกษา -
+                          </div>
+                        )}
+                        {regist.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex justify-between items-center text-sm"
+                          >
+                            <span>
+                              {item.name} ({item.semester}/{item.year})
+                            </span>
+                            <span className="font-medium">
+                              {item.intern.length || 0}/{item.total} คน
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="mt-4">
+              <Tabs defaultValue="students">
+                <TabsList>
+                  <TabsTrigger value="students">
+                    นักศึกษาปัจจุบัน ({current?.intern.length || 0})
+                  </TabsTrigger>
+                  <TabsTrigger value="history">
+                    บันทึกการรับนักศึกษา
+                  </TabsTrigger>
+                  <TabsTrigger value="documents">
+                    เอกสาร ({documents.length})
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="students" className="mt-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle>นักศึกษาที่ฝึกงานอยู่ในปัจจุบัน</CardTitle>
+                      <CardDescription>
+                        รายชื่อนักศึกษาที่กำลังฝึกงานอยู่ที่แหล่งฝึกงานนี้
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="border-b">
+                              <th className="text-left py-3 px-4">นักศึกษา</th>
+                              <th className="text-left py-3 px-4">สาขาวิชา</th>
+                              <th className="text-left py-3 px-4">ระยะเวลา</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {current?.intern && current.intern.length > 0 ? (
+                              current.intern.map(
+                                (student: any, index: number) => (
+                                  <tr
+                                    key={index}
+                                    className="border-b hover:bg-gray-50"
+                                  >
+                                    <td className="py-3 px-4">
+                                      <div className="flex items-center gap-3">
+                                        <CustomAvatar
+                                          id={`student${student.student_id}`}
+                                          image={student.image}
+                                          size="8"
+                                        />
+                                        <div>
+                                          <div className="font-medium">
+                                            {student.fullname}
+                                          </div>
+                                          <div className="text-sm text-gray-500">
+                                            {student.student_id}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                      <div>
+                                        <div>{student.faculty}</div>
+                                        <div className="text-sm text-gray-500">
+                                          {student.major}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                      <div className="text-sm">
+                                        {new Date(
+                                          current.start_date
+                                        ).toLocaleDateString("th-TH", {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                        })}{" "}
+                                        -{" "}
+                                        {new Date(
+                                          current.end_date
+                                        ).toLocaleDateString("th-TH", {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                        })}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )
+                              )
+                            ) : (
+                              <tr key={"no-students"}>
+                                <td colSpan={6} className="text-center py-4">
+                                  <div className="text-gray-500">
+                                    - ไม่มีนักศึกษากำลังฝึกงาน -
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="history" className="mt-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle>บันทึกการรับนักศึกษา</CardTitle>
+                          <CardDescription>
+                            ข้อมูลการรับนักศึกษาในปีการศึกษาที่ผ่านมา
+                          </CardDescription>
+                        </div>
+
+                        <Button onClick={() => handleAdd()}>
+                          <PlusIcon className="h-4 w-4 mr-2" />
+                          เพิ่มรอบการรับนักศึกษา
+                        </Button>
+                      </div>
+                    </CardHeader>
+
+                    <Dialog open={open} onOpenChange={setOpen}>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>เพิ่มรอบการรับนักศึกษา</DialogTitle>
+                          <DialogDescription>
+                            กรอกข้อมูลรอบการรับนักศึกษาใหม่
+                          </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-1">
+                              รอบการฝึกงาน
+                            </label>
+                            <select
+                              name="calendarId"
+                              value={form.calendarId}
+                              onChange={handleChange}
+                              required
+                              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm py-2 px-3"
+                            >
+                              <option value="" disabled>
+                                เลือกรอบการฝึกงาน
+                              </option>
+                              {calendar?.length > 0 &&
+                                calendar.map((item: any) => (
+                                  <option key={item.id} value={item.id}>
+                                    {item.name} ({item.semester}/{item.year})
+                                  </option>
+                                ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium mb-1">
+                              จำนวนนักศึกษา
+                            </label>
+                            <Input
+                              name="total"
+                              type="number"
+                              value={form.total}
+                              onChange={handleChange}
+                              placeholder="เช่น 3"
+                              required
+                            />
+                          </div>
+
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button type="button" variant="outline">
+                                ยกเลิก
+                              </Button>
+                            </DialogClose>
+                            <Button type="submit">บันทึก</Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+
+                    <CardContent>
+                      <div className="space-y-6">
+                        {regist.length === 0 && (
+                          <div className="text-gray-500 text-sm text-center py-4">
+                            - ไม่มีข้อมูลการรับนักศึกษา -
+                          </div>
+                        )}
+                        {regist.map((item) => (
+                          <div key={item.id} className="border-t pt-4">
+                            <h3 className="font-medium text-lg">{item.name}</h3>
+                            <div className="text-sm text-gray-500">
+                              ภาคการศึกษา {item.semester} / {item.year}
+                            </div>
+
+                            <div className="flex items-center gap-4 mt-2 text-sm">
+                              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
+                                จำนวนที่รับนักศึกษา: {item.total} คน
+                              </div>
+                              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full">
+                                จำนวนนักศึกษาที่ลงทะเบียน: {item.intern.length}{" "}
+                                คน
+                              </div>
+                            </div>
+                            <div className="mt-3">
+                              <h4 className="text-gray-500 mb-1">
+                                รายชื่อนักศึกษา:
+                              </h4>
+                              {item.intern.length === 0 && (
+                                <div
+                                  key={item.id + "_no_students"}
+                                  className="text-gray-500"
+                                >
+                                  - ไม่มีนักศึกษาในรอบนี้ -
+                                </div>
+                              )}
+                              <ul className="list-disc list-inside space-y-1">
+                                {item.intern.map((item: any, i: number) => (
+                                  <li
+                                    key={item.id + "_" + i}
+                                    className="text-sm"
+                                  >
+                                    {item.fullname}{" "}
+                                    <span className="text-gray-500">
+                                      ({item.student_id})
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="documents" className="mt-4">
+                  <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-3 bg-blue-100 rounded-lg">
+                            <FileTextIcon className="h-6 w-6 text-blue-600" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-xl text-gray-800">
+                              เอกสารที่เกี่ยวข้อง
+                            </CardTitle>
+                            <CardDescription className="text-gray-600">
+                              เอกสารสำคัญที่เกี่ยวข้องกับแหล่งฝึกงานและการฝึกงาน
+                            </CardDescription>
+                          </div>
+                        </div>
+                        <Button 
+                          onClick={handleAddDocument}
+                          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                        >
+                          <PlusIcon className="h-4 w-4 mr-2" />
+                          เพิ่มเอกสาร
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {documents.length === 0 ? (
+                        <div className="text-center py-12">
+                          <FileTextIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                          <h3 className="text-lg font-medium text-gray-900 mb-2">
+                            ยังไม่มีเอกสาร
+                          </h3>
+                          <p className="text-gray-500 mb-4">
+                            เริ่มต้นด้วยการเพิ่มเอกสารแรกของคุณ
+                          </p>
+                          <Button 
+                            onClick={handleAddDocument}
+                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                          >
+                            <PlusIcon className="h-4 w-4 mr-2" />
+                            เพิ่มเอกสารแรก
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {documents.map((doc: any) => (
+                            <div
+                              key={doc.id}
+                              className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                            >
+                              <div className="flex-shrink-0">
+                                <div className="p-3 bg-white rounded-lg shadow-sm border">
+                                  <FileTextIcon className="h-6 w-6 text-gray-600" />
+                                </div>
+                              </div>
+
+                              <div className="flex-grow">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-medium text-gray-900">
+                                    {doc.name}
+                                  </h3>
+                                  {doc.status === 1 ? (
+                                    <Badge className="bg-green-100 text-green-700 border-green-300">
+                                      <CheckCircleIcon className="h-3 w-3 mr-1" />
+                                      ใช้งาน
+                                    </Badge>
+                                  ) : doc.status === 2 ? (
+                                    <Badge className="bg-gray-100 text-gray-700 border-gray-300">
+                                      เก็บถาวร
+                                    </Badge>
+                                  ) : (
+                                    <Badge className="bg-red-100 text-red-700 border-red-300">
+                                      <XCircleIcon className="h-3 w-3 mr-1" />
+                                      ไม่ใช้งาน
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                <div className="flex items-center gap-4 text-sm text-gray-500">
+                                  <span className="flex items-center gap-1">
+                                    <FileTextIcon className="h-3 w-3" />
+                                    {doc.file_type.toUpperCase()}
+                                  </span>
+                                  <span>{formatFileSize(doc.file_size)}</span>
+                                  <span className="flex items-center gap-1">
+                                    <CalendarIcon className="h-3 w-3" />
+                                    {new Date(
+                                      doc.uploaded_at
+                                    ).toLocaleDateString("th-TH", {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    })}
+                                  </span>
+                                  <Badge variant="outline" className="text-xs">
+                                    {getCategoryName(doc.category)}
+                                  </Badge>
+                                </div>
+
+                                {doc.description && (
+                                  <p className="text-sm text-gray-600 mt-1">
+                                    {doc.description}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div className="flex-shrink-0">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="hover:bg-blue-100 hover:text-blue-600"
+                                >
+                                  <DownloadIcon className="h-4 w-4 mr-1" />
+                                  ดาวน์โหลด
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            {/* Document Upload Dialog */}
+            <Dialog open={documentDialogOpen} onOpenChange={setDocumentDialogOpen}>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <UploadIcon className="h-5 w-5" />
+                    เพิ่มเอกสารใหม่
+                  </DialogTitle>
+                  <DialogDescription>
+                    อัปโหลดเอกสารที่เกี่ยวข้องกับแหล่งฝึกงาน
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmitDocument} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="document-name">ชื่อเอกสาร *</Label>
+                    <Input
+                      id="document-name"
+                      name="name"
+                      value={documentForm.name}
+                      onChange={handleDocumentFormChange}
+                      placeholder="เช่น สัญญาความร่วมมือ MOU 2024"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="document-category">หมวดหมู่ *</Label>
+                    <Select value={documentForm.category} onValueChange={handleCategoryChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="เลือกหมวดหมู่" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="general">ทั่วไป</SelectItem>
+                        <SelectItem value="contract">สัญญา</SelectItem>
+                        <SelectItem value="evaluation">แบบประเมิน</SelectItem>
+                        <SelectItem value="manual">คู่มือ</SelectItem>
+                        <SelectItem value="report">รายงาน</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="document-description">คำอธิบาย</Label>
+                    <Textarea
+                      id="document-description"
+                      name="description"
+                      value={documentForm.description}
+                      onChange={handleDocumentFormChange}
+                      placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับเอกสาร"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="document-file">ไฟล์ *</Label>
+                    <Input
+                      id="document-file"
+                      type="file"
+                      onChange={handleFileChange}
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls"
+                      required
+                    />
+                    <p className="text-xs text-gray-500">
+                      รองรับไฟล์: PDF, DOC, DOCX, JPG, PNG, XLSX (ขนาดไม่เกิน 10MB)
+                    </p>
+                    {documentForm.file && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <FileTextIcon className="h-4 w-4" />
+                        <span>{documentForm.file.name}</span>
+                        <span>({formatFileSize(documentForm.file.size)})</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button type="button" variant="outline" disabled={uploadingFile}>
+                        ยกเลิก
+                      </Button>
+                    </DialogClose>
+                    <Button type="submit" disabled={uploadingFile}>
+                      {uploadingFile ? (
+                        <>
+                          <UploadIcon className="h-4 w-4 mr-2 animate-spin" />
+                          กำลังอัปโหลด...
+                        </>
+                      ) : (
+                        <>
+                          <UploadIcon className="h-4 w-4 mr-2" />
+                          อัปโหลด
+                        </>
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
