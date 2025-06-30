@@ -29,7 +29,10 @@ export default function DashboardPage() {
     if (!user) return;
 
     setLoading(true);
-    const response = await fetch(`/api/mentor/${user.id}/dashboard`, {
+    const url =
+      `/api/mentor/${user.id}/dashboard` +
+      (calendarSelected ? `?calendarId=${calendarSelected}` : "");
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

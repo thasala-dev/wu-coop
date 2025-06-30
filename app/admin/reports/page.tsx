@@ -28,6 +28,7 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
+import Sidebar from "@/components/sidebar";
 
 // Mock data for reports
 const reports = [
@@ -98,9 +99,10 @@ const reports = [
 
 export default function AdminReportsPage() {
   return (
-    <div className="flex min-h-screen bg-gray-100 font-sans">
-      <AdminSidebar activePage="reports" />
-      <div className="flex-1 p-8">
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <Sidebar activePage="reports" userType="admin" />
+
+      <div className="md:col-span-4 space-y-4">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-xl font-bold text-gray-800">รายงานทั้งหมด</h1>
         </div>
