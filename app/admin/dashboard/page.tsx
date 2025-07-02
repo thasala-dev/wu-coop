@@ -105,7 +105,9 @@ export default function AdminDashboard() {
         res.student.find((item: any) => item.group_type === 1)?.count || 0;
       let total2 =
         res.student.find((item: any) => item.group_type === 2)?.count || 0;
-      setPercentMatch((total2 / (total1 + total2)) * 100 || 0);
+      setPercentMatch(
+        (Number(total2) * 100) / (Number(total1) + Number(total2)) || 0
+      );
       setLoading(false);
     }
   }
