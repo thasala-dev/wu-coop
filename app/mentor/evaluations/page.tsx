@@ -16,6 +16,9 @@ import {
   UserIcon,
   AlertCircleIcon,
   SearchIcon,
+  ChevronRight,
+  Phone,
+  Mail,
 } from "lucide-react";
 import MentorSidebar from "@/components/mentor-sidebar";
 import {
@@ -32,6 +35,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import CardList from "@/components/CardList";
 import CustomAvatar from "@/components/avatar";
+import TableList from "@/components/TableList";
 
 export default function MentorEvaluations() {
   const { data: session, status } = useSession();
@@ -117,13 +121,28 @@ export default function MentorEvaluations() {
                       setCalendarSelected(value || null);
                     }}
                   >
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="เลือกผลัดฝึกงาน" />
                     </SelectTrigger>
                     <SelectContent>
                       {data.calendar.map((cal: any) => (
                         <SelectItem key={cal.id} value={cal.id.toString()}>
-                          {cal.name} ({cal.semester}/{cal.year})
+                          {cal.name} ปีการศึกษา {cal.semester}/{cal.year} (
+                          {new Date(cal.start_date).toLocaleDateString(
+                            "th-TH",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}{" "}
+                          -{" "}
+                          {new Date(cal.end_date).toLocaleDateString("th-TH", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                          )
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -132,53 +151,89 @@ export default function MentorEvaluations() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  <CardList
-                    className="grid grid-cols-1 gap-4"
-                    data={data.student || []}
-                    pageLength={10}
-                    render={(student: any) => (
-                      <div className="border rounded-lg p-4 hover:bg-gray-50">
-                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                          <div className="flex gap-4">
+                  <TableList
+                    meta={[
+                      {
+                        key: "fullname",
+                        content: "นักศึกษา",
+                        width: "200px",
+                        render: (item: any) => (
+                          <div className="flex items-center gap-2">
                             <CustomAvatar
-                              id={`student${student.student_id}`}
-                              image={student.image}
-                              size="12"
+                              id={`student${item.student_id}`}
+                              image={item.image}
+                              size="8"
                             />
                             <div>
-                              <h3 className="text-lg font-medium">
-                                {student.fullname || "ไม่ทราบชื่อ"}
-                              </h3>
-                              <p className="text-sm text-gray-600">
-                                รหัสนักศึกษา: {student.student_id || "-"}
+                              <div className="truncate">{item.fullname}</div>
+                              <p className="text-xs text-gray-500">
+                                {item.student_id}
                               </p>
-                              <div className="flex items-center gap-2 mt-2">
-                                <span className="text-sm text-gray-500">
-                                  ชุดประเมิน:
-                                </span>
-                                {student.evaluation_names.map(
-                                  (form: any, index: number) => (
-                                    <Badge
-                                      key={index}
-                                      className="bg-orange-100 text-orange-800 hover:bg-orange-100"
-                                    >
-                                      {form}
-                                    </Badge>
-                                  )
-                                )}
-                              </div>
                             </div>
                           </div>
-                          <div className="flex flex-col gap-2">
-                            <Link href={`/mentor/evaluations/${student.id}`}>
-                              <Button size="sm" className="w-full">
-                                ประเมินนักศึกษา
-                              </Button>
-                            </Link>
+                        ),
+                      },
+
+                      {
+                        key: "evaluation_names",
+                        content: "ชุดประเมิน",
+                        render: (item: any) => (
+                          <div className="flex flex-wrap gap-1">
+                            {item.evaluation_names.map(
+                              (form: any, index: number) => (
+                                <Badge
+                                  key={index}
+                                  className="bg-orange-100 text-orange-800 hover:bg-orange-100"
+                                >
+                                  {form}
+                                </Badge>
+                              )
+                            )}
                           </div>
-                        </div>
-                      </div>
-                    )}
+                        ),
+                      },
+                      {
+                        key: "status",
+                        content: "การประเมิน",
+                        width: "150px",
+                        render: (row: any) => {
+                          return (
+                            <>
+                              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                <div
+                                  className="bg-green-600 h-2.5 rounded-full"
+                                  style={{
+                                    width: `90%`,
+                                  }}
+                                ></div>
+                              </div>
+                              <div className="text-xs mt-1 text-muted-foreground">
+                                90% เสร็จสิ้น
+                              </div>
+                            </>
+                          );
+                        },
+                      },
+                      {
+                        key: "actions",
+                        content: "",
+                        sort: false,
+                        width: "100px",
+                        render: (row: any) => {
+                          return (
+                            <div className="flex justify-end gap-2">
+                              <Link href={`/mentor/students/${row.id}`}>
+                                <Button size="sm">
+                                  ประเมินนักศึกษา
+                                  <ChevronRight className="ml-1 h-4 w-4" />
+                                </Button>
+                              </Link>
+                            </div>
+                          );
+                        },
+                      },
+                    ]}
+                    data={data.student || []}
                   />
                 </div>
               </CardContent>

@@ -32,16 +32,23 @@ export async function GET(request: NextRequest, { params }: any) {
         std.fullname,
         std.student_id,
         std.image,
+        std.mobile,
+        std.email,
+        adv.fullname AS advisor_name,
+        adv.mobile AS advisor_mobile,
+        adv.image AS advisor_image,
+        adv.username AS advisor_username,
         intern.evaluation_type,
         ARRAY_AGG(et.name) AS evaluation_names
         FROM regist_intern intern
         INNER JOIN user_student std 
           ON intern.student_id = std.id
+        left join user_advisor adv on adv.id = std.advisor_id
         LEFT JOIN LATERAL unnest(intern.evaluation_type) AS eval_id ON true
         LEFT JOIN evaluations_type et 
           ON et.id = eval_id
         WHERE intern.calendar_id = $1 AND intern.company_id = $2
-        GROUP BY intern.id, std.fullname, std.student_id, std.image, intern.evaluation_type`,
+        GROUP BY intern.id, std.fullname, std.student_id, std.email, std.image, advisor_name, advisor_mobile, advisor_image, advisor_username, std.mobile, intern.evaluation_type`,
       [calendarId, id]
     );
 

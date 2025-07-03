@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -29,9 +29,20 @@ import {
   Clock,
   AlertCircle,
   ChevronLeft,
+  ArrowLeft,
+  ChevronRight,
+  PersonStanding,
+  User,
 } from "lucide-react";
 import Link from "next/link";
 import MentorSidebar from "@/components/mentor-sidebar";
+import Sidebar from "@/components/sidebar";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useToast } from "@/hooks/use-toast";
+import Loading from "@/components/loading";
+import CustomAvatar from "@/components/avatar";
 
 // Mock data for a single student
 const studentData = {
@@ -230,44 +241,184 @@ function AttendanceStatus({ status }: { status: string }) {
   return <Badge className="bg-gray-500">ไม่ทราบสถานะ</Badge>;
 }
 
+const studentSchema = z.object({
+  position: z.string(),
+  job_description: z.string(),
+});
+
 export default function StudentDetailPage() {
   const params = useParams();
-  const studentId = params.id as string;
+  const id = params?.id as string;
+
   const [newNote, setNewNote] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any>(null);
+  const { toast } = useToast();
+  const router = useRouter();
 
   // In a real application, you would fetch the student data based on the ID
   // For this example, we're using the mock data
   const student = studentData;
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    setValue,
+    getValues,
+  } = useForm<any>({
+    resolver: zodResolver(studentSchema),
+    defaultValues: {
+      position: "",
+      job_description: "",
+    },
+  });
+
+  async function onSubmit(values: any) {
+    console.log("Form submitted with values:", values);
+    setLoading(true);
+    try {
+      const payload = { ...values };
+      console.log("Payload before processing:", payload);
+
+      if (payload.password === "") {
+        delete payload.password; // ลบ password ออกจาก payload หากเป็นค่าว่าง
+      }
+
+      // ตรวจสอบและจัดการค่า image ก่อนส่งไปยังเซิร์ฟเวอร์
+      if (payload.image && typeof payload.image === "object") {
+        try {
+          // แปลงออบเจ็กต์เป็น JSON string
+          payload.image = JSON.stringify(payload.image);
+        } catch (error) {
+          console.error("Error processing avatar image:", error);
+          // กรณีแปลงไม่ได้ ให้ใช้ค่าว่าง
+          payload.image = "";
+        }
+      }
+
+      console.log("Final payload:", payload);
+
+      // 4. Submit main form data
+      const response = await fetch(`/api/student/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      console.log("API response:", data);
+
+      if (response.ok && data.success) {
+        toast({
+          title: "ดำเนินการสำเร็จ",
+          description: data.message || "แก้ไขข้อมูลผู้ดูแลระบบสำเร็จ",
+          variant: "success",
+        });
+        router.push("/admin/students");
+      } else {
+        toast({
+          title: "ดำเนินการไม่สำเร็จ",
+          description: data.message || "เกิดข้อผิดพลาดในการแก้ไขข้อมูล",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อบันทึกข้อมูลได้",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    setLoading(true);
+    try {
+      console.log("Fetching student data for ID:", id);
+      const response = await fetch(`/api/evaluations/${id}`);
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        toast({
+          title: "ไม่สามารถโหลดข้อมูลนักศึกษาได้",
+          description: "เกิดข้อผิดพลาดในการดึงข้อมูลนักศึกษา",
+          variant: "destructive",
+        });
+        return;
+      }
+      const data = await response.json();
+      if (data.success) {
+        setData(data.data);
+        console.log("Setting form values with data:", data.data);
+        setValue("fullname", data.data.fullname);
+        setValue("student_id", data.data.student_id);
+      } else {
+        toast({
+          title: "ไม่พบข้อมูลนักศึกษา",
+          description: data.message || "เกิดข้อผิดพลาด",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลนักศึกษาได้",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="container mx-auto py-6">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <MentorSidebar activePage="students" />
-
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <Sidebar activePage="students" userType="mentor" />
+        {loading && <Loading />}
         <div className="md:col-span-4">
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/mentor/students">
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                กลับไปยังรายชื่อนักศึกษา
-              </Link>
+          <div className="flex items-center gap-3 mb-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-full"
+              asChild
+            >
+              <a href="/mentor/students">
+                <ArrowLeft className="h-4 w-4" />
+              </a>
             </Button>
+            <div className="flex items-center gap-1 text-sm text-gray-500">
+              <a href="/mentor/students" className="hover:text-gray-900">
+                นักศึกษาทั้งหมด
+              </a>
+              <ChevronRight className="h-3 w-3" />
+              <span className="text-gray-900">รายละเอียดนักศึกษา</span>
+            </div>
           </div>
 
           <Card>
             <CardHeader className="pb-2">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={student.image} alt={student.name} />
-                    <AvatarFallback>
-                      {student.name.substring(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <CustomAvatar
+                    id={`student${data?.student_id}`}
+                    image={data?.image}
+                    size="16"
+                  />
                   <div>
-                    <CardTitle className="text-xl">{student.name}</CardTitle>
+                    <CardTitle className="text-xl">{data?.fullname}</CardTitle>
                     <CardDescription className="text-base">
-                      {student.id} • {student.department} • {student.position}
+                      {data?.student_id} • {data?.position}
                     </CardDescription>
                   </div>
                 </div>
@@ -275,9 +426,6 @@ export default function StudentDetailPage() {
                   <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
                     ปีรหัสที่ {student.year}
                   </Badge>
-                  {student.status === "active" && (
-                    <Badge className="bg-green-500">กำลังฝึกงาน</Badge>
-                  )}
                 </div>
               </div>
             </CardHeader>
@@ -289,7 +437,7 @@ export default function StudentDetailPage() {
                     <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <div className="font-medium">อีเมล</div>
-                      <div>{student.email}</div>
+                      <div>{data?.email}</div>
                     </div>
                   </div>
 
@@ -297,17 +445,7 @@ export default function StudentDetailPage() {
                     <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <div className="font-medium">เบอร์โทรศัพท์</div>
-                      <div>{student.phone}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div>
-                      <div className="font-medium">ระยะเวลาฝึกงาน</div>
-                      <div>
-                        {student.startDate} - {student.endDate}
-                      </div>
+                      <div>{data?.mobile}</div>
                     </div>
                   </div>
 
@@ -315,12 +453,26 @@ export default function StudentDetailPage() {
                     <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <div className="font-medium">อาจารย์ที่ปรึกษา</div>
-                      <div>{student.advisor.name}</div>
+                      <div>{data?.advisor_name}</div>
                       <div className="text-sm text-muted-foreground">
-                        {student.advisor.email}
+                        {data?.advisor_email}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {student.advisor.phone}
+                        {data?.advisor_mobile}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <User className="h-5 w-5 text-muted-foreground mt-0.5" />
+                    <div>
+                      <div className="font-medium">ผู้ติดต่อฉุกเฉิน</div>
+                      <div>{data?.emergency_contact_name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {data?.emergency_contact_relation}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {data?.emergency_contact_phone}
                       </div>
                     </div>
                   </div>
@@ -328,12 +480,28 @@ export default function StudentDetailPage() {
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-2">
-                    <Building className="h-5 w-5 text-muted-foreground mt-0.5" />
+                    <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
-                      <div className="font-medium">แหล่งฝึกงาน</div>
-                      <div>{student.company.name}</div>
+                      <div className="font-medium">ผลัดการฝึก</div>
+                      <div>
+                        {data?.calendar_name} ปีการศึกษา {data?.semester}/
+                        {data?.year}
+                      </div>
                       <div className="text-sm text-muted-foreground">
-                        {student.company.website}
+                        {new Date(data?.start_date).toLocaleDateString(
+                          "th-TH",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}{" "}
+                        -{" "}
+                        {new Date(data?.end_date).toLocaleDateString("th-TH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </div>
                     </div>
                   </div>
@@ -367,14 +535,39 @@ export default function StudentDetailPage() {
                 </div>
               </div>
 
-              <Tabs defaultValue="tasks">
-                <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-4">
+              <Tabs defaultValue="notes">
+                <TabsList className="grid w-full grid-cols-4 mb-6 h-9 rounded-md bg-gray-100 p-0.5">
+                  <TabsTrigger value="notes">รายละเอียดการฝึกงาน</TabsTrigger>
                   <TabsTrigger value="tasks">งานที่ได้รับมอบหมาย</TabsTrigger>
                   <TabsTrigger value="reports">รายงาน</TabsTrigger>
-                  <TabsTrigger value="evaluations">การประเมินผล</TabsTrigger>
                   <TabsTrigger value="attendance">การเข้างาน</TabsTrigger>
-                  <TabsTrigger value="notes">บันทึก</TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="notes" className="space-y-4">
+                  <Card>
+                    <CardHeader className="p-4 pb-2">
+                      <CardTitle className="text-base">
+                        เพิ่มบันทึกใหม่
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                      <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="space-y-4"
+                      >
+                        <Textarea
+                          placeholder="เพิ่มบันทึกหรือข้อสังเกตเกี่ยวกับนักศึกษา..."
+                          className="mb-2"
+                          value={newNote}
+                          onChange={(e) => setNewNote(e.target.value)}
+                        />
+                        <div className="flex justify-end">
+                          <Button disabled={!newNote.trim()}>บันทึก</Button>
+                        </div>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
 
                 <TabsContent value="tasks" className="space-y-4">
                   {student.tasks.map((task, index) => (
@@ -461,57 +654,6 @@ export default function StudentDetailPage() {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="evaluations" className="space-y-4">
-                  {student.evaluations.map((evaluation) => (
-                    <Card key={evaluation.id}>
-                      <CardHeader className="p-4 pb-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle className="text-base">
-                              {evaluation.title}
-                            </CardTitle>
-                            <CardDescription>{evaluation.date}</CardDescription>
-                          </div>
-                          {evaluation.status === "completed" ? (
-                            <Badge className="bg-green-500">ประเมินแล้ว</Badge>
-                          ) : (
-                            <Badge className="bg-yellow-500">รอประเมิน</Badge>
-                          )}
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0">
-                        {evaluation.status === "completed" ? (
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium">คะแนน:</span>
-                              <span className="font-bold text-lg">
-                                {evaluation.score}/100
-                              </span>
-                            </div>
-                            <div>
-                              <div className="font-medium mb-1">
-                                ข้อเสนอแนะ:
-                              </div>
-                              <p className="text-sm">{evaluation.feedback}</p>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex justify-end">
-                            <Button asChild>
-                              <Link
-                                href={`/mentor/evaluations/${student.id}/${evaluation.id}`}
-                              >
-                                <UserCheck className="mr-2 h-4 w-4" />
-                                ทำการประเมิน
-                              </Link>
-                            </Button>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </TabsContent>
-
                 <TabsContent value="attendance" className="space-y-4">
                   <div className="rounded-md border">
                     <div className="relative w-full overflow-auto">
@@ -550,38 +692,6 @@ export default function StudentDetailPage() {
                       </table>
                     </div>
                   </div>
-                </TabsContent>
-
-                <TabsContent value="notes" className="space-y-4">
-                  <Card>
-                    <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-base">
-                        เพิ่มบันทึกใหม่
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                      <Textarea
-                        placeholder="เพิ่มบันทึกหรือข้อสังเกตเกี่ยวกับนักศึกษา..."
-                        className="mb-2"
-                        value={newNote}
-                        onChange={(e) => setNewNote(e.target.value)}
-                      />
-                      <div className="flex justify-end">
-                        <Button disabled={!newNote.trim()}>บันทึก</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {student.notes.map((note, index) => (
-                    <Card key={index}>
-                      <CardHeader className="p-4 pb-2">
-                        <CardDescription>{note.date}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0">
-                        <p className="text-sm">{note.content}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
                 </TabsContent>
               </Tabs>
             </CardContent>

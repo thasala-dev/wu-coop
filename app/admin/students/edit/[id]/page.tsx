@@ -119,13 +119,15 @@ export default function Page() {
 
   React.useEffect(() => {
     fetchStudentData();
-  }, []);  async function fetchStudentData() {
+  }, []);
+
+  async function fetchStudentData() {
     setLoading(true);
     try {
       console.log("Fetching student data for ID:", id);
       const response = await fetch(`/api/student/${id}`);
       console.log("Response status:", response.status);
-      
+
       if (!response.ok) {
         toast({
           title: "ไม่สามารถโหลดข้อมูลนักศึกษาได้",
@@ -134,10 +136,10 @@ export default function Page() {
         });
         return;
       }
-      
+
       const data = await response.json();
       console.log("Fetched student data:", data);
-      
+
       if (data.success) {
         console.log("Setting form values with data:", data.data);
         setValue("fullname", data.data.fullname);
@@ -149,10 +151,22 @@ export default function Page() {
         setValue("std_year", String(data.data.std_year) || "");
         setValue("address", data.data.address || "");
         setValue("gpa", data.data.gpa || "");
-        setValue("advisor_id", data.data.advisor_id ? String(data.data.advisor_id) : "");
-        setValue("emergency_contact_name", data.data.emergency_contact_name || "");
-        setValue("emergency_contact_phone", data.data.emergency_contact_phone || "");
-        setValue("emergency_contact_relation", data.data.emergency_contact_relation || "");
+        setValue(
+          "advisor_id",
+          data.data.advisor_id ? String(data.data.advisor_id) : ""
+        );
+        setValue(
+          "emergency_contact_name",
+          data.data.emergency_contact_name || ""
+        );
+        setValue(
+          "emergency_contact_phone",
+          data.data.emergency_contact_phone || ""
+        );
+        setValue(
+          "emergency_contact_relation",
+          data.data.emergency_contact_relation || ""
+        );
         setValue("password", "");
 
         setValue("image", data.data.image || "");
@@ -173,14 +187,15 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }  async function onSubmit(values: any) {
+  }
+  async function onSubmit(values: any) {
     console.log("Form submitted with values:", values);
     values.username = values.student_id;
     setLoading(true);
     try {
       const payload = { ...values };
       console.log("Payload before processing:", payload);
-      
+
       if (payload.password === "") {
         delete payload.password; // ลบ password ออกจาก payload หากเป็นค่าว่าง
       }
@@ -208,7 +223,7 @@ export default function Page() {
 
       const data = await response.json();
       console.log("API response:", data);
-      
+
       if (response.ok && data.success) {
         toast({
           title: "ดำเนินการสำเร็จ",
@@ -362,8 +377,9 @@ export default function Page() {
                               <p className="text-sm text-red-600">
                                 {getErrorMessage(errors.mobile)}
                               </p>
-                            )}                          </div>
-                          
+                            )}{" "}
+                          </div>
+
                           <div className="sm:col-span-6">
                             <label>สาขาวิชา</label>
                             <select
@@ -383,7 +399,8 @@ export default function Page() {
                               <option value="CARE">
                                 สาขาวิชาการบริบาลทางเภสัชกรรม
                               </option>
-                            </select>{" "}                            {errors.major && (
+                            </select>{" "}
+                            {errors.major && (
                               <p className="text-sm text-red-600">
                                 {getErrorMessage(errors.major)}
                               </p>
@@ -396,7 +413,9 @@ export default function Page() {
                               {...register("advisor_id")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.advisor_id ? "border-red-600  border-2" : "")
+                                (errors.advisor_id
+                                  ? "border-red-600  border-2"
+                                  : "")
                               }
                             >
                               <option value="">เลือกอาจารย์ที่ปรึกษา</option>
@@ -451,7 +470,8 @@ export default function Page() {
                                 (errors.gpa ? "border-red-600  border-2" : "")
                               }
                               placeholder="กรุณากรอก GPAX (เกรดเฉลี่ย)"
-                            />                            {errors.gpa && (
+                            />{" "}
+                            {errors.gpa && (
                               <p className="text-sm text-red-600">
                                 {getErrorMessage(errors.gpa)}
                               </p>
@@ -471,11 +491,13 @@ export default function Page() {
                                   : "")
                               }
                               placeholder="กรุณากรอกที่อยู่ที่ติดต่อได้"
-                            />                            {errors.address && (
+                            />{" "}
+                            {errors.address && (
                               <p className="text-sm text-red-600">
                                 {getErrorMessage(errors.address)}
                               </p>
-                            )}</div>
+                            )}
+                          </div>
 
                           <div className="sm:col-span-12">
                             <h3 className="font-semibold text-md mb-4 border-t pt-4">
@@ -520,7 +542,9 @@ export default function Page() {
                             />
                             {errors.emergency_contact_phone && (
                               <p className="text-sm text-red-600">
-                                {getErrorMessage(errors.emergency_contact_phone)}
+                                {getErrorMessage(
+                                  errors.emergency_contact_phone
+                                )}
                               </p>
                             )}
                           </div>
@@ -549,7 +573,9 @@ export default function Page() {
                             </select>
                             {errors.emergency_contact_relation && (
                               <p className="text-sm text-red-600">
-                                {getErrorMessage(errors.emergency_contact_relation)}
+                                {getErrorMessage(
+                                  errors.emergency_contact_relation
+                                )}
                               </p>
                             )}
                           </div>
@@ -573,7 +599,8 @@ export default function Page() {
                                 errors.password ? "border-red-600 border-2" : ""
                               }`}
                               placeholder="กรุณากรอกรหัสผ่าน"
-                            />                            {errors.password && (
+                            />{" "}
+                            {errors.password && (
                               <p className="text-sm text-red-600">
                                 {getErrorMessage(errors.password)}
                               </p>

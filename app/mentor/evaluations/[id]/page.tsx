@@ -176,7 +176,8 @@ export default function MentorEvaluations() {
                         {studentData?.student_id || <i>ไม่ได้ระบุ</i>}
                       </p>
                       <p className="text-blue-100">
-                        สาขาวิชา: {studentData?.major || <i>ไม่ได้ระบุ</i>}
+                        อาจารย์ที่ปรึกษา:{" "}
+                        {studentData?.advisor_name || <i>ไม่ได้ระบุ</i>}
                       </p>
                     </div>
                   </div>
