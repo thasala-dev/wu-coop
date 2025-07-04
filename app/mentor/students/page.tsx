@@ -283,18 +283,30 @@ export default function MentorStudentsPage() {
                               content: "การประเมิน",
                               width: "100px",
                               render: (row: any) => {
+                                const totalForms = row.total_forms || 0;
+                                const totalResults = row.total_result || 0;
+                                const percent = totalForms
+                                  ? Math.round(
+                                      (totalResults / totalForms) * 100
+                                    )
+                                  : 0;
                                 return (
                                   <>
                                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                                       <div
                                         className="bg-green-600 h-2.5 rounded-full"
                                         style={{
-                                          width: `90%`,
+                                          width: `${percent}%`,
                                         }}
                                       ></div>
                                     </div>
-                                    <div className="text-xs mt-1 text-muted-foreground">
-                                      90% เสร็จสิ้น
+                                    <div className="flex justify-between text-xs">
+                                      <div className="mt-1 text-muted-foreground">
+                                        [{totalResults}/{totalForms}]
+                                      </div>
+                                      <div className="mt-1 text-muted-foreground">
+                                        {percent}%
+                                      </div>
                                     </div>
                                   </>
                                 );

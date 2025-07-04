@@ -36,6 +36,9 @@ export default function MentorEvaluations() {
   const [studentData, setStudentData] = useState<any>(null);
   const [evaluations, setEvaluations] = useState<any[]>([]);
 
+  const [formWaiting, setFormWaiting] = useState(0);
+  const [formCompleted, setFormCompleted] = useState(0);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -43,14 +46,25 @@ export default function MentorEvaluations() {
   async function fetchData() {
     try {
       setLoading(true);
-      console.log("Fetching data for mentor ID:", id);
-      // ดึงข้อมูลนักศึกษา
       const studentResponse = await fetch(`/api/evaluations/${id}`);
       if (studentResponse.ok) {
         const studentResult = await studentResponse.json();
         console.log("Fetching student data for ID:", studentResult);
         setStudentData(studentResult.data);
         setEvaluations(studentResult.evaluation || []);
+        let waiting = 0;
+        let completed = 0;
+        studentResult.evaluation.forEach((item: any) => {
+          item.forEach((form: any) => {
+            if (form.is_submit) {
+              completed++;
+            } else {
+              waiting++;
+            }
+          });
+        });
+        setFormWaiting(waiting);
+        setFormCompleted(completed);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -89,37 +103,6 @@ export default function MentorEvaluations() {
       day: "numeric",
     });
   };
-
-  // Mock data สำหรับการประเมิน (จะถูกแทนที่ด้วยข้อมูลจริงจาก API)
-  const mockEvaluations = [
-    {
-      id: 1,
-      title: "การประเมินความเหมาะสมของสถานประกอบการ",
-      status: "completed",
-      evaluator: "อ.ดร.สมชาย ใจดี",
-      evaluatedDate: "2024-01-15",
-      dueDate: "2024-01-10",
-      type: "site_evaluation",
-    },
-    {
-      id: 2,
-      title: "การประเมินผลการปฏิบัติงานของนักศึกษา",
-      status: "pending",
-      evaluator: "อ.ดร.สมชาย ใจดี",
-      evaluatedDate: null,
-      dueDate: "2024-02-15",
-      type: "performance_evaluation",
-    },
-    {
-      id: 3,
-      title: "การประเมินทักษะการทำงานเป็นทีม",
-      status: "overdue",
-      evaluator: "อ.ดร.สมชาย ใจดี",
-      evaluatedDate: null,
-      dueDate: "2024-01-30",
-      type: "teamwork_evaluation",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -200,13 +183,6 @@ export default function MentorEvaluations() {
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 text-blue-100">
-                        <Building className="h-4 w-4" />
-                        <span className="text-sm">
-                          {studentData?.company_name ||
-                            "บริษัท เทคโนโลยี จำกัด"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-blue-100">
                         <Calendar className="h-4 w-4" />
                         <span className="text-sm">
                           {new Date(studentData?.start_date).toLocaleDateString(
@@ -241,13 +217,7 @@ export default function MentorEvaluations() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-green-100 text-sm">ประเมินแล้ว</p>
-                      <p className="text-2xl font-bold">
-                        {
-                          mockEvaluations.filter(
-                            (e) => e.status === "completed"
-                          ).length
-                        }
-                      </p>
+                      <p className="text-2xl font-bold">{formCompleted}</p>
                     </div>
                     <CheckCircle className="h-8 w-8 text-green-200" />
                   </div>
@@ -259,12 +229,7 @@ export default function MentorEvaluations() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-yellow-100 text-sm">รอประเมิน</p>
-                      <p className="text-2xl font-bold">
-                        {
-                          mockEvaluations.filter((e) => e.status === "pending")
-                            .length
-                        }
-                      </p>
+                      <p className="text-2xl font-bold">{formWaiting}</p>
                     </div>
                     <Clock className="h-8 w-8 text-yellow-200" />
                   </div>

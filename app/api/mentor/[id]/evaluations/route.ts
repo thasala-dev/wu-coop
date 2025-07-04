@@ -39,16 +39,25 @@ export async function GET(request: NextRequest, { params }: any) {
         adv.image AS advisor_image,
         adv.username AS advisor_username,
         intern.evaluation_type,
-        ARRAY_AGG(et.name) AS evaluation_names
-        FROM regist_intern intern
-        INNER JOIN user_student std 
-          ON intern.student_id = std.id
-        left join user_advisor adv on adv.id = std.advisor_id
-        LEFT JOIN LATERAL unnest(intern.evaluation_type) AS eval_id ON true
-        LEFT JOIN evaluations_type et 
-          ON et.id = eval_id
-        WHERE intern.calendar_id = $1 AND intern.company_id = $2
-        GROUP BY intern.id, std.fullname, std.student_id, std.email, std.image, advisor_name, advisor_mobile, advisor_image, advisor_username, std.mobile, intern.evaluation_type`,
+        ARRAY_AGG(DISTINCT et.name) AS evaluation_names,
+        ARRAY_AGG(f ORDER BY f) AS evaluation_forms,
+        COUNT(f) AS total_forms,
+        (select count(*) from evaluations_result where intern_id = intern.id) as total_result
+      FROM regist_intern intern
+      INNER JOIN user_student std 
+        ON intern.student_id = std.id
+      LEFT JOIN user_advisor adv 
+        ON adv.id = std.advisor_id
+      LEFT JOIN LATERAL unnest(intern.evaluation_type) AS eval_id ON true
+      LEFT JOIN evaluations_type et 
+        ON et.id = eval_id
+      LEFT JOIN LATERAL unnest(et.form) AS f ON true
+      WHERE intern.calendar_id = $1 AND intern.company_id = $2
+      GROUP BY intern.id, std.fullname, 
+              std.student_id, std.email, std.image, 
+              adv.fullname, adv.mobile, 
+              adv.image, adv.username, 
+              std.mobile, intern.evaluation_type`,
       [calendarId, id]
     );
 

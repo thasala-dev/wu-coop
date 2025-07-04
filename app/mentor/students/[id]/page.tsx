@@ -44,6 +44,12 @@ import { useToast } from "@/hooks/use-toast";
 import Loading from "@/components/loading";
 import CustomAvatar from "@/components/avatar";
 
+const getErrorMessage = (error: any) => {
+  if (!error) return "";
+  if (typeof error.message === "string") return error.message;
+  return String(error.message || "Invalid input");
+};
+
 // Mock data for a single student
 const studentData = {
   id: "6401234",
@@ -462,28 +468,13 @@ export default function StudentDetailPage() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="flex items-start gap-2">
-                    <User className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div>
-                      <div className="font-medium">ผู้ติดต่อฉุกเฉิน</div>
-                      <div>{data?.emergency_contact_name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {data?.emergency_contact_relation}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {data?.emergency_contact_phone}
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-2">
                     <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
-                      <div className="font-medium">ผลัดการฝึก</div>
-                      <div>
+                      <div className="font-medium">
                         {data?.calendar_name} ปีการศึกษา {data?.semester}/
                         {data?.year}
                       </div>
@@ -507,47 +498,41 @@ export default function StudentDetailPage() {
                   </div>
 
                   <div className="flex items-start gap-2">
+                    <User className="h-5 w-5 text-muted-foreground mt-0.5" />
+                    <div>
+                      <div className="font-medium">ผู้ติดต่อฉุกเฉิน</div>
+                      <div>{data?.emergency_contact_name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {data?.emergency_contact_relation}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {data?.emergency_contact_phone}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2">
                     <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <div className="font-medium">ที่อยู่</div>
-                      <div className="text-sm">{student.company.address}</div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="font-medium mb-2">ทักษะ</div>
-                    <div className="flex flex-wrap gap-2">
-                      {student.skills.map((skill, index) => (
-                        <Badge key={index} variant="outline">
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="font-medium mb-2">ความคืบหน้าโดยรวม</div>
-                    <Progress value={student.progress} className="h-2" />
-                    <div className="text-sm text-right mt-1">
-                      {student.progress}%
+                      <div className="text-sm">{data?.address}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <Tabs defaultValue="notes">
-                <TabsList className="grid w-full grid-cols-4 mb-6 h-9 rounded-md bg-gray-100 p-0.5">
+                <TabsList className="grid w-full grid-cols-3 mb-6 h-9 rounded-md bg-gray-100 p-0.5">
                   <TabsTrigger value="notes">รายละเอียดการฝึกงาน</TabsTrigger>
                   <TabsTrigger value="tasks">งานที่ได้รับมอบหมาย</TabsTrigger>
                   <TabsTrigger value="reports">รายงาน</TabsTrigger>
-                  <TabsTrigger value="attendance">การเข้างาน</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="notes" className="space-y-4">
                   <Card>
                     <CardHeader className="p-4 pb-2">
                       <CardTitle className="text-base">
-                        เพิ่มบันทึกใหม่
+                        รายละเอียดการฝึกงาน
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 pt-0">
@@ -555,12 +540,48 @@ export default function StudentDetailPage() {
                         onSubmit={handleSubmit(onSubmit)}
                         className="space-y-4"
                       >
-                        <Textarea
-                          placeholder="เพิ่มบันทึกหรือข้อสังเกตเกี่ยวกับนักศึกษา..."
-                          className="mb-2"
-                          value={newNote}
-                          onChange={(e) => setNewNote(e.target.value)}
-                        />
+                        <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
+                          <div className="sm:col-span-12">
+                            <label>ตำแหน่ง</label>
+                            <input
+                              id="position"
+                              type="text"
+                              {...register("position")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.position
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="ตำแหน่ง"
+                            />{" "}
+                            {errors.position && (
+                              <p className="text-sm text-red-600">
+                                {getErrorMessage(errors.position)}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-12">
+                            <label>รายละเอียดของงาน</label>
+                            <Textarea
+                              id="job_description"
+                              placeholder="รายละเอียดของงาน..."
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.job_description
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              {...register("job_description")}
+                            />
+                            {errors.job_description && (
+                              <p className="text-sm text-red-600">
+                                {getErrorMessage(errors.job_description)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
                         <div className="flex justify-end">
                           <Button disabled={!newNote.trim()}>บันทึก</Button>
                         </div>
@@ -645,46 +666,6 @@ export default function StudentDetailPage() {
                                     ให้ข้อเสนอแนะ
                                   </Button>
                                 )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="attendance" className="space-y-4">
-                  <div className="rounded-md border">
-                    <div className="relative w-full overflow-auto">
-                      <table className="w-full caption-bottom text-sm">
-                        <thead className="[&_tr]:border-b">
-                          <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                            <th className="h-12 px-4 text-left align-middle font-medium">
-                              วันที่
-                            </th>
-                            <th className="h-12 px-4 text-left align-middle font-medium">
-                              สถานะ
-                            </th>
-                            <th className="h-12 px-4 text-left align-middle font-medium">
-                              จำนวนชั่วโมง
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="[&_tr:last-child]:border-0">
-                          {student.attendance.map((record, index) => (
-                            <tr
-                              key={index}
-                              className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                            >
-                              <td className="p-4 align-middle">
-                                {record.date}
-                              </td>
-                              <td className="p-4 align-middle">
-                                <AttendanceStatus status={record.status} />
-                              </td>
-                              <td className="p-4 align-middle">
-                                {record.hours}
                               </td>
                             </tr>
                           ))}

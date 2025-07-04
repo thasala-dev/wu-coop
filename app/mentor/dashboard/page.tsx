@@ -12,6 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CustomAvatar from "@/components/avatar";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -19,18 +22,19 @@ export default function DashboardPage() {
   const isLoading = status === "loading";
   const [loading, setLoading] = useState(false);
   const [calendars, setCalendars] = useState<any>([]);
+  const [students, setStudents] = useState<any>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
   useEffect(() => {
     if (isLoading || !user) return;
     fetchData();
-  }, [isLoading, user]);
+  }, [isLoading, user, calendarSelected]);
 
   async function fetchData() {
     if (!user) return;
 
     setLoading(true);
     const url =
-      `/api/mentor/${user.id}/dashboard` +
+      `/api/mentor/${user.id}/evaluations` +
       (calendarSelected ? `?calendarId=${calendarSelected}` : "");
     const response = await fetch(url, {
       method: "GET",
@@ -44,11 +48,14 @@ export default function DashboardPage() {
     const res = await response.json();
     if (res.success) {
       setCalendars(res.calendar);
-      let findActive = res.calendar.find((cal: any) => cal.active_id === 1);
-      if (findActive) {
-        setCalendarSelected(findActive.id.toString());
-      } else {
-        setCalendarSelected(res.calendar[0]?.id.toString() || null);
+      setStudents(res.student);
+      if (!calendarSelected) {
+        let findActive = res.calendar.find((cal: any) => cal.active_id === 1);
+        if (findActive) {
+          setCalendarSelected(findActive.id.toString());
+        } else {
+          setCalendarSelected(res.calendar[0]?.id.toString() || null);
+        }
       }
       setLoading(false);
     }
@@ -61,18 +68,10 @@ export default function DashboardPage() {
           <Sidebar activePage="dashboard" userType="mentor" />
           {loading && <Loading />}
           <div className="md:col-span-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
                 <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full p-6">
-                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
-                    <div>
-                      <h2 className="font-semibold tracking-tight text-xl">
-                        ภาพรวม
-                      </h2>
-                      <p className="text-sm text-muted-foreground">
-                        สรุปข้อมูลการฝึกงานของนักศึกษา
-                      </p>
-                    </div>
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-end">
                     <div className="mt-4 flex items-center gap-2">
                       <Select
                         value={
@@ -117,83 +116,60 @@ export default function DashboardPage() {
                   <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="border rounded-md p-4">
                       <div className="font-medium">จำนวนนักศึกษา</div>
-                      <div className="text-xl font-semibold">15 คน</div>
+                      <div className="text-xl font-semibold">
+                        {students.length || 0} คน
+                      </div>
                     </div>
                     <div className="border rounded-md p-4">
                       <div className="font-medium">
-                        จำนวนนักศึกษาที่ต้องติดตาม
+                        จำนวนนักศึกษาที่ต้องประเมิน
                       </div>
-                      <div className="text-xl font-semibold">3 คน</div>
+                      <div className="text-xl font-semibold">
+                        {students.length || 0} คน
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full p-6 mt-4">
                   <h2 className="font-semibold tracking-tight text-xl">
-                    นักศึกษาล่าสุด
+                    นักศึกษาฝึกงาน
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    นักศึกษาที่เพิ่มเข้ามาใหม่
+                    นักศึกษาที่เพิ่มเข้ามาในผลัดฝึกงานนี้
                   </p>
                   <div className="mt-4 space-y-3">
-                    <div className="flex items-center gap-3 pb-3 border-b">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
-                        <img
-                          src="https://i.pravatar.cc/40?u=student1"
-                          alt="Student 1"
-                          className="w-full h-full object-cover"
+                    {students.length === 0 && (
+                      <div className="text-gray-500 text-center py-4">
+                        ไม่มีนักศึกษาในผลัดฝึกงานนี้
+                      </div>
+                    )}
+                    {students.map((student: any, index: number) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-3 pb-3 border-b"
+                      >
+                        <CustomAvatar
+                          id={`student${student.student_id}`}
+                          image={student.image}
+                          size="10"
                         />
-                      </div>
-                      <div className="flex-grow">
-                        <div className="font-medium">นายธนกร มั่นคง</div>
-                        <div className="text-sm text-gray-500">
-                          Software Developer Intern
+                        <div className="flex-grow">
+                          <div className="font-medium">{student.fullname}</div>
+                          <div className="text-sm text-gray-500">
+                            {student.student_id}
+                          </div>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                          <Link href={`/mentor/students/${student.id}`}>
+                            <Button variant="outline" size="sm">
+                              ดูข้อมูล
+                              <ChevronRight className="ml-1 h-4 w-4" />
+                            </Button>
+                          </Link>
                         </div>
                       </div>
-                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                        กำลังฝึกงาน
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center gap-3 pb-3 border-b">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
-                        <img
-                          src="https://i.pravatar.cc/40?u=student2"
-                          alt="Student 2"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-grow">
-                        <div className="font-medium">
-                          นางสาวพิมพ์ชนก รักเรียน
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          UX/UI Designer Intern
-                        </div>
-                      </div>
-                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                        กำลังฝึกงาน
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
-                        <img
-                          src="https://i.pravatar.cc/40?u=student3"
-                          alt="Student 3"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-grow">
-                        <div className="font-medium">นายภาคิน ใจดี</div>
-                        <div className="text-sm text-gray-500">
-                          Backend Developer Intern
-                        </div>
-                      </div>
-                      <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-                        ต้องติดตาม
-                      </Badge>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -207,64 +183,47 @@ export default function DashboardPage() {
                     รายการประเมินที่กำลังจะถึงกำหนด
                   </p>
                   <div className="mt-4 space-y-3">
-                    <div className="flex items-center gap-3 pb-3 border-b">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
-                        <img
-                          src="https://i.pravatar.cc/40?u=student1"
-                          alt="Student 1"
-                          className="w-full h-full object-cover"
+                    {students.length === 0 && (
+                      <div className="text-gray-500 text-center py-4">
+                        ไม่มีการประเมินที่ต้องทำในผลัดฝึกงานนี้
+                      </div>
+                    )}
+                    {students.map((student: any, index: number) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-3 pb-3 border-b"
+                      >
+                        <CustomAvatar
+                          id={`student${student.student_id}`}
+                          image={student.image}
+                          size="10"
                         />
-                      </div>
-                      <div className="flex-grow">
-                        <div className="font-medium">นายธนกร มั่นคง</div>
-                        <div className="text-sm text-gray-500">
-                          ประเมินกลางภาค • 1 ก.ย. 2566
+                        <div className="flex-grow">
+                          <div className="font-medium">{student.fullname}</div>
+                          <div className="gap-2 flex items-center text-sm text-gray-500 mt-1">
+                            <span>ชุดประเมิน: </span>
+                            {student.evaluation_names.map(
+                              (form: any, index2: number) => (
+                                <Badge
+                                  key={index2}
+                                  className="bg-orange-100 text-orange-800 hover:bg-orange-100"
+                                >
+                                  {form}
+                                </Badge>
+                              )
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-2">
+                          <Link href={`/mentor/evaluations/${student.id}`}>
+                            <Button size="sm">
+                              ประเมิน
+                              <ChevronRight className="ml-1 h-4 w-4" />
+                            </Button>
+                          </Link>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm">
-                        ประเมิน
-                      </Button>
-                    </div>
-
-                    <div className="flex items-center gap-3 pb-3 border-b">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
-                        <img
-                          src="https://i.pravatar.cc/40?u=student2"
-                          alt="Student 2"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-grow">
-                        <div className="font-medium">
-                          นางสาวพิมพ์ชนก รักเรียน
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          ประเมินกลางภาค • 5 ก.ย. 2566
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        ประเมิน
-                      </Button>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
-                        <img
-                          src="https://i.pravatar.cc/40?u=student4"
-                          alt="Student 4"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-grow">
-                        <div className="font-medium">นางสาวกมลชนก วิชาดี</div>
-                        <div className="text-sm text-gray-500">
-                          ประเมินกลางภาค • 10 ก.ย. 2566
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        ประเมิน
-                      </Button>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
