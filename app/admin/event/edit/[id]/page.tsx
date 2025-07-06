@@ -177,7 +177,7 @@ export default function Page() {
           description: "แก้ไขกิจกรรมสำเร็จ",
           variant: "success",
         });
-        router.push("/admin/event");
+        router.push("/admin/calendar");
       } else {
         toast({
           title: "ดำเนินการไม่สำเร็จ",

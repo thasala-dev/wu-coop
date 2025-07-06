@@ -129,7 +129,7 @@ export default function Page() {
           description: "เพิ่มกิจกรรมสำเร็จ",
           variant: "success",
         });
-        router.push("/admin/calendar/" + values.calendarId);
+        router.push("/admin/calendar");
       } else {
         toast({
           title: "ดำเนินการไม่สำเร็จ",

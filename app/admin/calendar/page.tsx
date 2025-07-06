@@ -41,14 +41,21 @@ export default function AdminCalendar() {
   const [loading, setLoading] = useState(false);
   const [calendars, setCalendars] = useState<any>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
-  const [currentMonth, setCurrentMonth] = useState("มิถุนายน 2567");
+  const [currentMonth, setCurrentMonth] = useState(
+    `${new Date().toLocaleString("th-TH", {
+      month: "long",
+      year: "numeric",
+    })}` // Current month in Thai format
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredEvents, setFilteredEvents] = useState<any>([]);
   const [events, setEvents] = useState<any>([]);
 
   // State for calendar view
   const [currentMonthIndex, setCurrentMonthIndex] = useState(5); // June (0-indexed)
-  const [currentYear, setCurrentYear] = useState(2567); // BE
+  const [currentYear, setCurrentYear] = useState(
+    new Date().getFullYear() + 543 // Convert current year to Buddhist Era (BE)
+  ); // BE
   const [calendarDays, setCalendarDays] = useState<any[]>([]);
 
   // Days of the week
@@ -124,6 +131,7 @@ export default function AdminCalendar() {
   const generateCalendarDays = () => {
     // Convert BE year to CE year for JavaScript Date
     const ceYear = currentYear - 543;
+    console.log("Generating calendar for:", ceYear, currentMonthIndex);
 
     // Create date for the first day of the month
     const firstDay = new Date(ceYear, currentMonthIndex, 1);
@@ -133,6 +141,14 @@ export default function AdminCalendar() {
 
     // Get the last day of the month
     const lastDay = new Date(ceYear, currentMonthIndex + 1, 0).getDate();
+
+    console.log("Month details:", {
+      firstDay: firstDay.toISOString(),
+      firstDayOfWeek,
+      lastDay,
+      eventsCount: events?.length || 0,
+      calendarSelected,
+    });
 
     // Generate array of calendar days including empty days for start of month
     const days = [];
@@ -145,25 +161,49 @@ export default function AdminCalendar() {
     // Add days of the month with their events
     for (let day = 1; day <= lastDay; day++) {
       // Find events for this day
-      const dayEvents = events.filter((event: any) => {
-        if (!event.day || !event.month || !event.year) return false;
+      let dayEvents = [];
 
-        const eventDay = event.day;
-        const eventMonth = event.month;
-        const eventYear = event.year;
+      if (events && Array.isArray(events) && events.length > 0) {
+        dayEvents = events.filter((event: any) => {
+          if (!event || typeof event !== "object") return false;
+          if (
+            typeof event.day !== "number" ||
+            typeof event.month !== "number" ||
+            typeof event.year !== "number"
+          ) {
+            console.log("Invalid event format:", event);
+            return false;
+          }
 
-        const dayMatches = eventDay === day;
-        const monthMatches = eventMonth === currentMonthIndex + 1;
-        const yearMatches = eventYear === currentYear;
-        const calendarMatches =
-          !calendarSelected || event.calendar_id === parseInt(calendarSelected);
+          const eventDay = event.day;
+          const eventMonth = event.month;
+          const eventYear = event.year;
 
-        return dayMatches && monthMatches && yearMatches && calendarMatches;
-      });
+          const dayMatches = eventDay === day;
+          const monthMatches = eventMonth === currentMonthIndex + 1;
+          const yearMatches = eventYear === currentYear;
+
+          // If calendar is selected, filter events by calendar ID
+          let calendarMatches = true;
+          if (calendarSelected) {
+            calendarMatches =
+              event.calendar_id &&
+              event.calendar_id.toString() === calendarSelected.toString();
+          }
+
+          return dayMatches && monthMatches && yearMatches && calendarMatches;
+        });
+      }
 
       days.push({ day, events: dayEvents });
     }
 
+    console.log(
+      "Generated days:",
+      days.length,
+      "with events:",
+      days.filter((d) => d.events.length > 0).length
+    );
     setCalendarDays(days);
     setCurrentMonth(`${monthNames[currentMonthIndex]} ${currentYear}`);
   };
@@ -171,29 +211,43 @@ export default function AdminCalendar() {
   // Replace the filterEvents function to handle API data
   const filterEvents = () => {
     if (!events || events.length === 0) {
+      console.log("No events to filter");
       setFilteredEvents([]);
       return;
     }
 
+    console.log(
+      `Filtering ${events.length} events, calendar: ${calendarSelected}, search: ${searchTerm}`
+    );
     let filtered = [...events];
 
     // Filter by selected calendar term if one is selected
     if (calendarSelected) {
-      filtered = filtered.filter(
-        (event) => event.calendar_id === parseInt(calendarSelected)
-      );
+      filtered = filtered.filter((event) => {
+        return (
+          event &&
+          event.calendar_id &&
+          event.calendar_id.toString() === calendarSelected.toString()
+        );
+      });
+      console.log(`After calendar filter: ${filtered.length} events`);
     }
 
     // Filter by search term if one is entered
-    if (searchTerm) {
+    if (searchTerm && searchTerm.trim() !== "") {
       const search = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (event) =>
-          event.title.toLowerCase().includes(search) ||
-          event.description.toLowerCase().includes(search) ||
-          event.category.toLowerCase().includes(search) ||
-          event.date.toLowerCase().includes(search)
-      );
+      filtered = filtered.filter((event) => {
+        if (!event) return false;
+
+        return (
+          (event.title && event.title.toLowerCase().includes(search)) ||
+          (event.description &&
+            event.description.toLowerCase().includes(search)) ||
+          (event.category && event.category.toLowerCase().includes(search)) ||
+          (event.date && event.date.toLowerCase().includes(search))
+        );
+      });
+      console.log(`After search filter: ${filtered.length} events`);
     }
 
     setFilteredEvents(filtered);
@@ -226,60 +280,158 @@ export default function AdminCalendar() {
     setCurrentMonthIndex(today.getMonth());
     setCurrentYear(beYear);
   };
+  // Initial fetch when component mounts
   useEffect(() => {
+    console.log("Initial load - fetching calendar");
     fetchCalendar();
   }, []);
 
+  // When calendars are loaded, fetch events if there's a selected calendar
   useEffect(() => {
-    if (calendars.length > 0) {
+    if (calendars && calendars.length > 0) {
+      const activeCalendar = calendars.find((cal: any) => cal.active_id === 1);
+      if (activeCalendar) {
+        console.log("Active calendar found:", activeCalendar.id);
+        setCalendarSelected(activeCalendar.id);
+      } else if (calendarSelected === null && calendars.length > 0) {
+        console.log(
+          "No active calendar, selecting first one:",
+          calendars[0].id
+        );
+        setCalendarSelected(calendars[0].id);
+      }
+
+      console.log("Calendars loaded, fetching events");
       fetchEvents();
     }
   }, [calendars]);
 
+  // When calendarSelected changes, filter events
   useEffect(() => {
-    if (calendarSelected) {
+    console.log("Calendar selected changed:", calendarSelected);
+    if (events && calendarSelected) {
       filterEvents();
     }
-  }, [calendarSelected, events]);
+  }, [calendarSelected]);
+
+  // When events change, filter events
   useEffect(() => {
-    generateCalendarDays();
-    filterEvents();
+    console.log("Events changed:", events?.length);
+    if (events) {
+      filterEvents();
+    }
+  }, [events]);
+
+  // Generate calendar days when necessary data changes
+  useEffect(() => {
+    console.log("Calendar view data changed:", {
+      month: currentMonthIndex,
+      year: currentYear,
+      calendarId: calendarSelected,
+      eventsCount: events?.length,
+    });
+
+    if (events !== undefined) {
+      generateCalendarDays();
+    }
   }, [currentMonthIndex, currentYear, calendarSelected, events]);
 
+  // Filter events when search term changes
   useEffect(() => {
-    filterEvents();
+    if (events && searchTerm) {
+      console.log("Search term changed:", searchTerm);
+      filterEvents();
+    }
   }, [searchTerm]);
 
   async function selectCalendar(id: number) {
     if (id) {
-      const response = await fetch(`/api/calendar-select/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      console.log("Selecting calendar:", id);
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/calendar-select/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Calendar selection result:", data);
+
+        // Re-fetch events after calendar selection to ensure data is fresh
+        await fetchEvents();
+
+        // Force regenerate calendar days
+        setTimeout(() => {
+          generateCalendarDays();
+          setLoading(false);
+        }, 100);
+      } catch (error) {
+        console.error("Error selecting calendar:", error);
+        setLoading(false);
+      }
     }
   }
 
   async function fetchCalendar() {
+    console.log("Fetching calendars");
     setLoading(true);
-    const response = await fetch("/api/calendar", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    if (data.success) {
-      setCalendars(data.data || []);
-      // find calenar id that is active_id = 1
-      const activeCalendar = data.data.find((cal: any) => cal.active_id === 1);
-      if (activeCalendar) {
-        setCalendarSelected(activeCalendar.id);
+    try {
+      const response = await fetch("/api/calendar", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log(`Fetched ${data.data?.length || 0} calendars`);
+
+        if (!data.data || data.data.length === 0) {
+          console.log("No calendars data returned from API");
+          setCalendars([]);
+          setLoading(false);
+          return;
+        }
+
+        setCalendars(data.data);
+
+        // Find calendar that is active_id = 1
+        const activeCalendar = data.data.find(
+          (cal: any) => cal.active_id === 1
+        );
+
+        if (activeCalendar) {
+          console.log("Found active calendar:", activeCalendar.id);
+          setCalendarSelected(activeCalendar.id);
+        } else if (data.data.length > 0) {
+          console.log(
+            "No active calendar found, selecting first one:",
+            data.data[0].id
+          );
+          setCalendarSelected(data.data[0].id);
+        }
+      } else {
+        console.error("API returned error:", data.message);
+        setCalendars([]);
+      }
+    } catch (error) {
+      console.error("Error fetching calendars:", error);
+      setCalendars([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   // Function to map event type_id to category
@@ -305,37 +457,63 @@ export default function AdminCalendar() {
 
   // Function to format API event data
   const formatEventData = (apiEvents: any[]) => {
-    return apiEvents.map((event) => {
-      // Parse the event_date
-      const eventDate = event.event_date
-        ? new Date(event.event_date)
-        : new Date();
-      const day = eventDate.getDate();
-      const month = eventDate.getMonth() + 1; // JavaScript months are 0-indexed
-      const year = eventDate.getFullYear() + 543; // Convert to Buddhist Era
+    if (!apiEvents || !Array.isArray(apiEvents)) {
+      console.error("Invalid events data:", apiEvents);
+      return [];
+    }
 
-      // Format the date string for display
-      const dateOptions: Intl.DateTimeFormatOptions = {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      };
-      const dateString = eventDate.toLocaleDateString("th-TH", dateOptions);
+    console.log(`Formatting ${apiEvents.length} events`);
 
-      return {
-        ...event,
-        date: dateString,
-        category: mapTypeToCategory(event.type_id),
-        status: mapStatusToString(event.status_id),
-        term:
-          event.calendar_id && calendars.length > 0
-            ? getCalendarTermById(event.calendar_id)
-            : "",
-        day,
-        month,
-        year,
-      };
-    });
+    return apiEvents
+      .map((event) => {
+        try {
+          if (!event || !event.event_date) {
+            console.error("Event missing required data:", event);
+            return null;
+          }
+
+          // Parse the event_date
+          const eventDate = new Date(event.event_date);
+
+          // Validate date is valid
+          if (isNaN(eventDate.getTime())) {
+            console.error("Invalid date in event:", event);
+            return null;
+          }
+
+          const day = eventDate.getDate();
+          const month = eventDate.getMonth() + 1; // JavaScript months are 0-indexed
+          const year = eventDate.getFullYear() + 543; // Convert to Buddhist Era
+
+          // Format the date string for display
+          const dateOptions: Intl.DateTimeFormatOptions = {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          };
+          const dateString = eventDate.toLocaleDateString("th-TH", dateOptions);
+
+          const formattedEvent = {
+            ...event,
+            date: dateString,
+            category: mapTypeToCategory(event.type_id),
+            status: mapStatusToString(event.status_id),
+            term:
+              event.calendar_id && calendars && calendars.length > 0
+                ? getCalendarTermById(event.calendar_id)
+                : "",
+            day,
+            month,
+            year,
+          };
+
+          return formattedEvent;
+        } catch (err) {
+          console.error("Error formatting event:", event, err);
+          return null;
+        }
+      })
+      .filter(Boolean); // Remove null entries
   };
 
   // Function to get calendar term by calendar_id
@@ -346,6 +524,7 @@ export default function AdminCalendar() {
 
   // Function to fetch events from API
   async function fetchEvents() {
+    console.log("Fetching events...");
     setLoading(true);
     try {
       const response = await fetch("/api/event", {
@@ -354,15 +533,34 @@ export default function AdminCalendar() {
           "Content-Type": "application/json",
         },
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+
       if (data.success) {
-        const formattedEvents = formatEventData(data.data || []);
+        console.log(`Fetched ${data.data?.length || 0} events`);
+
+        if (!data.data || data.data.length === 0) {
+          console.log("No events data returned from API");
+          setEvents([]);
+          return;
+        }
+
+        const formattedEvents = formatEventData(data.data);
+        console.log(
+          `Formatted to ${formattedEvents?.length || 0} valid events`
+        );
         setEvents(formattedEvents);
       } else {
-        console.error("Error fetching events:", data.message);
+        console.error("API returned error:", data.message);
+        setEvents([]);
       }
     } catch (error) {
       console.error("Error fetching events:", error);
+      setEvents([]);
     } finally {
       setLoading(false);
     }
@@ -760,58 +958,82 @@ export default function AdminCalendar() {
                         <div className="grid grid-cols-7 gap-1">
                           {daysOfWeek.map((day, index) => (
                             <div
-                              key={index}
+                              key={`header-${index}`}
                               className="text-center font-medium py-2 text-sm"
                             >
                               {day}
                             </div>
                           ))}
 
-                          {calendarDays.map((day, index) => (
-                            <div
-                              key={index}
-                              className={`min-h-24 border rounded-md p-1 ${
-                                day.day ? "hover:bg-gray-50" : "bg-gray-50"
-                              }`}
-                            >
-                              {day.day && (
-                                <>
-                                  <div className="font-medium text-sm mb-1">
-                                    {day.day}
-                                  </div>
-                                  <div className="space-y-1">
-                                    {day.events
-                                      .slice(0, 2)
-                                      .map((event: any) => (
-                                        <div
-                                          key={event.id}
-                                          className={`p-1 text-xs rounded truncate flex items-center ${
-                                            event.category === "สำคัญ"
-                                              ? "bg-red-100 text-red-800"
-                                              : event.category === "กำหนดส่ง"
-                                              ? "bg-blue-100 text-blue-800"
-                                              : event.category === "การนิเทศ"
-                                              ? "bg-purple-100 text-purple-800"
-                                              : event.category === "การนำเสนอ"
-                                              ? "bg-green-100 text-green-800"
-                                              : "bg-gray-100 text-gray-800"
-                                          }`}
-                                        >
-                                          {renderEventDot(event.category)}
-                                          {event.title}
-                                        </div>
-                                      ))}
-                                    {day.events.length > 2 && (
-                                      <div className="text-xs text-gray-500 pl-1">
-                                        + {day.events.length - 2}{" "}
-                                        กิจกรรมเพิ่มเติม
-                                      </div>
-                                    )}
-                                  </div>
-                                </>
-                              )}
+                          {loading ? (
+                            <div className="col-span-7 text-center py-12 text-gray-500">
+                              กำลังโหลดปฏิทิน...
                             </div>
-                          ))}
+                          ) : calendarDays && calendarDays.length > 0 ? (
+                            calendarDays.map((day, index) => (
+                              <div
+                                key={`day-${index}`}
+                                className={`min-h-24 border rounded-md p-1 ${
+                                  day.day ? "hover:bg-gray-50" : "bg-gray-50"
+                                }`}
+                              >
+                                {day.day && (
+                                  <>
+                                    <div className="font-medium text-sm mb-1">
+                                      {day.day}
+                                    </div>
+                                    <div className="space-y-1">
+                                      {day.events && day.events.length > 0 ? (
+                                        <>
+                                          {day.events
+                                            .slice(0, 2)
+                                            .map(
+                                              (
+                                                event: any,
+                                                eventIdx: number
+                                              ) => (
+                                                <div
+                                                  key={`event-${eventIdx}`}
+                                                  className={`p-1 text-xs rounded truncate flex items-center ${
+                                                    event.category === "สำคัญ"
+                                                      ? "bg-red-100 text-red-800"
+                                                      : event.category ===
+                                                        "กำหนดส่ง"
+                                                      ? "bg-blue-100 text-blue-800"
+                                                      : event.category ===
+                                                        "การนิเทศ"
+                                                      ? "bg-purple-100 text-purple-800"
+                                                      : event.category ===
+                                                        "การนำเสนอ"
+                                                      ? "bg-green-100 text-green-800"
+                                                      : "bg-gray-100 text-gray-800"
+                                                  }`}
+                                                >
+                                                  {renderEventDot(
+                                                    event.category
+                                                  )}
+                                                  {event.title}
+                                                </div>
+                                              )
+                                            )}
+                                          {day.events.length > 2 && (
+                                            <div className="text-xs text-gray-500 pl-1">
+                                              + {day.events.length - 2}{" "}
+                                              กิจกรรมเพิ่มเติม
+                                            </div>
+                                          )}
+                                        </>
+                                      ) : null}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="col-span-7 text-center py-12 text-gray-500">
+                              ไม่พบข้อมูลกิจกรรมในปฏิทิน
+                            </div>
+                          )}
                         </div>
                       </div>
                     </TabsContent>
