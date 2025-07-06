@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -246,10 +246,10 @@ export default function NewActivity() {
       {isLoading && <Loading />}
 
       <main className="container mx-auto p-2">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <StudentSidebar activePage="activities" />
 
-          <div className="md:col-span-3">
+          <div className="md:col-span-4">
             <Card>
               <CardHeader>
                 <CardTitle className="text-xl">บันทึกกิจกรรมใหม่</CardTitle>

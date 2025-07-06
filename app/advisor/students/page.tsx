@@ -191,9 +191,9 @@ export default function AdvisorStudentsPage() {
   return (
     <div className="container mx-auto p-2">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Sidebar activePage="dashboard" userType="advisor" />
+        <Sidebar activePage="students" userType="advisor" />
 
-        <div className="md:col-span-3">
+        <div className="md:col-span-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-xl">นักศึกษาในที่ปรึกษา</CardTitle>
@@ -226,11 +226,6 @@ export default function AdvisorStudentsPage() {
               </div>
 
               <Tabs defaultValue="list" className="w-full">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="list">รายการ</TabsTrigger>
-                  <TabsTrigger value="grid">ตาราง</TabsTrigger>
-                </TabsList>
-
                 <TabsContent value="list">
                   <div className="space-y-4">
                     {filteredStudents.length > 0 ? (
@@ -335,83 +330,6 @@ export default function AdvisorStudentsPage() {
                       ))
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-gray-500">
-                          ไม่พบนักศึกษาที่ตรงกับเงื่อนไขการค้นหา
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="grid">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredStudents.length > 0 ? (
-                      filteredStudents.map((student) => (
-                        <Card key={student.id} className="overflow-hidden">
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between mb-4">
-                              <Avatar className="h-10 w-10">
-                                <AvatarImage
-                                  src={student.avatar}
-                                  alt={student.name}
-                                />
-                                <AvatarFallback>
-                                  {student.name.substring(0, 2)}
-                                </AvatarFallback>
-                              </Avatar>
-                              {renderStatusBadge(student.status)}
-                            </div>
-
-                            <h3 className="font-semibold">{student.name}</h3>
-                            <p className="text-sm text-gray-500 mb-3">
-                              {student.studentId}
-                            </p>
-
-                            <div className="space-y-2 mb-4">
-                              <div className="flex items-center gap-2">
-                                <Building className="h-4 w-4 text-gray-500" />
-                                <span className="text-sm truncate">
-                                  {student.company}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4 text-gray-500" />
-                                <span className="text-sm truncate">
-                                  {student.location}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4 text-gray-500" />
-                                <span className="text-sm">
-                                  นิเทศครั้งถัดไป: {student.nextVisit}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="flex justify-between items-center mt-4">
-                              <div className="flex items-center gap-1">
-                                <FileText className="h-4 w-4 text-gray-500" />
-                                <span className="text-sm">
-                                  รายงาน: {student.reports.submitted}/
-                                  {student.reports.total}
-                                </span>
-                              </div>
-                              <Link href={`/advisor/students/${student.id}`}>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="p-0"
-                                >
-                                  <span className="mr-1">รายละเอียด</span>
-                                  <ChevronRight className="h-4 w-4" />
-                                </Button>
-                              </Link>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))
-                    ) : (
-                      <div className="text-center py-8 col-span-full">
                         <p className="text-gray-500">
                           ไม่พบนักศึกษาที่ตรงกับเงื่อนไขการค้นหา
                         </p>

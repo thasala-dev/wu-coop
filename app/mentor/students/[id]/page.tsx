@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -35,7 +34,6 @@ import {
   User,
 } from "lucide-react";
 import Link from "next/link";
-import MentorSidebar from "@/components/mentor-sidebar";
 import Sidebar from "@/components/sidebar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -286,28 +284,11 @@ export default function StudentDetailPage() {
     setLoading(true);
     try {
       const payload = { ...values };
-      console.log("Payload before processing:", payload);
-
-      if (payload.password === "") {
-        delete payload.password; // ลบ password ออกจาก payload หากเป็นค่าว่าง
-      }
-
-      // ตรวจสอบและจัดการค่า image ก่อนส่งไปยังเซิร์ฟเวอร์
-      if (payload.image && typeof payload.image === "object") {
-        try {
-          // แปลงออบเจ็กต์เป็น JSON string
-          payload.image = JSON.stringify(payload.image);
-        } catch (error) {
-          console.error("Error processing avatar image:", error);
-          // กรณีแปลงไม่ได้ ให้ใช้ค่าว่าง
-          payload.image = "";
-        }
-      }
 
       console.log("Final payload:", payload);
 
       // 4. Submit main form data
-      const response = await fetch(`/api/student/${id}`, {
+      const response = await fetch(`/api/registIntern/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -322,7 +303,7 @@ export default function StudentDetailPage() {
           description: data.message || "แก้ไขข้อมูลผู้ดูแลระบบสำเร็จ",
           variant: "success",
         });
-        router.push("/admin/students");
+        fetchData();
       } else {
         toast({
           title: "ดำเนินการไม่สำเร็จ",
@@ -365,8 +346,8 @@ export default function StudentDetailPage() {
       if (data.success) {
         setData(data.data);
         console.log("Setting form values with data:", data.data);
-        setValue("fullname", data.data.fullname);
-        setValue("student_id", data.data.student_id);
+        setValue("position", data.data.position);
+        setValue("job_description", data.data.job_description);
       } else {
         toast({
           title: "ไม่พบข้อมูลนักศึกษา",
@@ -427,11 +408,6 @@ export default function StudentDetailPage() {
                       {data?.student_id} • {data?.position}
                     </CardDescription>
                   </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                    ปีรหัสที่ {student.year}
-                  </Badge>
                 </div>
               </div>
             </CardHeader>
@@ -583,7 +559,7 @@ export default function StudentDetailPage() {
                         </div>
 
                         <div className="flex justify-end">
-                          <Button disabled={!newNote.trim()}>บันทึก</Button>
+                          <Button>บันทึก</Button>
                         </div>
                       </form>
                     </CardContent>

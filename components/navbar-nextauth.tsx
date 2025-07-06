@@ -38,11 +38,13 @@ interface NavbarProps {
 export function Navbar({ userType, notificationCount = 0 }: NavbarProps) {
   const router = useRouter();
   const { data: session } = useSession();
+  const user = session?.user;
   const [config, setConfig] = useState<any>(null);
 
   const userName = session?.user?.fullname || session?.user?.name || "ผู้ใช้";
   const userId = session?.user?.id;
   const userRole = session?.user?.role;
+  const userImage = session?.user?.image || null;
 
   // กำหนดสีตามประเภทผู้ใช้
   const headerColors = {
@@ -103,20 +105,11 @@ export function Navbar({ userType, notificationCount = 0 }: NavbarProps) {
                   variant="ghost"
                   className="flex items-center space-x-2 text-white"
                 >
-                  <div className="h-8 w-8 rounded-full overflow-hidden border-2 border-white">
-                    {config ? (
-                      <Avatar className="w-full h-full" {...config} />
-                    ) : (
-                      <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-800 text-xs font-bold">
-                        {userName
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .substring(0, 2)
-                          .toUpperCase()}
-                      </div>
-                    )}
-                  </div>
+                  <CustomAvatar
+                    id={`${user?.rolw}${user?.username}`}
+                    image={user?.image}
+                    size="8"
+                  />
                   <span className="hidden md:inline">{userName}</span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -125,25 +118,28 @@ export function Navbar({ userType, notificationCount = 0 }: NavbarProps) {
                 <DropdownMenuLabel>บัญชีของฉัน</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <UserIcon className="mr-2 h-4 w-4" />
-                    <Link href={`/${userType}/profile`}>โปรไฟล์</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  {userType !== "admin" && (
+                    <DropdownMenuItem>
+                      <UserIcon className="mr-2 h-4 w-4" />
+                      <Link href={`/${userType}/profile`}>โปรไฟล์</Link>
+                    </DropdownMenuItem>
+                  )}
+
+                  {/* <DropdownMenuItem>
                     <Settings className="mr-2 h-4 w-4" />
                     <Link href={`/${userType}/settings`}>ตั้งค่า</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     <Link href={`/${userType}/help`}>ช่วยเหลือ</Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                   <MessageSquare className="mr-2 h-4 w-4" />
                   <Link href="/contact">ติดต่อผู้ดูแล</Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator /> */}
                 <DropdownMenuItem asChild>
                   <LogoutButton
                     className="w-full cursor-pointer justify-start"

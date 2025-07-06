@@ -22,10 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -57,8 +57,10 @@ interface ActivityFile {
   createdAt: string;
 }
 
-export default function EditActivity({ params }: { params: { id: string } }) {
-  const activityId = params.id;
+export default function EditActivity() {
+  const params = useParams();
+  const activityId = params?.id as string;
+
   const router = useRouter();
   const { toast } = useToast();
 
@@ -214,6 +216,7 @@ export default function EditActivity({ params }: { params: { id: string } }) {
         toast({
           title: "ลบไฟล์สำเร็จ",
           description: "ไฟล์ถูกลบเรียบร้อยแล้ว",
+          variant: "success",
         });
       } else {
         console.error("Error deleting file:", data.message);
@@ -317,10 +320,11 @@ export default function EditActivity({ params }: { params: { id: string } }) {
         toast({
           title: "แก้ไขกิจกรรมสำเร็จ",
           description: "ข้อมูลกิจกรรมถูกบันทึกเรียบร้อยแล้ว",
+          variant: "success",
         });
 
         // Redirect to activity details
-        router.push(`/student/activities/${activityId}`);
+        router.push(`/student/activities`);
       } else {
         console.error("Error updating activity:", data.message);
         toast({
@@ -356,10 +360,10 @@ export default function EditActivity({ params }: { params: { id: string } }) {
       {isLoading && <Loading />}
 
       <main className="container mx-auto p-2">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <StudentSidebar activePage="activities" />
 
-          <div className="md:col-span-3">
+          <div className="md:col-span-4">
             <Card>
               {error ? (
                 <CardContent className="flex flex-col items-center justify-center p-12">

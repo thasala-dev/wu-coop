@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -21,28 +22,100 @@ import {
   FileText,
   Users,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function StudentDashboard() {
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoading = status === "loading";
+  const [loading, setLoading] = useState(false);
+  const [calendars, setCalendars] = useState<any>([]);
+  const [calendarSelected, setCalendarSelected] = useState<any>(null);
+  useEffect(() => {
+    if (isLoading || !user) return;
+    fetchData();
+  }, [isLoading, user, calendarSelected]);
+  async function fetchData() {
+    if (!user) return;
+
+    setLoading(true);
+    const url =
+      `/api/student/${user.id}/dashboard` +
+      (calendarSelected ? `?calendarId=${calendarSelected}` : "");
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const res = await response.json();
+    if (res.success) {
+      setCalendars(res.calendar);
+      // setStudents(res.student);
+      if (!calendarSelected) {
+        let findActive = res.calendar.find((cal: any) => cal.active_id === 1);
+        if (findActive) {
+          setCalendarSelected(findActive.id.toString());
+        } else {
+          setCalendarSelected(res.calendar[0]?.id.toString() || null);
+        }
+      }
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="dashboard" userType="student" />
 
-          <div className="md:col-span-4">
+          <div className="md:col-span-4 space-y-2">
             <div className="flex justify-between items-center">
               <h1 className="text-xl font-bold text-blue-800">
                 แดชบอร์ดนักศึกษา
               </h1>
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" className="gap-1">
-                  <Bell className="h-4 w-4" />
-                  <span className="hidden sm:inline">การแจ้งเตือน</span>
-                </Button>
-                <Button variant="outline" size="sm" className="gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span className="hidden sm:inline">ปฏิทิน</span>
-                </Button>
+                <Select
+                  value={calendarSelected ? calendarSelected.toString() : ""}
+                  onValueChange={(value) => {
+                    setCalendarSelected(value || null);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="เลือกผลัดฝึกงาน" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {calendars.map((cal: any) => (
+                      <SelectItem key={cal.id} value={cal.id.toString()}>
+                        {cal.name} ปีการศึกษา {cal.semester}/{cal.year} (
+                        {new Date(cal.start_date).toLocaleDateString("th-TH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
+                        -{" "}
+                        {new Date(cal.end_date).toLocaleDateString("th-TH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                        )
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

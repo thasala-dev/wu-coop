@@ -101,6 +101,12 @@ export function Sidebar({
         icon: LayoutDashboard,
       },
       {
+        href: "/advisor/profile",
+        page: "profile",
+        label: "ข้อมูลส่วนตัว",
+        icon: Users,
+      },
+      {
         href: "/advisor/students",
         page: "students",
         label: "นักศึกษาในความดูแล",
@@ -132,6 +138,7 @@ export function Sidebar({
         label: "หน้าหลัก",
         icon: LayoutDashboard,
       },
+
       {
         href: "/mentor/students",
         page: "students",

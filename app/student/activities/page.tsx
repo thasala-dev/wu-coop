@@ -10,7 +10,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, PlusIcon, SearchIcon, TrashIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  Edit,
+  PlusIcon,
+  SearchIcon,
+  Trash2,
+  TrashIcon,
+} from "lucide-react";
 import Sidebar from "@/components/sidebar";
 import { Input } from "@/components/ui/input";
 import {
@@ -34,7 +41,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import Loading from "@/components/loading";
 
@@ -199,10 +206,10 @@ export default function StudentActivities() {
       {loading && <Loading />}
 
       <main className="container mx-auto p-2">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="activities" userType="student" />
 
-          <div className="md:col-span-3">
+          <div className="md:col-span-4">
             <Card>
               <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -297,17 +304,18 @@ export default function StudentActivities() {
                                 ))}
                               </div>
                             </div>
-                            <div className="flex gap-2 min-w-[120px] self-start">
+                            <div className="flex gap-2 justify-center self-start items-center">
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                   <Button
-                                    variant="ghost"
+                                    variant="destructive"
                                     size="sm"
+                                    className="bg-red-600 hover:bg-red-700 text-white"
                                     onClick={() =>
                                       setActivityToDelete(activity.id)
                                     }
                                   >
-                                    <TrashIcon className="h-4 w-4" />
+                                    <Trash2 className="h-3.5 w-3.5" />
                                   </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
@@ -339,11 +347,8 @@ export default function StudentActivities() {
                                 href={`/student/activities/edit/${activity.id}`}
                               >
                                 <Button variant="outline" size="sm">
-                                  แก้ไข
+                                  <Edit className="h-3.5 w-3.5" />
                                 </Button>
-                              </Link>
-                              <Link href={`/student/activities/${activity.id}`}>
-                                <Button size="sm">ดูรายละเอียด</Button>
                               </Link>
                             </div>
                           </div>

@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import {
   BuildingIcon,
   CheckIcon,
+  Eye,
   InfoIcon,
   Link2,
   Link2Off,
@@ -724,14 +725,25 @@ export default function AdminMatching() {
                             sort: false,
 
                             render: (item) => (
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => handleUnlink(item.id)}
-                              >
-                                <Link2Off className="h-3.5 w-3.5" />
-                                ยกเลิกจับคู่
-                              </Button>
+                              <div className="flex justify-end gap-2">
+                                <Link
+                                  href={`/admin/matching/${item.id}`}
+                                  className="flex items-center gap-1"
+                                >
+                                  <Button size="sm" variant="outline">
+                                    <Eye className="h-3.5 w-3.5" />
+                                    รายละเอียด
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => handleUnlink(item.id)}
+                                >
+                                  <Link2Off className="h-3.5 w-3.5" />
+                                  ยกเลิกจับคู่
+                                </Button>
+                              </div>
                             ),
                           },
                         ]}

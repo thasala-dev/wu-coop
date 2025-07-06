@@ -22,6 +22,11 @@ export async function GET(request: NextRequest, { params }: any) {
       cal.year, 
       cal.start_date, 
       cal.end_date,
+      intern.position,
+      comp.name AS company_name,
+      comp.image AS company_image,
+      comp.location AS company_location,
+      intern.job_description,
       adv.fullname AS advisor_name,
       adv.mobile AS advisor_mobile, 
       adv.email AS advisor_email,
@@ -30,6 +35,7 @@ export async function GET(request: NextRequest, { params }: any) {
         FILTER (WHERE et.id IS NOT NULL), '[]') AS evaluations
       FROM regist_intern intern
       JOIN user_student std ON intern.student_id = std.id
+      JOIN user_company comp ON intern.company_id = comp.id
       JOIN calendar cal ON intern.calendar_id = cal.id
       LEFT JOIN LATERAL unnest(intern.evaluation_type) AS eval_id ON true
       LEFT JOIN evaluations_type et ON et.id = eval_id
@@ -38,7 +44,8 @@ export async function GET(request: NextRequest, { params }: any) {
       GROUP BY 
       std.fullname, std.student_id, std.image, std.major, std.address, std.mobile, std.email, 
       std.emergency_contact_name, std.emergency_contact_phone, std.emergency_contact_relation,
-      cal.name, cal.semester, cal.year, cal.start_date, cal.end_date,
+      cal.name, cal.semester, cal.year, cal.start_date, cal.end_date,  intern.position,
+      intern.job_description,company_name,company_image,company_location,
       adv.fullname, adv.mobile, adv.email,
       intern.evaluation_type
       `,

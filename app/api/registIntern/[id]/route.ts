@@ -29,6 +29,15 @@ export async function PUT(request: NextRequest, { params }: any) {
       parameters.push(body.evaluation_type);
     }
 
+    if (body.position !== undefined) {
+      updateFields.push(`position = $${paramCount++}`);
+      parameters.push(body.position);
+    }
+    if (body.job_description !== undefined) {
+      updateFields.push(`job_description = $${paramCount++}`);
+      parameters.push(body.job_description);
+    }
+
     updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
 
     if (updateFields.length === 0) {
