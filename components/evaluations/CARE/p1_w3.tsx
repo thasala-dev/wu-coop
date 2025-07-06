@@ -103,7 +103,7 @@ export default function Page(props: any) {
         </div>
       </div>
       <div className="sm:col-span-12 ">
-        <div className="rounded-md bg-blue-50 p-4 border border-blue-200">
+        <div className="rounded-md bg-yellow-50 p-4 border border-yellow-200">
           <p className="text-sm mb-2">
             <strong>คำชี้แจง</strong>
           </p>
