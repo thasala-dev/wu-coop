@@ -136,33 +136,6 @@ export default function MentorEvaluations() {
         return;
       }
 
-      // ตรวจสอบว่า result มีข้อมูลครบถ้วนหรือไม่
-      const result = values.result || {};
-      const requiredFields = [
-        "p1_1",
-        "p1_2",
-        "p1_3",
-        "p1_4",
-        "p1_5",
-        "p1_6",
-        "strength",
-        "improvement",
-      ];
-      const missingFields = requiredFields.filter((field) => !result[field]);
-
-      if (missingFields.length > 0) {
-        console.error("Missing required fields in result:", missingFields);
-        toast({
-          title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-          description: `โปรดตรวจสอบว่าได้กรอกข้อมูลในทุกช่องที่จำเป็น (${missingFields.join(
-            ", "
-          )})`,
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-
       const payload = values;
       console.log("Submitting form with values:", payload);
       const response = await fetch(
@@ -265,10 +238,14 @@ export default function MentorEvaluations() {
                       <div className="md:col-span-2">
                         <label className="text-sm">ผลัดการฝึก</label>
                         <div>
-                          {student?.calendar_name}
-                          {student?.start_date && student?.end_date ? (
+                          {student?.calendar_name}{" "}
+                          {student?.semester && student?.year ? (
                             <>
-                              (
+                              ({student.semester} / {student.year})
+                            </>
+                          ) : null}{" "}
+                          {student?.start_date && student?.end_date ? (
+                            <div className="text-xs text-gray-500">
                               {format(
                                 new Date(student.start_date),
                                 "d MMMM yyyy",
@@ -284,8 +261,7 @@ export default function MentorEvaluations() {
                                   locale: th,
                                 }
                               )}
-                              )
-                            </>
+                            </div>
                           ) : null}
                         </div>
                       </div>
