@@ -37,6 +37,7 @@ import Loading from "@/components/loading";
 import StudentSidebar from "@/components/student-sidebar";
 import { time } from "console";
 import { useSession } from "next-auth/react";
+import Sidebar from "@/components/sidebar";
 
 export default function StudentSchedulePage() {
   const { data: session, status } = useSession();
@@ -496,7 +497,7 @@ export default function StudentSchedulePage() {
         allEvents.sort((a, b) => {
           const dateA = new Date(a.event_date || a.scheduled_date);
           const dateB = new Date(b.event_date || b.scheduled_date);
-          return dateA.getTime() - dateB.getTime();
+          return dateB.getTime() - dateA.getTime();
         });
 
         if (allEvents.length > 0) {
@@ -568,7 +569,7 @@ export default function StudentSchedulePage() {
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          <StudentSidebar activePage="schedule" />
+          <Sidebar activePage="schedule" userType="student" />
 
           <div className="md:col-span-4">
             {loading && <Loading />}
