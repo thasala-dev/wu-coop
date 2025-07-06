@@ -103,7 +103,7 @@ export default function NewEvaluation() {
         description: data.message || "เกิดข้อผิดพลาด",
         variant: "success",
       });
-      router.push("/admin/evaluations_type");
+      router.push("/admin/evaluations");
     } else {
       toast({
         title: "ดำเนินการไม่สำเร็จ",

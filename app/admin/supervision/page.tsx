@@ -220,7 +220,7 @@ export default function SupervisionPage() {
             return {
               id: item.id, // regist_intern_id
               name: item.fullname,
-              student_id: item.student_code,
+              student_id: item.student_id,
               company: company ? company.name : "ไม่ระบุบริษัท",
             };
           });
