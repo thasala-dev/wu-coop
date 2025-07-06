@@ -320,7 +320,7 @@ export default function MentorEvaluations() {
                                           className="text-blue-600 border-blue-200 hover:bg-blue-50"
                                           onClick={() =>
                                             router.push(
-                                              `/mentor/evaluations/${id}/view/${evaluation.id}`
+                                              `/mentor/evaluations/${id}/${item.id}/${evaluation.id}`
                                             )
                                           }
                                         >
@@ -343,7 +343,7 @@ export default function MentorEvaluations() {
                                         }
                                         onClick={() =>
                                           router.push(
-                                            `/mentor/evaluations/${id}/evaluate/${evaluation.id}`
+                                            `/mentor/evaluations/${id}/${item.id}/${evaluation.id}`
                                           )
                                         }
                                       >
