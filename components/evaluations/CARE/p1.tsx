@@ -170,7 +170,7 @@ export default function Page(props: any) {
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
-                  style={{ width: "160px" }}
+                  style={{ width: "150px" }}
                 >
                   ผลการประเมิน
                 </th>

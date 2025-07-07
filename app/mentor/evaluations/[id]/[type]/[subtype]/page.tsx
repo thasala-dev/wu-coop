@@ -1,6 +1,5 @@
 "use client";
 import Sidebar from "@/components/sidebar";
-import MedAmbu from "@/components/evaluations/medAmbu";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import React from "react";
@@ -27,16 +26,10 @@ import {
 import { th } from "date-fns/locale";
 import { format, parse } from "date-fns";
 import { cn } from "@/lib/utils";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 
-import CARE_p1_w3 from "@/components/evaluations/CARE/p1_w3";
+// import forms
+import CARE_p1 from "@/components/evaluations/CARE/p1";
 
 export default function MentorEvaluations() {
   const { toast } = useToast();
@@ -68,7 +61,8 @@ export default function MentorEvaluations() {
   };
 
   const FormEvaluation = (props: any) => {
-    return <CARE_p1_w3 {...props} />;
+    console.log("Rendering FormEvaluation with props:", formType);
+    return <CARE_p1 {...props} />;
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
