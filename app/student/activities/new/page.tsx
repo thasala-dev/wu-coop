@@ -27,27 +27,24 @@ import { Toaster } from "@/components/ui/toaster";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
-
-// Define types for categories
-interface Category {
-  id: number;
-  name: string;
-  name_en: string;
-  color: string;
-  created_at: string;
-}
+import { useSession } from "next-auth/react";
 
 export default function NewActivity() {
+  const { data: session, status } = useSession();
+  const user = session?.user;
+
   const router = useRouter();
   const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [calendars, setCalendars] = useState<any[]>([]);
 
   // Form state
   const [formData, setFormData] = useState({
     activityDate: new Date().toISOString().split("T")[0],
+    calendarId: "",
     categoryId: "",
     title: "",
     description: "",
@@ -58,15 +55,28 @@ export default function NewActivity() {
     files: [] as File[],
   });
 
+  // Validation state
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   // Handle input changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { id, value } = e.target;
+    const fieldName = id.replace("activity-", "");
+
     setFormData((prev) => ({
       ...prev,
-      [id.replace("activity-", "")]: value,
+      [fieldName]: value,
     }));
+
+    // Clear error when user starts typing
+    if (errors[fieldName]) {
+      setErrors((prev) => ({
+        ...prev,
+        [fieldName]: "",
+      }));
+    }
   };
 
   // Handle select changes
@@ -75,6 +85,14 @@ export default function NewActivity() {
       ...prev,
       [name]: value,
     }));
+
+    // Clear error when user selects a value
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   };
 
   // Handle file input changes
@@ -89,22 +107,33 @@ export default function NewActivity() {
     }
   };
 
-  // Fetch categories
+  const fetchCalendar = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        "/api/student-activities/calendar?studentId=" + user?.id
+      );
+      const data = await response.json();
+      if (data.success) {
+        setCalendars(data.calendar);
+      }
+    } catch (error) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const fetchCategories = async () => {
     setIsLoading(true);
     try {
       const response = await fetch("/api/student-activities/categories");
       const data = await response.json();
-
       if (data.success) {
         setCategories(data.data);
-        // Set default category if available
-        if (data.data.length > 0) {
-          setFormData((prev) => ({
-            ...prev,
-            categoryId: data.data[0].id.toString(),
-          }));
-        }
       } else {
         console.error("Error fetching categories:", data.message);
         toast({
@@ -155,31 +184,41 @@ export default function NewActivity() {
     setIsSubmitting(true);
 
     // Validate form
-    if (
-      !formData.activityDate ||
-      !formData.categoryId ||
-      !formData.title ||
-      !formData.description
-    ) {
-      toast({
-        title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-        description:
-          "กรุณากรอกข้อมูลที่จำเป็น: วันที่, ประเภทกิจกรรม, หัวข้อ และรายละเอียด",
-        variant: "destructive",
-      });
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.activityDate) {
+      newErrors.activityDate = "กรุณาเลือกวันที่";
+    }
+    if (!formData.calendarId) {
+      newErrors.calendarId = "กรุณาเลือกปีการศึกษา";
+    }
+    if (!formData.categoryId) {
+      newErrors.categoryId = "กรุณาเลือกประเภทกิจกรรม";
+    }
+    if (!formData.title.trim()) {
+      newErrors.title = "กรุณากรอกหัวข้อกิจกรรม";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = "กรุณากรอกรายละเอียดกิจกรรม";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       setIsSubmitting(false);
       return;
     }
 
+    // Clear errors if validation passes
+    setErrors({});
+
     try {
+      if (!user) return;
       // Process tags
       const processedTags = formData.tags
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0);
-
-      // In a real application, you would get the student ID from context or session
-      const studentId = 1; // Temporary student ID for testing
+      const studentId = user.id;
 
       // Submit activity data
       const response = await fetch("/api/student-activities", {
@@ -197,6 +236,7 @@ export default function NewActivity() {
           problems: formData.problems,
           solutions: formData.solutions,
           tags: processedTags,
+          calendarId: parseInt(formData.calendarId),
         }),
       });
 
@@ -211,10 +251,10 @@ export default function NewActivity() {
         toast({
           title: "บันทึกกิจกรรมสำเร็จ",
           description: "ข้อมูลกิจกรรมถูกบันทึกเรียบร้อยแล้ว",
+          variant: "success",
         });
 
-        // Redirect to activity details
-        router.push(`/student/activities/${data.data.id}`);
+        router.push(`/student/activities`);
       } else {
         console.error("Error creating activity:", data.message);
         toast({
@@ -238,6 +278,7 @@ export default function NewActivity() {
   // Fetch categories on component mount
   useEffect(() => {
     fetchCategories();
+    fetchCalendar();
   }, []);
 
   return (
@@ -256,8 +297,39 @@ export default function NewActivity() {
                 <CardDescription>บันทึกกิจกรรมที่ทำในวันนี้</CardDescription>
               </CardHeader>
               <CardContent>
+                {Object.keys(errors).length > 0 && (
+                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <svg
+                          className="h-5 w-5 text-red-400"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-red-800">
+                          กรุณาแก้ไขข้อมูลที่ผิดพลาด
+                        </h3>
+                        <div className="mt-2 text-sm text-red-700">
+                          <ul className="list-disc pl-5 space-y-1">
+                            {Object.entries(errors).map(([field, message]) => (
+                              <li key={field}>{message}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <form className="space-y-6" onSubmit={handleSubmit}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="activity-activityDate">
                         วันที่ทำกิจกรรม
@@ -267,11 +339,71 @@ export default function NewActivity() {
                         <Input
                           id="activity-activityDate"
                           type="date"
-                          className="pl-10"
+                          className={`pl-10 ${
+                            errors.activityDate
+                              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }`}
                           value={formData.activityDate}
                           onChange={handleChange}
                         />
                       </div>
+                      {errors.activityDate && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.activityDate}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="activity-calendarId">รอบการฝึกงาน</Label>
+                      <Select
+                        value={formData.calendarId}
+                        onValueChange={(value) =>
+                          handleSelectChange(value, "calendarId")
+                        }
+                      >
+                        <SelectTrigger
+                          id="activity-calendarId"
+                          className={
+                            errors.calendarId
+                              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }
+                        >
+                          <SelectValue placeholder="เลือกรอบการฝึกงาน" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {calendars.map((cal) => (
+                            <SelectItem key={cal.id} value={cal.id.toString()}>
+                              {cal.name} {cal.semester}/{cal.year} (
+                              {new Date(cal.start_date).toLocaleDateString(
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}{" "}
+                              -{" "}
+                              {new Date(cal.end_date).toLocaleDateString(
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                              )
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.calendarId && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.calendarId}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -282,7 +414,14 @@ export default function NewActivity() {
                           handleSelectChange(value, "categoryId")
                         }
                       >
-                        <SelectTrigger id="activity-categoryId">
+                        <SelectTrigger
+                          id="activity-categoryId"
+                          className={
+                            errors.categoryId
+                              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }
+                        >
                           <SelectValue placeholder="เลือกประเภทกิจกรรม" />
                         </SelectTrigger>
                         <SelectContent>
@@ -296,6 +435,11 @@ export default function NewActivity() {
                           ))}
                         </SelectContent>
                       </Select>
+                      {errors.categoryId && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.categoryId}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -304,9 +448,19 @@ export default function NewActivity() {
                     <Input
                       id="activity-title"
                       placeholder="ระบุหัวข้อกิจกรรมที่ทำ"
+                      className={
+                        errors.title
+                          ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                          : ""
+                      }
                       value={formData.title}
                       onChange={handleChange}
                     />
+                    {errors.title && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.title}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -316,75 +470,88 @@ export default function NewActivity() {
                     <Textarea
                       id="activity-description"
                       placeholder="อธิบายรายละเอียดของกิจกรรมที่ทำ"
-                      className="min-h-[150px]"
+                      className={`min-h-[150px] ${
+                        errors.description
+                          ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                          : ""
+                      }`}
                       value={formData.description}
                       onChange={handleChange}
                     />
+                    {errors.description && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.description}
+                      </p>
+                    )}
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="activity-learning">
-                      สิ่งที่ได้เรียนรู้
-                    </Label>
-                    <Textarea
-                      id="activity-learning"
-                      placeholder="อธิบายสิ่งที่ได้เรียนรู้จากกิจกรรมนี้"
-                      className="min-h-[100px]"
-                      value={formData.learning}
-                      onChange={handleChange}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="activity-learning">
+                        สิ่งที่ได้เรียนรู้
+                      </Label>
+                      <Textarea
+                        id="activity-learning"
+                        placeholder="อธิบายสิ่งที่ได้เรียนรู้จากกิจกรรมนี้"
+                        className="min-h-[100px]"
+                        value={formData.learning}
+                        onChange={handleChange}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="activity-problems">
+                        ปัญหาและอุปสรรค (ถ้ามี)
+                      </Label>
+                      <Textarea
+                        id="activity-problems"
+                        placeholder="อธิบายปัญหาและอุปสรรคที่พบ (ถ้ามี)"
+                        className="min-h-[100px]"
+                        value={formData.problems}
+                        onChange={handleChange}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="activity-solutions">
+                        แนวทางการแก้ไขปัญหา (ถ้ามี)
+                      </Label>
+                      <Textarea
+                        id="activity-solutions"
+                        placeholder="อธิบายแนวทางการแก้ไขปัญหา (ถ้ามี)"
+                        className="min-h-[100px]"
+                        value={formData.solutions}
+                        onChange={handleChange}
+                      />
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="activity-problems">
-                      ปัญหาและอุปสรรค (ถ้ามี)
-                    </Label>
-                    <Textarea
-                      id="activity-problems"
-                      placeholder="อธิบายปัญหาและอุปสรรคที่พบ (ถ้ามี)"
-                      className="min-h-[100px]"
-                      value={formData.problems}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="activity-tags">
+                        แท็ก (คั่นด้วยเครื่องหมายคอมม่า)
+                      </Label>
+                      <Input
+                        id="activity-tags"
+                        placeholder="เช่น React, Next.js, Web Development"
+                        value={formData.tags}
+                        onChange={handleChange}
+                      />
+                    </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="activity-solutions">
-                      แนวทางการแก้ไขปัญหา (ถ้ามี)
-                    </Label>
-                    <Textarea
-                      id="activity-solutions"
-                      placeholder="อธิบายแนวทางการแก้ไขปัญหา (ถ้ามี)"
-                      className="min-h-[100px]"
-                      value={formData.solutions}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="activity-tags">
-                      แท็ก (คั่นด้วยเครื่องหมายคอมม่า)
-                    </Label>
-                    <Input
-                      id="activity-tags"
-                      placeholder="เช่น React, Next.js, Web Development"
-                      value={formData.tags}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="activity-files">แนบไฟล์ (ถ้ามี)</Label>
-                    <Input
-                      id="activity-files"
-                      type="file"
-                      multiple
-                      onChange={handleFileChange}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      สามารถแนบไฟล์ได้สูงสุด 5 ไฟล์ ขนาดไม่เกิน 10MB ต่อไฟล์
-                      (รองรับไฟล์ .pdf, .doc, .docx, .jpg, .png)
-                    </p>
+                    <div className="space-y-2">
+                      <Label htmlFor="activity-files">แนบไฟล์ (ถ้ามี)</Label>
+                      <Input
+                        id="activity-files"
+                        type="file"
+                        multiple
+                        onChange={handleFileChange}
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        สามารถแนบไฟล์ได้สูงสุด 5 ไฟล์ ขนาดไม่เกิน 10MB ต่อไฟล์
+                        (รองรับไฟล์ .pdf, .doc, .docx, .jpg, .png)
+                      </p>
+                    </div>
                   </div>
 
                   {formData.files.length > 0 && (

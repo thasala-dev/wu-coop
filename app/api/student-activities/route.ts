@@ -12,7 +12,20 @@ export async function GET(request: Request) {
     const year = url.searchParams.get("year");
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
+    let calendarId = url.searchParams.get("calendarId");
+    const calendar = await sql(
+      `SELECT cal.* 
+      FROM calendar cal
+      INNER JOIN regist_intern reg ON cal.id = reg.calendar_id and reg.student_id = $1
+      order BY cal.start_date DESC`,
+      [studentId]
+    );
+
+    if (!calendarId) {
+      calendarId =
+        calendar.find((cal: any) => cal.active_id === 1)?.id || calendar[0]?.id;
+    }
+
     // Build the query with filters
     let query = `
       SELECT 
@@ -63,7 +76,9 @@ export async function GET(request: Request) {
 
     if (month && year) {
       query += ` AND EXTRACT(MONTH FROM sa.activity_date) = $${paramCounter} 
-                 AND EXTRACT(YEAR FROM sa.activity_date) = $${paramCounter+1}`;
+                 AND EXTRACT(YEAR FROM sa.activity_date) = $${
+                   paramCounter + 1
+                 }`;
       params.push(parseInt(month), parseInt(year));
       paramCounter += 2;
     }
@@ -72,7 +87,7 @@ export async function GET(request: Request) {
     query += ` ORDER BY sa.activity_date DESC, sa.created_at DESC`;
 
     const data = await sql(query, params);
-    
+
     // Format data for response
     const formattedData = data.map((item: any) => ({
       id: item.id,
@@ -83,21 +98,24 @@ export async function GET(request: Request) {
         id: item.category_id,
         name: item.category_name,
         nameEn: item.category_name_en,
-        color: item.category_color
+        color: item.category_color,
       },
       description: item.description,
       learning: item.learning,
       problems: item.problems,
       solutions: item.solutions,
-      tags: item.tags ? item.tags.split(',').map((tag: string) => tag.trim()) : [],
+      tags: item.tags
+        ? item.tags.split(",").map((tag: string) => tag.trim())
+        : [],
       createdAt: item.created_at,
-      updatedAt: item.updated_at
+      updatedAt: item.updated_at,
     }));
 
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
       data: formattedData,
+      calendar: calendar,
     });
   } catch (error) {
     console.error(error);
@@ -112,25 +130,34 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
+
     // Validate required fields
-    if (!body.studentId || !body.title || !body.activityDate || !body.categoryId || !body.description) {
+    if (
+      !body.studentId ||
+      !body.title ||
+      !body.activityDate ||
+      !body.categoryId ||
+      !body.description
+    ) {
       return NextResponse.json(
         { success: false, message: "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน" },
         { status: 400 }
       );
     }
-    
+
     // Prepare tags if provided
-    const tags = body.tags && Array.isArray(body.tags) 
-      ? body.tags.join(',') 
-      : (typeof body.tags === 'string' ? body.tags : '');
-    
+    const tags =
+      body.tags && Array.isArray(body.tags)
+        ? body.tags.join(",")
+        : typeof body.tags === "string"
+        ? body.tags
+        : "";
+
     // Insert activity
     const data = await sql(
       `INSERT INTO student_activities 
-       (student_id, title, activity_date, category_id, description, learning, problems, solutions, tags) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       (student_id, title, activity_date, category_id, description, learning, problems, solutions, tags, calendar_id) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING id`,
       [
         body.studentId,
@@ -141,10 +168,11 @@ export async function POST(request: Request) {
         body.learning || null,
         body.problems || null,
         body.solutions || null,
-        tags || null
+        tags || null,
+        body.calendarId || null,
       ]
     );
-    
+
     return NextResponse.json({
       success: true,
       message: "บันทึกกิจกรรมสำเร็จ",

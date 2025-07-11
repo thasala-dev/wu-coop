@@ -4,7 +4,6 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
-    console.log("GET student by ID:", id);
 
     const sql = neon(`${process.env.DATABASE_URL}`);
     const data = await sql(
@@ -14,8 +13,6 @@ export async function GET(request: NextRequest) {
        WHERE std.id = $1`,
       [id]
     );
-
-    console.log("Query result:", data);
 
     if (data.length === 0) {
       console.log("No student found for ID:", id);

@@ -44,6 +44,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import Loading from "@/components/loading";
+import { useSession } from "next-auth/react";
 
 // Activity type definition
 interface ActivityCategory {
@@ -69,6 +70,9 @@ interface Activity {
 }
 
 export default function StudentActivities() {
+  const { data: session, status } = useSession();
+  const user = session?.user;
+
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -76,39 +80,36 @@ export default function StudentActivities() {
   const [activityToDelete, setActivityToDelete] = useState<number | null>(null);
   const { toast } = useToast();
 
-  // Generate month options for the filter dropdown
-  const months = [
-    { value: "6-2024", label: "มิถุนายน 2567" },
-    { value: "7-2024", label: "กรกฎาคม 2567" },
-    { value: "8-2024", label: "สิงหาคม 2567" },
-    { value: "9-2024", label: "กันยายน 2567" },
-    { value: "10-2024", label: "ตุลาคม 2567" },
-  ];
+  const [calendars, setCalendars] = useState<any>([]);
+  const [calendarSelected, setCalendarSelected] = useState<any>(null);
 
-  // Fetch activities
+  useEffect(() => {
+    fetchActivities();
+  }, [calendarSelected]);
+
   const fetchActivities = async () => {
     setLoading(true);
     try {
-      // In a real application, you would get the student ID from context or session
-      const studentId = 1; // Temporary student ID for testing
-
-      let url = `/api/student-activities?studentId=${studentId}`;
-
-      // Add search term if provided
-      if (searchTerm) {
-        url += `&search=${encodeURIComponent(searchTerm)}`;
+      if (!user) return;
+      let url = `/api/student-activities?studentId=${user.id}`;
+      if (calendarSelected) {
+        url += `&calendarId=${calendarSelected}`;
       }
-
-      // Add month filter if selected
-      if (selectedMonth !== "all") {
-        const [month, year] = selectedMonth.split("-");
-        url += `&month=${month}&year=${year}`;
-      }
-
       const response = await fetch(url);
       const data = await response.json();
 
       if (data.success) {
+        setCalendars(data.calendar);
+        if (!calendarSelected) {
+          let findActive = data.calendar.find(
+            (cal: any) => cal.active_id === 1
+          );
+          if (findActive) {
+            setCalendarSelected(findActive.id.toString());
+          } else {
+            setCalendarSelected(data.calendar[0]?.id.toString() || null);
+          }
+        }
         setActivities(data.data);
       } else {
         console.error("Error fetching activities:", data.message);
@@ -195,11 +196,6 @@ export default function StudentActivities() {
     }
   };
 
-  // Effect to fetch activities when dependencies change
-  useEffect(() => {
-    fetchActivities();
-  }, [searchTerm, selectedMonth]);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Toaster />
@@ -220,47 +216,51 @@ export default function StudentActivities() {
                     บันทึกกิจกรรมที่ทำในแต่ละวันระหว่างการฝึกงาน
                   </CardDescription>
                 </div>
-                <Link href="/student/activities/new">
-                  <Button>
-                    <PlusIcon className="h-4 w-4 mr-2" />
-                    บันทึกกิจกรรมใหม่
-                  </Button>
-                </Link>
+                <div className="flex items-center space-x-2">
+                  <Select
+                    value={calendarSelected ? calendarSelected.toString() : ""}
+                    onValueChange={(value) => {
+                      setCalendarSelected(value || null);
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="เลือกผลัดฝึกงาน" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {calendars.map((cal: any) => (
+                        <SelectItem key={cal.id} value={cal.id.toString()}>
+                          {cal.name} ปีการศึกษา {cal.semester}/{cal.year} (
+                          {new Date(cal.start_date).toLocaleDateString(
+                            "th-TH",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}{" "}
+                          -{" "}
+                          {new Date(cal.end_date).toLocaleDateString("th-TH", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                          )
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Link href="/student/activities/new">
+                    <Button>
+                      <PlusIcon className="h-4 w-4 mr-2" />
+                      บันทึกกิจกรรมใหม่
+                    </Button>
+                  </Link>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="w-full">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <h3 className="text-lg font-medium">บันทึกประจำวัน</h3>
-                  </div>
-
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <div className="flex gap-2 w-full md:w-auto">
-                      <div className="relative flex-grow">
-                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                        <Input
-                          placeholder="ค้นหากิจกรรม..."
-                          className="pl-10"
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                      </div>
-                      <Select
-                        value={selectedMonth}
-                        onValueChange={setSelectedMonth}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="ทั้งหมด" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">ทั้งหมด</SelectItem>
-                          {months.map((month) => (
-                            <SelectItem key={month.value} value={month.value}>
-                              {month.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
                   </div>
 
                   <div className="space-y-4">
