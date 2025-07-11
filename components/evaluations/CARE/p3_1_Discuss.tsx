@@ -462,7 +462,7 @@ export default function Page(props: any) {
               <tr className="bg-slate-100">
                 <th
                   className="p-2 border text-center text-sm"
-                  style={{ width: "10%" }}
+                  style={{ width: "15%" }}
                 >
                   หัวข้อการประเมิน
                 </th>
@@ -492,7 +492,7 @@ export default function Page(props: any) {
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
-                  style={{ width: "10%" }}
+                  style={{ width: "5%" }}
                 >
                   น้ําหนัก
                 </th>

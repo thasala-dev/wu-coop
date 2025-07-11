@@ -35,6 +35,8 @@ import CARE_p2_1_HCT from "@/components/evaluations/CARE/p2_1_HCT";
 import CARE_p2_2_PT from "@/components/evaluations/CARE/p2_2_PT";
 import CARE_p3_1_Discuss from "@/components/evaluations/CARE/p3_1_Discuss";
 import CARE_p3_3 from "@/components/evaluations/CARE/p3_3";
+import CARE_p4 from "@/components/evaluations/CARE/p4";
+import CARE_p5 from "@/components/evaluations/CARE/p5"; // Assuming CARE_p5 is another form component
 
 export default function MentorEvaluations() {
   const { toast } = useToast();
@@ -188,6 +190,10 @@ export default function MentorEvaluations() {
       return <CARE_p3_1_Discuss {...props} />;
     } else if (type === "1" && subtype === "8") {
       return <CARE_p3_3 {...props} />;
+    } else if (type === "1" && subtype === "9") {
+      return <CARE_p4 {...props} />;
+    } else if (type === "1" && subtype === "10") {
+      return <CARE_p5 {...props} />;
     }
     return <Empty {...props} />;
   };
