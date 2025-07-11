@@ -64,7 +64,7 @@ export default function CompaniesPage() {
       res.calendar.map((cal: any) => {
         metaData.push({
           key: cal.name,
-          width: "w-[200px] text-nowrap",
+          className: "w-[200px] text-nowrap",
           content: cal.name,
           //   content: (
           //     <div>
