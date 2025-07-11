@@ -313,22 +313,6 @@ export default function MentorEvaluations() {
                                     {getStatusBadge(evaluation.is_submit)}
 
                                     <div className="flex gap-2">
-                                      {evaluation.is_submit && (
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          className="text-blue-600 border-blue-200 hover:bg-blue-50"
-                                          onClick={() =>
-                                            router.push(
-                                              `/mentor/evaluations/${id}/${item.id}/${evaluation.id}`
-                                            )
-                                          }
-                                        >
-                                          <Eye className="h-4 w-4 mr-1" />
-                                          ดูผล
-                                        </Button>
-                                      )}
-
                                       <Button
                                         variant={
                                           evaluation.is_submit
@@ -347,10 +331,17 @@ export default function MentorEvaluations() {
                                           )
                                         }
                                       >
-                                        <Edit className="h-4 w-4 mr-1" />
-                                        {evaluation.is_submit
-                                          ? "แก้ไข"
-                                          : "ประเมิน"}
+                                        {evaluation.is_submit ? (
+                                          <div className="flex items-center">
+                                            <Eye className="h-4 w-4 mr-1" />
+                                            ดูผล
+                                          </div>
+                                        ) : (
+                                          <div className="flex items-center">
+                                            <Edit className="h-4 w-4 mr-1" />
+                                            ประเมิน
+                                          </div>
+                                        )}
                                       </Button>
                                     </div>
                                   </div>

@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import React from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, ChevronRight } from "lucide-react";
+import { ArrowLeft, Calendar, ChevronRight, Printer } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -33,6 +33,8 @@ import Empty from "@/components/evaluations/empty";
 import CARE_p1 from "@/components/evaluations/CARE/p1";
 import CARE_p2_1_HCT from "@/components/evaluations/CARE/p2_1_HCT";
 import CARE_p2_2_PT from "@/components/evaluations/CARE/p2_2_PT";
+import CARE_p3_1_Discuss from "@/components/evaluations/CARE/p3_1_Discuss";
+import CARE_p3_3 from "@/components/evaluations/CARE/p3_3";
 
 export default function MentorEvaluations() {
   const { toast } = useToast();
@@ -49,10 +51,119 @@ export default function MentorEvaluations() {
   const [isSubmit, setIsSubmit] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+  // Print function
+  const handlePrint = () => {
+    const printContent = document.getElementById("evaluation-content");
+    if (!printContent) return;
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const printStyles = `
+      <style>
+        @media print {
+          body { 
+            margin: 0; 
+            padding: 20px; 
+            font-family: 'Sarabun', sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+          }
+          .no-print { display: none !important; }
+          .print-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+          }
+          .student-info {
+            border: 1px solid #000;
+            padding: 15px;
+            margin-bottom: 20px;
+          }
+          .form-content {
+            margin-bottom: 20px;
+          }
+          .evaluator-section {
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+          }
+          table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 15px;
+          }
+          th, td { 
+            border: 1px solid #000; 
+            padding: 8px; 
+            text-align: left;
+          }
+          th { 
+            background-color: #f5f5f5; 
+            font-weight: bold;
+          }
+          .signature-section {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+          }
+          .signature-box {
+            text-align: center;
+            width: 200px;
+          }
+          .signature-line {
+            border-bottom: 1px solid #000;
+            height: 50px;
+            margin-bottom: 5px;
+          }
+        }
+      </style>
+    `;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>แบบฟอร์มการประเมิน - ${student?.fullname}</title>
+          <meta charset="utf-8">
+          ${printStyles}
+        </head>
+        <body>
+          <div class="print-header">
+            <h1>${formType?.name || "แบบฟอร์มการประเมิน"}</h1>
+            <h2>สำหรับอาจารย์ประจำแหล่งฝึก (${formType?.short_name || ""})</h2>
+          </div>
+          ${printContent.innerHTML}
+          <div class="signature-section">
+            <div class="signature-box">
+              <div class="signature-line"></div>
+              <p>ลายเซ็นอาจารย์ประจำแหล่งฝึก</p>
+              <p>วันที่ ${
+                selectedDate
+                  ? format(selectedDate, "d MMMM yyyy", { locale: th })
+                  : ".................."
+              }</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    // Wait for content to load then print
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  };
+
   const formSchema = z.object({
     result_id: z.string(),
     evaluator: z.string().min(1, "กรุณากรอกชื่อ-นามสกุล"),
-    evaluation_date: z.string().min(1, "กรุณากรอกชื่อ-นามสกุล"),
+    evaluation_date: z.string().min(1, "กรุณากรอกวันที่ประเมิน"),
     result: z.any().optional(),
   });
 
@@ -70,6 +181,13 @@ export default function MentorEvaluations() {
       return <CARE_p2_1_HCT {...props} />;
     } else if (type === "1" && subtype === "4") {
       return <CARE_p2_2_PT {...props} />;
+    } else if (
+      type === "1" &&
+      (subtype === "5" || subtype === "6" || subtype === "7")
+    ) {
+      return <CARE_p3_1_Discuss {...props} />;
+    } else if (type === "1" && subtype === "8") {
+      return <CARE_p3_3 {...props} />;
     }
     return <Empty {...props} />;
   };
@@ -208,7 +326,7 @@ export default function MentorEvaluations() {
               </div>
             </div>
 
-            <Card className="border shadow-sm">
+            <Card className="border shadow-sm" id="evaluation-content">
               <CardHeader className="bg-slate-50 p-4">
                 <div className="flex justify-between items-center">
                   <div>
@@ -217,32 +335,56 @@ export default function MentorEvaluations() {
                       สำหรับอาจารย์ประจำแหล่งฝึก ({formType?.short_name})
                     </CardDescription>
                   </div>
-                  <div className="border border-gray-800 p-2">
-                    <h3 className="font-semibold text-sm">
-                      {formType?.short_name}
-                    </h3>
+                  <div className="flex items-center gap-2">
+                    {/* <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePrint}
+                      className="no-print flex items-center gap-2"
+                    >
+                      <Printer className="h-4 w-4" />
+                      พิมพ์
+                    </Button> */}
+                    <div className="border border-gray-800 p-2">
+                      <h3 className="font-semibold text-sm">
+                        {formType?.short_name}
+                      </h3>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="p-4">
                 {student && (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 border rounded-md p-4 bg-white">
+                    <div className="student-info grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 border rounded-md p-4 bg-white">
                       <div className="md:col-span-2">
-                        <label className="text-sm">ชื่อนิสิต/นักศึกษา</label>
-                        <div>{student?.fullname}</div>
-                      </div>{" "}
-                      <div className="md:col-span-2">
-                        <label className="text-sm">รหัสนักศึกษา</label>
-                        <div>{student?.student_id}</div>
+                        <label className="text-sm font-medium">
+                          ชื่อนิสิต/นักศึกษา
+                        </label>
+                        <div className="font-semibold">{student?.fullname}</div>
                       </div>
                       <div className="md:col-span-2">
-                        <label className="text-sm">ชื่อแหล่งฝึก</label>
-                        <div>{student?.company_name}</div>
-                      </div>{" "}
+                        <label className="text-sm font-medium">
+                          รหัสนักศึกษา
+                        </label>
+                        <div className="font-semibold">
+                          {student?.student_id}
+                        </div>
+                      </div>
                       <div className="md:col-span-2">
-                        <label className="text-sm">ผลัดการฝึก</label>
-                        <div>
+                        <label className="text-sm font-medium">
+                          ชื่อแหล่งฝึก
+                        </label>
+                        <div className="font-semibold">
+                          {student?.company_name}
+                        </div>
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="text-sm font-medium">
+                          ผลัดการฝึก
+                        </label>
+                        <div className="font-semibold">
                           {student?.calendar_name}{" "}
                           {student?.semester && student?.year ? (
                             <>
@@ -250,7 +392,7 @@ export default function MentorEvaluations() {
                             </>
                           ) : null}{" "}
                           {student?.start_date && student?.end_date ? (
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-500 font-normal">
                               {format(
                                 new Date(student.start_date),
                                 "d MMMM yyyy",
@@ -272,127 +414,136 @@ export default function MentorEvaluations() {
                       </div>
                     </div>
 
-                    <Form {...form}>
-                      <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-6"
-                      >
-                        <FormEvaluation
-                          form={form}
-                          isSubmit={form.formState.isSubmitted}
-                          setFormValidated={setFormValidated}
-                          isClick={isSubmit}
-                        />
+                    <div className="form-content">
+                      <Form {...form}>
+                        <form
+                          onSubmit={form.handleSubmit(onSubmit)}
+                          className="space-y-6"
+                        >
+                          <FormEvaluation
+                            form={form}
+                            isSubmit={form.formState.isSubmitted}
+                            setFormValidated={setFormValidated}
+                            isClick={isSubmit}
+                          />
 
-                        <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
-                          <div className="sm:col-span-6 ">
-                            <label>ชื่ออาจารย์ประจำแหล่งฝึก</label>
-                            <input
-                              id="evaluator"
-                              type="text"
-                              {...form.register("evaluator")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (form.formState.errors.evaluator
-                                  ? "border-red-600  border-2"
-                                  : "")
-                              }
-                              placeholder="ชื่ออาจารย์ประจำแหล่งฝึก"
-                            />
-                            {form.formState.errors.evaluator && (
-                              <p className="text-xs text-red-600">
-                                {getErrorMessage(
-                                  form.formState.errors.evaluator
-                                )}
-                              </p>
-                            )}
-                          </div>
-                          <div className="sm:col-span-6">
-                            <label>วันที่ประเมิน</label>
-                            <div>
+                          <div className="evaluator-section grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
+                            <div className="sm:col-span-6">
+                              <label className="block text-sm font-medium mb-2">
+                                ชื่ออาจารย์ประจำแหล่งฝึก
+                              </label>
                               <input
-                                type="hidden"
-                                {...form.register("evaluation_date")}
-                                value={
-                                  selectedDate
-                                    ? format(selectedDate, "yyyy-MM-dd")
-                                    : ""
+                                id="evaluator"
+                                type="text"
+                                {...form.register("evaluator")}
+                                className={
+                                  "w-full p-2 border rounded-md " +
+                                  (form.formState.errors.evaluator
+                                    ? "border-red-600 border-2"
+                                    : "")
                                 }
+                                placeholder="ชื่ออาจารย์ประจำแหล่งฝึก"
                               />
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full p-2 justify-start text-left font-normal",
-                                      !selectedDate && "text-muted-foreground",
-                                      form.formState.errors.evaluation_date
-                                        ? "border-red-600 border-2"
-                                        : ""
-                                    )}
+                              {form.formState.errors.evaluator && (
+                                <p className="text-xs text-red-600 no-print">
+                                  {getErrorMessage(
+                                    form.formState.errors.evaluator
+                                  )}
+                                </p>
+                              )}
+                            </div>
+                            <div className="sm:col-span-6">
+                              <label className="block text-sm font-medium mb-2">
+                                วันที่ประเมิน
+                              </label>
+                              <div>
+                                <input
+                                  type="hidden"
+                                  {...form.register("evaluation_date")}
+                                  value={
+                                    selectedDate
+                                      ? format(selectedDate, "yyyy-MM-dd")
+                                      : ""
+                                  }
+                                />
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full p-2 justify-start text-left font-normal no-print",
+                                        !selectedDate &&
+                                          "text-muted-foreground",
+                                        form.formState.errors.evaluation_date
+                                          ? "border-red-600 border-2"
+                                          : ""
+                                      )}
+                                    >
+                                      <Calendar className="mr-2 h-4 w-4" />
+                                      {selectedDate ? (
+                                        format(selectedDate, "d MMMM yyyy", {
+                                          locale: th,
+                                        })
+                                      ) : (
+                                        <span>เลือกวันที่ประเมิน</span>
+                                      )}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent
+                                    className="w-auto p-0 shadow-md rounded-md"
+                                    align="start"
                                   >
-                                    <Calendar className="mr-2 h-4 w-4" />
-                                    {selectedDate ? (
-                                      format(selectedDate, "d MMMM yyyy", {
+                                    <CalendarComponent
+                                      selected={selectedDate || undefined}
+                                      onSelect={(date: Date | null) => {
+                                        setSelectedDate(date);
+                                        if (date) {
+                                          form.setValue(
+                                            "evaluation_date",
+                                            format(date, "yyyy-MM-dd")
+                                          );
+                                        }
+                                      }}
+                                      locale={th}
+                                      className="rounded-md"
+                                    />
+                                  </PopoverContent>
+                                </Popover>
+                                {/* Display date for print */}
+                                <div className="hidden print:block font-semibold">
+                                  {selectedDate
+                                    ? format(selectedDate, "d MMMM yyyy", {
                                         locale: th,
                                       })
-                                    ) : (
-                                      <span>เลือกวันที่สิ้นสุด</span>
-                                    )}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-auto p-0 shadow-md rounded-md"
-                                  align="start"
-                                >
-                                  <CalendarComponent
-                                    selected={selectedDate || undefined}
-                                    onSelect={(date: Date | null) => {
-                                      setSelectedDate(date);
-                                      if (date) {
-                                        form.setValue(
-                                          "evaluation_date",
-                                          format(date, "yyyy-MM-dd")
-                                        );
-                                      }
-                                    }}
-                                    locale={th}
-                                    className="rounded-md"
-                                  />
-                                </PopoverContent>
-                              </Popover>
+                                    : "ยังไม่ได้เลือกวันที่"}
+                                </div>
+                              </div>
+                              {form.formState.errors.evaluation_date && (
+                                <p className="text-xs text-red-600 no-print">
+                                  {getErrorMessage(
+                                    form.formState.errors.evaluation_date
+                                  )}
+                                </p>
+                              )}
                             </div>
-                            {form.formState.errors.evaluation_date && (
-                              <p className="text-xs text-red-600">
-                                {getErrorMessage(
-                                  form.formState.errors.evaluation_date
-                                )}
-                              </p>
-                            )}
                           </div>
-                        </div>
-                        <div className="flex flex-col items-center mt-8">
-                          {/* {form.formState.isSubmitted &&
-                        Object.keys(form.formState.errors).length > 0 && (
-                          <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4 border border-red-200 text-sm">
-                            กรุณากรอกข้อมูลให้ครบทุกช่องที่จำเป็น
+                          <div className="flex flex-col items-center mt-8 no-print">
+                            <Button
+                              type="submit"
+                              className="px-8 py-2 text-sm"
+                              disabled={isSubmitting}
+                              onClick={() => {
+                                setIsSubmit(isSubmit + 1);
+                              }}
+                            >
+                              {isSubmitting
+                                ? "กำลังบันทึก..."
+                                : "บันทึกผลการประเมิน"}
+                            </Button>
                           </div>
-                        )} */}
-                          <Button
-                            type="submit"
-                            className="px-8 py-2 text-sm"
-                            disabled={isSubmitting}
-                            onClick={() => {
-                              setIsSubmit(isSubmit + 1);
-                            }}
-                          >
-                            {isSubmitting
-                              ? "กำลังบันทึก..."
-                              : "บันทึกผลการประเมิน"}
-                          </Button>
-                        </div>
-                      </form>
-                    </Form>
+                        </form>
+                      </Form>
+                    </div>
                   </>
                 )}
               </CardContent>

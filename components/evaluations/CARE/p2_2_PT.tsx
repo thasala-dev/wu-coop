@@ -55,9 +55,19 @@ const levelList = [
   },
 ];
 
+const toThaiNumber = (number: number) => {
+  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  return number
+    .toString()
+    .split("")
+    .map((digit) => thaiNumbers[parseInt(digit, 10)])
+    .join("");
+};
+
 const criteriaData = [
   {
     number: "๑",
+    point: 1,
     label: "p1",
     title: "๑. ทักษะการสื่อสาร",
     superd: (
@@ -98,6 +108,7 @@ const criteriaData = [
   },
   {
     number: "๒",
+    point: 2,
     label: "p2",
     title: "๒. ความเป็นวิชาชีพ",
     superd: (
@@ -133,6 +144,7 @@ const criteriaData = [
   },
   {
     number: "๒",
+    point: 2,
     label: "p3",
     title: "๓. การตัดสินใจ",
     superd: (
@@ -612,7 +624,14 @@ export default function Page(props: any) {
                   </tr>
                   <tr>
                     <td className="p-2 border align-top text-sm">
-                      คะแนนที่ได้ x {item.number} = __
+                      คะแนนที่ได้ x {item.number} ={" "}
+                      {data[item.label as keyof typeof data] === ""
+                        ? "__"
+                        : data[item.label as keyof typeof data] === "N/A"
+                        ? "N/A"
+                        : toThaiNumber(
+                            data[item.label as keyof typeof data] * item.point
+                          )}
                     </td>
                     <td className="p-2 border align-top text-sm">
                       <div className="flex flex-col items-center justify-center h-full">
