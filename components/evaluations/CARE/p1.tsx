@@ -1,18 +1,6 @@
-import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { use, useEffect, useState } from "react";
-import { is } from "date-fns/locale";
-
-const getErrorMessage = (error: any) => {
-  if (!error) return "";
-  if (typeof error.message === "string") return error.message;
-  if (typeof error === "string") return error;
-  return String(error.message || "Invalid input");
-};
+import { useEffect, useState } from "react";
 
 const criteriaData = {
   p1_1: {
@@ -62,8 +50,7 @@ export default function Page(props: any) {
   });
 
   useEffect(() => {
-    // if (isSubmit) {
-    setFormValidated(handleCheckError());
+    setFormValidated(handleCheckValid());
     // }
   }, [isSubmit, isClick]);
 
@@ -75,7 +62,7 @@ export default function Page(props: any) {
     parentForm.setValue(`result.${key}`, value);
   };
 
-  const handleCheckError = () => {
+  const handleCheckValid = () => {
     let isValid = false;
     Object.keys(data).forEach((key) => {
       const value = data[key as keyof typeof data];
@@ -152,6 +139,9 @@ export default function Page(props: any) {
             ในการฝึกปฏิบัติงานวิชาชีพในผลัดนั้น ๆ
           </p>
         </div>
+      </div>
+      <div className="sm:col-span-12 py-2">
+        <p className="text-center text-md font-bold">แบบฟอร์มการประเมิน</p>
       </div>
 
       <div className="sm:col-span-12">

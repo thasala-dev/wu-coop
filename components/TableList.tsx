@@ -231,11 +231,11 @@ const TableList = <
                       className="border text-sm border-gray-200 dark:border-gray-700 px-1 py-3 text-center font-medium text-gray-600 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-gray-600"
                     >
                       {m.sort === false ? (
-                        <p className="flex items-center justify-center gap-1">
+                        <div className="flex items-center justify-center gap-1">
                           {m.content}
-                        </p>
+                        </div>
                       ) : (
-                        <p
+                        <div
                           className="flex items-center justify-center gap-1 hover:text-gray-900 cursor-pointer dark:hover:text-white"
                           onClick={() => {
                             if (sort.key === m.key) {
@@ -263,7 +263,7 @@ const TableList = <
                               d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
                             ></path>
                           </svg>
-                        </p>
+                        </div>
                       )}
                     </th>
                   ) : null

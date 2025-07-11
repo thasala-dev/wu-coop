@@ -55,15 +55,18 @@ export async function PUT(request: NextRequest, { params }: any) {
     const { result_id, evaluator, evaluation_date, result } = body;
 
     // Update evaluations_type
-    if (result_id == "0") {
-      await sql(
-        `INSERT INTO evaluations_result (intern_id, type_id, form_id, evaluator, evaluation_date, result) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-        [id, type, subtype, evaluator, evaluation_date, result]
-      );
-    } else {
+
+    if (result_id && result_id !== "0" && result_id !== "undefined") {
+      console.log("do this 2", result_id);
       await sql(
         `UPDATE evaluations_result SET evaluator = $2, evaluation_date = $3, result = $4 WHERE id = $1 RETURNING *`,
         [result_id, evaluator, evaluation_date, result]
+      );
+    } else {
+      console.log("do this 1");
+      await sql(
+        `INSERT INTO evaluations_result (intern_id, type_id, form_id, evaluator, evaluation_date, result) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [id, type, subtype, evaluator, evaluation_date, result]
       );
     }
 

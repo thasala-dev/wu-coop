@@ -29,7 +29,10 @@ import { cn } from "@/lib/utils";
 import { Form } from "@/components/ui/form";
 
 // import forms
+import Empty from "@/components/evaluations/empty";
 import CARE_p1 from "@/components/evaluations/CARE/p1";
+import CARE_p2_1_HCT from "@/components/evaluations/CARE/p2_1_HCT";
+import CARE_p2_2_PT from "@/components/evaluations/CARE/p2_2_PT";
 
 export default function MentorEvaluations() {
   const { toast } = useToast();
@@ -61,8 +64,14 @@ export default function MentorEvaluations() {
   };
 
   const FormEvaluation = (props: any) => {
-    console.log("Rendering FormEvaluation with props:", formType);
-    return <CARE_p1 {...props} />;
+    if (type === "1" && (subtype === "1" || subtype === "2")) {
+      return <CARE_p1 {...props} />;
+    } else if (type === "1" && subtype === "3") {
+      return <CARE_p2_1_HCT {...props} />;
+    } else if (type === "1" && subtype === "4") {
+      return <CARE_p2_2_PT {...props} />;
+    }
+    return <Empty {...props} />;
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -101,18 +110,20 @@ export default function MentorEvaluations() {
       form.setValue("result_id", String(data.form?.id) || "0");
       form.setValue("evaluator", data.form?.evaluator || "");
 
+      let parsedStartDate: Date | null = new Date();
       if (data.form) {
-        const parsedStartDate = parse(
+        parsedStartDate = parse(
           data.form.evaluation_date,
           "yyyy-MM-dd",
           new Date()
         );
-        setSelectedDate(parsedStartDate);
-      } else {
-        setSelectedDate(null);
       }
+      setSelectedDate(parsedStartDate);
 
-      form.setValue("evaluation_date", data.form?.evaluation_date || "");
+      form.setValue(
+        "evaluation_date",
+        data.form?.evaluation_date || format(new Date(), "yyyy-MM-dd")
+      );
       form.setValue("result", data.form?.result || null);
     }
 
