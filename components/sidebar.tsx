@@ -119,12 +119,6 @@ export function Sidebar({
         icon: MapPinIcon,
       },
       {
-        href: "/advisor/evaluations",
-        page: "evaluations",
-        label: "ประเมินผลนักศึกษา",
-        icon: FileText,
-      },
-      {
         href: "/advisor/schedule",
         page: "schedule",
         label: "ตารางนัดหมาย",

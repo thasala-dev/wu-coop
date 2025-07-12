@@ -263,9 +263,15 @@ export default function MentorEvaluations() {
                             (evaluation: any, subindex: number) => (
                               <div
                                 key={subindex}
-                                className="p-6 hover:bg-gray-50 transition-colors"
+                                className="p-1 hover:bg-gray-50 transition-colors"
                               >
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <div
+                                  className={`flex flex-col md:flex-row md:items-center justify-between gap-4 border-2 p-2 rounded ${
+                                    evaluation.is_submit
+                                      ? "border-green-600"
+                                      : "border-yellow-600"
+                                  }`}
+                                >
                                   <div className="flex-1">
                                     <div className="flex items-start gap-3">
                                       <div className="bg-blue-100 rounded-full p-2 mt-1">
@@ -279,7 +285,7 @@ export default function MentorEvaluations() {
                                           <div className="flex items-center gap-1">
                                             <Badge
                                               key={index}
-                                              className="bg-orange-100 text-orange-800 hover:bg-orange-100"
+                                              className="bg-blue-100 text-blue-800 hover:bg-blue-100"
                                             >
                                               {evaluation.short_name}
                                             </Badge>
@@ -319,7 +325,7 @@ export default function MentorEvaluations() {
                                             ? "default"
                                             : "outline"
                                         }
-                                        size="sm"
+                                        // size="sm"
                                         className={
                                           evaluation.is_submit
                                             ? "bg-blue-600 hover:bg-blue-700"

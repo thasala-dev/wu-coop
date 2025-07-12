@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { th } from "date-fns/locale";
 import {
   Table,
   TableBody,
@@ -20,18 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import {
   CalendarIcon,
   MapPinIcon,
-  CarIcon,
   UserIcon,
   BuildingIcon,
   PlusIcon,
@@ -39,18 +32,44 @@ import {
   FileTextIcon,
   CheckCircleIcon,
   ClipboardIcon,
-  FilterIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
+  ClockIcon,
+  TrendingUpIcon,
+  BarChart3Icon,
+  EyeIcon,
+  PhoneIcon,
+  MailIcon,
+  VideoIcon,
+  CarIcon,
+  Save,
+  Loader2,
 } from "lucide-react";
 import Sidebar from "@/components/sidebar";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
+
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import {
-  formatVisitDateTime,
-  getVisitStatusInfo,
-  getVisitTypeText,
-} from "@/lib/advisor-visits";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import Loading from "@/components/loading";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 // Type definitions
 interface Student {
@@ -70,379 +89,602 @@ interface Company {
   email: string;
 }
 
-interface Visit {
-  id: number;
-  advisor_id: number;
-  visit_date: string;
-  visit_time_start: string;
-  visit_time_end: string;
-  calendar_id: number;
-  company_id: number;
-  visit_type: "onsite" | "online";
-  status: "upcoming" | "completed" | "cancelled";
-  transportation?: string;
-  distance?: number;
-  students: Student[];
-  company: Company;
-  reports?: any[];
-}
-
-interface Calendar {
-  id: number;
-  semester: string;
-  year: string;
-  active_id: number;
-}
-
 export default function AdvisorVisits() {
   const { data: session } = useSession();
   const user = session?.user;
   const { toast } = useToast();
 
   // State for visits data
-  const [visits, setVisits] = useState<Visit[]>([]);
-  const [calendars, setCalendars] = useState<Calendar[]>([]);
-  const [selectedCalendarId, setSelectedCalendarId] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [visits, setVisits] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [studentLoading, setStudentLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // Get current date and month/year for calendar
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
+  // State for modal form data
+  const [students, setStudents] = useState<any[]>([]);
+  const [calendars, setCalendars] = useState<any[]>([]);
 
-  // State for calendar navigation
-  const [displayMonth, setDisplayMonth] = useState(currentMonth);
-  const [displayYear, setDisplayYear] = useState(currentYear);
+  // Modal states
+  const [addSupervisionModal, setAddSupervisionModal] = useState(false);
+  const [editingVisitId, setEditingVisitId] = useState<number | null>(null);
+  const [selectedCalendar, setSelectedCalendar] = useState<string>("");
+  const [selectedStudent, setSelectedStudent] = useState<string>("");
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(null);
+  const [startTime, setStartTime] = useState<string>("09:00");
+  const [endTime, setEndTime] = useState<string>("12:00");
+  const [visitType, setVisitType] = useState<string>("");
+  const [comments, setComments] = useState<string>("");
 
-  // Format the month and year in Thai
-  const thaiMonths = [
-    "มกราคม",
-    "กุมภาพันธ์",
-    "มีนาคม",
-    "เมษายน",
-    "พฤษภาคม",
-    "มิถุนายน",
-    "กรกฎาคม",
-    "สิงหาคม",
-    "กันยายน",
-    "ตุลาคม",
-    "พฤศจิกายน",
-    "ธันวาคม",
-  ];
-  const displayMonthYear = `${thaiMonths[displayMonth]} ${displayYear + 543}`;
-
-  // Calendar days
-  const daysOfWeek = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
-
-  // Calculate calendar days
-  const getCalendarDays = () => {
-    const firstDay = new Date(displayYear, displayMonth, 1);
-    const lastDay = new Date(displayYear, displayMonth + 1, 0);
-    const daysInMonth = lastDay.getDate();
-
-    // Get the starting day of the week (0 = Sunday, 1 = Monday, etc.)
-    const startingDay = firstDay.getDay();
-
-    // Create an array of day objects
-    const days = [];
-
-    // Add empty slots for days before the first day of the month
-    for (let i = 0; i < startingDay; i++) {
-      days.push({ day: null, visits: [] });
+  const handleAddNew = () => {
+    resetAddSupervisionForm();
+    setAddSupervisionModal(true);
+  };
+  const handleEditSupervision = async (visitId: number) => {
+    const findVisit = visits.find((visit) => visit.id === visitId);
+    if (!findVisit) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่พบข้อมูลการนิเทศที่ต้องการแก้ไข",
+        variant: "destructive",
+      });
+      return;
     }
 
-    // Add days of the month
-    for (let i = 1; i <= daysInMonth; i++) {
-      const dayVisits = visits.filter((visit) => {
-        const visitDate = new Date(visit.visit_date);
-        return (
-          visitDate.getDate() === i &&
-          visitDate.getMonth() === displayMonth &&
-          visitDate.getFullYear() === displayYear
-        );
+    console.log("Editing visit:", findVisit);
+
+    // เก็บ ID ของการนิเทศที่กำลังแก้ไข
+    setEditingVisitId(visitId);
+
+    // ตั้งค่า calendar ก่อน เพื่อให้ดึงข้อมูลนักศึกษา
+    setSelectedCalendar(findVisit.calendar_id || "");
+
+    setSelectedStudent(findVisit.regist_intern_id || "");
+    // จัดการวันที่
+    try {
+      const visitDate = new Date(findVisit.scheduled_date);
+      setScheduledDate(visitDate);
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      setScheduledDate(null);
+    }
+
+    setStartTime(findVisit.start_time || "09:00");
+    setEndTime(findVisit.end_time || "12:00");
+    setVisitType(findVisit.visit_type || "");
+    setComments(findVisit.comments || "");
+
+    setAddSupervisionModal(true);
+  };
+  const handleAddSupervision = async () => {
+    if (!selectedStudent) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาเลือกนักศึกษา",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!scheduledDate) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาเลือกวันที่นิเทศ",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!startTime) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาระบุเวลาเริ่มต้น",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!endTime) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณาระบุเวลาสิ้นสุด",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate that end time is after start time
+    if (startTime >= endTime) {
+      toast({
+        title: "ข้อมูลไม่ถูกต้อง",
+        description: "เวลาสิ้นสุดต้องมากกว่าเวลาเริ่มต้น",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const formattedDate = format(scheduledDate, "yyyy-MM-dd");
+
+      // ตรวจสอบว่าเป็นการแก้ไขหรือเพิ่มใหม่
+      const isEditing = editingVisitId !== null;
+      const url = isEditing
+        ? `/api/supervision/${editingVisitId}`
+        : "/api/supervision";
+      const method = isEditing ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          regist_intern_id: selectedStudent,
+          advisor_id: user?.id,
+          scheduled_date: formattedDate,
+          start_time: startTime,
+          end_time: endTime,
+          visit_type: visitType || null,
+          comments: comments || null,
+          status: 0,
+        }),
       });
 
-      days.push({ day: i, visits: dayVisits });
-    }
+      const data = await response.json();
 
-    return days;
-  };
+      if (response.ok && data.success) {
+        toast({
+          title: isEditing ? "แก้ไขข้อมูลสำเร็จ" : "บันทึกข้อมูลสำเร็จ",
+          description: isEditing
+            ? "แก้ไขรายการนิเทศเรียบร้อยแล้ว"
+            : "เพิ่มรายการนิเทศเรียบร้อยแล้ว",
+          variant: "success",
+        });
 
-  // Navigate to previous month
-  const goToPreviousMonth = () => {
-    if (displayMonth === 0) {
-      setDisplayMonth(11);
-      setDisplayYear(displayYear - 1);
-    } else {
-      setDisplayMonth(displayMonth - 1);
-    }
-  };
-
-  // Navigate to next month
-  const goToNextMonth = () => {
-    if (displayMonth === 11) {
-      setDisplayMonth(0);
-      setDisplayYear(displayYear + 1);
-    } else {
-      setDisplayMonth(displayMonth + 1);
-    }
-  };
-
-  // Fetch calendars
-  useEffect(() => {
-    const fetchCalendars = async () => {
-      try {
-        const response = await fetch("/api/calendar");
-        const data = await response.json();
-
-        if (data.success) {
-          setCalendars(data.data);
-          // Set the active calendar as the default selected calendar
-          const activeCalendar = data.data.find((cal) => cal.active_id === 1);
-          if (activeCalendar) {
-            setSelectedCalendarId(activeCalendar.id.toString()); // แก้ไขให้เป็น string
-          } else if (data.data.length > 0) {
-            setSelectedCalendarId(data.data[0].id.toString()); // แก้ไขให้เป็น string
-          }
-        } else {
-          toast({
-            title: "เกิดข้อผิดพลาด",
-            description: data.message,
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching calendars:", error);
+        setAddSupervisionModal(false);
+        resetAddSupervisionForm();
+        fetchVisits();
+      } else {
         toast({
           title: "เกิดข้อผิดพลาด",
-          description: "ไม่สามารถโหลดข้อมูลรอบสหกิจได้",
+          description: data.message || "ไม่สามารถบันทึกข้อมูลได้",
           variant: "destructive",
         });
       }
-    };
+    } catch (error) {
+      console.error("Error adding/updating supervision:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถบันทึกข้อมูลได้ โปรดลองอีกครั้ง",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchCalendars();
-  }, [toast]);
+  const resetAddSupervisionForm = () => {
+    setSelectedCalendar("");
+    setSelectedStudent("");
+    setScheduledDate(null);
+    setStartTime("09:00");
+    setEndTime("12:00");
+    setVisitType("");
+    setComments("");
+    setEditingVisitId(null);
+  };
 
-  // Fetch visits when advisor ID or calendar ID changes
-  useEffect(() => {
-    const fetchVisits = async () => {
-      if (!user?.id || !selectedCalendarId) return;
+  const fetchVisits = async () => {
+    if (!user?.id) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/advisor/visits?advisorId=${user.id}`);
+      const data = await response.json();
 
-      setIsLoading(true);
-
-      try {
-        const response = await fetch(
-          `/api/advisor/visits?advisorId=${user.id}&calendarId=${selectedCalendarId}`
-        );
-        const data = await response.json();
-
-        if (data.success) {
-          setVisits(data.data);
-        } else {
-          toast({
-            title: "เกิดข้อผิดพลาด",
-            description: data.message,
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching visits:", error);
+      if (data.success) {
+        setVisits(data.data);
+      } else {
         toast({
           title: "เกิดข้อผิดพลาด",
-          description: "ไม่สามารถโหลดข้อมูลการนิเทศได้",
+          description: data.message,
           variant: "destructive",
         });
-      } finally {
-        setIsLoading(false);
       }
-    };
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  };
 
+  useEffect(() => {
+    if (!selectedCalendar) return;
+    fetchStudents(selectedCalendar);
+  }, [selectedCalendar]);
+
+  const fetchStudents = async (calendarId: string) => {
+    console.log("Fetching students for calendar:", calendarId);
+    setStudentLoading(true);
+    try {
+      const response = await fetch(`/api/calendar/${calendarId}/info`);
+      const data = await response.json();
+      if (data.success) {
+        const matchedStudents = data.intern
+          .filter((item: any) => item.company_id !== null)
+          .map((item: any) => {
+            const company = data.company.find(
+              (c: any) => c.company_id === item.company_id
+            );
+            return {
+              id: item.id,
+              name: item.fullname,
+              student_id: item.student_id,
+              company: company ? company.name : "ไม่ระบุบริษัท",
+            };
+          });
+        console.log("Fetched students:", matchedStudents);
+
+        setStudents(matchedStudents);
+        setStudentLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  };
+
+  const fetchCalendars = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/calendar");
+      const data = await response.json();
+      if (data.success) {
+        console.log("Fetched calendars:", data.data);
+        setCalendars(data.data);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching advisors:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!user?.id) return;
     fetchVisits();
-  }, [user?.id, selectedCalendarId, toast]);
+    fetchCalendars();
+  }, [user]);
 
-  // Filter visits based on search term
-  const filteredVisits = visits.filter((visit) => {
+  const filteredVisits = visits.filter((visit: any) => {
     if (!searchTerm) return true;
-
     const searchLower = searchTerm.toLowerCase();
+    const studentsMatch = visit.student_name
+      .toLowerCase()
+      .includes(searchLower);
+    const studentIdsMatch = visit.student_student_id.includes(searchLower);
+    const companyMatch = visit.company_name.toLowerCase().includes(searchLower);
 
-    // Search in student names
-    const studentsMatch = visit.students.some(
-      (student) =>
-        student.name.toLowerCase().includes(searchLower) ||
-        student.studentId.includes(searchLower)
-    );
-
-    // Search in company name
-    const companyMatch = visit.company.name.toLowerCase().includes(searchLower);
-
-    return studentsMatch || companyMatch;
+    return studentsMatch || studentIdsMatch || companyMatch;
   });
 
   // Calculate statistics for reports tab
   const totalVisits = visits.length;
   const completedVisits = visits.filter(
-    (visit) => visit.status === "completed"
+    (visit: any) => visit.status == "1"
   ).length;
   const upcomingVisits = visits.filter(
-    (visit) => visit.status === "upcoming"
+    (visit: any) => visit.status == "0"
   ).length;
 
-  // Calculate total distance
-  const totalDistance = visits.reduce((total, visit) => {
-    return total + (visit.distance || 0);
-  }, 0);
+  // Get next upcoming visit
+  const nextVisit = visits
+    .filter((visit: any) => visit.status == "0")
+    .sort(
+      (a: any, b: any) =>
+        new Date(a.scheduled_date).getTime() -
+        new Date(b.scheduled_date).getTime()
+    )[0];
 
-  const completedDistance = visits
-    .filter((visit) => visit.status === "completed")
-    .reduce((total, visit) => {
-      return total + (visit.distance || 0);
-    }, 0);
+  const formatVisitTime = (
+    date: string,
+    startTime: string,
+    endTime: string
+  ) => {
+    try {
+      const visitDate = new Date(date);
+      const options: Intl.DateTimeFormatOptions = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      const formattedDate = visitDate.toLocaleDateString("th-TH", options);
+      return `${formattedDate} เวลา ${startTime.slice(0, 5)} - ${endTime.slice(
+        0,
+        5
+      )} น.`;
+    } catch (error) {
+      return `${date} เวลา ${startTime.slice(0, 5)} - ${endTime.slice(
+        0,
+        5
+      )} น.`;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
+      <main className="container mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar userType="advisor" activePage="visits" />
+          {isLoading && <Loading />}
+          <div className="md:col-span-4 space-y-6">
+            {/* Welcome Header */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  การนิเทศนักศึกษา
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  จัดการและติดตามการนิเทศนักศึกษา ณ แหล่งฝึกงาน
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={() => handleAddNew()}
+                >
+                  <PlusIcon className="h-4 w-4 mr-2" />
+                  วางแผนการนิเทศ
+                </Button>
+              </div>
+            </div>
 
-          <div className="md:col-span-4">
-            <Card>
-              <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <CardTitle className="text-xl">การนิเทศนักศึกษา</CardTitle>
-                  <CardDescription>
-                    จัดการการนิเทศนักศึกษา ณ แหล่งฝึกงาน
-                  </CardDescription>
-                </div>
-                <div className="flex gap-2">
-                  <Select
-                    value={selectedCalendarId}
-                    onValueChange={setSelectedCalendarId}
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="เลือกรอบสหกิจ" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {calendars.map((calendar) => (
-                        <SelectItem
-                          key={calendar.id}
-                          value={calendar.id.toString()}
-                        >
-                          สหกิจ {calendar.semester}/{calendar.year}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Link href="/advisor/visits/plan">
-                    <Button>
-                      <PlusIcon className="h-4 w-4 mr-2" />
-                      วางแผนการนิเทศ
-                    </Button>
-                  </Link>
-                </div>
-              </CardHeader>
-              <CardContent>
+            {/* Quick Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-100 text-sm font-medium">
+                        การนิเทศทั้งหมด
+                      </p>
+                      <p className="text-2xl font-bold">{totalVisits}</p>
+                    </div>
+                    <BarChart3Icon className="h-8 w-8 text-blue-200" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-100 text-sm font-medium">
+                        เสร็จสิ้นแล้ว
+                      </p>
+                      <p className="text-2xl font-bold">{completedVisits}</p>
+                    </div>
+                    <CheckCircleIcon className="h-8 w-8 text-green-200" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-orange-100 text-sm font-medium">
+                        กำลังจะถึง
+                      </p>
+                      <p className="text-2xl font-bold">{upcomingVisits}</p>
+                    </div>
+                    <ClockIcon className="h-8 w-8 text-orange-200" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-100 text-sm font-medium">
+                        อัตราการเสร็จสิ้น
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {totalVisits > 0
+                          ? Math.round((completedVisits / totalVisits) * 100)
+                          : 0}
+                        %
+                      </p>
+                    </div>
+                    <TrendingUpIcon className="h-8 w-8 text-purple-200" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Next Visit Card */}
+            {nextVisit && (
+              <Card className="border-l-4 border-l-purple-500 bg-gradient-to-r from-purple-50 to-white shadow-lg">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg text-purple-900 flex items-center gap-2">
+                    <CalendarIcon className="h-5 w-5" />
+                    การนิเทศถัดไป
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-2">
+                        {nextVisit.company_name}
+                      </h3>
+                      <div className="space-y-1 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <UserIcon className="h-4 w-4" />
+                          <span>{nextVisit.student_name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPinIcon className="h-4 w-4" />
+                          <span>{nextVisit.company_location}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <ClockIcon className="h-4 w-4" />
+                          <span>
+                            {formatVisitTime(
+                              nextVisit.scheduled_date,
+                              nextVisit.start_time,
+                              nextVisit.end_time
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 justify-center">
+                        {nextVisit.visit_type === "online"
+                          ? "ออนไลน์"
+                          : "เยี่ยมสถานประกอบการ"}
+                      </Badge>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => handleEditSupervision(nextVisit.id)}
+                      >
+                        <EyeIcon className="h-4 w-4 mr-1" />
+                        ดูรายละเอียด
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Main Content */}
+            <Card className="bg-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <CardContent className="p-6">
                 <Tabs defaultValue="upcoming">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <TabsList>
-                      <TabsTrigger value="upcoming">กำลังจะถึง</TabsTrigger>
-                      <TabsTrigger value="completed">เสร็จสิ้นแล้ว</TabsTrigger>
-                      <TabsTrigger value="calendar">ปฏิทิน</TabsTrigger>
-                      <TabsTrigger value="reports">รายงานการนิเทศ</TabsTrigger>
+                  <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+                    <TabsList className="grid w-full lg:w-auto grid-cols-3 bg-gray-100">
+                      <TabsTrigger
+                        value="upcoming"
+                        className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                      >
+                        กำลังจะถึง ({upcomingVisits})
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="completed"
+                        className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                      >
+                        เสร็จสิ้นแล้ว ({completedVisits})
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="reports"
+                        className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                      >
+                        รายงานการนิเทศ
+                      </TabsTrigger>
                     </TabsList>
 
-                    <div className="flex gap-2 w-full md:w-auto">
-                      <div className="relative flex-grow">
+                    <div className="flex gap-2 w-full lg:w-auto">
+                      <div className="relative flex-grow lg:w-80">
                         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <Input
-                          placeholder="ค้นหานักศึกษา..."
-                          className="pl-10"
+                          placeholder="ค้นหาชื่อนักศึกษา หรือชื่อบริษัท..."
+                          className="pl-10 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
                       </div>
-                      <Button variant="outline" size="icon">
-                        <FilterIcon className="h-4 w-4" />
-                      </Button>
                     </div>
                   </div>
 
                   <TabsContent value="upcoming">
-                    {isLoading ? (
-                      <div className="flex justify-center py-12">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700"></div>
-                      </div>
-                    ) : (
-                      <div className="space-y-6">
-                        {filteredVisits
-                          .filter((visit) => visit.status === "upcoming")
-                          .map((visit) => (
-                            <div
-                              key={visit.id}
-                              className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                            >
-                              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                    <div className="space-y-4">
+                      {filteredVisits
+                        .filter((visit: any) => visit.status == "0")
+                        .map((visit: any) => (
+                          <Card
+                            key={visit.id}
+                            className="border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 group"
+                          >
+                            <CardContent className="p-6">
+                              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                                 <div className="flex gap-4">
-                                  <div className="flex-shrink-0 h-12 w-12 bg-purple-100 rounded-md flex items-center justify-center">
-                                    <CalendarIcon className="h-6 w-6 text-purple-600" />
+                                  <div className="flex-shrink-0 h-14 w-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                                    {visit.visit_type === "online" ? (
+                                      <VideoIcon className="h-7 w-7 text-white" />
+                                    ) : (
+                                      <CarIcon className="h-7 w-7 text-white" />
+                                    )}
                                   </div>
-                                  <div>
-                                    <div className="flex items-center text-sm text-purple-600 font-medium mb-1">
-                                      <CalendarIcon className="h-4 w-4 mr-1" />
-                                      {formatVisitDateTime(
-                                        visit.visit_date,
-                                        visit.visit_time_start.slice(0, 5),
-                                        visit.visit_time_end.slice(0, 5)
-                                      )}
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <h3 className="text-lg font-semibold text-gray-900">
+                                        {visit.company_name}
+                                      </h3>
+                                      <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                                        {visit.visit_type === "online"
+                                          ? "ออนไลน์"
+                                          : "เยี่ยมสถานประกอบการ"}
+                                      </Badge>
                                     </div>
-                                    <h3 className="text-lg font-medium">
-                                      นิเทศนักศึกษา - {visit.company.name}
-                                    </h3>
-                                    <div className="mt-2 space-y-1">
-                                      <div className="flex items-center text-sm text-gray-600">
-                                        <UserIcon className="h-4 w-4 mr-1" />
-                                        <span>
-                                          {visit.students
-                                            .map((s) => s.name)
-                                            .join(", ")}
-                                          {visit.students.length > 1 &&
-                                            `(${visit.students.length} คน)`}
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                                      <div className="flex items-center gap-2">
+                                        <UserIcon className="h-4 w-4 text-purple-500" />
+                                        <span className="font-medium">
+                                          {visit.student_name}
+                                        </span>
+                                        <span className="text-gray-400">
+                                          ({visit.student_student_id})
                                         </span>
                                       </div>
-                                      <div className="flex items-center text-sm text-gray-600">
-                                        <BuildingIcon className="h-4 w-4 mr-1" />
-                                        {visit.company.name}
+                                      <div className="flex items-center gap-2">
+                                        <CalendarIcon className="h-4 w-4 text-purple-500" />
+                                        <span>
+                                          {formatVisitTime(
+                                            visit.scheduled_date,
+                                            visit.start_time,
+                                            visit.end_time
+                                          )}
+                                        </span>
                                       </div>
-                                      <div className="flex items-center text-sm text-gray-600">
-                                        <MapPinIcon className="h-4 w-4 mr-1" />
-                                        {visit.company.location}
+                                      <div className="flex items-center gap-2">
+                                        <MapPinIcon className="h-4 w-4 text-purple-500" />
+                                        <span>{visit.company_location}</span>
                                       </div>
-                                      {visit.distance && (
-                                        <div className="flex items-center text-sm text-gray-600">
-                                          <CarIcon className="h-4 w-4 mr-1" />
-                                          ระยะทาง {visit.distance} กม. (
-                                          {visit.transportation || "ไม่ระบุ"})
-                                        </div>
-                                      )}
+                                      <div className="flex items-center gap-2">
+                                        <PhoneIcon className="h-4 w-4 text-purple-500" />
+                                        <span>
+                                          {visit.company_contact_phone}
+                                        </span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                                <div className="flex flex-col gap-2 md:items-end">
-                                  <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                                <div className="flex flex-col gap-3 lg:items-end">
+                                  <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 hover:from-blue-200 hover:to-blue-300 px-3 py-1">
                                     กำลังจะถึง
                                   </Badge>
                                   <div className="flex gap-2">
-                                    <Link href={`/advisor/visits/${visit.id}`}>
-                                      <Button variant="outline" size="sm">
-                                        รายละเอียด
-                                      </Button>
-                                    </Link>
-                                    <Link
-                                      href={`/advisor/visits/report/${visit.id}`}
+                                    <Button
+                                      variant="outline"
+                                      onClick={() =>
+                                        handleEditSupervision(visit.id)
+                                      }
+                                      size="sm"
+                                      className="border-purple-300 text-purple-600 hover:bg-purple-50"
                                     >
-                                      <Button size="sm">
+                                      <EyeIcon className="h-4 w-4 mr-1" />
+                                      รายละเอียด
+                                    </Button>
+
+                                    <Link
+                                      href={`/advisor/visits/record/${visit.id}`}
+                                    >
+                                      <Button
+                                        size="sm"
+                                        className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+                                      >
                                         <ClipboardIcon className="h-4 w-4 mr-1" />
                                         บันทึกการนิเทศ
                                       </Button>
@@ -450,101 +692,121 @@ export default function AdvisorVisits() {
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            </CardContent>
+                          </Card>
+                        ))}
 
-                        {filteredVisits.filter(
-                          (visit) => visit.status === "upcoming"
-                        ).length === 0 && (
-                          <div className="text-center py-12 text-gray-500">
-                            <CalendarIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                            <p className="text-lg font-medium">
-                              ไม่พบข้อมูลการนิเทศที่กำลังจะถึง
+                      {filteredVisits.filter(
+                        (visit: any) => visit.status == "0"
+                      ).length === 0 && (
+                        <Card className="border-2 border-dashed border-gray-300">
+                          <CardContent className="text-center py-12">
+                            <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                              <CalendarIcon className="h-8 w-8 text-gray-400" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                              ไม่พบการนิเทศที่กำลังจะถึง
+                            </h3>
+                            <p className="text-gray-500 mb-4">
+                              คุณสามารถวางแผนการนิเทศใหม่ได้ที่นี่
                             </p>
-                            <p className="text-sm">
-                              คุณสามารถวางแผนการนิเทศโดยคลิกที่ปุ่ม
-                              "วางแผนการนิเทศ"
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                            <Button
+                              onClick={handleAddNew}
+                              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+                            >
+                              <PlusIcon className="h-4 w-4 mr-2" />
+                              วางแผนการนิเทศ
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
                   </TabsContent>
 
                   <TabsContent value="completed">
-                    {isLoading ? (
-                      <div className="flex justify-center py-12">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700"></div>
-                      </div>
-                    ) : (
-                      <div className="space-y-6">
-                        {filteredVisits
-                          .filter((visit) => visit.status === "completed")
-                          .map((visit) => (
-                            <div
-                              key={visit.id}
-                              className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                            >
-                              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                    <div className="space-y-4">
+                      {filteredVisits
+                        .filter((visit: any) => visit.status == "1")
+                        .map((visit: any) => (
+                          <Card
+                            key={visit.id}
+                            className="border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all duration-300 group"
+                          >
+                            <CardContent className="p-6">
+                              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                                 <div className="flex gap-4">
-                                  <div className="flex-shrink-0 h-12 w-12 bg-green-100 rounded-md flex items-center justify-center">
-                                    <CheckCircleIcon className="h-6 w-6 text-green-600" />
+                                  <div className="flex-shrink-0 h-14 w-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                                    <CheckCircleIcon className="h-7 w-7 text-white" />
                                   </div>
-                                  <div>
-                                    <div className="flex items-center text-sm text-green-600 font-medium mb-1">
-                                      <CalendarIcon className="h-4 w-4 mr-1" />
-                                      {formatVisitDateTime(
-                                        visit.visit_date,
-                                        visit.visit_time_start.slice(0, 5),
-                                        visit.visit_time_end.slice(0, 5)
-                                      )}
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <h3 className="text-lg font-semibold text-gray-900">
+                                        {visit.company_name}
+                                      </h3>
+                                      <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+                                        {visit.visit_type === "online"
+                                          ? "ออนไลน์"
+                                          : "เยี่ยมสถานประกอบการ"}
+                                      </Badge>
                                     </div>
-                                    <h3 className="text-lg font-medium">
-                                      นิเทศนักศึกษา - {visit.company.name}
-                                    </h3>
-                                    <div className="mt-2 space-y-1">
-                                      <div className="flex items-center text-sm text-gray-600">
-                                        <UserIcon className="h-4 w-4 mr-1" />
-                                        <span>
-                                          {visit.students
-                                            .map((s) => s.name)
-                                            .join(", ")}
-                                          {visit.students.length > 1 &&
-                                            `(${visit.students.length} คน)`}
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                                      <div className="flex items-center gap-2">
+                                        <UserIcon className="h-4 w-4 text-green-500" />
+                                        <span className="font-medium">
+                                          {visit.student_name}
+                                        </span>
+                                        <span className="text-gray-400">
+                                          ({visit.student_student_id})
                                         </span>
                                       </div>
-                                      <div className="flex items-center text-sm text-gray-600">
-                                        <BuildingIcon className="h-4 w-4 mr-1" />
-                                        {visit.company.name}
+                                      <div className="flex items-center gap-2">
+                                        <CalendarIcon className="h-4 w-4 text-green-500" />
+                                        <span>
+                                          {formatVisitTime(
+                                            visit.scheduled_date,
+                                            visit.start_time,
+                                            visit.end_time
+                                          )}
+                                        </span>
                                       </div>
-                                      <div className="flex items-center text-sm text-gray-600">
-                                        <MapPinIcon className="h-4 w-4 mr-1" />
-                                        {visit.company.location}
+                                      <div className="flex items-center gap-2">
+                                        <MapPinIcon className="h-4 w-4 text-green-500" />
+                                        <span>{visit.company_location}</span>
                                       </div>
-                                      {visit.distance && (
-                                        <div className="flex items-center text-sm text-gray-600">
-                                          <CarIcon className="h-4 w-4 mr-1" />
-                                          ระยะทาง {visit.distance} กม. (
-                                          {visit.transportation || "ไม่ระบุ"})
-                                        </div>
-                                      )}
+                                      <div className="flex items-center gap-2">
+                                        <PhoneIcon className="h-4 w-4 text-green-500" />
+                                        <span>
+                                          {visit.company_contact_phone}
+                                        </span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                                <div className="flex flex-col gap-2 md:items-end">
-                                  <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                                <div className="flex flex-col gap-3 lg:items-end">
+                                  <Badge className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 hover:from-green-200 hover:to-green-300 px-3 py-1">
                                     เสร็จสิ้นแล้ว
                                   </Badge>
                                   <div className="flex gap-2">
-                                    <Link href={`/advisor/visits/${visit.id}`}>
-                                      <Button variant="outline" size="sm">
-                                        รายละเอียด
-                                      </Button>
-                                    </Link>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() =>
+                                        handleEditSupervision(visit.id)
+                                      }
+                                      className="border-green-300 text-green-600 hover:bg-green-50"
+                                    >
+                                      <EyeIcon className="h-4 w-4 mr-1" />
+                                      รายละเอียด
+                                    </Button>
+
                                     <Link
                                       href={`/advisor/visits/report/${visit.id}`}
                                     >
-                                      <Button size="sm">
+                                      <Button
+                                        size="sm"
+                                        className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
+                                      >
                                         <FileTextIcon className="h-4 w-4 mr-1" />
                                         ดูรายงาน
                                       </Button>
@@ -552,134 +814,62 @@ export default function AdvisorVisits() {
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            </CardContent>
+                          </Card>
+                        ))}
 
-                        {filteredVisits.filter(
-                          (visit) => visit.status === "completed"
-                        ).length === 0 && (
-                          <div className="text-center py-12 text-gray-500">
-                            <CheckCircleIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                            <p className="text-lg font-medium">
-                              ไม่พบข้อมูลการนิเทศที่เสร็จสิ้นแล้ว
+                      {filteredVisits.filter(
+                        (visit: any) => visit.status == "1"
+                      ).length === 0 && (
+                        <Card className="border-2 border-dashed border-gray-300">
+                          <CardContent className="text-center py-12">
+                            <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                              <CheckCircleIcon className="h-8 w-8 text-gray-400" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                              ยังไม่มีการนิเทศที่เสร็จสิ้น
+                            </h3>
+                            <p className="text-gray-500">
+                              เมื่อคุณบันทึกการนิเทศเสร็จสิ้น ข้อมูลจะแสดงที่นี่
                             </p>
-                            <p className="text-sm">
-                              เมื่อคุณบันทึกการนิเทศเสร็จสิ้น
-                              ข้อมูลจะปรากฏที่นี่
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value="calendar">
-                    <div className="space-y-6">
-                      <div className="bg-white border rounded-lg overflow-hidden">
-                        <div className="flex items-center justify-between p-4 border-b">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={goToPreviousMonth}
-                          >
-                            <ChevronLeftIcon className="h-4 w-4" />
-                          </Button>
-                          <h3 className="text-lg font-medium">
-                            {displayMonthYear}
-                          </h3>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={goToNextMonth}
-                          >
-                            <ChevronRightIcon className="h-4 w-4" />
-                          </Button>
-                        </div>
-
-                        <div className="grid grid-cols-7 border-b">
-                          {daysOfWeek.map((day, index) => (
-                            <div
-                              key={index}
-                              className="p-2 text-center text-sm font-medium border-r last:border-r-0"
-                            >
-                              {day}
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="grid grid-cols-7 h-[600px]">
-                          {getCalendarDays().map((dayObj, index) => (
-                            <div
-                              key={index}
-                              className={`border-r border-b last:border-r-0 p-1 ${
-                                dayObj.day ? "bg-white" : "bg-gray-50"
-                              } relative`}
-                            >
-                              {dayObj.day && (
-                                <div className="h-full">
-                                  <div
-                                    className={`text-sm p-1 ${
-                                      dayObj.day === new Date().getDate() &&
-                                      displayMonth === new Date().getMonth() &&
-                                      displayYear === new Date().getFullYear()
-                                        ? "bg-purple-100 text-purple-800 rounded-full w-7 h-7 flex items-center justify-center"
-                                        : ""
-                                    }`}
-                                  >
-                                    {dayObj.day}
-                                  </div>
-
-                                  <div className="mt-1 space-y-1 max-h-[90%] overflow-y-auto">
-                                    {dayObj.visits.map((visit) => (
-                                      <Link
-                                        key={visit.id}
-                                        href={`/advisor/visits/${visit.id}`}
-                                        className={`block p-1 text-xs rounded truncate ${
-                                          visit.status === "completed"
-                                            ? "bg-green-100 text-green-800"
-                                            : "bg-purple-100 text-purple-800"
-                                        }`}
-                                      >
-                                        {visit.visit_time_start.slice(0, 5)} -{" "}
-                                        {visit.company.name}
-                                      </Link>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                          </CardContent>
+                        </Card>
+                      )}
                     </div>
                   </TabsContent>
 
                   <TabsContent value="reports">
                     <div className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <Card>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">
+                      {/* Enhanced Statistics Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg text-purple-900 flex items-center gap-2">
+                              <BarChart3Icon className="h-5 w-5" />
                               จำนวนการนิเทศ
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="text-xl font-bold text-purple-600">
+                            <div className="text-3xl font-bold text-purple-700 mb-2">
                               {totalVisits}
                             </div>
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-purple-600 mb-4">
                               จำนวนการนิเทศทั้งหมด
                             </p>
-                            <div className="mt-4 pt-4 border-t flex flex-col gap-1 text-sm">
-                              <div className="flex justify-between">
-                                <span>นิเทศแล้ว</span>
-                                <span className="font-medium">
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">
+                                  เสร็จสิ้นแล้ว
+                                </span>
+                                <span className="font-semibold text-green-600">
                                   {completedVisits}
                                 </span>
                               </div>
-                              <div className="flex justify-between">
-                                <span>รอนิเทศ</span>
-                                <span className="font-medium">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">
+                                  กำลังจะถึง
+                                </span>
+                                <span className="font-semibold text-orange-600">
                                   {upcomingVisits}
                                 </span>
                               </div>
@@ -687,99 +877,93 @@ export default function AdvisorVisits() {
                           </CardContent>
                         </Card>
 
-                        <Card>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">
-                              ระยะทางรวม
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="text-xl font-bold text-purple-600">
-                              {totalDistance} กม.
-                            </div>
-                            <p className="text-sm text-gray-500 mt-1">
-                              ระยะทางการนิเทศทั้งหมด
-                            </p>
-                            <div className="mt-4 pt-4 border-t flex flex-col gap-1 text-sm">
-                              <div className="flex justify-between">
-                                <span>เดินทางแล้ว</span>
-                                <span className="font-medium">
-                                  {completedDistance} กม.
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>รอเดินทาง</span>
-                                <span className="font-medium">
-                                  {totalDistance - completedDistance} กม.
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">
+                        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg text-green-900 flex items-center gap-2">
+                              <FileTextIcon className="h-5 w-5" />
                               รายงานการประเมิน
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="text-xl font-bold text-purple-600">
+                            <div className="text-3xl font-bold text-green-700 mb-2">
                               {completedVisits}
                             </div>
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-green-600">
                               จำนวนรายงานที่บันทึกแล้ว
                             </p>
-                            <div className="mt-4 pt-4 border-t">
-                              <Link href="/advisor/visits/reports">
-                                <Button variant="outline" className="w-full">
-                                  <FileTextIcon className="h-4 w-4 mr-2" />
-                                  ดูรายงานทั้งหมด
-                                </Button>
-                              </Link>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg text-blue-900 flex items-center gap-2">
+                              <TrendingUpIcon className="h-5 w-5" />
+                              อัตราความสำเร็จ
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-3xl font-bold text-blue-700 mb-2">
+                              {totalVisits > 0
+                                ? Math.round(
+                                    (completedVisits / totalVisits) * 100
+                                  )
+                                : 0}
+                              %
                             </div>
+                            <p className="text-sm text-blue-600">
+                              อัตราการเสร็จสิ้นการนิเทศ
+                            </p>
                           </CardContent>
                         </Card>
                       </div>
 
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">
-                            รายงานการนิเทศ
+                      {/* Enhanced Reports Table */}
+                      <Card className="shadow-lg">
+                        <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-t-lg">
+                          <CardTitle className="text-xl flex items-center gap-2">
+                            <FileTextIcon className="h-6 w-6" />
+                            รายงานการนิเทศทั้งหมด
                           </CardTitle>
-                          <CardDescription>
-                            สรุปผลการนิเทศนักศึกษา
+                          <CardDescription className="text-purple-100">
+                            สรุปผลการนิเทศนักศึกษาทั้งหมด
                           </CardDescription>
                         </CardHeader>
-                        <CardContent>
-                          {isLoading ? (
-                            <div className="flex justify-center py-12">
-                              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700"></div>
-                            </div>
-                          ) : (
+                        <CardContent className="p-0">
+                          <div className="overflow-x-auto">
                             <Table>
                               <TableHeader>
-                                <TableRow>
-                                  <TableHead>วันที่</TableHead>
-                                  <TableHead>นักศึกษา</TableHead>
-                                  <TableHead>แหล่งฝึกงาน</TableHead>
-                                  <TableHead>ผลการประเมิน</TableHead>
-                                  <TableHead>สถานะ</TableHead>
-                                  <TableHead className="text-right">
+                                <TableRow className="bg-gray-50">
+                                  <TableHead className="font-semibold">
+                                    วันที่นิเทศ
+                                  </TableHead>
+                                  <TableHead className="font-semibold">
+                                    นักศึกษา
+                                  </TableHead>
+                                  <TableHead className="font-semibold">
+                                    แหล่งฝึกงาน
+                                  </TableHead>
+                                  <TableHead className="font-semibold">
+                                    ประเภท
+                                  </TableHead>
+                                  <TableHead className="font-semibold">
+                                    สถานะ
+                                  </TableHead>
+                                  <TableHead className="text-center font-semibold">
                                     การดำเนินการ
                                   </TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
                                 {filteredVisits
-                                  .filter(
-                                    (visit) => visit.status === "completed"
-                                  )
-                                  .map((visit) => (
-                                    <TableRow key={visit.id}>
-                                      <TableCell>
+                                  .filter((visit: any) => visit.status == "1")
+                                  .map((visit: any) => (
+                                    <TableRow
+                                      key={visit.id}
+                                      className="hover:bg-gray-50"
+                                    >
+                                      <TableCell className="font-medium">
                                         {new Date(
-                                          visit.visit_date
+                                          visit.scheduled_date
                                         ).toLocaleDateString("th-TH", {
                                           year: "numeric",
                                           month: "short",
@@ -787,39 +971,65 @@ export default function AdvisorVisits() {
                                         })}
                                       </TableCell>
                                       <TableCell>
-                                        {visit.students
-                                          .map((s) => s.name)
-                                          .join(", ")}
+                                        <div>
+                                          <div className="font-medium">
+                                            {visit.student_name}
+                                          </div>
+                                          <div className="text-sm text-gray-500">
+                                            {visit.student_student_id}
+                                          </div>
+                                        </div>
                                       </TableCell>
                                       <TableCell>
-                                        {visit.company.name}
+                                        <div>
+                                          <div className="font-medium">
+                                            {visit.company_name}
+                                          </div>
+                                          <div className="text-sm text-gray-500">
+                                            {visit.company_location}
+                                          </div>
+                                        </div>
                                       </TableCell>
                                       <TableCell>
-                                        {visit.reports &&
-                                        Array.isArray(visit.reports) &&
-                                        visit.reports.length > 0 ? (
-                                          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                                            ดี
-                                          </Badge>
-                                        ) : (
-                                          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
-                                            ไม่มีข้อมูล
-                                          </Badge>
-                                        )}
+                                        <Badge
+                                          className={`${
+                                            visit.visit_type === "online"
+                                              ? "bg-blue-100 text-blue-800"
+                                              : "bg-orange-100 text-orange-800"
+                                          } hover:bg-current`}
+                                        >
+                                          {visit.visit_type === "online"
+                                            ? "ออนไลน์"
+                                            : "เยี่ยมสถานประกอบการ"}
+                                        </Badge>
                                       </TableCell>
                                       <TableCell>
                                         <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
                                           เสร็จสิ้น
                                         </Badge>
                                       </TableCell>
-                                      <TableCell className="text-right">
-                                        <div className="flex justify-end gap-2">
+                                      <TableCell className="text-center">
+                                        <div className="flex justify-center gap-2">
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() =>
+                                              handleEditSupervision(visit.id)
+                                            }
+                                          >
+                                            <EyeIcon className="h-4 w-4 mr-1" />
+                                            ดู
+                                          </Button>
+
                                           <Link
                                             href={`/advisor/visits/report/${visit.id}`}
                                           >
-                                            <Button size="sm">
+                                            <Button
+                                              size="sm"
+                                              className="bg-purple-600 hover:bg-purple-700"
+                                            >
                                               <FileTextIcon className="h-4 w-4 mr-1" />
-                                              ดูรายงาน
+                                              รายงาน
                                             </Button>
                                           </Link>
                                         </div>
@@ -828,22 +1038,23 @@ export default function AdvisorVisits() {
                                   ))}
                               </TableBody>
                             </Table>
-                          )}
+                          </div>
 
-                          {!isLoading &&
-                            filteredVisits.filter(
-                              (visit) => visit.status === "completed"
-                            ).length === 0 && (
-                              <div className="text-center py-12 text-gray-500">
-                                <FileTextIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                                <p className="text-lg font-medium">
-                                  ยังไม่มีรายงานการนิเทศ
-                                </p>
-                                <p className="text-sm">
-                                  รายงานการนิเทศจะแสดงที่นี่เมื่อคุณบันทึกการนิเทศ
-                                </p>
+                          {filteredVisits.filter(
+                            (visit: any) => visit.status == "1"
+                          ).length === 0 && (
+                            <div className="text-center py-12">
+                              <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                <FileTextIcon className="h-8 w-8 text-gray-400" />
                               </div>
-                            )}
+                              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                ยังไม่มีรายงานการนิเทศ
+                              </h3>
+                              <p className="text-gray-500">
+                                รายงานการนิเทศจะแสดงที่นี่เมื่อคุณบันทึกการนิเทศ
+                              </p>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
                     </div>
@@ -851,6 +1062,204 @@ export default function AdvisorVisits() {
                 </Tabs>
               </CardContent>
             </Card>
+
+            {/* Add Supervision Modal */}
+            <Dialog
+              open={addSupervisionModal}
+              onOpenChange={setAddSupervisionModal}
+            >
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingVisitId !== null
+                      ? "แก้ไขการนิเทศ"
+                      : "เพิ่มการนิเทศ"}
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">ผลัดฝึกงาน</label>
+                      <Select
+                        onValueChange={setSelectedCalendar}
+                        value={selectedCalendar}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="เลือกผลัดฝึกงาน" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {calendars.map((cal) => (
+                            <SelectItem key={cal.id} value={cal.id}>
+                              <div>
+                                <div>
+                                  {cal.name} ปีการศึกษา {cal.semester}/
+                                  {cal.year}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {cal.start_date
+                                    ? new Date(
+                                        cal.start_date
+                                      ).toLocaleDateString("th-TH", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      })
+                                    : ""}{" "}
+                                  -{" "}
+                                  {cal.end_date
+                                    ? new Date(cal.end_date).toLocaleDateString(
+                                        "th-TH",
+                                        {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                        }
+                                      )
+                                    : ""}
+                                </div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">นักศึกษา</label>
+                      {studentLoading ? (
+                        <div className="flex items-center justify-center h-10 gap-2">
+                          <Loader2 className="animate-spin h-5 w-5 text-green-600" />
+                          <div className="text-sm">
+                            กำลังดึงข้อมูลนักศึกษา...
+                          </div>
+                        </div>
+                      ) : (
+                        <Select
+                          onValueChange={setSelectedStudent}
+                          value={selectedStudent}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="เลือกนักศึกษา" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {students.map((student) => (
+                              <SelectItem key={student.id} value={student.id}>
+                                <div>
+                                  <div>
+                                    {student.name} ({student.student_id})
+                                  </div>
+                                  <div className="text-sm text-gray-500">
+                                    {student.company}
+                                  </div>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">วันที่นิเทศ</label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !scheduledDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {scheduledDate ? (
+                              format(scheduledDate, "d MMMM yyyy", {
+                                locale: th,
+                              })
+                            ) : (
+                              <span>เลือกวันที่นิเทศ</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-auto p-0 shadow-md rounded-md"
+                          align="start"
+                        >
+                          <CalendarComponent
+                            selected={scheduledDate || undefined}
+                            onSelect={(date: Date | null) => {
+                              setScheduledDate(date);
+                            }}
+                            locale={th}
+                            className="rounded-md"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        เวลาเริ่มต้น
+                      </label>
+                      <Input
+                        type="time"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">เวลาสิ้นสุด</label>
+                      <Input
+                        type="time"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      รูปแบบการนิเทศ
+                    </label>
+                    <Select onValueChange={setVisitType} value={visitType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="เลือกรูปแบบการนิเทศ" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="onsite">
+                          นิเทศ ณ สถานประกอบการ
+                        </SelectItem>
+                        <SelectItem value="online">นิเทศออนไลน์</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">หมายเหตุ</label>
+                    <textarea
+                      value={comments}
+                      onChange={(e) => setComments(e.target.value)}
+                      className="w-full p-2 border rounded-md h-24"
+                      placeholder="บันทึกรายละเอียดเพิ่มเติม (ถ้ามี)"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setAddSupervisionModal(false);
+                      resetAddSupervisionForm();
+                    }}
+                  >
+                    ยกเลิก
+                  </Button>
+                  <Button onClick={handleAddSupervision} disabled={isLoading}>
+                    <Save className="h-4 w-4 mr-2" />
+                    {isLoading ? "กำลังบันทึก..." : "บันทึก"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </main>

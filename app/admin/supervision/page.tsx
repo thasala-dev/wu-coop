@@ -23,6 +23,7 @@ import {
   CalendarIcon,
   Trash2,
   Edit,
+  Eye,
 } from "lucide-react";
 import {
   Card,
@@ -299,19 +300,19 @@ export default function SupervisionPage() {
   // Render status badge
   const renderStatus = (status: number) => {
     switch (status) {
-      case 1:
+      case 0:
         return (
           <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
             รอดำเนินการ
           </Badge>
         );
-      case 2:
+      case 1:
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
             เสร็จสิ้น
           </Badge>
         );
-      case 3:
+      case 2:
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
             ยกเลิก
@@ -483,7 +484,7 @@ export default function SupervisionPage() {
           end_time: endTime,
           visit_type: visitType || null,
           comments: comments || null,
-          status: 1, // Default to pending
+          status: 0,
         }),
       });
 
@@ -760,6 +761,23 @@ export default function SupervisionPage() {
                           sort: false,
                           width: "100px",
                           render: (row: any) => {
+                            if (row.status === 1) {
+                              return (
+                                <div className="flex justify-end gap-2">
+                                  <Link
+                                    href={`/admin/supervision/report/${row.id}`}
+                                  >
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    >
+                                      <Eye className="h-3.5 w-3.5" /> รายงาน
+                                    </Button>
+                                  </Link>
+                                </div>
+                              );
+                            }
                             return (
                               <div className="flex justify-end gap-2">
                                 <Link
@@ -911,7 +929,6 @@ export default function SupervisionPage() {
                 <SelectContent>
                   <SelectItem value="onsite">นิเทศ ณ สถานประกอบการ</SelectItem>
                   <SelectItem value="online">นิเทศออนไลน์</SelectItem>
-                  <SelectItem value="hybrid">นิเทศแบบผสมผสาน</SelectItem>
                 </SelectContent>
               </Select>
             </div>

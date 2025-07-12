@@ -6,124 +6,24 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const advisorId = url.searchParams.get("advisorId");
-    const calendarId = url.searchParams.get("calendarId");
-    const status = url.searchParams.get("status");
-    const month = url.searchParams.get("month");
-    const year = url.searchParams.get("year");
-    
+
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
-    let query = `
-      SELECT 
-        av.*,
-        json_agg(
-          json_build_object(
-            'id', s.id,
-            'name', s.fullname,
-            'studentId', s.student_id,
-            'major', s.major
-          )
-        ) as students,
-        json_build_object(
-          'id', c.id,
-          'name', c.name,
-          'address', c.address,
-          'location', c.province,
-          'contact', c.contact_name,
-          'phone', c.contact_phone,
-          'email', c.contact_email
-        ) as company
-      FROM 
-        advisor_visits av
-      JOIN 
-        advisor_visit_students avs ON av.id = avs.visit_id
-      JOIN 
-        user_student s ON avs.student_id = s.id
-      JOIN 
-        user_company c ON av.company_id = c.id
-    `;
-    
-    const conditions = [];
-    const params = [];
-    let paramIndex = 1;
-    
-    if (advisorId) {
-      conditions.push(`av.advisor_id = $${paramIndex}`);
-      params.push(advisorId);
-      paramIndex++;
-    }
-    
-    if (calendarId) {
-      conditions.push(`av.calendar_id = $${paramIndex}`);
-      params.push(calendarId);
-      paramIndex++;
-    }
-    
-    if (status) {
-      conditions.push(`av.status = $${paramIndex}`);
-      params.push(status);
-      paramIndex++;
-    }
-    
-    if (month && year) {
-      conditions.push(`EXTRACT(MONTH FROM av.visit_date) = $${paramIndex} AND EXTRACT(YEAR FROM av.visit_date) = $${paramIndex + 1}`);
-      params.push(month, year);
-      paramIndex += 2;
-    }
-    
-    if (conditions.length > 0) {
-      query += ` WHERE ${conditions.join(' AND ')}`;
-    }
-    
-    query += `
-      GROUP BY 
-        av.id, c.id
-      ORDER BY 
-        av.visit_date ASC, av.visit_time_start ASC
-    `;
-    
-    const data = await sql(query, params);
-    
-    // For completed visits, fetch the report data
-    if (data.length > 0 && (status === 'completed' || !status)) {
-      const completedVisitIds = data
-        .filter(visit => visit.status === 'completed')
-        .map(visit => visit.id);
-      
-      if (completedVisitIds.length > 0) {
-        const reportsQuery = `
-          SELECT 
-            visit_id, 
-            json_agg(
-              json_build_object(
-                'id', id,
-                'studentId', student_id,
-                'performance', student_performance,
-                'strengths', strengths,
-                'improvements', improvements,
-                'recommendations', recommendations
-              )
-            ) as reports
-          FROM 
-            advisor_visit_reports
-          WHERE 
-            visit_id = ANY($1)
-          GROUP BY 
-            visit_id
-        `;
-        
-        const reports = await sql(reportsQuery, [completedVisitIds]);
-        
-        // Merge reports with visits data
-        data.forEach(visit => {
-          if (visit.status === 'completed') {
-            const visitReport = reports.find(r => r.visit_id === visit.id);
-            visit.reports = visitReport ? visitReport.reports : [];
-          }
-        });
-      }
-    }
-    
+    const data = await sql(
+      `SELECT vis.regist_intern_id,
+        vis.id,intern.calendar_id, vis.scheduled_date, vis.start_time, vis.end_time,
+        vis.visit_type, vis.status, vis.comments,
+        std.id AS student_id, std.fullname AS student_name, std.student_id AS student_student_id, std.major AS student_major,
+        com.id AS company_id, com.name AS company_name, com.location AS company_location,
+        com.contact_name AS company_contact_name, com.contact_phone AS company_contact_phone
+      FROM supervisions vis
+      JOIN regist_intern intern ON vis.regist_intern_id = intern.id
+      JOIN user_student std ON intern.student_id = std.id
+      JOIN user_company com ON intern.company_id = com.id
+      WHERE vis.advisor_id = $1
+      ORDER BY vis.scheduled_date DESC`,
+      [advisorId]
+    );
+
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
@@ -143,10 +43,10 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
+
     // Start a transaction
-    await sql('BEGIN');
-    
+    await sql("BEGIN");
+
     try {
       // 1. Create the visit record
       const visitResult = await sql(
@@ -162,15 +62,15 @@ export async function POST(request: Request) {
           body.visitTimeEnd,
           body.calendarId,
           body.companyId,
-          body.visitType || 'onsite',
-          body.status || 'upcoming',
+          body.visitType || "onsite",
+          body.status || "upcoming",
           body.transportation,
-          body.distance
+          body.distance,
         ]
       );
-      
+
       const visitId = visitResult[0].id;
-      
+
       // 2. Add students to the visit
       for (const studentId of body.studentIds) {
         await sql(
@@ -179,10 +79,10 @@ export async function POST(request: Request) {
           [visitId, studentId]
         );
       }
-      
+
       // 3. Commit the transaction
-      await sql('COMMIT');
-      
+      await sql("COMMIT");
+
       // 4. Return the created visit with student details
       const createdVisit = await sql(
         `SELECT 
@@ -218,19 +118,17 @@ export async function POST(request: Request) {
           av.id, c.id`,
         [visitId]
       );
-      
+
       return NextResponse.json({
         success: true,
         message: "สร้างการนิเทศสำเร็จ",
         data: createdVisit[0],
       });
-      
     } catch (error) {
       // If there's an error, roll back the transaction
-      await sql('ROLLBACK');
+      await sql("ROLLBACK");
       throw error;
     }
-    
   } catch (error) {
     console.error("Error in POST /api/advisor/visits:", error);
     return NextResponse.json(

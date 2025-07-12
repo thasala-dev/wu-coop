@@ -62,47 +62,6 @@ const formSchema = z
     }
   );
 
-// ข้อมูลตัวอย่าง
-const mockStudents = [
-  {
-    id: "101",
-    name: "นายทดสอบ ระบบ",
-    student_id: "64000001",
-    company: "บริษัท เอบีซี จำกัด",
-  },
-  {
-    id: "102",
-    name: "นางสาวสมศรี เรียนดี",
-    student_id: "64000002",
-    company: "บริษัท เทคโนโลยีไทย จำกัด",
-  },
-  {
-    id: "103",
-    name: "นายมานะ ตั้งใจ",
-    student_id: "64000003",
-    company: "บริษัท ซอฟต์แวร์ไทย จำกัด",
-  },
-];
-
-const mockAdvisors = [
-  { id: "301", name: "อาจารย์ใจดี มากมาย" },
-  { id: "302", name: "ผศ.ดร.สมชาย สอนเก่ง" },
-  { id: "303", name: "รศ.ดร.สมศรี วิจัยเด่น" },
-];
-
-// ข้อมูลตัวอย่างการนิเทศ
-const mockSupervision = {
-  id: 1,
-  regist_intern_id: "101",
-  advisor_id: "301",
-  scheduled_date: "2025-06-28",
-  start_time: "09:00",
-  end_time: "12:00",
-  visit_type: "onsite",
-  comments: "บันทึกการนิเทศตัวอย่าง",
-  status: "1", // 1=รอดำเนินการ
-};
-
 export default function EditSupervision() {
   const { data: session } = useSession();
   const params = useParams();
@@ -147,31 +106,35 @@ export default function EditSupervision() {
   // ฟังก์ชั่นสำหรับดึงข้อมูลนักศึกษาที่ลงทะเบียนฝึกงาน
   const fetchRegisteredStudents = async () => {
     try {
-      const response = await fetch('/api/calendar');
+      const response = await fetch("/api/calendar");
       const calendarData = await response.json();
-      
+
       if (calendarData.success && calendarData.data.length > 0) {
         // ใช้ปฏิทินล่าสุด
         const latestCalendarId = calendarData.data[0].id;
-        
+
         // ดึงข้อมูลนักศึกษาตามปฏิทิน
-        const studentsResponse = await fetch(`/api/calendar/${latestCalendarId}/info`);
+        const studentsResponse = await fetch(
+          `/api/calendar/${latestCalendarId}/info`
+        );
         const studentsData = await studentsResponse.json();
-        
+
         if (studentsData.success) {
           // เฉพาะนักศึกษาที่จับคู่กับบริษัทแล้ว
           const matchedStudents = studentsData.intern
             .filter((item: any) => item.company_id !== null)
             .map((item: any) => {
-              const company = studentsData.company.find((c: any) => c.company_id === item.company_id);
+              const company = studentsData.company.find(
+                (c: any) => c.company_id === item.company_id
+              );
               return {
                 id: item.id, // regist_intern_id
                 name: item.fullname,
                 student_id: item.student_code,
-                company: company ? company.name : 'ไม่ระบุบริษัท'
+                company: company ? company.name : "ไม่ระบุบริษัท",
               };
             });
-            
+
           setStudents(matchedStudents);
         }
       }
@@ -188,12 +151,12 @@ export default function EditSupervision() {
   // ฟังก์ชั่นสำหรับดึงข้อมูลอาจารย์
   const fetchAdvisors = async () => {
     try {
-      const response = await fetch('/api/advisor');
+      const response = await fetch("/api/advisor");
       const data = await response.json();
       if (data.success) {
         const advisorsList = data.data.map((advisor: any) => ({
           id: advisor.id,
-          name: advisor.fullname
+          name: advisor.fullname,
         }));
         setAdvisors(advisorsList);
       }
@@ -213,7 +176,7 @@ export default function EditSupervision() {
     try {
       const response = await fetch(`/api/supervision/${id}`);
       const data = await response.json();
-      
+
       if (data.success) {
         const supervisionData = data.data;
         setValue("registInternId", supervisionData.regist_intern_id.toString());
@@ -224,10 +187,14 @@ export default function EditSupervision() {
         setValue("visit_type", supervisionData.visit_type || "");
         setValue("comments", supervisionData.comments || "");
         setValue("status", supervisionData.status.toString());
-        
+
         if (supervisionData.scheduled_date) {
           try {
-            const parsedDate = parse(supervisionData.scheduled_date, "yyyy-MM-dd", new Date());
+            const parsedDate = parse(
+              supervisionData.scheduled_date,
+              "yyyy-MM-dd",
+              new Date()
+            );
             if (!isNaN(parsedDate.getTime())) {
               setScheduledDate(parsedDate);
             } else {
@@ -250,20 +217,20 @@ export default function EditSupervision() {
             }
           }
         }
-        
+
         // ตั้งค่าข้อมูลนักศึกษาและอาจารย์ที่เลือกแล้ว
         setSelectedStudent({
           id: supervisionData.regist_intern_id,
           name: supervisionData.student_name,
           student_code: supervisionData.student_code,
-          company: supervisionData.company_name
+          company: supervisionData.company_name,
         });
-        
+
         setSelectedAdvisor({
           id: supervisionData.advisor_id,
-          name: supervisionData.advisor_name
+          name: supervisionData.advisor_name,
         });
-        
+
         setLoadingData(false);
       } else {
         toast({
@@ -303,9 +270,9 @@ export default function EditSupervision() {
         end_time: values.end_time,
         visit_type: values.visit_type || null,
         comments: values.comments || null,
-        status: parseInt(values.status)
+        status: parseInt(values.status),
       };
-      
+
       const response = await fetch(`/api/supervision/${id}`, {
         method: "PUT",
         headers: {
@@ -313,9 +280,9 @@ export default function EditSupervision() {
         },
         body: JSON.stringify(payload),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         toast({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -397,7 +364,8 @@ export default function EditSupervision() {
                         {selectedStudent ? (
                           <div>
                             <div className="font-medium">
-                              {selectedStudent.name} ({selectedStudent.student_code})
+                              {selectedStudent.name} (
+                              {selectedStudent.student_code})
                             </div>
                             <div className="text-sm text-gray-500">
                               {selectedStudent.company}
@@ -435,7 +403,9 @@ export default function EditSupervision() {
                           type="hidden"
                           {...register("scheduledDate")}
                           value={
-                            scheduledDate && scheduledDate instanceof Date && !isNaN(scheduledDate.getTime())
+                            scheduledDate &&
+                            scheduledDate instanceof Date &&
+                            !isNaN(scheduledDate.getTime())
                               ? format(scheduledDate, "yyyy-MM-dd")
                               : ""
                           }
@@ -453,7 +423,9 @@ export default function EditSupervision() {
                               )}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />
-                              {scheduledDate && scheduledDate instanceof Date && !isNaN(scheduledDate.getTime()) ? (
+                              {scheduledDate &&
+                              scheduledDate instanceof Date &&
+                              !isNaN(scheduledDate.getTime()) ? (
                                 format(scheduledDate, "d MMMM yyyy", {
                                   locale: th,
                                 })
@@ -558,9 +530,13 @@ export default function EditSupervision() {
                           <SelectValue placeholder="เลือกประเภทการเยี่ยมชม" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="onsite">นิเทศ ณ สถานประกอบการ</SelectItem>
+                          <SelectItem value="onsite">
+                            นิเทศ ณ สถานประกอบการ
+                          </SelectItem>
                           <SelectItem value="online">นิเทศออนไลน์</SelectItem>
-                          <SelectItem value="hybrid">นิเทศแบบผสมผสาน</SelectItem>
+                          <SelectItem value="hybrid">
+                            นิเทศแบบผสมผสาน
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <input type="hidden" {...register("visit_type")} />
