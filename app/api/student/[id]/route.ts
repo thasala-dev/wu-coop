@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
 
     const sql = neon(`${process.env.DATABASE_URL}`);
     const data = await sql(
-      `SELECT std.*, advisor.fullname AS advisor_name 
+      `SELECT std.*, advisor.fullname AS advisor_name, advisor.email AS advisor_email, advisor.mobile AS advisor_mobile
        FROM user_student std
        LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
        WHERE std.id = $1`,

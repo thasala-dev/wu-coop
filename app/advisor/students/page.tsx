@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   FileText,
@@ -10,169 +10,67 @@ import {
   Mail,
   Calendar,
   ChevronRight,
+  User,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import AdvisorSidebar from "@/components/advisor-sidebar";
 import Sidebar from "@/components/sidebar";
-
-// Mock data for students
-const students = [
-  {
-    id: "1",
-    name: "นายสมชาย ใจดี",
-    studentId: "6309681234",
-    faculty: "คณะเภสัชศาสตร์",
-    major: "เภสัชศาสตร์",
-    year: 4,
-    status: "active",
-    company: "โรงพยาบาลศิริราช",
-    position: "ผู้ช่วยเภสัชกร",
-    location: "กรุงเทพมหานคร",
-    startDate: "01/06/2023",
-    endDate: "31/08/2023",
-    mentor: "ภญ.สุดา รักษาดี",
-    phone: "081-234-5678",
-    email: "somchai.j@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastVisit: "15/07/2023",
-    nextVisit: "15/08/2023",
-    reports: {
-      submitted: 2,
-      pending: 1,
-      total: 4,
-    },
-  },
-  {
-    id: "2",
-    name: "นางสาวสมหญิง มีสุข",
-    studentId: "6309685678",
-    faculty: "คณะเภสัชศาสตร์",
-    major: "เภสัชศาสตร์",
-    year: 4,
-    status: "warning",
-    company: "แหล่งฝึกงาน ยาไทย จำกัด",
-    position: "ผู้ช่วยวิจัยและพัฒนา",
-    location: "นนทบุรี",
-    startDate: "01/06/2023",
-    endDate: "31/08/2023",
-    mentor: "ภก.วิชัย นวัตกรรม",
-    phone: "089-876-5432",
-    email: "somying.m@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastVisit: "01/07/2023",
-    nextVisit: "01/08/2023",
-    reports: {
-      submitted: 1,
-      pending: 2,
-      total: 4,
-    },
-  },
-  {
-    id: "3",
-    name: "นายวิชัย เรียนดี",
-    studentId: "6309689012",
-    faculty: "คณะเภสัชศาสตร์",
-    major: "เภสัชศาสตร์",
-    year: 4,
-    status: "issue",
-    company: "ร้านยาคุณภาพ",
-    position: "ผู้ช่วยเภสัชกรร้านยา",
-    location: "เชียงใหม่",
-    startDate: "01/06/2023",
-    endDate: "31/08/2023",
-    mentor: "ภญ.รัตนา ใส่ใจ",
-    phone: "062-345-6789",
-    email: "wichai.r@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastVisit: "20/06/2023",
-    nextVisit: "20/07/2023",
-    reports: {
-      submitted: 0,
-      pending: 3,
-      total: 4,
-    },
-  },
-  {
-    id: "4",
-    name: "นางสาวนิภา ตั้งใจ",
-    studentId: "6309683456",
-    faculty: "คณะเภสัชศาสตร์",
-    major: "เภสัชศาสตร์",
-    year: 4,
-    status: "active",
-    company: "โรงพยาบาลมหาราช",
-    position: "ผู้ช่วยเภสัชกร",
-    location: "นครราชสีมา",
-    startDate: "01/06/2023",
-    endDate: "31/08/2023",
-    mentor: "ภก.ประสิทธิ์ เชี่ยวชาญ",
-    phone: "095-678-9012",
-    email: "nipha.t@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastVisit: "10/07/2023",
-    nextVisit: "10/08/2023",
-    reports: {
-      submitted: 2,
-      pending: 0,
-      total: 4,
-    },
-  },
-  {
-    id: "5",
-    name: "นายธนา มั่งมี",
-    studentId: "6309687890",
-    faculty: "คณะเภสัชศาสตร์",
-    major: "เภสัชศาสตร์",
-    year: 4,
-    status: "active",
-    company: "แหล่งฝึกงาน ผลิตยาสากล จำกัด",
-    position: "ผู้ช่วยฝ่ายผลิต",
-    location: "ระยอง",
-    startDate: "01/06/2023",
-    endDate: "31/08/2023",
-    mentor: "ภก.สมศักดิ์ ผลิตเก่ง",
-    phone: "087-890-1234",
-    email: "thana.m@example.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastVisit: "05/07/2023",
-    nextVisit: "05/08/2023",
-    reports: {
-      submitted: 2,
-      pending: 1,
-      total: 4,
-    },
-  },
-];
+import { useSession } from "next-auth/react";
+import Loading from "@/components/loading";
+import CustomAvatar from "@/components/avatar";
 
 export default function AdvisorStudentsPage() {
+  const { data: session } = useSession();
+  const user = session?.user;
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
-  // Filter students based on search term and status filter
-  const filteredStudents = students.filter((student) => {
-    const matchesSearch =
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.studentId.includes(searchTerm) ||
-      student.company.toLowerCase().includes(searchTerm.toLowerCase());
+  useEffect(() => {
+    if (!user) {
+      console.error("User not found in session");
+      return;
+    }
+    setLoading(true);
+    Promise.all([fetchStudentData()]).finally(() => {
+      setLoading(false);
+    });
+  }, [user]);
 
-    const matchesStatus =
-      statusFilter === "all" || student.status === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
+  // Filter data based on search term
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredData(data);
+    } else {
+      const filtered = data.filter(
+        (student) =>
+          student.fullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.student_id?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [data, searchTerm]);
+  const fetchStudentData = async () => {
+    if (!user || !user.id) {
+      console.error("User ID not found");
+      return;
+    }
+    try {
+      const response = await fetch(`/api/student-advisor/${user.id}`);
+      const data = await response.json();
+      if (data && data.success) {
+        setData(data.data);
+        setFilteredData(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+    }
+  };
 
   // Function to render status badge
   const renderStatusBadge = (status: string) => {
@@ -189,157 +87,255 @@ export default function AdvisorStudentsPage() {
   };
 
   return (
-    <div className="container mx-auto p-2">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Sidebar activePage="students" userType="advisor" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
+      <div className="container mx-auto p-4 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <Sidebar activePage="students" userType="advisor" />
+          {loading && <Loading />}
 
-        <div className="md:col-span-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">นักศึกษาในที่ปรึกษา</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <div className="relative flex-1">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-                  <Input
-                    type="search"
-                    placeholder="ค้นหาด้วยชื่อ, รหัสนักศึกษา, หรือแหล่งฝึกงาน"
-                    className="pl-8"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
+          <div className="lg:col-span-4 space-y-6">
+            {/* Header Section */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200/50 p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                    นักศึกษาในที่ปรึกษา
+                  </h1>
+                  <p className="text-gray-600">
+                    จัดการและติดตามข้อมูลนักศึกษาฝึกงาน ({filteredData.length}{" "}
+                    คน)
+                  </p>
                 </div>
-                <div className="w-full md:w-48">
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="กรองตามสถานะ" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">ทั้งหมด</SelectItem>
-                      <SelectItem value="active">ปกติ</SelectItem>
-                      <SelectItem value="warning">ต้องติดตาม</SelectItem>
-                      <SelectItem value="issue">มีปัญหา</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="flex items-center gap-3">
+                  <Badge className="bg-blue-100 text-blue-800 border border-blue-300 px-3 py-2">
+                    <User className="h-4 w-4 mr-2" />
+                    อาจารย์ที่ปรึกษา
+                  </Badge>
                 </div>
               </div>
+            </div>
 
-              <Tabs defaultValue="list" className="w-full">
-                <TabsContent value="list">
-                  <div className="space-y-4">
-                    {filteredStudents.length > 0 ? (
-                      filteredStudents.map((student) => (
-                        <Card key={student.id} className="overflow-hidden">
-                          <div className="flex flex-col md:flex-row">
-                            <div className="p-4 md:p-6 flex-1">
-                              <div className="flex items-start gap-4">
-                                <Avatar className="h-12 w-12">
-                                  <AvatarImage
-                                    src={student.avatar}
-                                    alt={student.name}
-                                  />
-                                  <AvatarFallback>
-                                    {student.name.substring(0, 2)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1">
-                                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
-                                    <div>
-                                      <h3 className="text-lg font-semibold">
-                                        {student.name}
-                                      </h3>
-                                      <p className="text-sm text-gray-500">
-                                        รหัสนักศึกษา: {student.studentId}
-                                      </p>
-                                    </div>
-                                    <div className="mt-2 md:mt-0">
-                                      {renderStatusBadge(student.status)}
-                                    </div>
-                                  </div>
+            {/* Search Section */}
+            <Card className="shadow-sm border-0 bg-white">
+              <CardContent className="p-6">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="ค้นหาชื่อนักศึกษา หรือรหัสนักศึกษา..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 pr-4 py-2 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  {searchTerm && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setSearchTerm("")}
+                      className="whitespace-nowrap"
+                    >
+                      ล้างการค้นหา
+                    </Button>
+                  )}
+                </div>
+                {searchTerm && (
+                  <div className="mt-4 text-sm text-gray-600">
+                    พบ {filteredData.length} ผลลัพธ์จากการค้นหา "{searchTerm}"
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
-                                    <div className="flex items-center gap-2">
-                                      <Building className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">
-                                        {student.company}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <MapPin className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">
-                                        {student.location}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <Phone className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">
-                                        {student.phone}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <Mail className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">
-                                        {student.email}
-                                      </span>
-                                    </div>
-                                  </div>
+            {/* Students Grid */}
+            <div className="space-y-4">
+              {filteredData.length > 0 ? (
+                filteredData.map((student: any) => (
+                  <Card
+                    key={student.id}
+                    className="overflow-hidden shadow-lg border-0 bg-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  >
+                    <div className="flex flex-col lg:flex-row">
+                      <div className="p-6 flex-1">
+                        <div className="flex items-start gap-4">
+                          <div className="relative">
+                            <CustomAvatar
+                              id={`student${student?.student_id}`}
+                              image={student?.image}
+                              size="16"
+                            />
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
+                          </div>
 
-                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
-                                    <div className="flex items-center gap-2">
-                                      <Calendar className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">
-                                        นิเทศล่าสุด: {student.lastVisit}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <Calendar className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">
-                                        นิเทศครั้งถัดไป: {student.nextVisit}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <FileText className="h-4 w-4 text-gray-500" />
-                                      <span className="text-sm">
-                                        รายงาน: {student.reports.submitted}/
-                                        {student.reports.total}
-                                      </span>
-                                    </div>
-                                  </div>
+                          <div className="flex-1">
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-3">
+                              <div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-1">
+                                  {student.fullname}
+                                </h3>
+                                <div className="flex items-center gap-2">
+                                  <Badge
+                                    variant="outline"
+                                    className="text-gray-600 border-gray-300 font-mono text-xs"
+                                  >
+                                    {student.student_id}
+                                  </Badge>
+                                  <Badge className="bg-blue-100 text-blue-800 border border-blue-300 text-xs">
+                                    <User className="h-3 w-3 mr-1" />
+                                    นักศึกษาฝึกงาน
+                                  </Badge>
                                 </div>
                               </div>
                             </div>
 
-                            <div className="flex md:flex-col justify-center items-center p-4 bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200">
-                              <Link href={`/advisor/students/${student.id}`}>
-                                <Button variant="outline" className="w-full">
-                                  ดูข้อมูล
-                                </Button>
-                              </Link>
-                              <Link
-                                href={`/advisor/schedule?action=new&student=${student.id}`}
-                                className="mt-2"
-                              >
-                                <Button variant="outline" className="w-full">
-                                  วางแผนนิเทศ
-                                </Button>
-                              </Link>
-                            </div>
+                            {student.calendar_id && (
+                              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200/50">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="space-y-3">
+                                    <div className="flex items-center gap-2">
+                                      <div className="bg-blue-500 p-1.5 rounded-full">
+                                        <Calendar className="h-3 w-3 text-white" />
+                                      </div>
+                                      <div>
+                                        <span className="text-xs text-blue-700 font-medium">
+                                          รอบฝึกงาน
+                                        </span>
+                                        <p className="text-sm font-semibold text-gray-900">
+                                          {student.calendar_name} ภาคการศึกษา{" "}
+                                          {student.semester}/{student.year}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <div className="bg-emerald-500 p-1.5 rounded-full">
+                                        <Calendar className="h-3 w-3 text-white" />
+                                      </div>
+                                      <div>
+                                        <span className="text-xs text-emerald-700 font-medium">
+                                          ระยะเวลา
+                                        </span>
+                                        <p className="text-sm font-semibold text-gray-900">
+                                          {new Date(
+                                            student.start_date
+                                          ).toLocaleDateString("th-TH", {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                          })}{" "}
+                                          -{" "}
+                                          {new Date(
+                                            student.end_date
+                                          ).toLocaleDateString("th-TH", {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                          })}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <div className="bg-amber-500 p-1.5 rounded-full">
+                                        <Building className="h-3 w-3 text-white" />
+                                      </div>
+                                      <div>
+                                        <span className="text-xs text-amber-700 font-medium">
+                                          บริษัท
+                                        </span>
+                                        <p className="text-sm font-semibold text-gray-900">
+                                          {student.company_name}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-3">
+                                    <div className="flex items-center gap-2">
+                                      <div className="bg-purple-500 p-1.5 rounded-full">
+                                        <MapPin className="h-3 w-3 text-white" />
+                                      </div>
+                                      <div>
+                                        <span className="text-xs text-purple-700 font-medium">
+                                          สถานที่
+                                        </span>
+                                        <p className="text-sm font-semibold text-gray-900">
+                                          {student.company_location}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <div className="bg-teal-500 p-1.5 rounded-full">
+                                        <User className="h-3 w-3 text-white" />
+                                      </div>
+                                      <div>
+                                        <span className="text-xs text-teal-700 font-medium">
+                                          ผู้ประสานงาน
+                                        </span>
+                                        <p className="text-sm font-semibold text-gray-900">
+                                          {student.contact_name}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <div className="bg-rose-500 p-1.5 rounded-full">
+                                        <Phone className="h-3 w-3 text-white" />
+                                      </div>
+                                      <div>
+                                        <span className="text-xs text-rose-700 font-medium">
+                                          เบอร์ติดต่อ
+                                        </span>
+                                        <p className="text-sm font-mono font-semibold text-gray-900">
+                                          {student.contact_phone}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                        </Card>
-                      ))
-                    ) : (
-                      <div className="text-center py-8">
-                        <p className="text-gray-500">
-                          ไม่พบนักศึกษาที่ตรงกับเงื่อนไขการค้นหา
-                        </p>
+                        </div>
                       </div>
+
+                      <div className="flex lg:flex-col justify-center items-center p-6 bg-gradient-to-br from-gray-50 to-blue-50 border-t lg:border-t-0 lg:border-l border-gray-200">
+                        <Link
+                          href={`/advisor/students/${student.id}`}
+                          className="w-full"
+                        >
+                          <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+                            <FileText className="h-4 w-4 mr-2" />
+                            ดูข้อมูลรายละเอียด
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              ) : (
+                <Card className="shadow-sm border-0 bg-white">
+                  <CardContent className="text-center py-12">
+                    <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                      <User className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      {searchTerm ? "ไม่พบผลลัพธ์" : "ไม่มีนักศึกษา"}
+                    </h3>
+                    <p className="text-gray-500 mb-6">
+                      {searchTerm
+                        ? `ไม่พบนักศึกษาที่ตรงกับ "${searchTerm}"`
+                        : "ยังไม่มีนักศึกษาในที่ปรึกษาของคุณ"}
+                    </p>
+                    {searchTerm && (
+                      <Button
+                        variant="outline"
+                        onClick={() => setSearchTerm("")}
+                        className="mt-2"
+                      >
+                        ล้างการค้นหา
+                      </Button>
                     )}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
