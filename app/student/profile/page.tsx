@@ -21,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, User, Camera } from "lucide-react";
 import { callUploadApi } from "@/lib/file-api";
@@ -39,7 +38,6 @@ export default function StudentProfile() {
   const user = session?.user;
   const isLoading = status === "loading";
   const { toast } = useToast();
-  const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [profileData, setProfileData] = useState<any>(null);
@@ -55,6 +53,21 @@ export default function StudentProfile() {
     address: "",
     gpa: "",
     image: "",
+    // Additional fields
+    nickname: "",
+    date_of_birth: "",
+    id_card: "",
+    nationality: "",
+    religion: "",
+    emergency_contact_name: "",
+    emergency_contact_phone: "",
+    emergency_contact_relation: "",
+    parent_name: "",
+    parent_occupation: "",
+    parent_phone: "",
+    scholarship: "",
+    medical_condition: "",
+    skills: "",
   });
   // Fetch student profile data
   useEffect(() => {
@@ -82,6 +95,22 @@ export default function StudentProfile() {
           address: data.data.address || "",
           gpa: data.data.gpa || "",
           image: data.data.image || "",
+          // Additional fields
+          nickname: data.data.nickname || "",
+          date_of_birth: data.data.date_of_birth || "",
+          id_card: data.data.id_card || "",
+          nationality: data.data.nationality || "ไทย",
+          religion: data.data.religion || "",
+          emergency_contact_name: data.data.emergency_contact_name || "",
+          emergency_contact_phone: data.data.emergency_contact_phone || "",
+          emergency_contact_relation:
+            data.data.emergency_contact_relation || "",
+          parent_name: data.data.parent_name || "",
+          parent_occupation: data.data.parent_occupation || "",
+          parent_phone: data.data.parent_phone || "",
+          scholarship: data.data.scholarship || "",
+          medical_condition: data.data.medical_condition || "",
+          skills: data.data.skills || "",
         });
       } else {
         toast({
@@ -148,7 +177,35 @@ export default function StudentProfile() {
           variant: "success",
         });
         setProfileData(data.data);
-        setIsEditing(false);
+        // Update formData with the latest data
+        setFormData({
+          fullname: data.data.fullname || "",
+          student_id: data.data.student_id || "",
+          email: data.data.email || "",
+          mobile: data.data.mobile || "",
+          faculty: data.data.faculty || "",
+          major: data.data.major || "",
+          std_year: data.data.std_year || "",
+          address: data.data.address || "",
+          gpa: data.data.gpa || "",
+          image: data.data.image || "",
+          // Additional fields
+          nickname: data.data.nickname || "",
+          date_of_birth: data.data.date_of_birth || "",
+          id_card: data.data.id_card || "",
+          nationality: data.data.nationality || "ไทย",
+          religion: data.data.religion || "",
+          emergency_contact_name: data.data.emergency_contact_name || "",
+          emergency_contact_phone: data.data.emergency_contact_phone || "",
+          emergency_contact_relation:
+            data.data.emergency_contact_relation || "",
+          parent_name: data.data.parent_name || "",
+          parent_occupation: data.data.parent_occupation || "",
+          parent_phone: data.data.parent_phone || "",
+          scholarship: data.data.scholarship || "",
+          medical_condition: data.data.medical_condition || "",
+          skills: data.data.skills || "",
+        });
       } else {
         toast({
           title: "บันทึกข้อมูลไม่สำเร็จ",
@@ -175,340 +232,623 @@ export default function StudentProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
+      <main className="container mx-auto p-4 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <Sidebar activePage="profile" userType="student" />
 
-          <div className="md:col-span-4">
-            <Card className="border-sky-200 shadow-md overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-sky-500 to-sky-600 text-white">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl">ข้อมูลส่วนตัว</CardTitle>
-                  <Button
-                    variant={isEditing ? "secondary" : "outline"}
-                    onClick={() => setIsEditing(!isEditing)}
-                    className={
-                      isEditing
-                        ? "bg-white text-sky-700"
-                        : "bg-white text-sky-700"
-                    }
-                  >
-                    {isEditing ? "ยกเลิกการแก้ไข" : "แก้ไขข้อมูล"}
-                  </Button>
+          <div className="lg:col-span-4 space-y-6">
+            {/* Header Card */}
+            <Card className="shadow-xl border-0 bg-white overflow-hidden">
+              <CardHeader className="py-6 bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 text-white relative overflow-hidden">
+                {/* Background decorations */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10">
+                  <div>
+                    <CardTitle className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">
+                      ข้อมูลส่วนตัว
+                    </CardTitle>
+                    <CardDescription className="text-blue-100 text-base font-medium mt-1">
+                      จัดการและแก้ไขข้อมูลส่วนตัวของคุณ
+                    </CardDescription>
+                  </div>
                 </div>
-                <CardDescription className="text-sky-100">
-                  ข้อมูลส่วนตัวของนักศึกษาฝึกงาน
-                </CardDescription>
               </CardHeader>
 
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row gap-6">
-                  {/* Profile Image */}
-                  <div className="flex flex-col items-center space-y-4 mb-6 md:mb-0">
-                    <div className="relative">
-                      {isEditing ? (
-                        <AvatarDesign
-                          value={formData.image}
-                          setValue={(val: any) => {
-                            setFormData((prev: any) => ({
-                              ...prev,
-                              image: val,
-                            }));
-                          }}
-                          size="32"
-                        />
-                      ) : (
-                        <CustomAvatar
-                          id={`student${formData.username}`}
-                          image={formData.image}
-                          size="32"
-                        />
-                      )}
-                    </div>
+              <CardContent className="p-0">
+                <div className="p-6">
+                  <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Profile Image Section */}
 
-                    <div className="text-center">
-                      <h3 className="font-medium text-lg">
-                        {profileData.fullname}
-                      </h3>
-                      <p className="text-gray-500">{profileData.student_id}</p>
-                    </div>
-                  </div>
+                    {/* Profile Information Section */}
+                    <div className="flex-1">
+                      <div className="flex flex-col items-center space-y-4 mb-4 gap-4">
+                        <div className="relative">
+                          <AvatarDesign
+                            value={formData.image}
+                            setValue={(val: any) => {
+                              setFormData((prev: any) => ({
+                                ...prev,
+                                image: val,
+                              }));
+                            }}
+                            size="32"
+                          />
+                        </div>
 
-                  {/* Profile Information */}
-                  <div className="flex-1">
-                    <Tabs defaultValue="info" className="w-full">
-                      <TabsList className="mb-6">
-                        <TabsTrigger value="info">ข้อมูลส่วนตัว</TabsTrigger>
-                        <TabsTrigger value="academic">
-                          ข้อมูลการศึกษา
-                        </TabsTrigger>
-                      </TabsList>
-
-                      {isEditing ? (
-                        <form onSubmit={handleSubmit}>
-                          <TabsContent value="info" className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <label
-                                  htmlFor="fullname"
-                                  className="text-sm font-medium"
-                                >
-                                  ชื่อ-สกุล
-                                </label>
-                                <Input
-                                  id="fullname"
-                                  name="fullname"
-                                  value={formData.fullname}
-                                  onChange={handleChange}
-                                  placeholder="ชื่อ-นามสกุล"
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <label
-                                  htmlFor="student_id"
-                                  className="text-sm font-medium"
-                                >
-                                  รหัสนักศึกษา
-                                </label>
-                                <Input
-                                  id="student_id"
-                                  name="student_id"
-                                  value={formData.student_id}
-                                  onChange={handleChange}
-                                  placeholder="รหัสนักศึกษา"
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <label
-                                  htmlFor="email"
-                                  className="text-sm font-medium"
-                                >
-                                  อีเมล
-                                </label>
-                                <Input
-                                  id="email"
-                                  name="email"
-                                  type="email"
-                                  value={formData.email}
-                                  onChange={handleChange}
-                                  placeholder="อีเมล"
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <label
-                                  htmlFor="mobile"
-                                  className="text-sm font-medium"
-                                >
-                                  เบอร์โทรศัพท์
-                                </label>
-                                <Input
-                                  id="mobile"
-                                  name="mobile"
-                                  value={formData.mobile}
-                                  onChange={handleChange}
-                                  placeholder="เบอร์โทรศัพท์"
-                                />
-                              </div>
-                              <div className="space-y-2 md:col-span-2">
-                                <label
-                                  htmlFor="address"
-                                  className="text-sm font-medium"
-                                >
-                                  ที่อยู่
-                                </label>
-                                <Textarea
-                                  id="address"
-                                  name="address"
-                                  value={formData.address}
-                                  onChange={handleChange}
-                                  placeholder="ที่อยู่"
-                                  rows={3}
-                                />
-                              </div>
-                            </div>
-                          </TabsContent>
-
-                          <TabsContent value="academic" className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <div className="space-y-2">
-                                <label
-                                  htmlFor="major"
-                                  className="text-sm font-medium"
-                                >
-                                  สาขาวิชา
-                                </label>
-                                <Select
-                                  value={formData.major}
-                                  onValueChange={(value) =>
-                                    handleSelectChange("major", value)
-                                  }
-                                >
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="เลือกสาขาวิชา" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="SCI">SCI</SelectItem>
-                                    <SelectItem value="CARE">CARE</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              <div className="space-y-2">
-                                <label
-                                  htmlFor="std_year"
-                                  className="text-sm font-medium"
-                                >
-                                  ปีรหัส
-                                </label>
-                                <Select
-                                  value={formData.std_year.toString()}
-                                  onValueChange={(value) =>
-                                    handleSelectChange("std_year", value)
-                                  }
-                                >
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="เลือกปีรหัส" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {years.map((y) => (
-                                      <SelectItem key={y} value={y}>
-                                        รหัส {y}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              <div className="space-y-2">
-                                <label
-                                  htmlFor="gpa"
-                                  className="text-sm font-medium"
-                                >
-                                  เกรดเฉลี่ย (GPA)
-                                </label>
-                                <Input
-                                  id="gpa"
-                                  name="gpa"
-                                  value={formData.gpa}
-                                  onChange={handleChange}
-                                  placeholder="0.00"
-                                  type="number"
-                                  step="0.01"
-                                  min="0"
-                                  max="4.00"
-                                />
-                              </div>
-                            </div>
-                          </TabsContent>
-
-                          <div className="mt-6 flex justify-end">
-                            <Button
-                              type="submit"
-                              className="bg-sky-600 hover:bg-sky-700"
-                              disabled={isSaving}
-                            >
-                              {isSaving ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-                                  กำลังบันทึก...
-                                </>
-                              ) : (
-                                <>
-                                  <Save className="mr-2 h-4 w-4" /> บันทึกข้อมูล
-                                </>
-                              )}
-                            </Button>
+                        <div className="text-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 w-full border border-blue-200/50">
+                          <h3 className="font-bold text-xl text-gray-900 mb-1">
+                            {formData.fullname || "ไม่ได้ระบุชื่อ"}
+                          </h3>
+                          <p className="text-blue-700 font-mono font-medium">
+                            {formData.student_id || "ไม่ได้ระบุรหัส"}
+                          </p>
+                          <div className="mt-3">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-300">
+                              <User className="h-3 w-3 mr-1" />
+                              นักศึกษาฝึกงาน
+                            </span>
                           </div>
-                        </form>
-                      ) : (
-                        <>
-                          <TabsContent value="info">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              <div className="space-y-4">
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    ชื่อ-สกุล
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.fullname || "-"}
-                                  </p>
-                                </div>
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    รหัสนักศึกษา
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.student_id || "-"}
-                                  </p>
-                                </div>
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    อีเมล
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.email || "-"}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="space-y-4">
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    เบอร์โทรศัพท์
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.mobile || "-"}
-                                  </p>
-                                </div>
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    ที่อยู่
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.address || "-"}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </TabsContent>
+                        </div>
+                      </div>
 
-                          <TabsContent value="academic">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-/">
-                              <div className="space-y-4">
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    สาขาวิชา
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.major || "-"}
-                                  </p>
-                                </div>
+                      <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Personal Information */}
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200/50">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <User className="h-5 w-5 text-blue-600" />
+                            ข้อมูลส่วนตัว
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="fullname"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                ชื่อ-สกุล
+                              </label>
+                              <Input
+                                id="fullname"
+                                name="fullname"
+                                value={formData.fullname}
+                                onChange={handleChange}
+                                placeholder="ชื่อ-นามสกุล"
+                                className="bg-white/80 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="nickname"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                ชื่อเล่น
+                              </label>
+                              <Input
+                                id="nickname"
+                                name="nickname"
+                                value={formData.nickname}
+                                onChange={handleChange}
+                                placeholder="ชื่อเล่น"
+                                className="bg-white/80 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="student_id"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                รหัสนักศึกษา
+                              </label>
+                              <Input
+                                id="student_id"
+                                name="student_id"
+                                value={formData.student_id}
+                                onChange={handleChange}
+                                placeholder="รหัสนักศึกษา"
+                                className="bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed"
+                                disabled
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="id_card"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                เลขบัตรประชาชน
+                              </label>
+                              <Input
+                                id="id_card"
+                                name="id_card"
+                                value={formData.id_card}
+                                onChange={handleChange}
+                                placeholder="เลขบัตรประชาชน 13 หลัก"
+                                maxLength={13}
+                                className="bg-white/80 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="date_of_birth"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                วันเกิด
+                              </label>
+                              <Input
+                                id="date_of_birth"
+                                name="date_of_birth"
+                                type="date"
+                                value={formData.date_of_birth}
+                                onChange={handleChange}
+                                className="bg-white/80 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="nationality"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                สัญชาติ
+                              </label>
+                              <Select
+                                value={formData.nationality}
+                                onValueChange={(value) =>
+                                  handleSelectChange("nationality", value)
+                                }
+                              >
+                                <SelectTrigger className="bg-white/80 border-blue-200 focus:border-blue-500">
+                                  <SelectValue placeholder="เลือกสัญชาติ" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="ไทย">ไทย</SelectItem>
+                                  <SelectItem value="ลาว">ลาว</SelectItem>
+                                  <SelectItem value="พม่า">พม่า</SelectItem>
+                                  <SelectItem value="กัมพูชา">
+                                    กัมพูชา
+                                  </SelectItem>
+                                  <SelectItem value="เวียดนาม">
+                                    เวียดนาม
+                                  </SelectItem>
+                                  <SelectItem value="อื่นๆ">อื่นๆ</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="religion"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                ศาสนา
+                              </label>
+                              <Select
+                                value={formData.religion}
+                                onValueChange={(value) =>
+                                  handleSelectChange("religion", value)
+                                }
+                              >
+                                <SelectTrigger className="bg-white/80 border-blue-200 focus:border-blue-500">
+                                  <SelectValue placeholder="เลือกศาสนา" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="พุทธ">พุทธ</SelectItem>
+                                  <SelectItem value="คริสต์">คริสต์</SelectItem>
+                                  <SelectItem value="อิสลาม">อิสลาม</SelectItem>
+                                  <SelectItem value="ฮินดู">ฮินดู</SelectItem>
+                                  <SelectItem value="อื่นๆ">อื่นๆ</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="email"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                อีเมล
+                              </label>
+                              <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="อีเมล"
+                                className="bg-white/80 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="mobile"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                เบอร์โทรศัพท์
+                              </label>
+                              <Input
+                                id="mobile"
+                                name="mobile"
+                                value={formData.mobile}
+                                onChange={handleChange}
+                                placeholder="เบอร์โทรศัพท์"
+                                className="bg-white/80 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                            <div className="space-y-2 md:col-span-2">
+                              <label
+                                htmlFor="address"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                ที่อยู่
+                              </label>
+                              <Textarea
+                                id="address"
+                                name="address"
+                                value={formData.address}
+                                onChange={handleChange}
+                                placeholder="ที่อยู่"
+                                rows={3}
+                                className="bg-white/80 border-blue-200 focus:border-blue-500"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Academic Information */}
+                        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200/50">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <svg
+                              className="h-5 w-5 text-emerald-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                              />
+                            </svg>
+                            ข้อมูลการศึกษา
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="major"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                สาขาวิชา
+                              </label>
+                              <Select
+                                value={formData.major}
+                                onValueChange={(value) =>
+                                  handleSelectChange("major", value)
+                                }
+                              >
+                                <SelectTrigger className="bg-white/80 border-emerald-200 focus:border-emerald-500">
+                                  <SelectValue placeholder="เลือกสาขาวิชา" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="SCI">SCI</SelectItem>
+                                  <SelectItem value="CARE">CARE</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="std_year"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                ปีรหัส
+                              </label>
+                              <Select
+                                value={formData.std_year.toString()}
+                                onValueChange={(value) =>
+                                  handleSelectChange("std_year", value)
+                                }
+                              >
+                                <SelectTrigger className="bg-white/80 border-emerald-200 focus:border-emerald-500">
+                                  <SelectValue placeholder="เลือกปีรหัส" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {years.map((y) => (
+                                    <SelectItem key={y} value={y}>
+                                      รหัส {y}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="gpa"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                เกรดเฉลี่ย (GPA)
+                              </label>
+                              <Input
+                                id="gpa"
+                                name="gpa"
+                                value={formData.gpa}
+                                onChange={handleChange}
+                                placeholder="0.00"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                max="4.00"
+                                className="bg-white/80 border-emerald-200 focus:border-emerald-500"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Parent & Emergency Contact Information */}
+                        <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6 border border-orange-200/50">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <svg
+                              className="h-5 w-5 text-orange-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                              />
+                            </svg>
+                            ข้อมูลผู้ปกครอง & ผู้ติดต่อฉุกเฉิน
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Parent Information */}
+                            <div className="space-y-4">
+                              <h4 className="font-medium text-orange-700 border-b border-orange-200 pb-2">
+                                ข้อมูลผู้ปกครอง
+                              </h4>
+                              <div className="space-y-2">
+                                <label
+                                  htmlFor="parent_name"
+                                  className="text-sm font-medium text-gray-700"
+                                >
+                                  ชื่อผู้ปกครอง
+                                </label>
+                                <Input
+                                  id="parent_name"
+                                  name="parent_name"
+                                  value={formData.parent_name}
+                                  onChange={handleChange}
+                                  placeholder="ชื่อ-นามสกุลผู้ปกครอง"
+                                  className="bg-white/80 border-orange-200 focus:border-orange-500"
+                                />
                               </div>
-                              <div className="space-y-4">
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    ปีรหัส
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.std_year
-                                      ? `รหัส ${profileData.std_year}`
-                                      : "-"}
-                                  </p>
-                                </div>
+                              <div className="space-y-2">
+                                <label
+                                  htmlFor="parent_occupation"
+                                  className="text-sm font-medium text-gray-700"
+                                >
+                                  อาชีพผู้ปกครอง
+                                </label>
+                                <Input
+                                  id="parent_occupation"
+                                  name="parent_occupation"
+                                  value={formData.parent_occupation}
+                                  onChange={handleChange}
+                                  placeholder="อาชีพผู้ปกครอง"
+                                  className="bg-white/80 border-orange-200 focus:border-orange-500"
+                                />
                               </div>
-                              <div className="space-y-4">
-                                <div>
-                                  <h4 className="text-sm font-medium text-gray-500">
-                                    เกรดเฉลี่ย (GPA)
-                                  </h4>
-                                  <p className="font-medium">
-                                    {profileData.gpa || "-"}
-                                  </p>
-                                </div>
+                              <div className="space-y-2">
+                                <label
+                                  htmlFor="parent_phone"
+                                  className="text-sm font-medium text-gray-700"
+                                >
+                                  เบอร์โทรผู้ปกครอง
+                                </label>
+                                <Input
+                                  id="parent_phone"
+                                  name="parent_phone"
+                                  value={formData.parent_phone}
+                                  onChange={handleChange}
+                                  placeholder="เบอร์โทรศัพท์ผู้ปกครอง"
+                                  className="bg-white/80 border-orange-200 focus:border-orange-500"
+                                />
                               </div>
                             </div>
-                          </TabsContent>
-                        </>
-                      )}
-                    </Tabs>
+
+                            {/* Emergency Contact */}
+                            <div className="space-y-4">
+                              <h4 className="font-medium text-orange-700 border-b border-orange-200 pb-2">
+                                ผู้ติดต่อฉุกเฉิน
+                              </h4>
+                              <div className="space-y-2">
+                                <label
+                                  htmlFor="emergency_contact_name"
+                                  className="text-sm font-medium text-gray-700"
+                                >
+                                  ชื่อผู้ติดต่อฉุกเฉิน
+                                </label>
+                                <Input
+                                  id="emergency_contact_name"
+                                  name="emergency_contact_name"
+                                  value={formData.emergency_contact_name}
+                                  onChange={handleChange}
+                                  placeholder="ชื่อ-นามสกุลผู้ติดต่อฉุกเฉิน"
+                                  className="bg-white/80 border-orange-200 focus:border-orange-500"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <label
+                                  htmlFor="emergency_contact_relation"
+                                  className="text-sm font-medium text-gray-700"
+                                >
+                                  ความเกี่ยวข้อง
+                                </label>
+                                <Select
+                                  value={formData.emergency_contact_relation}
+                                  onValueChange={(value) =>
+                                    handleSelectChange(
+                                      "emergency_contact_relation",
+                                      value
+                                    )
+                                  }
+                                >
+                                  <SelectTrigger className="bg-white/80 border-orange-200 focus:border-orange-500">
+                                    <SelectValue placeholder="เลือกความเกี่ยวข้อง" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="บิดา">บิดา</SelectItem>
+                                    <SelectItem value="มารดา">มารดา</SelectItem>
+                                    <SelectItem value="ผู้ปกครอง">
+                                      ผู้ปกครอง
+                                    </SelectItem>
+                                    <SelectItem value="พี่ชาย">
+                                      พี่ชาย
+                                    </SelectItem>
+                                    <SelectItem value="พี่สาว">
+                                      พี่สาว
+                                    </SelectItem>
+                                    <SelectItem value="น้องชาย">
+                                      น้องชาย
+                                    </SelectItem>
+                                    <SelectItem value="น้องสาว">
+                                      น้องสาว
+                                    </SelectItem>
+                                    <SelectItem value="ญาติ">ญาติ</SelectItem>
+                                    <SelectItem value="อื่นๆ">อื่นๆ</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div className="space-y-2">
+                                <label
+                                  htmlFor="emergency_contact_phone"
+                                  className="text-sm font-medium text-gray-700"
+                                >
+                                  เบอร์โทรฉุกเฉิน
+                                </label>
+                                <Input
+                                  id="emergency_contact_phone"
+                                  name="emergency_contact_phone"
+                                  value={formData.emergency_contact_phone}
+                                  onChange={handleChange}
+                                  placeholder="เบอร์โทรศัพท์ฉุกเฉิน"
+                                  className="bg-white/80 border-orange-200 focus:border-orange-500"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Additional Information */}
+                        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200/50">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <svg
+                              className="h-5 w-5 text-purple-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              />
+                            </svg>
+                            ข้อมูลเพิ่มเติม
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="scholarship"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                ทุนการศึกษา
+                              </label>
+                              <Select
+                                value={formData.scholarship}
+                                onValueChange={(value) =>
+                                  handleSelectChange("scholarship", value)
+                                }
+                              >
+                                <SelectTrigger className="bg-white/80 border-purple-200 focus:border-purple-500">
+                                  <SelectValue placeholder="เลือกประเภททุน" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="ไม่มี">ไม่มี</SelectItem>
+                                  <SelectItem value="ทุนจากมหาวิทยาลัย">
+                                    ทุนจากมหาวิทยาลัย
+                                  </SelectItem>
+                                  <SelectItem value="ทุนรัฐบาล">
+                                    ทุนรัฐบาล
+                                  </SelectItem>
+                                  <SelectItem value="ทุนเอกชน">
+                                    ทุนเอกชน
+                                  </SelectItem>
+                                  <SelectItem value="ทุนกู้ยืม">
+                                    ทุนกู้ยืม
+                                  </SelectItem>
+                                  <SelectItem value="อื่นๆ">อื่นๆ</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="skills"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                ทักษะพิเศษ
+                              </label>
+                              <Input
+                                id="skills"
+                                name="skills"
+                                value={formData.skills}
+                                onChange={handleChange}
+                                placeholder="เช่น ภาษาอังกฤษ, คอมพิวเตอร์, ดนตรี"
+                                className="bg-white/80 border-purple-200 focus:border-purple-500"
+                              />
+                            </div>
+                            <div className="space-y-2 md:col-span-2">
+                              <label
+                                htmlFor="medical_condition"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                ประวัติสุขภาพ/โรคประจำตัว
+                              </label>
+                              <Textarea
+                                id="medical_condition"
+                                name="medical_condition"
+                                value={formData.medical_condition}
+                                onChange={handleChange}
+                                placeholder="ระบุโรคประจำตัว, การแพ้ยา, หรือข้อมูลสุขภาพที่สำคัญ (หากไม่มีให้ระบุ 'ไม่มี')"
+                                rows={3}
+                                className="bg-white/80 border-purple-200 focus:border-purple-500"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Save Button */}
+                        <div className="flex justify-end">
+                          <Button
+                            type="submit"
+                            className="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-8 py-2"
+                            disabled={isSaving}
+                          >
+                            {isSaving ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                กำลังบันทึก...
+                              </>
+                            ) : (
+                              <>
+                                <Save className="mr-2 h-4 w-4" />
+                                บันทึกข้อมูล
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </CardContent>
