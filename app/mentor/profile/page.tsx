@@ -69,6 +69,7 @@ export default function MentorProfile() {
     bankAccount: "",
     bookbankFile: null,
 
+    username: "",
     password: "",
   });
 
@@ -114,6 +115,7 @@ export default function MentorProfile() {
           bankAccount: data.data?.bank_account || "",
           bookbankFile: data.data?.bookbank_file || "",
 
+          username: data.data?.username || "",
           password: "", // Always empty for security
         });
       } else {
@@ -721,7 +723,7 @@ export default function MentorProfile() {
                               </div>
                               <p className="text-xs text-gray-500">
                                 รองรับไฟล์: PDF, JPG, JPEG, PNG (ขนาดไม่เกิน
-                                5MB)
+                                2MB)
                               </p>
                             </div>
                           </div>
@@ -746,6 +748,22 @@ export default function MentorProfile() {
                             เปลี่ยนรหัสผ่าน
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="password"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                Username
+                              </label>
+                              <Input
+                                id="username"
+                                name="username"
+                                type="text"
+                                value={formData.username}
+                                className="bg-white/80 border-red-200 focus:border-red-500"
+                                disabled
+                              />
+                            </div>
                             <div className="space-y-2">
                               <label
                                 htmlFor="password"
