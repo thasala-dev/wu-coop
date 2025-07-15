@@ -38,7 +38,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Loading from "@/components/loading";
 import { useRouter, useParams } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
 import Sidebar from "@/components/sidebar";
 import CustomAvatar from "@/components/avatar";
 
@@ -95,7 +94,7 @@ export default function AdminStudentDetailPage() {
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto p-2">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <Sidebar activePage="students" userType="advisor" />
+            <Sidebar activePage="students" userType="admin" />
             <Loading />
           </div>
         </div>
@@ -108,7 +107,7 @@ export default function AdminStudentDetailPage() {
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto p-2">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <Sidebar activePage="students" userType="advisor" />
+            <Sidebar activePage="students" userType="admin" />
             <div className="md:col-span-4 text-center py-12">
               <p>ไม่พบข้อมูลนักศึกษา</p>
             </div>
@@ -337,29 +336,81 @@ export default function AdminStudentDetailPage() {
                                 ชื่อ-นามสกุล
                               </dt>
                               <dd className="font-semibold text-gray-800">
-                                {student.fullname}
-                              </dd>
-                            </div>
-                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
-                              <dt className="text-blue-700 font-medium mb-1">
-                                รหัสนักศึกษา
-                              </dt>
-                              <dd className="font-mono text-gray-800">
-                                {student.student_id}
-                              </dd>
-                            </div>
-                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
-                              <dt className="text-blue-700 font-medium mb-1">
-                                คณะ/สาขา
-                              </dt>
-                              <dd className="text-gray-800">
-                                สำนักเภสัชศาตร์ /{" "}
-                                {student.major || (
-                                  <i className="text-sm opacity-75">ไม่ระบุ</i>
-                                )}
+                                {student.fullname}{" "}
+                                {student.nickname
+                                  ? `(${student.nickname})`
+                                  : ""}
                               </dd>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  วันเกิด
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.date_of_birth ? (
+                                    new Date(
+                                      student.date_of_birth
+                                    ).toLocaleDateString("th-TH", {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    })
+                                  ) : (
+                                    <i className="text-sm opacity-75">
+                                      ไม่ระบุ
+                                    </i>
+                                  )}
+                                </dd>
+                              </div>
+                              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  เลขบัตรประชาชน
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.id_card || (
+                                    <i className="text-sm opacity-75">
+                                      ไม่ระบุ
+                                    </i>
+                                  )}
+                                </dd>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  สัญชาติ
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.nationality || (
+                                    <i className="text-sm opacity-75">
+                                      ไม่ระบุ
+                                    </i>
+                                  )}
+                                </dd>
+                              </div>
+                              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  ศาสนา
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.religion || (
+                                    <i className="text-sm opacity-75">
+                                      ไม่ระบุ
+                                    </i>
+                                  )}
+                                </dd>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="col-span-2 bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  รหัสนักศึกษา
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.student_id}
+                                </dd>
+                              </div>
                               <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
                                 <dt className="text-blue-700 font-medium mb-1 text-xs">
                                   ปีรหัส
@@ -372,6 +423,25 @@ export default function AdminStudentDetailPage() {
                                   )}
                                 </dd>
                               </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="col-span-2">
+                                <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                  <dt className="text-blue-700 font-medium mb-1">
+                                    คณะ/สาขา
+                                  </dt>
+                                  <dd className="text-gray-800">
+                                    สำนักเภสัชศาตร์ /{" "}
+                                    {student.major || (
+                                      <i className="text-sm opacity-75">
+                                        ไม่ระบุ
+                                      </i>
+                                    )}
+                                  </dd>
+                                </div>
+                              </div>
+
                               <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
                                 <dt className="text-blue-700 font-medium mb-1 text-xs">
                                   เกรดเฉลี่ย
@@ -399,7 +469,7 @@ export default function AdminStudentDetailPage() {
                               <dt className="text-blue-700 font-medium mb-1">
                                 เบอร์โทรศัพท์
                               </dt>
-                              <dd className="font-mono text-gray-800">
+                              <dd className=" text-gray-800">
                                 {student.mobile || (
                                   <i className="text-sm opacity-75">ไม่ระบุ</i>
                                 )}
@@ -423,7 +493,7 @@ export default function AdminStudentDetailPage() {
                             <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
                               <Award className="h-5 w-5" />
                             </div>
-                            ทักษะและความสนใจ
+                            ข้อมูลเพิ่มเติม
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
@@ -455,25 +525,25 @@ export default function AdminStudentDetailPage() {
                             <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-emerald-200/50">
                               <h4 className="text-emerald-700 font-medium mb-3 flex items-center gap-2">
                                 <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                                ความสนใจ
+                                ทุนการศึกษา
                               </h4>
                               <div className="flex flex-wrap gap-2">
-                                {student.interests &&
-                                student.interests.length > 0 ? (
-                                  student.interests.map(
-                                    (interest: string, index: number) => (
-                                      <Badge
-                                        key={index}
-                                        variant="outline"
-                                        className="text-emerald-700 border-emerald-300 hover:bg-emerald-50 font-medium text-xs px-3 py-1 shadow-sm"
-                                      >
-                                        {interest}
-                                      </Badge>
-                                    )
-                                  )
-                                ) : (
+                                {student.scholarship || (
                                   <span className="text-sm text-gray-500 italic">
-                                    ไม่ได้ระบุความสนใจ
+                                    ไม่ได้ระบุทุนการศึกษา
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-emerald-200/50">
+                              <h4 className="text-emerald-700 font-medium mb-3 flex items-center gap-2">
+                                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                ประวัติสุขภาพ/โรคประจำตัว
+                              </h4>
+                              <div className="flex flex-wrap gap-2">
+                                {student.medical_condition || (
+                                  <span className="text-sm text-gray-500 italic">
+                                    ไม่ได้ระบุประวัติสุขภาพ/โรคประจำตัว
                                   </span>
                                 )}
                               </div>
@@ -511,7 +581,7 @@ export default function AdminStudentDetailPage() {
                                   ที่อยู่
                                 </dt>
                                 <dd className="text-gray-800 leading-relaxed">
-                                  {internship[0].location || (
+                                  {internship[0].company_location || (
                                     <i className="opacity-75">ไม่ระบุ</i>
                                   )}
                                 </dd>
@@ -540,7 +610,7 @@ export default function AdminStudentDetailPage() {
                                 <dt className="text-amber-700 font-medium mb-1">
                                   ระยะเวลาฝึกงาน
                                 </dt>
-                                <dd className="font-mono text-gray-800">
+                                <dd className=" text-gray-800">
                                   {new Date(
                                     internship[0].start_date
                                   ).toLocaleDateString("th-TH", {
@@ -569,11 +639,44 @@ export default function AdminStudentDetailPage() {
                             <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
                               <Phone className="h-5 w-5" />
                             </div>
-                            ข้อมูลฉุกเฉิน
+                            ข้อมูลผู้ปกครอง & ผู้ติดต่อฉุกเฉิน
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
                           <dl className="space-y-4 text-sm">
+                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200/50">
+                              <dt className="text-purple-700 font-medium mb-1">
+                                ชื่อผู้ปกครอง
+                              </dt>
+                              <dd className="font-semibold text-gray-800">
+                                {student.parent_name || (
+                                  <i className="opacity-75">ไม่ระบุ</i>
+                                )}
+                              </dd>
+                            </div>
+
+                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200/50">
+                              <dt className="text-purple-700 font-medium mb-1">
+                                อาชีพผู้ปกครอง
+                              </dt>
+                              <dd className="font-semibold text-gray-800">
+                                {student.parent_occupation || (
+                                  <i className="opacity-75">ไม่ระบุ</i>
+                                )}
+                              </dd>
+                            </div>
+
+                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200/50">
+                              <dt className="text-purple-700 font-medium mb-1">
+                                เบอร์โทรผู้ปกครอง
+                              </dt>
+                              <dd className="font-semibold text-gray-800">
+                                {student.parent_phone || (
+                                  <i className="opacity-75">ไม่ระบุ</i>
+                                )}
+                              </dd>
+                            </div>
+
                             <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200/50">
                               <dt className="text-purple-700 font-medium mb-1">
                                 ชื่อผู้ติดต่อฉุกเฉิน
@@ -598,7 +701,7 @@ export default function AdminStudentDetailPage() {
                               <dt className="text-purple-700 font-medium mb-1">
                                 เบอร์โทรศัพท์
                               </dt>
-                              <dd className="font-mono text-gray-800">
+                              <dd className=" text-gray-800">
                                 {student.emergency_contact_phone || (
                                   <i className="opacity-75">ไม่ระบุ</i>
                                 )}
@@ -715,7 +818,7 @@ export default function AdminStudentDetailPage() {
                                           <span className="text-gray-600">
                                             เบอร์ติดต่อ:
                                           </span>
-                                          <span className="font-mono">
+                                          <span className="">
                                             {intern.advisor_mobile}
                                           </span>
                                         </div>
@@ -822,7 +925,7 @@ export default function AdminStudentDetailPage() {
                                           <span className="text-gray-600">
                                             เบอร์ติดต่อ:
                                           </span>
-                                          <span className="font-mono">
+                                          <span className="">
                                             {visit.advisor_mobile}
                                           </span>
                                         </div>

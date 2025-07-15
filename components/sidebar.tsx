@@ -132,7 +132,12 @@ export function Sidebar({
         label: "หน้าหลัก",
         icon: LayoutDashboard,
       },
-
+      {
+        href: "/mentor/profile",
+        page: "profile",
+        label: "ข้อมูลแหล่งฝึกงาน",
+        icon: Building,
+      },
       {
         href: "/mentor/students",
         page: "students",

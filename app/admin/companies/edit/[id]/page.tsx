@@ -392,9 +392,9 @@ export default function Page() {
                           </div>
                           <div className="sm:col-span-4">
                             <label>จำนวนพนักงานทั้งหมด</label>
-                            <input
+
+                            <select
                               id="totalEmployees"
-                              type="text"
                               {...register("totalEmployees")}
                               className={
                                 "w-full p-2 border rounded-md " +
@@ -402,8 +402,19 @@ export default function Page() {
                                   ? "border-red-600  border-2"
                                   : "")
                               }
-                              placeholder="กรุณากรอกจำนวนพนักงานทั้งหมด"
-                            />
+                            >
+                              <option value="" disabled>
+                                เลือกจำนวนพนักงาน
+                              </option>
+
+                              <option value="1-10">1-10 คน</option>
+                              <option value="11-50">11-50 คน</option>
+                              <option value="51-200">51-200 คน</option>
+                              <option value="201-500">201-500 คน</option>
+                              <option value="501-1000">501-1000 คน</option>
+                              <option value="1000+">มากกว่า 1000 คน</option>
+                            </select>
+
                             {errors.totalEmployees && (
                               <p className="text-sm text-red-600">
                                 {typeof errors.totalEmployees?.message ===

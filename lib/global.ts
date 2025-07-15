@@ -104,3 +104,90 @@ export const companyType = [
     label: "อื่นๆ",
   },
 ];
+
+export const thaiBank = [
+  {
+    value: "kbank",
+    label: "ธนาคารกสิกรไทย (KASIKORNBANK)",
+  },
+  {
+    value: "scb",
+    label: "ธนาคารไทยพาณิชย์ (SCB)",
+  },
+  {
+    value: "bbl",
+    label: "ธนาคารกรุงเทพ (Bangkok Bank)",
+  },
+  {
+    value: "ktb",
+    label: "ธนาคารกรุงไทย (Krung Thai Bank)",
+  },
+  {
+    value: "tmb",
+    label: "ธนาคารทีเอ็มบี (TMB Bank)",
+  },
+  {
+    value: "bay",
+    label: "ธนาคารกรุงศรีอยุธยา (Bank of Ayudhya)",
+  },
+  {
+    value: "gsb",
+    label: "ธนาคารออมสิน (Government Savings Bank)",
+  },
+  {
+    value: "baac",
+    label: "ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (BAAC)",
+  },
+  {
+    value: "ghb",
+    label: "ธนาคารอาคารสงเคราะห์ (Government Housing Bank)",
+  },
+  {
+    value: "cimb",
+    label: "ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank)",
+  },
+  {
+    value: "uob",
+    label: "ธนาคารยูโอบี (United Overseas Bank)",
+  },
+  {
+    value: "tisco",
+    label: "ธนาคารทิสโก้ (TISCO Bank)",
+  },
+  {
+    value: "kk",
+    label: "ธนาคารเกียรตินาคิน (Kiatnakin Bank)",
+  },
+  {
+    value: "lh",
+    label: "ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank)",
+  },
+  {
+    value: "ibank",
+    label: "ธนาคารอิสลาม (Islamic Bank of Thailand)",
+  },
+  {
+    value: "icbc",
+    label: "ธนาคารไอซีบีซี (ICBC Thai Bank)",
+  },
+  {
+    value: "mega",
+    label: "ธนาคารเมกะ สากลพาณิชย์ (Mega International Commercial Bank)",
+  },
+  {
+    value: "smbc",
+    label: "ธนาคารซูมิโตโม มิตซุย แบงกิ้ง (SMBC)",
+  },
+  {
+    value: "sc",
+    label: "ธนาคารสแตนดาร์ดชาร์เตอร์ด (Standard Chartered Bank)",
+  },
+  {
+    value: "hsbc",
+    label: "ธนาคารเอชเอสบีซี (HSBC)",
+  },
+  {
+    value: "other",
+    label: "อื่นๆ",
+  },
+];

@@ -6,8 +6,13 @@ export async function GET(request: NextRequest, { params }: any) {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
     const data = await sql(
-      `SELECT 
+      `SELECT std.id,
       std.fullname,
+      std.nickname,
+      std.nationality,
+      std.religion,
+      std.skills,
+      std.medical_condition,
       std.student_id,
       std.image,
       std.major, 
@@ -17,6 +22,7 @@ export async function GET(request: NextRequest, { params }: any) {
       std.emergency_contact_name, 
       std.emergency_contact_phone,
       std.emergency_contact_relation,
+      cal.id AS calendar_id,
       cal.name AS calendar_name, 
       cal.semester, 
       cal.year, 
@@ -42,8 +48,9 @@ export async function GET(request: NextRequest, { params }: any) {
       LEFT JOIN user_advisor adv ON std.advisor_id = adv.id
       WHERE intern.id = $1
       GROUP BY 
-      std.fullname, std.student_id, std.image, std.major, std.address, std.mobile, std.email, 
-      std.emergency_contact_name, std.emergency_contact_phone, std.emergency_contact_relation,
+      std.id, std.fullname, std.nickname, std.nationality, std.religion, std.skills, std.medical_condition,
+      std.student_id, std.image, std.major, std.address, std.mobile, std.email, 
+      std.emergency_contact_name, std.emergency_contact_phone, std.emergency_contact_relation, cal.id,
       cal.name, cal.semester, cal.year, cal.start_date, cal.end_date,  intern.position,
       intern.job_description,company_name,company_image,company_location,
       adv.fullname, adv.mobile, adv.email,
@@ -59,6 +66,15 @@ export async function GET(request: NextRequest, { params }: any) {
       );
     }
     const studentData = data[0];
+
+    const activities = await sql(
+      `SELECT act.*, cat.name as category_name
+      FROM student_activities act
+      inner join activity_categories cat on act.category_id = cat.id
+      WHERE act.student_id = $1 and act.calendar_id = $2
+      ORDER BY act.activity_date DESC`,
+      [studentData.id, studentData.calendar_id]
+    );
 
     let form = [];
     for (const item of studentData.evaluations) {
@@ -80,6 +96,7 @@ export async function GET(request: NextRequest, { params }: any) {
       success: true,
       message: "ดำเนินการสำเร็จ",
       data: studentData,
+      activities: activities,
       evaluation: form,
     });
   } catch (error) {

@@ -113,6 +113,21 @@ export async function PUT(request: NextRequest) {
       params.push(body.evaluationType || []);
     }
 
+    if (body.bankName !== undefined) {
+      updateFields.push(`bank_name = $${paramCount++}`);
+      params.push(body.bankName);
+    }
+
+    if (body.bankAccount !== undefined) {
+      updateFields.push(`bank_account = $${paramCount++}`);
+      params.push(body.bankAccount);
+    }
+
+    if (body.bookbankFile !== undefined) {
+      updateFields.push(`bookbank_file = $${paramCount++}`);
+      params.push(body.bookbankFile);
+    }
+
     // Add updated_at timestamp
     updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
 
@@ -128,12 +143,7 @@ export async function PUT(request: NextRequest) {
       ", "
     )} WHERE id = $1 RETURNING *`;
 
-    console.log("Update query:", query);
-    console.log("Update params:", params);
-
     const data = await sql(query, params);
-
-    console.log("Update result:", data);
 
     return NextResponse.json({
       success: true,
