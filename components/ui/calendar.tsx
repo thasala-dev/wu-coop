@@ -74,9 +74,12 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   const buddhistYear = currentYear + 543;
   const month = date.getMonth();
 
-  // Generate year options (10 years before and after current year)
+  // Generate year options (35 years back to 10 years ahead from current year)
   const yearOptions = useMemo(() => {
-    return Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
+    const startYear = currentYear - 35; // 35 ปีย้อนหลัง
+    const endYear = currentYear + 10; // 10 ปีข้างหน้า
+    const length = endYear - startYear + 1;
+    return Array.from({ length }, (_, i) => startYear + i);
   }, [currentYear]);
 
   return (

@@ -117,6 +117,51 @@ export async function PUT(request: NextRequest) {
       params.push(body.password);
     }
 
+    if (body.nickname !== undefined) {
+      updateFields.push(`nickname = $${paramCount++}`);
+      params.push(body.nickname);
+    }
+    if (body.date_of_birth !== undefined && body.date_of_birth !== "") {
+      updateFields.push(`date_of_birth = $${paramCount++}`);
+      params.push(body.date_of_birth);
+    }
+    if (body.id_card !== undefined) {
+      updateFields.push(`id_card = $${paramCount++}`);
+      params.push(body.id_card);
+    }
+    if (body.nationality !== undefined) {
+      updateFields.push(`nationality = $${paramCount++}`);
+      params.push(body.nationality);
+    }
+    if (body.religion !== undefined) {
+      updateFields.push(`religion = $${paramCount++}`);
+      params.push(body.religion);
+    }
+    if (body.parent_name !== undefined) {
+      updateFields.push(`parent_name = $${paramCount++}`);
+      params.push(body.parent_name);
+    }
+    if (body.parent_occupation !== undefined) {
+      updateFields.push(`parent_occupation = $${paramCount++}`);
+      params.push(body.parent_occupation);
+    }
+    if (body.parent_phone !== undefined) {
+      updateFields.push(`parent_phone = $${paramCount++}`);
+      params.push(body.parent_phone);
+    }
+    if (body.scholarship !== undefined) {
+      updateFields.push(`scholarship = $${paramCount++}`);
+      params.push(body.scholarship);
+    }
+    if (body.medical_condition !== undefined) {
+      updateFields.push(`medical_condition = $${paramCount++}`);
+      params.push(body.medical_condition);
+    }
+    if (body.skills !== undefined) {
+      updateFields.push(`skills = $${paramCount++}`);
+      params.push(body.skills);
+    }
+
     // Add updated_at timestamp
     updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
 

@@ -137,12 +137,6 @@ export default function StudentDashboard() {
                       <h3 className="text-lg font-medium text-gray-900 mb-2">
                         ยังไม่มีประวัติการฝึกงาน
                       </h3>
-                      <p className="text-gray-500 mb-4">
-                        เริ่มต้นการฝึกงานครั้งแรกของคุณ
-                      </p>
-                      <Button className="bg-blue-600 hover:bg-blue-700">
-                        สมัครฝึกงาน
-                      </Button>
                     </div>
                   ) : (
                     calendars.map((calendar: any, index: number) => (

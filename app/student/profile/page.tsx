@@ -21,9 +21,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, User, Camera } from "lucide-react";
+import { Loader2, Save, User, Camera, CalendarIcon } from "lucide-react";
 import { callUploadApi } from "@/lib/file-api";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { th } from "date-fns/locale";
 import AvatarDesign from "@/components/AvatarDesign";
 import CustomAvatar from "@/components/avatar";
 import Loading from "@/components/loading";
@@ -41,6 +50,7 @@ export default function StudentProfile() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [profileData, setProfileData] = useState<any>(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<any>({
     fullname: "",
@@ -68,6 +78,8 @@ export default function StudentProfile() {
     scholarship: "",
     medical_condition: "",
     skills: "",
+
+    password: "",
   });
   // Fetch student profile data
   useEffect(() => {
@@ -111,6 +123,8 @@ export default function StudentProfile() {
           scholarship: data.data.scholarship || "",
           medical_condition: data.data.medical_condition || "",
           skills: data.data.skills || "",
+
+          password: "", // Reset password field
         });
       } else {
         toast({
@@ -144,6 +158,27 @@ export default function StudentProfile() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleDateSelect = (date: Date | null) => {
+    if (date) {
+      const formattedDate = date.toISOString().split("T")[0];
+      setFormData((prev: any) => ({
+        ...prev,
+        date_of_birth: formattedDate,
+      }));
+      setIsCalendarOpen(false);
+    }
+  };
+
+  const formatDateDisplay = (dateString: string) => {
+    if (!dateString) return "เลือกวันเกิด";
+    try {
+      const date = new Date(dateString);
+      return format(date, "d MMMM yyyy", { locale: th });
+    } catch {
+      return "เลือกวันเกิด";
+    }
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -375,14 +410,40 @@ export default function StudentProfile() {
                               >
                                 วันเกิด
                               </label>
-                              <Input
-                                id="date_of_birth"
-                                name="date_of_birth"
-                                type="date"
-                                value={formData.date_of_birth}
-                                onChange={handleChange}
-                                className="bg-white/80 border-blue-200 focus:border-blue-500"
-                              />
+                              <Popover
+                                open={isCalendarOpen}
+                                onOpenChange={setIsCalendarOpen}
+                              >
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal bg-white/80 border-blue-200 hover:bg-blue-50",
+                                      !formData.date_of_birth &&
+                                        "text-muted-foreground"
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {formatDateDisplay(formData.date_of_birth)}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto p-0"
+                                  align="start"
+                                >
+                                  <CalendarComponent
+                                    mode="single"
+                                    selected={
+                                      formData.date_of_birth
+                                        ? new Date(formData.date_of_birth)
+                                        : undefined
+                                    }
+                                    onSelect={handleDateSelect}
+                                    initialFocus
+                                    className="rounded-md border"
+                                  />
+                                </PopoverContent>
+                              </Popover>
                             </div>
                             <div className="space-y-2">
                               <label
@@ -821,6 +882,43 @@ export default function StudentProfile() {
                                 onChange={handleChange}
                                 placeholder="ระบุโรคประจำตัว, การแพ้ยา, หรือข้อมูลสุขภาพที่สำคัญ (หากไม่มีให้ระบุ 'ไม่มี')"
                                 rows={3}
+                                className="bg-white/80 border-purple-200 focus:border-purple-500"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="bg-gradient-to-r from-red-50 to-red-50 rounded-xl p-6 border border-red-200/50">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <svg
+                              className="h-5 w-5 text-red-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 11v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            เปลี่ยนรหัสผ่าน
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="password"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                รหัสผ่านใหม่ (ไม่ต้องกรอกหากไม่ต้องการเปลี่ยน)
+                              </label>
+                              <Input
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="รหัสผ่านใหม่"
                                 className="bg-white/80 border-purple-200 focus:border-purple-500"
                               />
                             </div>

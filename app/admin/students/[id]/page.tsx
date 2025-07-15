@@ -336,29 +336,81 @@ export default function AdminStudentDetailPage() {
                                 ชื่อ-นามสกุล
                               </dt>
                               <dd className="font-semibold text-gray-800">
-                                {student.fullname}
-                              </dd>
-                            </div>
-                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
-                              <dt className="text-blue-700 font-medium mb-1">
-                                รหัสนักศึกษา
-                              </dt>
-                              <dd className="font-mono text-gray-800">
-                                {student.student_id}
-                              </dd>
-                            </div>
-                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
-                              <dt className="text-blue-700 font-medium mb-1">
-                                คณะ/สาขา
-                              </dt>
-                              <dd className="text-gray-800">
-                                สำนักเภสัชศาตร์ /{" "}
-                                {student.major || (
-                                  <i className="text-sm opacity-75">ไม่ระบุ</i>
-                                )}
+                                {student.fullname}{" "}
+                                {student.nickname
+                                  ? `(${student.nickname})`
+                                  : ""}
                               </dd>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  วันเกิด
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.date_of_birth ? (
+                                    new Date(
+                                      student.date_of_birth
+                                    ).toLocaleDateString("th-TH", {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    })
+                                  ) : (
+                                    <i className="text-sm opacity-75">
+                                      ไม่ระบุ
+                                    </i>
+                                  )}
+                                </dd>
+                              </div>
+                              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  เลขบัตรประชาชน
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.id_card || (
+                                    <i className="text-sm opacity-75">
+                                      ไม่ระบุ
+                                    </i>
+                                  )}
+                                </dd>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  สัญชาติ
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.nationality || (
+                                    <i className="text-sm opacity-75">
+                                      ไม่ระบุ
+                                    </i>
+                                  )}
+                                </dd>
+                              </div>
+                              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  ศาสนา
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.religion || (
+                                    <i className="text-sm opacity-75">
+                                      ไม่ระบุ
+                                    </i>
+                                  )}
+                                </dd>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="col-span-2 bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                <dt className="text-blue-700 font-medium mb-1">
+                                  รหัสนักศึกษา
+                                </dt>
+                                <dd className=" text-gray-800">
+                                  {student.student_id}
+                                </dd>
+                              </div>
                               <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
                                 <dt className="text-blue-700 font-medium mb-1 text-xs">
                                   ปีรหัส
@@ -371,6 +423,25 @@ export default function AdminStudentDetailPage() {
                                   )}
                                 </dd>
                               </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="col-span-2">
+                                <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
+                                  <dt className="text-blue-700 font-medium mb-1">
+                                    คณะ/สาขา
+                                  </dt>
+                                  <dd className="text-gray-800">
+                                    สำนักเภสัชศาตร์ /{" "}
+                                    {student.major || (
+                                      <i className="text-sm opacity-75">
+                                        ไม่ระบุ
+                                      </i>
+                                    )}
+                                  </dd>
+                                </div>
+                              </div>
+
                               <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50">
                                 <dt className="text-blue-700 font-medium mb-1 text-xs">
                                   เกรดเฉลี่ย
@@ -398,7 +469,7 @@ export default function AdminStudentDetailPage() {
                               <dt className="text-blue-700 font-medium mb-1">
                                 เบอร์โทรศัพท์
                               </dt>
-                              <dd className="font-mono text-gray-800">
+                              <dd className=" text-gray-800">
                                 {student.mobile || (
                                   <i className="text-sm opacity-75">ไม่ระบุ</i>
                                 )}
@@ -539,7 +610,7 @@ export default function AdminStudentDetailPage() {
                                 <dt className="text-amber-700 font-medium mb-1">
                                   ระยะเวลาฝึกงาน
                                 </dt>
-                                <dd className="font-mono text-gray-800">
+                                <dd className=" text-gray-800">
                                   {new Date(
                                     internship[0].start_date
                                   ).toLocaleDateString("th-TH", {
@@ -597,7 +668,7 @@ export default function AdminStudentDetailPage() {
                               <dt className="text-purple-700 font-medium mb-1">
                                 เบอร์โทรศัพท์
                               </dt>
-                              <dd className="font-mono text-gray-800">
+                              <dd className=" text-gray-800">
                                 {student.emergency_contact_phone || (
                                   <i className="opacity-75">ไม่ระบุ</i>
                                 )}
@@ -714,7 +785,7 @@ export default function AdminStudentDetailPage() {
                                           <span className="text-gray-600">
                                             เบอร์ติดต่อ:
                                           </span>
-                                          <span className="font-mono">
+                                          <span className="">
                                             {intern.advisor_mobile}
                                           </span>
                                         </div>
@@ -821,7 +892,7 @@ export default function AdminStudentDetailPage() {
                                           <span className="text-gray-600">
                                             เบอร์ติดต่อ:
                                           </span>
-                                          <span className="font-mono">
+                                          <span className="">
                                             {visit.advisor_mobile}
                                           </span>
                                         </div>
