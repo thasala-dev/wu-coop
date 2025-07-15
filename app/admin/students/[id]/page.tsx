@@ -493,7 +493,7 @@ export default function AdminStudentDetailPage() {
                             <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
                               <Award className="h-5 w-5" />
                             </div>
-                            ทักษะและความสนใจ
+                            ข้อมูลเพิ่มเติม
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
@@ -525,25 +525,25 @@ export default function AdminStudentDetailPage() {
                             <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-emerald-200/50">
                               <h4 className="text-emerald-700 font-medium mb-3 flex items-center gap-2">
                                 <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                                ความสนใจ
+                                ทุนการศึกษา
                               </h4>
                               <div className="flex flex-wrap gap-2">
-                                {student.interests &&
-                                student.interests.length > 0 ? (
-                                  student.interests.map(
-                                    (interest: string, index: number) => (
-                                      <Badge
-                                        key={index}
-                                        variant="outline"
-                                        className="text-emerald-700 border-emerald-300 hover:bg-emerald-50 font-medium text-xs px-3 py-1 shadow-sm"
-                                      >
-                                        {interest}
-                                      </Badge>
-                                    )
-                                  )
-                                ) : (
+                                {student.scholarship || (
                                   <span className="text-sm text-gray-500 italic">
-                                    ไม่ได้ระบุความสนใจ
+                                    ไม่ได้ระบุทุนการศึกษา
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-emerald-200/50">
+                              <h4 className="text-emerald-700 font-medium mb-3 flex items-center gap-2">
+                                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                ประวัติสุขภาพ/โรคประจำตัว
+                              </h4>
+                              <div className="flex flex-wrap gap-2">
+                                {student.medical_condition || (
+                                  <span className="text-sm text-gray-500 italic">
+                                    ไม่ได้ระบุประวัติสุขภาพ/โรคประจำตัว
                                   </span>
                                 )}
                               </div>
@@ -581,7 +581,7 @@ export default function AdminStudentDetailPage() {
                                   ที่อยู่
                                 </dt>
                                 <dd className="text-gray-800 leading-relaxed">
-                                  {internship[0].location || (
+                                  {internship[0].company_location || (
                                     <i className="opacity-75">ไม่ระบุ</i>
                                   )}
                                 </dd>
@@ -639,11 +639,44 @@ export default function AdminStudentDetailPage() {
                             <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
                               <Phone className="h-5 w-5" />
                             </div>
-                            ข้อมูลฉุกเฉิน
+                            ข้อมูลผู้ปกครอง & ผู้ติดต่อฉุกเฉิน
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
                           <dl className="space-y-4 text-sm">
+                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200/50">
+                              <dt className="text-purple-700 font-medium mb-1">
+                                ชื่อผู้ปกครอง
+                              </dt>
+                              <dd className="font-semibold text-gray-800">
+                                {student.parent_name || (
+                                  <i className="opacity-75">ไม่ระบุ</i>
+                                )}
+                              </dd>
+                            </div>
+
+                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200/50">
+                              <dt className="text-purple-700 font-medium mb-1">
+                                อาชีพผู้ปกครอง
+                              </dt>
+                              <dd className="font-semibold text-gray-800">
+                                {student.parent_occupation || (
+                                  <i className="opacity-75">ไม่ระบุ</i>
+                                )}
+                              </dd>
+                            </div>
+
+                            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200/50">
+                              <dt className="text-purple-700 font-medium mb-1">
+                                เบอร์โทรผู้ปกครอง
+                              </dt>
+                              <dd className="font-semibold text-gray-800">
+                                {student.parent_phone || (
+                                  <i className="opacity-75">ไม่ระบุ</i>
+                                )}
+                              </dd>
+                            </div>
+
                             <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200/50">
                               <dt className="text-purple-700 font-medium mb-1">
                                 ชื่อผู้ติดต่อฉุกเฉิน

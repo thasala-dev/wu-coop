@@ -889,7 +889,7 @@ export default function StudentProfile() {
                         </div>
 
                         <div className="bg-gradient-to-r from-red-50 to-red-50 rounded-xl p-6 border border-red-200/50">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                          <h3 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
                             <svg
                               className="h-5 w-5 text-red-600"
                               fill="none"
