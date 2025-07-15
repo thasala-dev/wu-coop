@@ -180,7 +180,7 @@ export default function MentorProfile() {
       if (documentForm.file) {
         const uploadResult = await callUploadApi(
           documentForm.file,
-          `company_${user.id}`,
+          `company/${user.id}`,
           false // ไม่ต้องลดขนาดรูป
         );
 

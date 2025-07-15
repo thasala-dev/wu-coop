@@ -49,8 +49,10 @@ export async function callUploadApi(
 ): Promise<UploadResponse> {
   try {
     // นำเข้า module ด้วย dynamic import เพื่อให้ใช้ในฝั่ง client ได้
-    const { prepareFileForUpload, MAX_FILE_SIZE } = await import('./image-resizer');
-    
+    const { prepareFileForUpload, MAX_FILE_SIZE } = await import(
+      "./image-resizer"
+    );
+
     // ตรวจสอบขนาดไฟล์และลดขนาดถ้าจำเป็น
     let processedFile: File;
     if (processImage) {
@@ -62,16 +64,17 @@ export async function callUploadApi(
       }
       processedFile = file;
     }
-    
+
     const formData = new FormData();
     formData.append("file", processedFile);
-    formData.append("path", path);
-    
+    const currentYear = new Date().getFullYear();
+    formData.append("path", `${currentYear}/${path}`);
+
     const response = await fetch("/api/files/uploads", {
       method: "POST",
       body: formData,
     });
-    
+
     return response.json();
   } catch (error: any) {
     // ส่งค่า error กลับในรูปแบบที่มีโครงสร้างเหมือนกับ response ปกติ
@@ -110,10 +113,10 @@ export async function callListApi(
   skipCache: boolean = false
 ): Promise<ListResponse> {
   // ใช้ SWR pattern: stale-while-revalidate
-  const url = `/api/files/list?prefix=${encodeURIComponent(prefix)}&limit=${limit}${
-    skipCache ? "&skipCache=true" : ""
-  }`;
-  
+  const url = `/api/files/list?prefix=${encodeURIComponent(
+    prefix
+  )}&limit=${limit}${skipCache ? "&skipCache=true" : ""}`;
+
   // ตั้งค่าให้ใช้ cache ที่กำหนดโดย server
   const response = await fetch(url, {
     method: "GET",
