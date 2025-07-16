@@ -29,14 +29,7 @@ import { cn } from "@/lib/utils";
 import { Form } from "@/components/ui/form";
 
 // import forms
-import Empty from "@/components/evaluations/empty";
-import CARE_p1 from "@/components/evaluations/CARE/p1";
-import CARE_p2_1_HCT from "@/components/evaluations/CARE/p2_1_HCT";
-import CARE_p2_2_PT from "@/components/evaluations/CARE/p2_2_PT";
-import CARE_p3_1_Discuss from "@/components/evaluations/CARE/p3_1_Discuss";
-import CARE_p3_3 from "@/components/evaluations/CARE/p3_3";
-import CARE_p4 from "@/components/evaluations/CARE/p4";
-import CARE_p5 from "@/components/evaluations/CARE/p5"; // Assuming CARE_p5 is another form component
+import EvaluationList from "@/components/evaluations/EvaluationList";
 
 export default function MentorEvaluations() {
   const { toast } = useToast();
@@ -53,115 +46,6 @@ export default function MentorEvaluations() {
   const [isSubmit, setIsSubmit] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  // Print function
-  const handlePrint = () => {
-    const printContent = document.getElementById("evaluation-content");
-    if (!printContent) return;
-
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-
-    const printStyles = `
-      <style>
-        @media print {
-          body { 
-            margin: 0; 
-            padding: 20px; 
-            font-family: 'Sarabun', sans-serif;
-            font-size: 14px;
-            line-height: 1.4;
-          }
-          .no-print { display: none !important; }
-          .print-header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-          }
-          .student-info {
-            border: 1px solid #000;
-            padding: 15px;
-            margin-bottom: 20px;
-          }
-          .form-content {
-            margin-bottom: 20px;
-          }
-          .evaluator-section {
-            margin-top: 30px;
-            border-top: 1px solid #ccc;
-            padding-top: 20px;
-          }
-          table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 15px;
-          }
-          th, td { 
-            border: 1px solid #000; 
-            padding: 8px; 
-            text-align: left;
-          }
-          th { 
-            background-color: #f5f5f5; 
-            font-weight: bold;
-          }
-          .signature-section {
-            margin-top: 40px;
-            display: flex;
-            justify-content: space-between;
-          }
-          .signature-box {
-            text-align: center;
-            width: 200px;
-          }
-          .signature-line {
-            border-bottom: 1px solid #000;
-            height: 50px;
-            margin-bottom: 5px;
-          }
-        }
-      </style>
-    `;
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>แบบฟอร์มการประเมิน - ${student?.fullname}</title>
-          <meta charset="utf-8">
-          ${printStyles}
-        </head>
-        <body>
-          <div class="print-header">
-            <h1>${formType?.name || "แบบฟอร์มการประเมิน"}</h1>
-            <h2>สำหรับอาจารย์ประจำแหล่งฝึก (${formType?.short_name || ""})</h2>
-          </div>
-          ${printContent.innerHTML}
-          <div class="signature-section">
-            <div class="signature-box">
-              <div class="signature-line"></div>
-              <p>ลายเซ็นอาจารย์ประจำแหล่งฝึก</p>
-              <p>วันที่ ${
-                selectedDate
-                  ? format(selectedDate, "d MMMM yyyy", { locale: th })
-                  : ".................."
-              }</p>
-            </div>
-          </div>
-        </body>
-      </html>
-    `);
-
-    printWindow.document.close();
-    printWindow.focus();
-
-    // Wait for content to load then print
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 250);
-  };
-
   const formSchema = z.object({
     result_id: z.string(),
     evaluator: z.string().min(1, "กรุณากรอกชื่อ-นามสกุล"),
@@ -177,25 +61,7 @@ export default function MentorEvaluations() {
   };
 
   const FormEvaluation = (props: any) => {
-    if (type === "1" && (subtype === "1" || subtype === "2")) {
-      return <CARE_p1 {...props} />;
-    } else if (type === "1" && subtype === "3") {
-      return <CARE_p2_1_HCT {...props} />;
-    } else if (type === "1" && subtype === "4") {
-      return <CARE_p2_2_PT {...props} />;
-    } else if (
-      type === "1" &&
-      (subtype === "5" || subtype === "6" || subtype === "7")
-    ) {
-      return <CARE_p3_1_Discuss {...props} />;
-    } else if (type === "1" && subtype === "8") {
-      return <CARE_p3_3 {...props} />;
-    } else if (type === "1" && subtype === "9") {
-      return <CARE_p4 {...props} />;
-    } else if (type === "1" && subtype === "10") {
-      return <CARE_p5 {...props} />;
-    }
-    return <Empty {...props} />;
+    return <EvaluationList {...props} subtype={subtype} />;
   };
 
   const form = useForm<z.infer<typeof formSchema>>({

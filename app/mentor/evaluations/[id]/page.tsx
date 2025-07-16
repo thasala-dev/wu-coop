@@ -268,15 +268,22 @@ export default function MentorEvaluations() {
                                 <div
                                   className={`flex flex-col md:flex-row md:items-center justify-between gap-4 border-2 p-2 rounded ${
                                     evaluation.is_submit
-                                      ? "border-green-600"
-                                      : "border-yellow-600"
+                                      ? "border-green-600 bg-green-50"
+                                      : "border-yellow-600 bg-yellow-50"
                                   }`}
                                 >
                                   <div className="flex-1">
                                     <div className="flex items-start gap-3">
-                                      <div className="bg-blue-100 rounded-full p-2 mt-1">
-                                        <FileText className="h-4 w-4 text-blue-600" />
-                                      </div>
+                                      {evaluation.is_submit ? (
+                                        <div className="bg-green-100 rounded-full p-2">
+                                          <CheckCircle className="h-10 w-10 text-green-600" />
+                                        </div>
+                                      ) : (
+                                        <div className="bg-yellow-100 rounded-full p-2">
+                                          <Clock className="h-10 w-10 text-yellow-600" />
+                                        </div>
+                                      )}
+
                                       <div className="space-y-2">
                                         <h4 className="text-lg font-semibold text-gray-900">
                                           {evaluation.name}
@@ -316,20 +323,18 @@ export default function MentorEvaluations() {
                                   </div>
 
                                   <div className="flex items-center gap-3">
-                                    {getStatusBadge(evaluation.is_submit)}
-
                                     <div className="flex gap-2">
                                       <Button
                                         variant={
                                           evaluation.is_submit
-                                            ? "default"
-                                            : "outline"
+                                            ? "outline"
+                                            : "default"
                                         }
                                         // size="sm"
                                         className={
                                           evaluation.is_submit
-                                            ? "bg-blue-600 hover:bg-blue-700"
-                                            : "text-gray-600 border-gray-200 hover:bg-gray-50"
+                                            ? "text-green-600 border-green-200 hover:bg-green-50"
+                                            : "bg-blue-600 hover:bg-blue-700"
                                         }
                                         onClick={() =>
                                           router.push(
