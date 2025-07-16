@@ -230,6 +230,24 @@ export default function MentorEvaluations() {
                         sort: false,
                         width: "100px",
                         render: (row: any) => {
+                          const totalForms = row.total_forms || 0;
+                          const totalResults = row.total_result || 0;
+                          if (totalForms === totalResults) {
+                            return (
+                              <div className="flex justify-end gap-2">
+                                <Link href={`/mentor/evaluations/${row.id}`}>
+                                  <Button
+                                    size="sm"
+                                    variant="default"
+                                    className="text-white bg-green-600 hover:bg-green-700"
+                                  >
+                                    ประเมินเรียบร้อย
+                                    <ChevronRight className="ml-1 h-4 w-4" />
+                                  </Button>
+                                </Link>
+                              </div>
+                            );
+                          }
                           return (
                             <div className="flex justify-end gap-2">
                               <Link href={`/mentor/evaluations/${row.id}`}>
