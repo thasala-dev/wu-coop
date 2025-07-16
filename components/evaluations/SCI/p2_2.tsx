@@ -44,6 +44,28 @@ const workLabels = [
   { label: ">1 ชิ้นงาน", value: ">1" },
 ];
 
+// Check if checkbox is selected but score is not provided
+const checkboxScoreValidation = [
+  { select: "p1_1_select", score: "p1_1_score" },
+  { select: "p1_2_select", score: "p1_2_score" },
+  { select: "p2_1_select", score: "p2_1_score" },
+  { select: "p2_2_select", score: "p2_2_score" },
+  { select: "p2_3_select", score: "p2_3_score" },
+  { select: "p2_4_select", score: "p2_4_score" },
+  { select: "p2_5_select", score: "p2_5_score" },
+  { select: "p2_6_select", score: "p2_6_score" },
+  { select: "p2_7_select", score: "p2_7_score" },
+  { select: "p3_1_select", score: "p3_1_score" },
+  { select: "p3_2_select", score: "p3_2_score" },
+  { select: "p3_3_select", score: "p3_3_score" },
+  { select: "p3_4_select", score: "p3_4_score" },
+  { select: "p3_5_select", score: "p3_5_score" },
+  { select: "p3_6_select", score: "p3_6_score" },
+  { select: "p4_1_select", score: "p4_1_score" },
+  { select: "p4_2_select", score: "p4_2_score" },
+  { select: "p5_select", score: "p5_score" },
+];
+
 export default function Page(props: any) {
   const { form: parentForm, isSubmit, setFormValidated, isClick } = props;
 
@@ -138,6 +160,14 @@ export default function Page(props: any) {
       [key]: checked,
     }));
     parentForm.setValue(`result.${key}`, checked);
+
+    const findScoreLabel = checkboxScoreValidation.find((item) => {
+      return item.select === key;
+    });
+    if (findScoreLabel) {
+      const scoreKey = findScoreLabel.score;
+      setDataValue(scoreKey, "");
+    }
   };
 
   const ScoreForm = ({
@@ -215,28 +245,6 @@ export default function Page(props: any) {
       }
       return false;
     });
-
-    // Check if checkbox is selected but score is not provided
-    const checkboxScoreValidation = [
-      { select: "p1_1_select", score: "p1_1_score" },
-      { select: "p1_2_select", score: "p1_2_score" },
-      { select: "p2_1_select", score: "p2_1_score" },
-      { select: "p2_2_select", score: "p2_2_score" },
-      { select: "p2_3_select", score: "p2_3_score" },
-      { select: "p2_4_select", score: "p2_4_score" },
-      { select: "p2_5_select", score: "p2_5_score" },
-      { select: "p2_6_select", score: "p2_6_score" },
-      { select: "p2_7_select", score: "p2_7_score" },
-      { select: "p3_1_select", score: "p3_1_score" },
-      { select: "p3_2_select", score: "p3_2_score" },
-      { select: "p3_3_select", score: "p3_3_score" },
-      { select: "p3_4_select", score: "p3_4_score" },
-      { select: "p3_5_select", score: "p3_5_score" },
-      { select: "p3_6_select", score: "p3_6_score" },
-      { select: "p4_1_select", score: "p4_1_score" },
-      { select: "p4_2_select", score: "p4_2_score" },
-      { select: "p5_select", score: "p5_score" },
-    ];
 
     const hasInvalidCheckboxScore = checkboxScoreValidation.some(
       ({ select, score }) => {
