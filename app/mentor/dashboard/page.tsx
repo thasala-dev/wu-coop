@@ -125,7 +125,11 @@ export default function DashboardPage() {
                         จำนวนนักศึกษาที่ต้องประเมิน
                       </div>
                       <div className="text-xl font-semibold">
-                        {students.length || 0} คน
+                        {students.filter(
+                          (student: any) =>
+                            student.total_forms !== student.total_result
+                        ).length || 0}{" "}
+                        คน
                       </div>
                     </div>
                   </div>
@@ -183,47 +187,58 @@ export default function DashboardPage() {
                     รายการประเมินที่กำลังจะถึงกำหนด
                   </p>
                   <div className="mt-4 space-y-3">
-                    {students.length === 0 && (
+                    {students.filter(
+                      (student: any) =>
+                        student.total_forms !== student.total_result
+                    ).length === 0 && (
                       <div className="text-gray-500 text-center py-4">
                         ไม่มีการประเมินที่ต้องทำในผลัดฝึกงานนี้
                       </div>
                     )}
-                    {students.map((student: any, index: number) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-3 pb-3 border-b"
-                      >
-                        <CustomAvatar
-                          id={`student${student.student_id}`}
-                          image={student.image}
-                          size="10"
-                        />
-                        <div className="flex-grow">
-                          <div className="font-medium">{student.fullname}</div>
-                          <div className="gap-2 flex items-center text-sm text-gray-500 mt-1">
-                            <span>ชุดประเมิน: </span>
-                            {student.evaluation_names.map(
-                              (form: any, index2: number) => (
-                                <Badge
-                                  key={index2}
-                                  className="bg-orange-100 text-orange-800 hover:bg-orange-100"
-                                >
-                                  {form}
-                                </Badge>
-                              )
-                            )}
+                    {students
+                      .filter(
+                        (student: any) =>
+                          student.total_forms !== student.total_result
+                      )
+                      .map((student: any, index: number) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 pb-3 border-b"
+                        >
+                          <CustomAvatar
+                            id={`student${student.student_id}`}
+                            image={student.image}
+                            size="10"
+                          />
+                          <div className="flex-grow">
+                            <div className="font-medium">
+                              {student.fullname}
+                            </div>
+                            <div className="gap-2 flex items-center text-sm text-gray-500 mt-1">
+                              <span>ชุดประเมิน: </span>
+                              {student.evaluation_names.map(
+                                (form: any, index2: number) => (
+                                  <Badge
+                                    key={index2}
+                                    className="bg-orange-100 text-orange-800 hover:bg-orange-100"
+                                  >
+                                    {form} | {student.total_result}/
+                                    {student.total_forms} ชุด
+                                  </Badge>
+                                )
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex gap-2 mt-2">
+                            <Link href={`/mentor/evaluations/${student.id}`}>
+                              <Button size="sm">
+                                ประเมิน
+                                <ChevronRight className="ml-1 h-4 w-4" />
+                              </Button>
+                            </Link>
                           </div>
                         </div>
-                        <div className="flex gap-2 mt-2">
-                          <Link href={`/mentor/evaluations/${student.id}`}>
-                            <Button size="sm">
-                              ประเมิน
-                              <ChevronRight className="ml-1 h-4 w-4" />
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </div>
