@@ -1,0 +1,1210 @@
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useEffect, useState } from "react";
+
+const toThaiNumber = (number: number) => {
+  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  return number
+    .toString()
+    .split("")
+    .map((char) => {
+      if (char === ".") {
+        return ".";
+      }
+      const digit = parseInt(char, 10);
+      return isNaN(digit) ? char : thaiNumbers[digit];
+    })
+    .join("");
+};
+
+const scoreLabels = [
+  { label: "๕", value: "5" },
+  { label: "๔", value: "4" },
+  { label: "๓", value: "3" },
+  { label: "๒", value: "2" },
+  { label: "๑", value: "1" },
+];
+
+const dosageLabels = [
+  { label: "ไม่มีการฝึก", value: "0" },
+  { label: "1 dosage form", value: "1" },
+  { label: "2-3 dosage forms", value: "2-3" },
+  { label: ">3 dosage forms", value: ">3" },
+];
+
+const activityLabels = [
+  { label: "ไม่มีการฝึก", value: "0" },
+  { label: "1-2 กิจกรรม", value: "1" },
+  { label: ">2 กิจกรรม", value: ">2" },
+];
+
+const workLabels = [
+  { label: "ไม่มีชิ้นงาน", value: "0" },
+  { label: "1 ชิ้นงาน", value: "1" },
+  { label: ">1 ชิ้นงาน", value: ">1" },
+];
+
+export default function Page(props: any) {
+  const { form: parentForm, isSubmit, setFormValidated, isClick } = props;
+
+  const [data, setData] = useState({
+    percentageProduction:
+      parentForm.getValues("result.percentageProduction") || "",
+    percentageOther: parentForm.getValues("result.percentageOther") || "",
+    otherDepartment: parentForm.getValues("result.otherDepartment") || "",
+
+    p1_day: parentForm.getValues("result.p1_day") || "",
+    p1_dosage: parentForm.getValues("result.p1_dosage") || "",
+    p1_activity: parentForm.getValues("result.p1_activity") || "",
+    p1_note: parentForm.getValues("result.p1_note") || "",
+
+    p1_1_select: parentForm.getValues("result.p1_1_select") || false,
+    p1_1_score: parentForm.getValues("result.p1_1_score") || "",
+    p1_2_select: parentForm.getValues("result.p1_2_select") || false,
+    p1_2_score: parentForm.getValues("result.p1_2_score") || "",
+
+    p2_day: parentForm.getValues("result.p2_day") || "",
+    p2_activity: parentForm.getValues("result.p2_activity") || "",
+    p2_note: parentForm.getValues("result.p2_note") || "",
+
+    p2_1_select: parentForm.getValues("result.p2_1_select") || false,
+    p2_1_score: parentForm.getValues("result.p2_1_score") || "",
+    p2_2_select: parentForm.getValues("result.p2_2_select") || false,
+    p2_2_score: parentForm.getValues("result.p2_2_score") || "",
+    p2_3_select: parentForm.getValues("result.p2_3_select") || false,
+    p2_3_score: parentForm.getValues("result.p2_3_score") || "",
+    p2_4_select: parentForm.getValues("result.p2_4_select") || false,
+    p2_4_score: parentForm.getValues("result.p2_4_score") || "",
+    p2_5_select: parentForm.getValues("result.p2_5_select") || false,
+    p2_5_score: parentForm.getValues("result.p2_5_score") || "",
+    p2_6_select: parentForm.getValues("result.p2_6_select") || false,
+    p2_6_score: parentForm.getValues("result.p2_6_score") || "",
+    p2_7_select: parentForm.getValues("result.p2_7_select") || false,
+    p2_7_score: parentForm.getValues("result.p2_7_score") || "",
+
+    p3_day: parentForm.getValues("result.p3_day") || "",
+    p3_activity: parentForm.getValues("result.p3_activity") || "",
+    p3_work: parentForm.getValues("result.p3_work") || "",
+    p3_note: parentForm.getValues("result.p3_note") || "",
+
+    p3_1_select: parentForm.getValues("result.p3_1_select") || false,
+    p3_1_score: parentForm.getValues("result.p3_1_score") || "",
+    p3_2_select: parentForm.getValues("result.p3_2_select") || false,
+    p3_2_score: parentForm.getValues("result.p3_2_score") || "",
+    p3_3_select: parentForm.getValues("result.p3_3_select") || false,
+    p3_3_score: parentForm.getValues("result.p3_3_score") || "",
+    p3_4_select: parentForm.getValues("result.p3_4_select") || false,
+    p3_4_score: parentForm.getValues("result.p3_4_score") || "",
+    p3_5_select: parentForm.getValues("result.p3_5_select") || false,
+    p3_5_score: parentForm.getValues("result.p3_5_score") || "",
+    p3_6_select: parentForm.getValues("result.p3_6_select") || false,
+    p3_6_score: parentForm.getValues("result.p3_6_score") || "",
+
+    p4_day: parentForm.getValues("result.p4_day") || "",
+    p4_activity: parentForm.getValues("result.p4_activity") || "",
+    p4_note: parentForm.getValues("result.p4_note") || "",
+
+    p4_1_select: parentForm.getValues("result.p4_1_select") || false,
+    p4_1_score: parentForm.getValues("result.p4_1_score") || "",
+    p4_2_select: parentForm.getValues("result.p4_2_select") || false,
+    p4_2_score: parentForm.getValues("result.p4_2_score") || "",
+
+    p5_title: parentForm.getValues("result.p5_title") || "",
+    p5_day: parentForm.getValues("result.p5_day") || "",
+    p5_note: parentForm.getValues("result.p5_note") || "",
+    p5_select: parentForm.getValues("result.p5_select") || false,
+    p5_score: parentForm.getValues("result.p5_score") || "",
+
+    suggestion: parentForm.getValues("result.suggestion") || "",
+  });
+
+  useEffect(() => {
+    console.log("handleCheckValid():", handleCheckValid());
+
+    setFormValidated(handleCheckValid());
+  }, [isSubmit, isClick]);
+
+  const setDataValue = (key: string, value: string) => {
+    setData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+    parentForm.setValue(`result.${key}`, value);
+  };
+
+  const setCheckboxValue = (key: string, checked: boolean) => {
+    setData((prev) => ({
+      ...prev,
+      [key]: checked,
+    }));
+    parentForm.setValue(`result.${key}`, checked);
+  };
+
+  const ScoreForm = ({
+    value,
+    label,
+    list,
+    rows = false,
+    isRequired = false,
+  }: any) => {
+    return (
+      <RadioGroup
+        onValueChange={(value) => setDataValue(label, value)}
+        value={value}
+        className={
+          rows
+            ? "flex flex-col gap-2 justify-center align-center w-full"
+            : "flex flex-row items-center gap-2 justify-center w-full"
+        }
+      >
+        {list.map((radio: any) => (
+          <div
+            className={
+              rows
+                ? "flex flex-row gap-2 items-center"
+                : "flex flex-col gap-2 items-center"
+            }
+            key={radio.value}
+          >
+            <RadioGroupItem
+              value={radio.value}
+              className={
+                isSubmit && isRequired && !value
+                  ? "border-2 border-red-600"
+                  : ""
+              }
+            />
+            <label
+              className={
+                "text-sm" +
+                (isSubmit && isRequired && !value ? " text-red-600" : "")
+              }
+            >
+              {radio.label}
+            </label>
+          </div>
+        ))}
+      </RadioGroup>
+    );
+  };
+
+  const handleCheckValid = () => {
+    const keyList = [
+      "otherDepartment",
+      "p1_note",
+      "p2_note",
+      "p3_note",
+      "p4_note",
+      "p5_title",
+      "p5_note",
+      "suggestion",
+    ];
+
+    // Check required fields (exclude checkbox fields and score fields)
+    const hasEmptyField = Object.keys(data).some((key) => {
+      if (
+        !keyList.includes(key) &&
+        !key.includes("_select") &&
+        !key.includes("_score")
+      ) {
+        const value = data[key as keyof typeof data];
+        if (!value) {
+          console.log(`Field ${key} is empty`);
+          return true;
+        }
+      }
+      return false;
+    });
+
+    // Check if checkbox is selected but score is not provided
+    const checkboxScoreValidation = [
+      { select: "p1_1_select", score: "p1_1_score" },
+      { select: "p1_2_select", score: "p1_2_score" },
+      { select: "p2_1_select", score: "p2_1_score" },
+      { select: "p2_2_select", score: "p2_2_score" },
+      { select: "p2_3_select", score: "p2_3_score" },
+      { select: "p2_4_select", score: "p2_4_score" },
+      { select: "p2_5_select", score: "p2_5_score" },
+      { select: "p2_6_select", score: "p2_6_score" },
+      { select: "p2_7_select", score: "p2_7_score" },
+      { select: "p3_1_select", score: "p3_1_score" },
+      { select: "p3_2_select", score: "p3_2_score" },
+      { select: "p3_3_select", score: "p3_3_score" },
+      { select: "p3_4_select", score: "p3_4_score" },
+      { select: "p3_5_select", score: "p3_5_score" },
+      { select: "p3_6_select", score: "p3_6_score" },
+      { select: "p4_1_select", score: "p4_1_score" },
+      { select: "p4_2_select", score: "p4_2_score" },
+      { select: "p5_select", score: "p5_score" },
+    ];
+
+    const hasInvalidCheckboxScore = checkboxScoreValidation.some(
+      ({ select, score }) => {
+        const isSelected = data[select as keyof typeof data];
+        const scoreValue = data[score as keyof typeof data];
+
+        if (isSelected && !scoreValue) {
+          console.log(`${select} is checked but ${score} is empty`);
+          return true;
+        }
+        return false;
+      }
+    );
+
+    if (hasEmptyField || hasInvalidCheckboxScore) {
+      console.log("Form validation failed");
+      return false;
+    } else {
+      console.log("All fields are valid");
+      return true;
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-12 ">
+      <div className="sm:col-span-12 ">
+        <div className="">
+          <p className="text-sm mb-2">
+            การประเมินแบ่งออกเป็น 2 ส่วน ได้แก่
+            การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์ของการฝึกปฏิบัติงาน
+            โดยทั้ง 2 ส่วนประกอบด้วยจุดมุ่งหมายหลัก 4 ข้อ
+            นักศึกษาควรได้รับการฝึกปฏิบัติงานจนครบทั้ง 4 จุดมุ่งหมายหลัก
+            แต่ละจุดมุ่งหมายหลักมีวัตถุประสงค์เชิงพฤติกรรมหลายส่วน
+            ซึ่งอาจไม่จำเป็นต้องฝึกปฏิบัติงานจนครบทุกวัตถุประสงค์
+            ทั้งนี้ขึ้นกับความพร้อมและบริบทของแต่ละแหล่งฝึก
+          </p>
+          <p className="text-sm mb-2">
+            การประเมินผลเชิงปริมาณนั้น
+            อาจารย์ประจำแหล่งฝึกสามารถกำหนดหัวข้อและกรอบการฝึกปฏิบัติงานได้ตามความเหมาะสม
+            โดยอ้างอิงจากข้อมูลในแต่ละวัตถุประสงค์เชิงพฤติกรรม
+            หากกิจกรรมใดมีการฝึกปฏิบัติ ขอให้ระบุจำนวนกิจกรรมที่เกิดขึ้น
+            พร้อมทั้งบันทึกชื่อของกิจกรรมที่ได้ฝึกปฏิบัติไว้ในช่องหมายเหตุด้วย
+          </p>
+          <p className="text-sm mb-2">
+            สำหรับการประเมินผลสัมฤทธิ์นั้น
+            อาจารย์ประจำแหล่งฝึกสามารถทำได้จากการสังเกต การสอบถาม การอภิปราย
+            รวมไปถึงผลของการฝึกปฏิบัติงาน โดยมีแนวทางในการให้คะแนนดังนี้
+          </p>
+        </div>
+      </div>
+      <div className="sm:col-span-12 ">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-slate-100">
+              <th
+                className="p-2 border text-left text-sm"
+                style={{ width: "10%" }}
+              >
+                คะแนน
+              </th>
+              <th
+                className="p-2 border text-left text-sm"
+                style={{ width: "10%" }}
+              >
+                ระดับ
+              </th>
+              <th
+                className="p-2 border text-left text-sm"
+                style={{ width: "80%" }}
+              >
+                นิยาม
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ๕
+              </td>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ดีมาก
+              </td>
+              <td className="p-2 border font-medium align-top text-sm">
+                นักศึกษาแสดงให้เห็นว่ามีความรู้ ความเข้าใจ
+                และทักษะครบถ้วนตามวัตถุประสงค์เชิงพฤติกรรมการฝึกปฏิบัติงาน
+                เกิดความบกพร่องน้อย สามารถปฏิบัติงานได้ด้วยตนเอง
+                โดยอาจได้รับคำแนะนำเป็นครั้งคราว
+              </td>
+            </tr>
+            <tr>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ๔
+              </td>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ดี
+              </td>
+              <td className="p-2 border font-medium align-top text-sm">
+                นักศึกษาแสดงให้เห็นว่ามีความรู้ ความเข้าใจ
+                และทักษะครบถ้วนตามวัตถุประสงค์เชิงพฤติกรรมการฝึกปฏิบัติงาน
+                มีความบกพร่องในระดับยอมรับได้ สามารถปฏิบัติงานได้
+                แต่ต้องได้รับคำแนะนำเป็นครั้งคราว
+              </td>
+            </tr>
+            <tr>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ๓
+              </td>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ปานกลาง
+              </td>
+              <td className="p-2 border font-medium align-top text-sm">
+                นักศึกษาแสดงให้เห็นว่ามีความรู้ ความเข้าใจ
+                และทักษะครบถ้วนตามวัตถุประสงค์เชิงพฤติกรรมการฝึกปฏิบัติงาน
+                มีความบกพร่องในระดับยอมรับได้ สามารถปฏิบัติงานได้
+                แต่ต้องได้รับคำแนะนำเป็นส่วนใหญ่
+              </td>
+            </tr>
+            <tr>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ๒
+              </td>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ปรับปรุง
+              </td>
+              <td className="p-2 border font-medium align-top text-sm">
+                นักศึกษาแสดงให้เห็นว่าขาดความรู้ ความเข้าใจ และทักษะ
+                เกิดความผิดพลาดอยู่เสมอ
+                ต้องฝึกปฏิบัติงานภายใต้การดูแลของอาจารย์ประจำแหล่งฝึกอย่างใกล้ชิด
+              </td>
+            </tr>
+            <tr>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ๑
+              </td>
+              <td className="p-2 border font-medium align-top text-sm text-center">
+                ไม่ผ่าน
+              </td>
+              <td className="p-2 border font-medium align-top text-sm">
+                นักศึกษาแสดงให้เห็นว่าขาดความรู้ ความเข้าใจ และทักษะ
+                ไม่สามารถปฏิบัติงานได้ตามวัตถุประสงค์เชิงพฤติกรรมที่กำหนด
+                เกิดความผิดพลาดซ้ำและไม่แก้ไขตามคำแนะนำของอาจารย์ประจำแหล่งฝึก
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div className="sm:col-span-12 py-2">
+        <p className="text-center text-md font-bold">แบบฟอร์มการประเมิน</p>
+      </div>
+
+      <div className="sm:col-span-12">
+        <table>
+          <tbody>
+            <tr>
+              <td colSpan={2} className="text-sm">
+                สัดส่วนงานที่ให้นักศึกษาได้ฝึกปฏิบัติจริง
+              </td>
+            </tr>
+            <tr>
+              <td className="pl-4 text-sm">ด้านการผลิต</td>
+              <td className="flex flex-row items-center gap-2 w-full">
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={data.percentageProduction}
+                  onChange={(value) =>
+                    setDataValue("percentageProduction", value.target.value)
+                  }
+                  className={
+                    "p-1 border rounded-md text-sm w-[150px] text-center " +
+                    (isSubmit &&
+                      !data.percentageProduction &&
+                      " border-2 border-red-600")
+                  }
+                />
+                <span>%</span>
+              </td>
+            </tr>
+            <tr>
+              <td className="pl-4 text-sm">
+                <div className="flex flex-row items-center gap-4 w-full">
+                  <div>ด้านอื่นๆ (โปรดระบุ)</div>
+                  <input
+                    type="text"
+                    value={data.otherDepartment}
+                    onChange={(value) =>
+                      setDataValue("otherDepartment", value.target.value)
+                    }
+                    className="p-1 border rounded-md text-sm w-[150px]"
+                  />
+                </div>
+              </td>
+              <td className="flex flex-row items-center gap-2 w-full">
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={data.percentageOther}
+                  onChange={(value) =>
+                    setDataValue("percentageOther", value.target.value)
+                  }
+                  className={
+                    "p-1 border rounded-md text-sm w-[150px] text-center " +
+                    (isSubmit &&
+                      !data.percentageOther &&
+                      " border-2 border-red-600")
+                  }
+                />
+                <span>%</span>
+              </td>
+            </tr>
+            <tr>
+              <td className="pl-4 text-sm">รวม</td>
+              <td>
+                <div className="flex flex-row items-center gap-2 w-full">
+                  <span className="w-[150px] text-center">
+                    {Number(data.percentageProduction) +
+                      Number(data.percentageOther)}
+                  </span>
+                  <span>%</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="sm:col-span-12">
+        <div className="border rounded-md">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="p-2 border text-center text-sm">จุดมุ่งหมาย</th>
+                <th
+                  className="=p-2 border text-center text-sm"
+                  style={{ width: "6%" }}
+                >
+                  ระยะเวลา (วัน)
+                </th>
+                <th
+                  className="p-2 border text-center text-sm"
+                  style={{ width: "25%" }}
+                >
+                  วัตถุประสงค์เชิงพฤติกรรมที่มีการฝึกปฏิบัติ
+                </th>
+                <th
+                  className="=p-2 border text-center text-sm"
+                  style={{ width: "15%" }}
+                >
+                  ปริมาณงาน
+                </th>
+                <th
+                  className="=p-2 border text-center text-sm"
+                  style={{ width: "15%" }}
+                >
+                  ระดับของการบรรลุวัตถุประสงค์
+                </th>
+                <th
+                  className="=p-2 border text-center text-sm"
+                  style={{ width: "15%" }}
+                >
+                  หมายเหตุ
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  ๑. ความรู้ด้านเทคโนโลยีการผลิตยารูปแบบต่างๆ ในระดับอุตสาหกรรม
+                  และทักษะในการควบคุมกระบวนการผลิต
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  <input
+                    type="number"
+                    value={data.p1_day}
+                    onChange={(value) =>
+                      setDataValue("p1_day", value.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit && !data.p1_day && " border-2 border-red-600")
+                    }
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p1_1_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p1_1_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      มีทักษะในการผลิตและควบคุมกระบวนการผลิตยาในรูปแบบต่าง ๆ
+                      อย่างน้อยหนึ่งรูปแบบ สามารถกำหนดลำดับขั้นตอน
+                      เลือกเครื่องมือที่ใช้
+                      และหาสภาวะที่เหมาะสมของแต่ละกระบวนการผลิตได้
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p1_dosage}
+                    label="p1_dosage"
+                    list={dosageLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p1_1_score}
+                    label="p1_1_score"
+                    list={scoreLabels}
+                    isRequired={data.p1_1_select}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  <Textarea
+                    className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
+                    onChange={(e) => {
+                      setDataValue("p1_note", e.target.value);
+                    }}
+                    rows={3 * 2}
+                    value={data.p1_note}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p1_2_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p1_2_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      ประยุกต์ความรู้เกี่ยวกับสถิติและคณิตศาสตร์ที่เกี่ยวกับการผลิต
+                      เช่น การกำหนดแผนการสุ่มตัวอย่าง การทำแผนภูมิควบคุมคุณภาพ
+                      (quality control chart, Cpk, RSD) เป็นต้น
+                      เพื่อนำไปควบคุมการผลิต
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p1_activity}
+                    label="p1_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p1_2_score}
+                    label="p1_2_score"
+                    list={scoreLabels}
+                    isRequired={data.p1_2_select}
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td className="p-2 border align-top text-sm" rowSpan={7}>
+                  ๒.
+                  ความรู้และทักษะในการบริหารปัจจัยการผลิตและสิ่งอำนวยความสะดวกต่าง
+                  ๆ รวมถึงอาคาร สถานที่ และสิ่งแวดล้อม
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={7}>
+                  <input
+                    type="number"
+                    value={data.p2_day}
+                    onChange={(value) =>
+                      setDataValue("p2_day", value.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit && !data.p2_day && " border-2 border-red-600")
+                    }
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p2_1_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p2_1_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจหลักการทำงานของเครื่องจักรอุปกรณ์ต่าง ๆ
+                      ในแต่ละหน่วยการผลิต ตลอดจนสิ่งอำนวยความสะดวกในการผลิต
+                      วิธีการทำความสะอาด ซ่อมแซมและบำรุงรักษา
+                      รวมถึงการตรวจสอบความถูกต้องของกระบวนการ (process
+                      validation)
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={7}>
+                  <ScoreForm
+                    value={data.p2_activity}
+                    label="p2_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_1_score}
+                    label="p2_1_score"
+                    list={scoreLabels}
+                    isRequired={data.p2_1_select}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={7}>
+                  <Textarea
+                    className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
+                    onChange={(e) => {
+                      setDataValue("p2_note", e.target.value);
+                    }}
+                    rows={3 * 7}
+                    value={data.p2_note}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p2_2_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p2_2_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      ทราบวิธีการตรวจรับรอง (qualification) เครื่องจักรการผลิต
+                      และการสอบเทียบ (calibration) เครื่องมือวัดที่ใช้ในการผลิต
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_2_score}
+                    label="p2_2_score"
+                    list={scoreLabels}
+                    isRequired={data.p2_2_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p2_3_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p2_3_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      ทราบกระบวนการฝึกอบรมพนักงานฝ่ายผลิต
+                      รวมถึงหลักปฏิบัติเกี่ยวกับสุขอนามัยและความปลอดภัยในการปฏิบัติงาน
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_3_score}
+                    label="p2_3_score"
+                    list={scoreLabels}
+                    isRequired={data.p2_3_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p2_4_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p2_4_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจหลักการและแนวทางการตรวจติดตามและควบคุมสภาวะแวดล้อม
+                      (environmental monitoring & control) ในบริเวณผลิตยา
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_4_score}
+                    label="p2_4_score"
+                    list={scoreLabels}
+                    isRequired={data.p2_4_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p2_5_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p2_5_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจหลักการป้องกันการปนเปื้อนข้าม (cross-contamination)
+                      และการป้องกันยาและวัตถุอันตรายไม่ให้ออกสู่สภาวะแวดล้อมภายนอกโรงงาน
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_5_score}
+                    label="p2_5_score"
+                    list={scoreLabels}
+                    isRequired={data.p2_5_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p2_6_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p2_6_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      ทราบข้อกำหนดเกี่ยวกับห้องสะอาด (cleanroom) ระดับต่าง ๆ
+                      รวมถึงวิธีการตรวจติดตามและประเมินห้องสะอาดในด้านต่าง ๆ
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_6_score}
+                    label="p2_6_score"
+                    list={scoreLabels}
+                    isRequired={data.p2_6_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p2_7_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p2_7_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจหลักการและแนวทางควบคุมมลพิษทางอุตสาหกรรมในด้านต่าง ๆ
+                      ทั้งมลพิษทางน้ำ ทางอากาศ ทางเสียง
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_7_score}
+                    label="p2_7_score"
+                    list={scoreLabels}
+                    isRequired={data.p2_7_select}
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td className="p-2 border align-top text-sm" rowSpan={6}>
+                  ๓. ความรู้ในหลักการบริหารการผลิต การบริหารคุณภาพ
+                  การวางแผนการผลิต และควบคุมสินค้าคงคลัง
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={6}>
+                  <input
+                    type="number"
+                    value={data.p3_day}
+                    onChange={(value) =>
+                      setDataValue("p3_day", value.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit && !data.p3_day && " border-2 border-red-600")
+                    }
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p3_1_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p3_1_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจลักษณะผังโครงสร้างองค์กร ทราบ บทบาทหน้าที่
+                      และความรับผิดชอบของบุคลากรฝ่ายผลิต เภสัชผู้ควบคุมการผลิต
+                      และเข้าใจความเชื่อมโยงระหว่างฝ่ายผลิตกับฝ่ายอื่นที่เกี่ยวข้อง
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={6}>
+                  <div className="flex flex-col gap-6">
+                    <ScoreForm
+                      value={data.p3_activity}
+                      label="p3_activity"
+                      list={activityLabels}
+                      rows={true}
+                      isRequired={true}
+                    />
+
+                    <ScoreForm
+                      value={data.p3_work}
+                      label="p3_work"
+                      list={workLabels}
+                      rows={true}
+                      isRequired={true}
+                    />
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p3_1_score}
+                    label="p3_1_score"
+                    list={scoreLabels}
+                    isRequired={data.p3_1_select}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={6}>
+                  <Textarea
+                    className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
+                    onChange={(e) => {
+                      setDataValue("p3_note", e.target.value);
+                    }}
+                    rows={3 * 6}
+                    value={data.p3_note}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p3_2_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p3_2_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจระบบเอกสาร (documentation) ที่เกี่ยวข้องกับการผลิต
+                      ทั้งในส่วนการจัดทำ การควบคุม การจัดเก็บ และการใช้ประโยชน์
+                      เช่น การจัดทำ SOP, BMR หรือ protocol เป็นต้น
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p3_2_score}
+                    label="p3_2_score"
+                    list={scoreLabels}
+                    isRequired={data.p3_2_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p3_3_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p3_3_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจหลักการและวิธีการวางแผนการผลิต เช่น
+                      การวางแผนกำลังการผลิต (capacity planning)
+                      การจัดตารางการผลิต การบริหารวัสดุและสินค้าคงคลัง
+                      การตรวจสอบและจัดการคอขวดของการผลิต เป็นต้น
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p3_3_score}
+                    label="p3_3_score"
+                    list={scoreLabels}
+                    isRequired={data.p3_3_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p3_4_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p3_4_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจหลักเกณฑ์ที่เกี่ยวข้องกับระบบประกันคุณภาพ เช่น GMP,
+                      ISO, HACCP
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p3_4_score}
+                    label="p3_4_score"
+                    list={scoreLabels}
+                    isRequired={data.p3_4_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p3_5_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p3_5_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจหลักการบริหารความเสี่ยง (risk management)
+                      โดยเฉพาะการบริหารความเสี่ยงด้านคุณภาพ (Quality risk
+                      management)
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p3_5_score}
+                    label="p3_5_score"
+                    list={scoreLabels}
+                    isRequired={data.p3_5_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p3_6_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p3_6_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจแนวทางปฏิบัติตามหลักปฏิบัติที่ดีในการจัดส่ง (GDP)
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p3_6_score}
+                    label="p3_6_score"
+                    list={scoreLabels}
+                    isRequired={data.p3_6_select}
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  ๔. ความรู้เกี่ยวกับกฎระเบียบที่เกี่ยวข้องกับอุตสาหกรรมยา
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  <input
+                    type="number"
+                    value={data.p4_day}
+                    onChange={(value) =>
+                      setDataValue("p4_day", value.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit && !data.p4_day && " border-2 border-red-600")
+                    }
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p4_1_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p4_1_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      เข้าใจลักษณะผังโครงสร้างองค์กร ทราบ บทบาทหน้าที่
+                      และความรับผิดชอบของบุคลากรฝ่ายผลิต เภสัชผู้ควบคุมการผลิต
+                      และเข้าใจความเชื่อมโยงระหว่างฝ่ายผลิตกับฝ่ายอื่นที่เกี่ยวข้อง
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  <div className="flex flex-col gap-6">
+                    <ScoreForm
+                      value={data.p4_activity}
+                      label="p4_activity"
+                      list={activityLabels}
+                      rows={true}
+                      isRequired={true}
+                    />
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p4_1_score}
+                    label="p4_1_score"
+                    list={scoreLabels}
+                    isRequired={data.p4_1_select}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  <Textarea
+                    className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
+                    onChange={(e) => {
+                      setDataValue("p4_note", e.target.value);
+                    }}
+                    rows={3 * 2}
+                    value={data.p4_note}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex flex-row items-start gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.p4_2_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p4_2_select", e.target.checked)
+                      }
+                      className="mt-1"
+                    />
+                    <span>
+                      ทราบข้อกำหนดและกฎระเบียบที่เกี่ยวข้องกับอุตสาหกรรม เช่น
+                      กฎหมายแรงงาน กฎหมายเกี่ยวกับสิ่งแวดล้อม
+                      กฎหมายเกี่ยวกับความปลอดภัยในการทำงาน
+                    </span>
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p4_2_score}
+                    label="p4_2_score"
+                    list={scoreLabels}
+                    isRequired={data.p4_2_select}
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  <p>๕. อื่นๆ (โปรดระบุ)</p>
+                  <Textarea
+                    className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
+                    onChange={(e) => {
+                      setDataValue("p5_title", e.target.value);
+                    }}
+                    rows={3 * 1}
+                    value={data.p5_title}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="number"
+                    value={data.p5_day}
+                    onChange={(value) =>
+                      setDataValue("p5_day", value.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit && !data.p5_day && " border-2 border-red-600")
+                    }
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm"></td>
+                <td className="p-2 border align-top text-sm">
+                  <div className="flex justify-center">
+                    <input
+                      type="checkbox"
+                      checked={data.p5_select}
+                      onChange={(e) =>
+                        setCheckboxValue("p5_select", e.target.checked)
+                      }
+                    />
+                  </div>
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p5_score}
+                    label="p5_score"
+                    list={scoreLabels}
+                    isRequired={data.p5_select}
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <Textarea
+                    className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
+                    onChange={(e) => {
+                      setDataValue("p5_note", e.target.value);
+                    }}
+                    rows={3 * 1}
+                    value={data.p5_note}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="sm:col-span-12">
+        <div className="pt-4 pb-4">
+          <h3 className="font-semibold mb-3 text-sm">ข้อเสนอแนะ</h3>
+          <Textarea
+            placeholder="ข้อเสนอแนะ"
+            className="min-h-24 border focus-visible:ring-0 resize-none text-sm"
+            onChange={(e) => {
+              setDataValue("suggestion", e.target.value);
+            }}
+            value={data.suggestion}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

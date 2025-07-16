@@ -20,43 +20,50 @@ const toThaiNumber = (number: number) => {
 const criteriaData = [
   {
     label: "p1",
-    point: 6,
-    title: `๑. เนื้อหา และสาระของชิ้นงานที่นำเสนอมีความชัดเจน เข้าใจง่าย ประกอบด้วยที่มาและเหตุผล วิธีการดำเนินและผลการปฏิบัติ รวมไปถึงประโยชน์ที่ได้รับต่อแหล่งฝึกและนักศึกษา (ค่าน้ำหนักเท่ากับ *6)`,
+    title: `๑. โครงสร้างการคุ้มครองผู้บริโภคในประเทศไทย ภาครัฐ และเอกชน`,
   },
   {
     label: "p2",
-    point: 2,
-    title:
-      "๒. การใช้หลักฐานทางวิชาการประกอบการค้นคว้าอย่างน่าเชื่อถือและทันสมัย (ค่าน้ำหนักเท่ากับ *2)",
+    title: "๒. กรณีศึกษาระบบและกลไกคุ้มครองผู้บริโภค กฎหมายและนโยบาย",
   },
   {
     label: "p3",
-    point: 2,
-    title:
-      "๓. บุคลิกภาพ การพูด ภาษาที่ใช้ในการนำเสนอ มีความเหมาะสม (ค่าน้ำหนักเท่ากับ *2)",
+    title: "๓. การทำงานคุ้มครองผู้บริโภคขององค์กร และหน่วยงานคุ้มครองผู้บริโภค",
   },
   {
     label: "p4",
-    point: 1,
-    title:
-      "๔. สื่อที่ใช้ประกอบการนำเสนอ มีความถูกต้อง ชัดเจน และมีคุณภาพ (ค่าน้ำหนักเท่ากับ *1)",
+    title: "๔. ทำคดีเรื่องร้องเรียน",
   },
   {
     label: "p5",
-    point: 5,
-    title:
-      "๕. ตอบคำถามและ/หรือแสดงความคิดเห็นได้อย่างถูกต้อง มีเหตุผล สามารถแสดงความคิดเห็นที่ได้จากการวิเคราะห์ปัญหา โดยประยุกต์ใช้ความรู้ที่มีอยู่เดิมและจากการเรียนรู้จากแหล่งฝึกมาประกอบ (ค่าน้ำหนักเท่ากับ *5)",
+    title: "๕. รับเรื่องขออนุญาตผลิตภัณฑ์และบริการสุขภาพก่อนออกสู่ท้องตลาด",
   },
   {
     label: "p6",
-    point: 1,
-    title: "๖. การใช้เวลา มีความเหมาะสมกับเนื้อหา (ค่าน้ำหนักเท่ากับ *1)",
+    title: "๖. ตรวจสอบผลิตภัณฑ์และบริการสุขภาพหลังออกสู่ท้องตลาด",
   },
   {
     label: "p7",
-    point: 3,
+    title: "๗. ศึกษาระบบเฝ้าระวังความเสี่ยงด้านยาและสุขภาพในชุมชน/แหล่งฝึก",
+  },
+  {
+    label: "p8",
     title:
-      "๗. ภาพรวมการนำเสนอ/อภิปราย ได้แก่ ความน่าสนใจของการนำเสนอ การเรียงลำดับของเนื้อหา เป็นต้น (ค่าน้ำหนักเท่ากับ *3)",
+      "๘. เสนอแนวทางการจัดการความเสี่ยงด้านยาและผลิตภัณฑ์สุขภาพในชุมชน/พื้นที่",
+  },
+  {
+    label: "p9",
+    title:
+      "๙. สื่อสารความเสี่ยงเพื่อลดหรือกำจัดความเสี่ยงในงานคุ้มครองผู้บริโภค",
+  },
+  {
+    label: "p10",
+    title:
+      "๑๐. ศึกษาบริบทของชุมชนและวิเคราะห์ปัญหาด้านเภสัชสาธารณสุขของชุมชนด้วยกระบวนการศึกษาชุมชน",
+  },
+  {
+    label: "p11",
+    title: "๑๑. นำเสนอแผนงาน/โครงการ/กิจกรรมแก้ไขปัญหาทางด้านเภสัชสาธารณสุข",
   },
 ];
 
@@ -71,8 +78,10 @@ export default function Page(props: any) {
     p5: parentForm.getValues("result.p5") || "",
     p6: parentForm.getValues("result.p6") || "",
     p7: parentForm.getValues("result.p7") || "",
-
-    suggestion: parentForm.getValues("result.suggestion") || "",
+    p8: parentForm.getValues("result.p8") || "",
+    p9: parentForm.getValues("result.p9") || "",
+    p10: parentForm.getValues("result.p10") || "",
+    p11: parentForm.getValues("result.p11") || "",
   });
 
   useEffect(() => {
@@ -88,7 +97,7 @@ export default function Page(props: any) {
   };
 
   const handleCheckValid = () => {
-    const keyList = ["suggestion"];
+    const keyList = ["other"];
     return !Object.keys(data).some((key) => {
       if (!keyList.includes(key)) {
         const value = data[key as keyof typeof data];
@@ -102,99 +111,6 @@ export default function Page(props: any) {
 
   return (
     <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-12 ">
-      <div className="sm:col-span-12 ">
-        <div className="">
-          <p className="text-sm">คำชี้แจง แนวทางของการให้คะแนน</p>
-        </div>
-      </div>
-      <div className="sm:col-span-12 ">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-slate-100">
-              <th
-                className="p-2 border text-left text-sm"
-                style={{ width: "10%" }}
-              >
-                คะแนน
-              </th>
-              <th
-                className="p-2 border text-left text-sm"
-                style={{ width: "10%" }}
-              >
-                ระดับ
-              </th>
-              <th
-                className="p-2 border text-left text-sm"
-                style={{ width: "80%" }}
-              >
-                นิยาม
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
-              </td>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ดีมาก
-              </td>
-              <td className="p-2 border font-medium align-top text-sm">
-                นักศึกษาสามารถนำเสนอ อภิปราย และตอบคำถามได้ถูกต้องครบถ้วน
-                และนำไปใช้ประโยชน์ได้
-              </td>
-            </tr>
-            <tr>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
-              </td>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ดี
-              </td>
-              <td className="p-2 border font-medium align-top text-sm">
-                นักศึกษาสามารถนำเสนอ อภิปราย และตอบคำถามได้ถูกต้อง
-                และนำไปใช้ประโยชน์ได้บางส่วน
-              </td>
-            </tr>
-            <tr>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
-              </td>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ปานกลาง
-              </td>
-              <td className="p-2 border font-medium align-top text-sm">
-                นักศึกษาสามารถนำเสนอ อภิปราย และตอบคำถามได้ในเกณฑ์พอใช้
-              </td>
-            </tr>
-            <tr>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
-              </td>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ปรับปรุง
-              </td>
-              <td className="p-2 border font-medium align-top text-sm">
-                นักศึกษาสามารถนำเสนอ อภิปราย และตอบคำถามได้ถูกต้องบางส่วน
-                ขาดข้อมูลสำคัญ ไม่สามารถนำไปประยุกต์ใช้ได้
-              </td>
-            </tr>
-            <tr>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
-              </td>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                ไม่ผ่าน
-              </td>
-              <td className="p-2 border font-medium align-top text-sm">
-                นักศึกษาไม่สามารถนำเสนอ อภิปราย และตอบคำถามได้ ขาดข้อมูลสำคัญ
-                ต้องสอนการทำกรณีศึกษาใหม่
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
       <div className="sm:col-span-12 py-2">
         <p className="text-center text-md font-bold">แบบฟอร์มการประเมิน</p>
       </div>
@@ -209,33 +125,38 @@ export default function Page(props: any) {
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
+                  style={{ width: "8%" }}
                 >
-                  ๕
+                  <div>๕</div>
+                  <div>(ดีมาก)</div>
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
+                  style={{ width: "8%" }}
                 >
-                  ๔
+                  <div>๔</div>
+                  <div>(ดี)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
+                  style={{ width: "8%" }}
                 >
-                  ๓
+                  <div>๓</div>
+                  <div>(ปานกลาง)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
+                  style={{ width: "8%" }}
                 >
-                  ๒
+                  <div>๒</div>
+                  <div>(พอใช้)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
+                  style={{ width: "8%" }}
                 >
-                  ๑
+                  <div>๑</div>
+                  <div>(ปรับปรุง)</div>
                 </th>
               </tr>
             </thead>
@@ -250,7 +171,7 @@ export default function Page(props: any) {
                       )}
                       <>{item.title}</>
                     </td>
-                    <td className="p-2 border align-top text-sm">
+                    <td className="p-2 border align-bottom text-sm">
                       <div className="flex flex-col items-center justify-center h-full">
                         <RadioGroup
                           onValueChange={(value) =>
@@ -273,7 +194,7 @@ export default function Page(props: any) {
                         </RadioGroup>
                       </div>
                     </td>
-                    <td className="p-2 border align-top text-sm">
+                    <td className="p-2 border align-bottom text-sm">
                       <div className="flex flex-col items-center justify-center h-full">
                         <RadioGroup
                           onValueChange={(value) =>
@@ -296,7 +217,7 @@ export default function Page(props: any) {
                         </RadioGroup>
                       </div>
                     </td>
-                    <td className="p-2 border align-top text-sm">
+                    <td className="p-2 border align-bottom text-sm">
                       <div className="flex flex-col items-center justify-center h-full">
                         <RadioGroup
                           onValueChange={(value) =>
@@ -319,7 +240,7 @@ export default function Page(props: any) {
                         </RadioGroup>
                       </div>
                     </td>
-                    <td className="p-2 border align-top text-sm">
+                    <td className="p-2 border align-bottom text-sm">
                       <div className="flex flex-col items-center justify-center h-full">
                         <RadioGroup
                           onValueChange={(value) =>
@@ -342,7 +263,7 @@ export default function Page(props: any) {
                         </RadioGroup>
                       </div>
                     </td>
-                    <td className="p-2 border align-top text-sm">
+                    <td className="p-2 border align-bottom text-sm">
                       <div className="flex flex-col items-center justify-center h-full">
                         <RadioGroup
                           onValueChange={(value) =>
@@ -372,39 +293,28 @@ export default function Page(props: any) {
             <tbody>
               <tr>
                 <td className="p-2 border align-center text-sm font-bold text-center">
-                  คะแนนรวมเต็ม 100 (คะแนนส่วนที่ 1 x 6) + (คะแนนส่วนที่ 2 x 2) +
-                  (คะแนนส่วนที่ 3 x 2) + (คะแนนส่วนที่ 4 x 1) + (คะแนนส่วนที่ 5
-                  x 5) + (คะแนนส่วนที่ 6 x 1) + (คะแนนส่วนที่ 7 x 3)
+                  รวมคะแนน (คะแนนที่ได้ x ๒๐) / ฐานคะแนนที่มีการประเมินจริง
                 </td>
                 <td
                   className="p-2 border align-center text-sm font-bold text-center"
                   colSpan={5}
                 >
                   {toThaiNumber(
-                    criteriaData.reduce((total, item) => {
-                      const value = data[item.label as keyof typeof data];
-                      return (
-                        total + (value ? parseInt(value, 10) * item.point : 0)
-                      );
-                    }, 0)
+                    Number(
+                      (
+                        (criteriaData.reduce((total, item) => {
+                          const value = data[item.label as keyof typeof data];
+                          return total + (value ? parseInt(value, 10) : 0);
+                        }, 0) *
+                          20) /
+                        11
+                      ).toFixed(2)
+                    )
                   )}
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-      <div className="sm:col-span-12">
-        <div className="pt-4 pb-4">
-          <h3 className="font-semibold mb-3 text-sm">ข้อเสนอแนะ</h3>
-          <Textarea
-            placeholder="ข้อเสนอแนะ"
-            className="min-h-24 border focus-visible:ring-0 resize-none text-sm"
-            onChange={(e) => {
-              setDataValue("suggestion", e.target.value);
-            }}
-            value={data.suggestion}
-          />
         </div>
       </div>
     </div>

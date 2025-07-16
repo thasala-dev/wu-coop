@@ -63,14 +63,17 @@ export default function Page(props: any) {
   };
 
   const handleCheckValid = () => {
-    let isValid = false;
-    Object.keys(data).forEach((key) => {
-      const value = data[key as keyof typeof data];
-      if (!value) {
-        isValid = true;
+    const keyList = ["suggestion"];
+
+    return !Object.keys(data).some((key) => {
+      if (!keyList.includes(key)) {
+        const value = data[key as keyof typeof data];
+        if (!value) {
+          return true;
+        }
       }
+      return false;
     });
-    return !isValid;
   };
 
   return (

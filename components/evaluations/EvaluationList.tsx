@@ -9,8 +9,11 @@ import CARE_p4 from "@/components/evaluations/CARE/p4";
 import CARE_p5 from "@/components/evaluations/CARE/p5";
 import CARE_p6 from "@/components/evaluations/CARE/p6";
 import CARE_pm5 from "@/components/evaluations/CARE/pm5";
+import CARE_ssj1 from "@/components/evaluations/CARE/ssj1";
+import CARE_ssj2 from "@/components/evaluations/CARE/ssj2";
 // SCI Components
 import SCI_p1 from "@/components/evaluations/SCI/p1";
+import SCI_p2_2 from "@/components/evaluations/SCI/p2_2";
 import SCI_p3 from "@/components/evaluations/SCI/p3";
 
 export default function EvaluationList(props: any) {
@@ -33,9 +36,15 @@ export default function EvaluationList(props: any) {
     return <CARE_p6 {...props} />;
   } else if (subtype === "22") {
     return <CARE_pm5 {...props} />;
-  } else if (subtype === "29") {
+  } else if (subtype === "23") {
+    return <CARE_ssj1 {...props} />;
+  } else if (subtype === "24") {
+    return <CARE_ssj2 {...props} />;
+  } else if (subtype === "29" || subtype === "39") {
     return <SCI_p1 {...props} />;
-  } else if (subtype === "34") {
+  } else if (subtype === "30") {
+    return <SCI_p2_2 {...props} />;
+  } else if (subtype === "34" || subtype === "50") {
     return <SCI_p3 {...props} />;
   }
   return <Empty {...props} />;

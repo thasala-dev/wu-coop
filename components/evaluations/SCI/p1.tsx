@@ -7,7 +7,13 @@ const toThaiNumber = (number: number) => {
   return number
     .toString()
     .split("")
-    .map((digit) => thaiNumbers[parseInt(digit, 10)])
+    .map((char) => {
+      if (char === ".") {
+        return ".";
+      }
+      const digit = parseInt(char, 10);
+      return isNaN(digit) ? char : thaiNumbers[digit];
+    })
     .join("");
 };
 
@@ -74,7 +80,7 @@ export default function Page(props: any) {
     p9: parentForm.getValues("result.p9") || "",
     p10: parentForm.getValues("result.p10") || "",
 
-    suggestion: parentForm.getValues("result.strength") || "",
+    suggestion: parentForm.getValues("result.suggestion") || "",
   });
 
   useEffect(() => {
@@ -90,17 +96,16 @@ export default function Page(props: any) {
   };
 
   const handleCheckValid = () => {
-    let isValid = false;
-    Object.keys(data).forEach((key) => {
-      if (key === "locationOther" || key === "communicatorOther") {
-        isValid = false;
+    const keyList = ["suggestion"];
+    return !Object.keys(data).some((key) => {
+      if (!keyList.includes(key)) {
+        const value = data[key as keyof typeof data];
+        if (!value) {
+          return true;
+        }
       }
-      const value = data[key as keyof typeof data];
-      if (!value) {
-        return true;
-      }
+      return false;
     });
-    return !isValid;
   };
 
   return (
@@ -424,21 +429,12 @@ export default function Page(props: any) {
           <h3 className="font-semibold mb-3 text-sm">ข้อเสนอแนะ</h3>
           <Textarea
             placeholder="ข้อเสนอแนะ"
-            className={
-              "min-h-24 border focus-visible:ring-0 resize-none text-sm" +
-              (isSubmit && !data.suggestion ? " border-2 border-red-600" : "")
-            }
+            className="min-h-24 border focus-visible:ring-0 resize-none text-sm"
             onChange={(e) => {
-              setDataValue("strength", e.target.value);
+              setDataValue("suggestion", e.target.value);
             }}
             value={data.suggestion}
           />
-
-          {isSubmit && !data.suggestion && (
-            <p className="text-xs text-red-600 mt-1 text-center">
-              กรุณากรอกข้อเสนอแนะ
-            </p>
-          )}
         </div>
       </div>
     </div>
