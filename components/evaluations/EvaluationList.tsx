@@ -8,6 +8,7 @@ import CARE_p3_3 from "@/components/evaluations/CARE/p3_3";
 import CARE_p4 from "@/components/evaluations/CARE/p4";
 import CARE_p5 from "@/components/evaluations/CARE/p5";
 import CARE_p6 from "@/components/evaluations/CARE/p6";
+import CARE_p7 from "@/components/evaluations/CARE/p7";
 import CARE_pm5 from "@/components/evaluations/CARE/pm5";
 import CARE_ssj1 from "@/components/evaluations/CARE/ssj1";
 import CARE_ssj2 from "@/components/evaluations/CARE/ssj2";
@@ -34,7 +35,9 @@ export default function EvaluationList(props: any) {
     return <CARE_p5 {...props} />;
   } else if (subtype === "13") {
     return <CARE_p6 {...props} />;
-  } else if (subtype === "22") {
+  } else if (subtype === "14") {
+    return <CARE_p7 {...props} />;
+  }  else if (subtype === "22") {
     return <CARE_pm5 {...props} />;
   } else if (subtype === "23") {
     return <CARE_ssj1 {...props} />;
