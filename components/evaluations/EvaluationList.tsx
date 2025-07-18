@@ -15,6 +15,7 @@ import CARE_ssj2 from "@/components/evaluations/CARE/ssj2";
 // SCI Components
 import SCI_p1 from "@/components/evaluations/SCI/p1";
 import SCI_p2_2 from "@/components/evaluations/SCI/p2_2";
+import SCI_p2_4 from "@/components/evaluations/SCI/p2_4";
 import SCI_p3 from "@/components/evaluations/SCI/p3";
 
 export default function EvaluationList(props: any) {
@@ -37,7 +38,7 @@ export default function EvaluationList(props: any) {
     return <CARE_p6 {...props} />;
   } else if (subtype === "14") {
     return <CARE_p7 {...props} />;
-  }  else if (subtype === "22") {
+  } else if (subtype === "22") {
     return <CARE_pm5 {...props} />;
   } else if (subtype === "23") {
     return <CARE_ssj1 {...props} />;
@@ -49,6 +50,8 @@ export default function EvaluationList(props: any) {
     return <SCI_p2_2 {...props} />;
   } else if (subtype === "34" || subtype === "50") {
     return <SCI_p3 {...props} />;
+  } else if (subtype === "35") {
+    return <SCI_p2_4 {...props} />;
   }
   return <Empty {...props} />;
 }
