@@ -76,6 +76,11 @@ export async function GET(request: NextRequest, { params }: any) {
       [studentData.id, studentData.calendar_id]
     );
 
+    const evaluationsCompleted = await sql(
+      `select count(*) from evaluations_result where intern_id = $1`,
+      [id]
+    );
+
     let form = [];
     for (const item of studentData.evaluations) {
       const data = await sql(
@@ -96,6 +101,7 @@ export async function GET(request: NextRequest, { params }: any) {
       success: true,
       message: "ดำเนินการสำเร็จ",
       data: studentData,
+      evaluationsCompleted: evaluationsCompleted[0].count,
       activities: activities,
       evaluation: form,
     });

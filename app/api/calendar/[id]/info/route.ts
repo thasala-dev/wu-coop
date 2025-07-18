@@ -6,7 +6,8 @@ export async function GET(request: NextRequest, { params }: any) {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
     const intern = await sql(
-      `SELECT  intern.id, intern.company_id, student.student_id, student.fullname,student.major, student.gpa, company.name as company_name, intern.register_date, company.evaluation_type
+      `SELECT  intern.id, intern.company_id, student.student_id, student.fullname,student.major, student.gpa, company.name as company_name, intern.register_date, company.evaluation_type,
+      (select count(*) from evaluations_result where intern_id = intern.id) as total
       FROM regist_intern intern
       INNER JOIN user_student student ON intern.student_id = student.id
       LEFT JOIN user_company company ON intern.company_id = company.id

@@ -55,7 +55,7 @@ export default function StudentDetailPage() {
   const id = params?.id as string;
   const [evaluationsType, setEvaluationsType] = useState<any[]>([]);
 
-  const [newNote, setNewNote] = useState("");
+  const [evaluationsCompleted, setEvaluationsCompleted] = useState(0);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const { toast } = useToast();
@@ -149,7 +149,7 @@ export default function StudentDetailPage() {
       const data = await response.json();
       if (data.success) {
         setData(data.data);
-        console.log("Setting form values with data:", data.data);
+        setEvaluationsCompleted(data.evaluationsCompleted || 0);
         setValue("position", data.data.position);
         setValue("job_description", data.data.job_description);
         let evaluationTypes = [];
@@ -359,6 +359,7 @@ export default function StudentDetailPage() {
                                 checked={watch("evaluation_type")?.includes(
                                   item.id
                                 )}
+                                disabled={evaluationsCompleted > 0}
                                 onChange={(e) => {
                                   const currentValues =
                                     watch("evaluation_type") || [];

@@ -739,6 +739,7 @@ export default function AdminMatching() {
                                   size="sm"
                                   variant="destructive"
                                   onClick={() => handleUnlink(item.id)}
+                                  disabled={item.total != "0"}
                                 >
                                   <Link2Off className="h-3.5 w-3.5" />
                                   ยกเลิกจับคู่
