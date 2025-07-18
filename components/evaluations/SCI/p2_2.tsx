@@ -63,7 +63,6 @@ const checkboxScoreValidation = [
   { select: "p3_6_select", score: "p3_6_score" },
   { select: "p4_1_select", score: "p4_1_score" },
   { select: "p4_2_select", score: "p4_2_score" },
-  { select: "p5_select", score: "p5_score" },
 ];
 
 export default function Page(props: any) {
@@ -134,7 +133,6 @@ export default function Page(props: any) {
     p5_title: parentForm.getValues("result.p5_title") || "",
     p5_day: parentForm.getValues("result.p5_day") || "",
     p5_note: parentForm.getValues("result.p5_note") || "",
-    p5_select: parentForm.getValues("result.p5_select") || false,
     p5_score: parentForm.getValues("result.p5_score") || "",
 
     suggestion: parentForm.getValues("result.suggestion") || "",
@@ -1166,23 +1164,12 @@ export default function Page(props: any) {
                   />
                 </td>
                 <td className="p-2 border align-top text-sm"></td>
-                <td className="p-2 border align-top text-sm">
-                  <div className="flex justify-center">
-                    <input
-                      type="checkbox"
-                      checked={data.p5_select}
-                      onChange={(e) =>
-                        setCheckboxValue("p5_select", e.target.checked)
-                      }
-                    />
-                  </div>
-                </td>
+                <td className="p-2 border align-top text-sm"></td>
                 <td className="p-2 border align-top text-sm">
                   <ScoreForm
                     value={data.p5_score}
                     label="p5_score"
                     list={scoreLabels}
-                    isRequired={data.p5_select}
                   />
                 </td>
                 <td className="p-2 border align-top text-sm">

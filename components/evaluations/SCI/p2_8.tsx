@@ -50,156 +50,91 @@ const checkboxScoreValidation = [
   { select: "p1_2_select", score: "p1_2_score" },
   { select: "p1_3_select", score: "p1_3_score" },
   { select: "p1_4_select", score: "p1_4_score" },
-  { select: "p1_5_select", score: "p1_5_score" },
-  { select: "p1_6_select", score: "p1_6_score" },
-  { select: "p1_7_select", score: "p1_7_score" },
-  { select: "p1_8_select", score: "p1_8_score" },
-  { select: "p1_9_select", score: "p1_9_score" },
-  { select: "p1_10_select", score: "p1_10_score" },
+
   { select: "p2_1_select", score: "p2_1_score" },
   { select: "p2_2_select", score: "p2_2_score" },
   { select: "p2_3_select", score: "p2_3_score" },
   { select: "p2_4_select", score: "p2_4_score" },
   { select: "p2_5_select", score: "p2_5_score" },
-  { select: "p2_6_select", score: "p2_6_score" },
-  { select: "p2_7_select", score: "p2_7_score" },
+
   { select: "p3_1_select", score: "p3_1_score" },
   { select: "p3_2_select", score: "p3_2_score" },
   { select: "p3_3_select", score: "p3_3_score" },
   { select: "p3_4_select", score: "p3_4_score" },
   { select: "p3_5_select", score: "p3_5_score" },
-  { select: "p4_1_select", score: "p4_1_score" },
-  { select: "p4_2_select", score: "p4_2_score" },
-  { select: "p4_3_select", score: "p4_3_score" },
-  { select: "p4_4_select", score: "p4_4_score" },
-  { select: "p4_5_select", score: "p4_5_score" },
-  { select: "p4_6_select", score: "p4_6_score" },
+  { select: "p3_6_select", score: "p3_6_score" },
+  { select: "p3_7_select", score: "p3_7_score" },
 ];
 
 export default function Page(props: any) {
   const { form: parentForm, isSubmit, setFormValidated, isClick } = props;
 
   const [data, setData] = useState<any>({
-    percentageDevelopment:
-      parentForm.getValues("result.percentageDevelopment") || "",
-    percentageProduction:
-      parentForm.getValues("result.percentageProduction") || "",
     percentageQc: parentForm.getValues("result.percentageQc") || "",
-    percentageRegistration:
-      parentForm.getValues("result.percentageRegistration") || "",
+    percentageQa: parentForm.getValues("result.percentageQa") || "",
     percentageOther: parentForm.getValues("result.percentageOther") || "",
     otherDepartment: parentForm.getValues("result.otherDepartment") || "",
 
     p1_day: parentForm.getValues("result.p1_day") || "",
+    p1_activity: parentForm.getValues("result.p1_activity") || "",
+    p1_work: parentForm.getValues("result.p1_work") || "",
     p1_note: parentForm.getValues("result.p1_note") || "",
 
     p1_1_select: parentForm.getValues("result.p1_1_select") || false,
-    p1_1_activity: parentForm.getValues("result.p1_1_activity") || "",
     p1_1_score: parentForm.getValues("result.p1_1_score") || "",
     p1_2_select: parentForm.getValues("result.p1_2_select") || false,
-    p1_2_activity: parentForm.getValues("result.p1_2_activity") || "",
     p1_2_score: parentForm.getValues("result.p1_2_score") || "",
     p1_3_select: parentForm.getValues("result.p1_3_select") || false,
-    p1_3_activity: parentForm.getValues("result.p1_3_activity") || "",
     p1_3_score: parentForm.getValues("result.p1_3_score") || "",
     p1_4_select: parentForm.getValues("result.p1_4_select") || false,
-    p1_4_activity: parentForm.getValues("result.p1_4_activity") || "",
     p1_4_score: parentForm.getValues("result.p1_4_score") || "",
-    p1_5_select: parentForm.getValues("result.p1_5_select") || false,
-    p1_5_activity: parentForm.getValues("result.p1_5_activity") || "",
-    p1_5_score: parentForm.getValues("result.p1_5_score") || "",
-    p1_6_select: parentForm.getValues("result.p1_6_select") || false,
-    p1_6_activity: parentForm.getValues("result.p1_6_activity") || "",
-    p1_6_score: parentForm.getValues("result.p1_6_score") || "",
-    p1_7_select: parentForm.getValues("result.p1_7_select") || false,
-    p1_7_activity: parentForm.getValues("result.p1_7_activity") || "",
-    p1_7_score: parentForm.getValues("result.p1_7_score") || "",
-    p1_8_select: parentForm.getValues("result.p1_8_select") || false,
-    p1_8_activity: parentForm.getValues("result.p1_8_activity") || "",
-    p1_8_score: parentForm.getValues("result.p1_8_score") || "",
-    p1_9_select: parentForm.getValues("result.p1_9_select") || false,
-    p1_9_activity: parentForm.getValues("result.p1_9_activity") || "",
-    p1_9_score: parentForm.getValues("result.p1_9_score") || "",
-    p1_10_select: parentForm.getValues("result.p1_10_select") || false,
-    p1_10_activity: parentForm.getValues("result.p1_10_activity") || "",
-    p1_10_score: parentForm.getValues("result.p1_10_score") || "",
 
     p2_day: parentForm.getValues("result.p2_day") || "",
+    p2_activity: parentForm.getValues("result.p2_activity") || "",
+    p2_work: parentForm.getValues("result.p2_work") || "",
     p2_note: parentForm.getValues("result.p2_note") || "",
 
     p2_1_select: parentForm.getValues("result.p2_1_select") || false,
-    p2_1_activity: parentForm.getValues("result.p2_1_activity") || "",
     p2_1_score: parentForm.getValues("result.p2_1_score") || "",
     p2_2_select: parentForm.getValues("result.p2_2_select") || false,
-    p2_2_activity: parentForm.getValues("result.p2_2_activity") || "",
     p2_2_score: parentForm.getValues("result.p2_2_score") || "",
     p2_3_select: parentForm.getValues("result.p2_3_select") || false,
-    p2_3_activity: parentForm.getValues("result.p2_3_activity") || "",
     p2_3_score: parentForm.getValues("result.p2_3_score") || "",
     p2_4_select: parentForm.getValues("result.p2_4_select") || false,
-    p2_4_activity: parentForm.getValues("result.p2_4_activity") || "",
     p2_4_score: parentForm.getValues("result.p2_4_score") || "",
     p2_5_select: parentForm.getValues("result.p2_5_select") || false,
-    p2_5_activity: parentForm.getValues("result.p2_5_activity") || "",
     p2_5_score: parentForm.getValues("result.p2_5_score") || "",
-    p2_6_select: parentForm.getValues("result.p2_6_select") || false,
-    p2_6_activity: parentForm.getValues("result.p2_6_activity") || "",
-    p2_6_score: parentForm.getValues("result.p2_6_score") || "",
-    p2_7_select: parentForm.getValues("result.p2_7_select") || false,
-    p2_7_activity: parentForm.getValues("result.p2_7_activity") || "",
-    p2_7_score: parentForm.getValues("result.p2_7_score") || "",
 
     p3_day: parentForm.getValues("result.p3_day") || "",
+    p3_activity: parentForm.getValues("result.p3_activity") || "",
+    p3_work: parentForm.getValues("result.p3_work") || "",
     p3_note: parentForm.getValues("result.p3_note") || "",
 
     p3_1_select: parentForm.getValues("result.p3_1_select") || false,
-    p3_1_activity: parentForm.getValues("result.p3_1_activity") || "",
     p3_1_score: parentForm.getValues("result.p3_1_score") || "",
     p3_2_select: parentForm.getValues("result.p3_2_select") || false,
-    p3_2_activity: parentForm.getValues("result.p3_2_activity") || "",
     p3_2_score: parentForm.getValues("result.p3_2_score") || "",
     p3_3_select: parentForm.getValues("result.p3_3_select") || false,
-    p3_3_activity: parentForm.getValues("result.p3_3_activity") || "",
     p3_3_score: parentForm.getValues("result.p3_3_score") || "",
     p3_4_select: parentForm.getValues("result.p3_4_select") || false,
-    p3_4_activity: parentForm.getValues("result.p3_4_activity") || "",
     p3_4_score: parentForm.getValues("result.p3_4_score") || "",
     p3_5_select: parentForm.getValues("result.p3_5_select") || false,
-    p3_5_activity: parentForm.getValues("result.p3_5_activity") || "",
     p3_5_score: parentForm.getValues("result.p3_5_score") || "",
+    p3_6_select: parentForm.getValues("result.p3_6_select") || false,
+    p3_6_score: parentForm.getValues("result.p3_6_score") || "",
+    p3_7_select: parentForm.getValues("result.p3_7_select") || false,
+    p3_7_score: parentForm.getValues("result.p3_7_score") || "",
 
+    p4_title: parentForm.getValues("result.p4_title") || "",
     p4_day: parentForm.getValues("result.p4_day") || "",
     p4_note: parentForm.getValues("result.p4_note") || "",
-
-    p4_1_select: parentForm.getValues("result.p4_1_select") || false,
-    p4_1_activity: parentForm.getValues("result.p4_1_activity") || "",
-    p4_1_score: parentForm.getValues("result.p4_1_score") || "",
-    p4_2_select: parentForm.getValues("result.p4_2_select") || false,
-    p4_2_activity: parentForm.getValues("result.p4_2_activity") || "",
-    p4_2_score: parentForm.getValues("result.p4_2_score") || "",
-    p4_3_select: parentForm.getValues("result.p4_3_select") || false,
-    p4_3_activity: parentForm.getValues("result.p4_3_activity") || "",
-    p4_3_score: parentForm.getValues("result.p4_3_score") || "",
-    p4_4_select: parentForm.getValues("result.p4_4_select") || false,
-    p4_4_activity: parentForm.getValues("result.p4_4_activity") || "",
-    p4_4_score: parentForm.getValues("result.p4_4_score") || "",
-    p4_5_select: parentForm.getValues("result.p4_5_select") || false,
-    p4_5_activity: parentForm.getValues("result.p4_5_activity") || "",
-    p4_5_score: parentForm.getValues("result.p4_5_score") || "",
-    p4_6_select: parentForm.getValues("result.p4_6_select") || false,
-    p4_6_activity: parentForm.getValues("result.p4_6_activity") || "",
-    p4_6_score: parentForm.getValues("result.p4_6_score") || "",
-
-    p5_title: parentForm.getValues("result.p5_title") || "",
-    p5_day: parentForm.getValues("result.p5_day") || "",
-    p5_note: parentForm.getValues("result.p5_note") || "",
-    p5_score: parentForm.getValues("result.p5_score") || "",
+    p4_score: parentForm.getValues("result.p4_score") || "",
 
     suggestion: parentForm.getValues("result.suggestion") || "",
   });
 
   useEffect(() => {
-    console.log("handleCheckValid():", handleCheckValid());
+    console.log("handleCheckValid():", data);
 
     setFormValidated(handleCheckValid());
   }, [isSubmit, isClick]);
@@ -282,9 +217,8 @@ export default function Page(props: any) {
       "p1_note",
       "p2_note",
       "p3_note",
+      "p4_title",
       "p4_note",
-      "p5_title",
-      "p5_note",
       "suggestion",
     ];
 
@@ -333,8 +267,8 @@ export default function Page(props: any) {
           <p className="text-sm mb-2">
             การประเมินแบ่งออกเป็น 2 ส่วน ได้แก่
             การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์ของการฝึกปฏิบัติงาน
-            โดยทั้ง 2 ส่วนประกอบด้วยจุดมุ่งหมายหลัก 5 ข้อ
-            นักศึกษาควรได้รับการฝึกปฏิบัติงานจนครบทั้ง 5 จุดมุ่งหมายหลัก
+            โดยทั้ง 2 ส่วนประกอบด้วยจุดมุ่งหมายหลัก 3 ข้อ
+            นักศึกษาควรได้รับการฝึกปฏิบัติงานจนครบทั้ง 3 จุดมุ่งหมายหลัก
             แต่ละจุดมุ่งหมายหลักมีวัตถุประสงค์เชิงพฤติกรรมหลายส่วน
             ซึ่งอาจไม่จำเป็นต้องฝึกปฏิบัติงานจนครบทุกวัตถุประสงค์
             ทั้งนี้ขึ้นกับความพร้อมและบริบทของแต่ละแหล่งฝึก
@@ -462,42 +396,22 @@ export default function Page(props: any) {
                 สัดส่วนงานที่ให้นักศึกษาได้ฝึกปฏิบัติจริง
               </td>
             </tr>
+
             <tr>
-              <td className="pl-4 text-sm">ด้านงานวิจัยและพัฒนา</td>
+              <td className="pl-4 text-sm">ด้านประกันคุณภาพ</td>
               <td className="flex flex-row items-center gap-2 w-full">
                 <input
                   type="number"
                   min={0}
                   max={100}
-                  value={data.percentageDevelopment}
+                  value={data.percentageQa}
                   onChange={(value) =>
-                    setDataValue("percentageDevelopment", value.target.value)
+                    setDataValue("percentageQa", value.target.value)
                   }
                   className={
                     "p-1 border rounded-md text-sm w-[150px] text-center " +
                     (isSubmit &&
-                      !data.percentageDevelopment &&
-                      " border-2 border-red-600")
-                  }
-                />
-                <span>%</span>
-              </td>
-            </tr>
-            <tr>
-              <td className="pl-4 text-sm">ด้านการผลิต</td>
-              <td className="flex flex-row items-center gap-2 w-full">
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={data.percentageProduction}
-                  onChange={(value) =>
-                    setDataValue("percentageProduction", value.target.value)
-                  }
-                  className={
-                    "p-1 border rounded-md text-sm w-[150px] text-center " +
-                    (isSubmit &&
-                      !data.percentageProduction &&
+                      !data.percentageQa &&
                       " border-2 border-red-600")
                   }
                 />
@@ -519,27 +433,6 @@ export default function Page(props: any) {
                     "p-1 border rounded-md text-sm w-[150px] text-center " +
                     (isSubmit &&
                       !data.percentageQc &&
-                      " border-2 border-red-600")
-                  }
-                />
-                <span>%</span>
-              </td>
-            </tr>
-            <tr>
-              <td className="pl-4 text-sm">ด้านควบคุมคุณภาพ</td>
-              <td className="flex flex-row items-center gap-2 w-full">
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={data.percentageRegistration}
-                  onChange={(value) =>
-                    setDataValue("percentageRegistration", value.target.value)
-                  }
-                  className={
-                    "p-1 border rounded-md text-sm w-[150px] text-center " +
-                    (isSubmit &&
-                      !data.percentageRegistration &&
                       " border-2 border-red-600")
                   }
                 />
@@ -584,10 +477,8 @@ export default function Page(props: any) {
               <td>
                 <div className="flex flex-row items-center gap-2 w-full">
                   <span className="w-[150px] text-center">
-                    {Number(data.percentageProduction) +
-                      Number(data.percentageDevelopment) +
-                      Number(data.percentageQc) +
-                      Number(data.percentageRegistration) +
+                    {Number(data.percentageQc) +
+                      Number(data.percentageQa) +
                       Number(data.percentageOther)}
                   </span>
                   <span>%</span>
@@ -640,66 +531,34 @@ export default function Page(props: any) {
                 {
                   label: "p1_1",
                   description:
-                    "อธิบายทฤษฎีและหลักการพื้นฐานที่เกี่ยวข้องกับระเบียบวิธีวิจัย (research methodology) เช่น การตั้งคำถามการวิจัย การทบทวนและประเมินวรรณกรรม รูปแบบการทำวิจัย การออกแบบการวิจัยอย่างเป็นระบบ ขั้นตอนการทำวิจัย การประมวลและวิเคราะห์ผล รวมถึงการประยุกต์ใช้สถิติต่าง ๆ ที่เกี่ยวข้องกับการวิจัย",
+                    "อธิบายหลักการการบริหารคุณภาพ (Quality Management) ต่าง ๆ เพื่อใช้ในการประกันและควบคุมคุณภาพของการผลิตยาและผลิตภัณฑ์สุขภาพ เช่น การบริหารคุณภาพโดยรวม (TQM) ระบบปฏิบัติการแก้ไข/ปฏิบัติการป้องกัน (Corrective Action/Preventive Action System: CAPA) ระบบการบริหารการเปลี่ยนแปลง (Change Management System) และการบริหารความเสี่ยงด้านคุณภาพ (Quality Risk Management)",
                 },
                 {
                   label: "p1_2",
                   description:
-                    "ยกตัวอย่างแหล่งข้อมูล (sources) ที่จำเป็นต่อการวิจัยและพัฒนา ทั้งข้อมูลปฐมภูมิ (primary sources) ทุติยภูมิ (secondary sources) และตติยภูมิ (tertiary sources)",
+                    "อธิบายหลักการของระบบคุณภาพรูปแบบต่าง ๆ ที่เกี่ยวข้อง ซึ่งมีการนำมาใช้เพื่อบรรลุเป้าประสงค์ในการประกันและควบคุมคุณภาพการผลิตยาและผลิตภัณฑ์สุขภาพ เช่น หลักเกณฑ์และวิธีการที่ดีในการผลิต (GMP) หลักปฏิบัติที่ดีทางห้องปฏิบัติการ (GLP) หลักปฏิบัติที่ดีในการจัดส่ง (GDP) หลักปฏิบัติที่ดีในการจัดเก็บ (GSP) มาตรฐานไอเอสโอ (ISO) ต่าง ๆ ตามมาตรฐานปัจจุบัน",
                 },
                 {
                   label: "p1_3",
                   description:
-                    "สืบค้นข้อมูลที่จำเป็นต่อการทำวิจัย จากฐานข้อมูลวารสารฐานข้อมูลสิทธิบัตรไทยและสิทธิบัตรต่างประเทศ ฐานข้อมูลสมุนไพร รวมถึงแหล่งความรู้อื่นที่เกี่ยวข้อง",
+                    "อธิบายหลักการและระบุปัจจัยในขั้นตอนการผลิตที่มีผลต่อคุณภาพผลิตภัณฑ์ ได้แก่ การจัดซื้อจัดหา วัตถุดิบและวัสดุบรรจุ เทคนิคของกระบวนการที่สำคัญและพารามิเตอร์สำคัญที่ต้องควบคุมในการผลิต ปัจจัยที่มีผลต่อความสม่ำเสมอของตัวยาสำคัญ ความคงสภาพทางเคมี กายภาพ และชีวภาพ การควบคุมและตรวจติดตามสภาวะแวดล้อมในการผลิต หลักการของเทคโนโลยีวิเคราะห์ในกระบวนการผลิต (Process Analytical Technology) และกระบวนการปล่อยผ่านรุ่นผลิต (Batch release process) เป็นต้น",
                 },
                 {
                   label: "p1_4",
                   description:
-                    "ประเมินความน่าเชื่อถือของแหล่งข้อมูลต่าง ๆ เพื่อประโยชน์ในการทำวิจัยและพัฒนาตำรับยา รวมถึงสามารถวิเคราะห์ ประมวลผลข้อมูลที่ได้ และนำเสนอในรูปแบบที่เหมาะสม",
-                },
-                {
-                  label: "p1_5",
-                  description:
-                    "ปฏิบัติตนตามจรรยาบรรณของนักวิจัย ตามแนวทางที่กำหนดโดยสภาวิจัยแห่งชาติ รวมถึงจริยธรรมจรรยาบรรณอื่นที่เกี่ยวข้อง เช่น จรรยาบรรณการใช้สัตว์ทดลอง จริยธรรมการวิจัยยาในมนุษย์ เป็นต้น",
-                },
-                {
-                  label: "p1_6",
-                  description:
-                    "อธิบายความรู้พื้นฐานที่เกี่ยวข้องกับการพัฒนาผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพรูปแบบต่าง ๆ เช่น คำจำกัดความ องค์ประกอบ หลักการและกระบวนการเตรียม การคำนวณที่เกี่ยวข้องกับการตั้งตำรับ รวมถึงการประเมินผลที่เกี่ยวข้อง",
-                },
-                {
-                  label: "p1_7",
-                  description:
-                    "สืบค้นและทดลองเพื่อหาข้อมูลการศึกษาก่อนการตั้งตำรับ (pre-formulation study) ของส่วนประกอบในตำรับ ทั้งคุณสมบัติทางเคมีฟิสิกส์และคุณสมบัติอื่นที่เกี่ยวข้อง",
-                },
-                {
-                  label: "p1_8",
-                  description:
-                    "วิเคราะห์ปัญหาและหาแนวทางในการตั้งตำรับผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพให้อยู่ในรูปแบบที่ต้องการ โดยอาศัยข้อมูลจากทฤษฎีพื้นฐานและการศึกษาก่อนการตั้งตำรับ เพื่อให้ได้ผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพที่น่าใช้ มีประสิทธิผล มีความปลอดภัย และมีความคงสภาพ",
-                },
-                {
-                  label: "p1_9",
-                  description:
-                    "อธิบายความหมาย ความสำคัญ หน้าที่ของสารช่วย (excipients) ตลอดจนสามารถเลือกชนิดและกำหนดปริมาณสารช่วยที่เหมาะสม",
-                },
-                {
-                  label: "p1_10",
-                  description:
-                    "อธิบายหลักเกณฑ์และขั้นตอนการศึกษาความคงสภาพของผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ การกำหนดวันสิ้นอายุของผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพได้",
+                    "อธิบายการติดตามหลังการผลิตเพื่อการพัฒนาผลิตภัณฑ์ ได้แก่ การทบทวนคุณภาพผลิตภัณฑ์ (Product Quality Review) และการตรวจสอบตนเอง (Self Inspection)",
                 },
               ].map((item, index) => (
                 <tr key={index}>
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={10}>
-                      ๑. ทักษะการวิจัย กระบวนการวิจัย การสืบค้นข้อมูล
-                      และการเผยแพร่ข้อมูล
-                      รวมถึงความเข้าใจและการปฏิบัติตามหลักจริยธรรม
-                      จรรยาบรรณของนักวิจัยที่ดี
-                      ตลอดจนสามารถประยุกต์หลักวิทยาศาสตร์ในการวิจัยและพัฒนาผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ
+                    <td className="p-2 border align-top text-sm" rowSpan={4}>
+                      ๑. ความรู้และความเข้าใจเรื่องระบบคุณภาพ
+                      รวมถึงหลักเกณฑ์และวิธีการที่ดีต่าง ๆ
+                      และมาตรฐานสากลที่เกี่ยวข้องกับการประกันและควบคุมคุณภาพในการผลิตยาและผลิตภัณฑ์สุขภาพ
                     </td>
                   )}
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={10}>
+                    <td className="p-2 border align-top text-sm" rowSpan={4}>
                       <input
                         type="number"
                         value={data.p1_day}
@@ -731,15 +590,27 @@ export default function Page(props: any) {
                       <span>{item.description}</span>
                     </div>
                   </td>
-                  <td className="p-2 border align-top text-sm">
-                    <ScoreForm
-                      value={data[`${item.label}_activity`]}
-                      label={`${item.label}_activity`}
-                      list={activityLabels}
-                      rows={true}
-                      isRequired={true}
-                    />
-                  </td>
+                  {index === 0 && (
+                    <td className="p-2 border align-top text-sm" rowSpan={4}>
+                      <div className="flex flex-col gap-6">
+                        <ScoreForm
+                          value={data.p1_activity}
+                          label={`p1_activity`}
+                          list={activityLabels}
+                          rows={true}
+                          isRequired={true}
+                        />
+
+                        <ScoreForm
+                          value={data.p1_work}
+                          label={`p1_work`}
+                          list={workLabels}
+                          rows={true}
+                          isRequired={true}
+                        />
+                      </div>
+                    </td>
+                  )}
                   <td className="p-2 border align-top text-sm">
                     <ScoreForm
                       value={data[`${item.label}_score`]}
@@ -749,7 +620,7 @@ export default function Page(props: any) {
                     />
                   </td>
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={10}>
+                    <td className="p-2 border align-top text-sm" rowSpan={4}>
                       <Textarea
                         className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
                         onChange={(e) => {
@@ -769,50 +640,39 @@ export default function Page(props: any) {
                 {
                   label: "p2_1",
                   description:
-                    "มีทักษะในการผลิตและควบคุมกระบวนการผลิตผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพรูปแบบต่าง ๆ อย่างน้อยหนึ่งรูปแบบ สามารถกำหนดลำดับขั้นตอน เลือกเครื่องมือที่ใช้ และหาสภาวะที่เหมาะสมของแต่ละกระบวนการผลิตได้",
+                    "อธิบายความหมายของการตรวจรับรอง V-Model ของการตรวจรับรอง และความหมายของขั้นตอนต่าง ๆ ของการตรวจรับรอง ได้แก่ การตรวจรับรองการออกแบบ (Design Qualification: DQ) การตรวจรับรองการติดตั้ง (Installation Qualification: IQ) การตรวจรับรองการทำงาน (Operational Qualification: OQ) และการตรวจรับรองสมรรถนะ (Performance Qualification: PQ)",
                 },
                 {
                   label: "p2_2",
                   description:
-                    "เรียนรู้เครื่องจักรต่าง ๆ ในกระบวนการผลิต มีทักษะในการควบคุมเครื่องจักร หรืออุปกรณ์ต่าง ๆ ที่ใช้ในการผลิต ตลอดจนสามารถแก้ไขปัญหาที่เกิดขึ้นอย่างง่ายได้",
+                    "อธิบายความหมายของการตรวจสอบความถูกต้อง รวมถึงอธิบายแนวทางและหัวข้อที่สำคัญในการจัดทำ Validation Master Plan",
                 },
                 {
                   label: "p2_3",
                   description:
-                    "อธิบายขั้นตอนและเครื่องมือที่ใช้ในกระบวนการผลิตผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพแต่ละรูปแบบได้ มีความเข้าใจทฤษฎีพื้นฐานและเครื่องมือในหน่วยการผลิต รวมถึงการตรวจรับรองและการตรวจสอบความถูกต้อง (Qualification & Validation) เป็นต้น",
+                    "อธิบายวิธีต่าง ๆ ในการตรวจสอบความถูกต้อง ได้แก่ การตรวจสอบความถูกต้องก่อนการผลิตจำหน่าย (Prospective Validation) และการตรวจสอบความถูกต้องพร้อมการผลิตจำหน่าย (Concurrent Validation)",
                 },
                 {
                   label: "p2_4",
                   description:
-                    "อธิบายระบบภาชนะบรรจุและการปิด (container and closure system) และสามารถเลือกให้เหมาะสมกับผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพแต่ละรูปแบบและแต่ละชนิดได้",
+                    "อธิบายการตรวจสอบความถูกต้องซ้ำ (Revalidation) และการควบคุมการเปลี่ยนแปลง (Change Control)",
                 },
                 {
                   label: "p2_5",
                   description:
-                    "อธิบายหลักการทำงานของเครื่องจักรอุปกรณ์ต่าง ๆ ในแต่ละหน่วยการผลิต ตลอดจนสิ่งอำนวยความสะดวกในการผลิต การทำความสะอาด การซ่อมแซมและบำรุงรักษา รวมถึงการตรวจสอบความถูกต้องของกระบวนการ (process validation)",
-                },
-                {
-                  label: "p2_6",
-                  description:
-                    "อธิบายวิธีการตรวจรับรอง (qualification) เครื่องจักรการผลิต และการสอบเทียบ (calibration) เครื่องมือวัดที่ใช้ในการผลิต",
-                },
-                {
-                  label: "p2_7",
-                  description:
-                    "อธิบายกระบวนการฝึกอบรมพนักงานฝ่ายผลิต รวมทั้งหลักปฏิบัติเกี่ยวกับสุขอนามัยและความปลอดภัยในการปฏิบัติงาน",
+                    "อธิบายถึงกิจกรรมสำคัญ ความหมาย และแนวทางในการตรวจสอบความถูกต้อง ได้แก่ การตรวจสอบความถูกต้องของกระบวนการผลิต (Process Validation) การตรวจสอบความถูกต้องของวิธีวิเคราะห์ (Analytical Method Validation) การตรวจสอบความถูกต้องของการทำความสะอาด (Cleaning Validation) และการสอบเทียบ (Calibration)",
                 },
               ].map((item, index) => (
                 <tr key={index}>
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={7}>
-                      ๒.
-                      เทคโนโลยีการผลิตผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพระดับอุตสาหกรรม
-                      การบริหารปัจจัยการผลิตและสิ่งอำนวยความสะดวกต่าง ๆ
-                      รวมทั้งอาคารสถานที่และสิ่งแวดล้อม
+                    <td className="p-2 border align-top text-sm" rowSpan={5}>
+                      ๒. ความรู้และแนวทางในการตรวจรับรอง (Qualification)
+                      การตรวจสอบความถูกต้อง (Validation) และการสอบเทียบ
+                      (Calibration)
                     </td>
                   )}
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={7}>
+                    <td className="p-2 border align-top text-sm" rowSpan={5}>
                       <input
                         type="number"
                         value={data.p2_day}
@@ -844,15 +704,27 @@ export default function Page(props: any) {
                       <span>{item.description}</span>
                     </div>
                   </td>
-                  <td className="p-2 border align-top text-sm">
-                    <ScoreForm
-                      value={data[`${item.label}_activity`]}
-                      label={`${item.label}_activity`}
-                      list={activityLabels}
-                      rows={true}
-                      isRequired={true}
-                    />
-                  </td>
+                  {index === 0 && (
+                    <td className="p-2 border align-top text-sm" rowSpan={5}>
+                      <div className="flex flex-col gap-6">
+                        <ScoreForm
+                          value={data.p2_activity}
+                          label={`p2_activity`}
+                          list={activityLabels}
+                          rows={true}
+                          isRequired={true}
+                        />
+
+                        <ScoreForm
+                          value={data.p2_work}
+                          label={`p2_work`}
+                          list={workLabels}
+                          rows={true}
+                          isRequired={true}
+                        />
+                      </div>
+                    </td>
+                  )}
                   <td className="p-2 border align-top text-sm">
                     <ScoreForm
                       value={data[`${item.label}_score`]}
@@ -862,7 +734,7 @@ export default function Page(props: any) {
                     />
                   </td>
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={7}>
+                    <td className="p-2 border align-top text-sm" rowSpan={5}>
                       <Textarea
                         className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
                         onChange={(e) => {
@@ -882,39 +754,49 @@ export default function Page(props: any) {
                 {
                   label: "p3_1",
                   description:
-                    "ระบุและสืบค้นข้อมูลที่ต้องการจากตำราสมุนไพรต่าง ๆ ที่ทางการรับรอง เช่น Thai Herbal Pharmacopoeia (THP)",
+                    "ระบุและสืบค้นข้อมูลที่ต้องการจากตำรายาต่าง ๆ ที่ทางการรับรอง เช่น USP, BP, TP, Ph. Int. รวมถึงการสืบค้นข้อมูลจากตำรายาอื่น ๆ ที่เกี่ยวข้องทางเภสัชกรรม",
                 },
                 {
                   label: "p3_2",
                   description:
-                    "อธิบายหลักการทางสถิติ และเลือกสถิติที่ใช้ในการควบคุมคุณภาพได้",
+                    "อธิบายความหมาย ความสำคัญ และวัตถุประสงค์ของข้อกำหนดวัตถุดิบ วัสดุการบรรจุ และผลิตภัณฑ์สำเร็จรูป รวมถึงระบุข้อมูลที่จำเป็นเกี่ยวกับข้อกำหนดวัตถุดิบ วัสดุการบรรจุ และผลิตภัณฑ์สำเร็จรูป พร้อมทั้งวัตถุประสงค์ของข้อมูลแต่ละอย่าง",
                 },
                 {
                   label: "p3_3",
                   description:
-                    "อธิบายหลักการ และเลือกเครื่องมือที่ใช้ในการวิเคราะห์และการทดสอบต่าง ๆ ที่สำคัญได้",
+                    "อธิบายและจัดทำเอกสารข้อกำหนดวัตถุดิบ วัสดุการบรรจุ และผลิตภัณฑ์สำเร็จรูป",
                 },
                 {
                   label: "p3_4",
                   description:
-                    "วิเคราะห์เชิงคุณภาพและเชิงปริมาณที่สำคัญในตำรายา ทั้งทางเคมี กายภาพ และชีวภาพได้",
+                    "อธิบายและเลือกหลักการทางสถิติที่ใช้ในการควบคุมคุณภาพ",
                 },
                 {
                   label: "p3_5",
                   description:
-                    "อธิบายหลักการพัฒนาวิธีวิเคราะห์ รวมถึงการตรวจสอบความถูกต้องของวิธีวิเคราะห์ และความสอดคล้องกับข้อกำหนด",
+                    "อธิบายหลักการและเลือกเครื่องมือในการวิเคราะห์และการทดสอบต่าง ๆ ที่สำคัญ",
+                },
+                {
+                  label: "p3_6",
+                  description:
+                    "วิเคราะห์เชิงคุณภาพและเชิงปริมาณที่สำคัญในตำรายา ทั้งทางเคมีกายภาพและทางชีวภาพได้ตามบริบทของแหล่งฝึก",
+                },
+                {
+                  label: "p3_7",
+                  description:
+                    "หลักการพัฒนาวิธีวิเคราะห์รวมถึงการตรวจสอบความถูกต้องของวิธีวิเคราะห์ และความสอดคล้องกับข้อกำหนดในตำรายาและตามแนวทางมาตรฐาน เช่น ASEAN Harmonization และ ICH Guideline",
                 },
               ].map((item, index) => (
                 <tr key={index}>
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={5}>
-                      ๓. การควบคุมคุณภาพวัตถุดิบและผลิตภัณฑ์สำเร็จรูป
-                      วิธีวิเคราะห์ การตรวจสอบคุณภาพ
+                    <td className="p-2 border align-top text-sm" rowSpan={7}>
+                      ๓. ความรู้เกี่ยวกับการควบคุมคุณภาพตลอดกระบวนการผลิต
+                      วิธีวิเคราะห์ การตรวจสอบคุณภาพตามเภสัชตำรับ
                       และเครื่องมือที่ใช้ในการตรวจสอบคุณภาพ
                     </td>
                   )}
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={5}>
+                    <td className="p-2 border align-top text-sm" rowSpan={7}>
                       <input
                         type="number"
                         value={data.p3_day}
@@ -946,15 +828,27 @@ export default function Page(props: any) {
                       <span>{item.description}</span>
                     </div>
                   </td>
-                  <td className="p-2 border align-top text-sm">
-                    <ScoreForm
-                      value={data[`${item.label}_activity`]}
-                      label={`${item.label}_activity`}
-                      list={activityLabels}
-                      rows={true}
-                      isRequired={true}
-                    />
-                  </td>
+                  {index === 0 && (
+                    <td className="p-2 border align-top text-sm" rowSpan={7}>
+                      <div className="flex flex-col gap-6">
+                        <ScoreForm
+                          value={data.p3_activity}
+                          label={`p3_activity`}
+                          list={activityLabels}
+                          rows={true}
+                          isRequired={true}
+                        />
+
+                        <ScoreForm
+                          value={data.p3_work}
+                          label={`p3_work`}
+                          list={workLabels}
+                          rows={true}
+                          isRequired={true}
+                        />
+                      </div>
+                    </td>
+                  )}
                   <td className="p-2 border align-top text-sm">
                     <ScoreForm
                       value={data[`${item.label}_score`]}
@@ -963,8 +857,9 @@ export default function Page(props: any) {
                       isRequired={data[`${item.label}_select`]}
                     />
                   </td>
+
                   {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={5}>
+                    <td className="p-2 border align-top text-sm" rowSpan={7}>
                       <Textarea
                         className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
                         onChange={(e) => {
@@ -980,133 +875,28 @@ export default function Page(props: any) {
             </tbody>
 
             <tbody>
-              {[
-                {
-                  label: "p4_1",
-                  description:
-                    "อธิบายสาระสำคัญของกฎ ระเบียบ หรือข้อบังคับที่เกี่ยวกับผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ เช่น พระราชบัญญัติ กฎกระทรวง ประกาศ คำสั่ง ระเบียบที่เกี่ยวข้องกับผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ",
-                },
-                {
-                  label: "p4_2",
-                  description:
-                    "อธิบายหลักเกณฑ์ในการขึ้นทะเบียนผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพภายในประเทศ",
-                },
-                {
-                  label: "p4_3",
-                  description:
-                    "อธิบายขั้นตอนการขึ้นทะเบียน และการแก้ไขเปลี่ยนแปลงทะเบียนผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ",
-                },
-                {
-                  label: "p4_4",
-                  description:
-                    "อธิบายการจัดหมวดหมู่เอกสารตามข้อกำหนดของสำนักงานคณะกรรมการอาหารและยา รวมทั้งแบบคำขอและการยื่นแบบคำขอต่าง ๆ ได้",
-                },
-                {
-                  label: "p4_5",
-                  description:
-                    "ค้นคว้าข้อมูลจากแหล่งข้อมูลต่าง ๆ เพื่อประมวลข้อมูลด้านความปลอดภัย ประสิทธิผล และคุณภาพของผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ สำหรับการขึ้นทะเบียนผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ",
-                },
-                {
-                  label: "p4_6",
-                  description:
-                    "จัดเตรียมเอกสารเพื่อขอขึ้นทะเบียนผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพตามข้อกำหนดของสำนักงานคณะกรรมการอาหารและยา",
-                },
-              ].map((item, index) => (
-                <tr key={index}>
-                  {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={6}>
-                      ๔. กระบวนการขึ้นทะเบียนผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ
-                    </td>
-                  )}
-                  {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={6}>
-                      <input
-                        type="number"
-                        value={data.p4_day}
-                        onChange={(value) =>
-                          setDataValue("p4_day", value.target.value)
-                        }
-                        className={
-                          "p-1 border rounded-md text-sm w-full text-center " +
-                          (isSubmit &&
-                            !data.p4_day &&
-                            " border-2 border-red-600")
-                        }
-                      />
-                    </td>
-                  )}
-                  <td className="p-2 border align-top text-sm">
-                    <div className="flex flex-row items-start gap-2">
-                      <input
-                        type="checkbox"
-                        checked={data[`${item.label}_select`]}
-                        onChange={(e) =>
-                          setCheckboxValue(
-                            `${item.label}_select`,
-                            e.target.checked
-                          )
-                        }
-                        className="mt-1"
-                      />
-                      <span>{item.description}</span>
-                    </div>
-                  </td>
-                  <td className="p-2 border align-top text-sm">
-                    <ScoreForm
-                      value={data[`${item.label}_activity`]}
-                      label={`${item.label}_activity`}
-                      list={activityLabels}
-                      rows={true}
-                      isRequired={true}
-                    />
-                  </td>
-                  <td className="p-2 border align-top text-sm">
-                    <ScoreForm
-                      value={data[`${item.label}_score`]}
-                      label={`${item.label}_score`}
-                      list={scoreLabels}
-                      isRequired={data[`${item.label}_select`]}
-                    />
-                  </td>
-                  {index === 0 && (
-                    <td className="p-2 border align-top text-sm" rowSpan={6}>
-                      <Textarea
-                        className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
-                        onChange={(e) => {
-                          setDataValue("p4_note", e.target.value);
-                        }}
-                        rows={3 * 2}
-                        value={data.p4_note}
-                      />
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-
-            <tbody>
               <tr>
                 <td className="p-2 border align-top text-sm">
-                  <p>๕. อื่นๆ (โปรดระบุ)</p>
+                  <p>๔. อื่นๆ (โปรดระบุ)</p>
                   <Textarea
                     className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
                     onChange={(e) => {
-                      setDataValue("p5_title", e.target.value);
+                      setDataValue("p4_title", e.target.value);
                     }}
                     rows={3 * 1}
-                    value={data.p5_title}
+                    value={data.p4_title}
                   />
                 </td>
                 <td className="p-2 border align-top text-sm">
                   <input
                     type="number"
-                    value={data.p5_day}
+                    value={data.p4_day}
                     onChange={(value) =>
-                      setDataValue("p5_day", value.target.value)
+                      setDataValue("p4_day", value.target.value)
                     }
                     className={
                       "p-1 border rounded-md text-sm w-full text-center " +
-                      (isSubmit && !data.p5_day && " border-2 border-red-600")
+                      (isSubmit && !data.p4_day && " border-2 border-red-600")
                     }
                   />
                 </td>
@@ -1114,7 +904,7 @@ export default function Page(props: any) {
                 <td className="p-2 border align-top text-sm"></td>
                 <td className="p-2 border align-top text-sm">
                   <ScoreForm
-                    value={data.p5_score}
+                    value={data.p4_score}
                     label="p5_score"
                     list={scoreLabels}
                   />
@@ -1123,10 +913,10 @@ export default function Page(props: any) {
                   <Textarea
                     className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
                     onChange={(e) => {
-                      setDataValue("p5_note", e.target.value);
+                      setDataValue("p4_note", e.target.value);
                     }}
                     rows={3 * 1}
-                    value={data.p5_note}
+                    value={data.p4_note}
                   />
                 </td>
               </tr>
