@@ -6,11 +6,17 @@ export async function GET(request: NextRequest, { params }: any) {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
     const intern = await sql(
-      `SELECT  intern.id, intern.company_id, student.student_id, student.fullname,student.major, student.gpa, company.name as company_name, intern.register_date, company.evaluation_type,
-      (select count(*) from evaluations_result where intern_id = intern.id) as total
+      `SELECT intern.id, intern.company_id, student.student_id, student.fullname, student.major, student.gpa, company.name as company_name, intern.register_date, company.evaluation_type,
+      et.name as evaluation_name,
+      (SELECT count(*) FROM evaluations_result WHERE intern_id = intern.id) as total
       FROM regist_intern intern
       INNER JOIN user_student student ON intern.student_id = student.id
       LEFT JOIN user_company company ON intern.company_id = company.id
+      LEFT JOIN LATERAL (
+      SELECT string_agg(et.name, ', ') as name
+      FROM evaluations_type et
+      WHERE et.id = ANY(intern.evaluation_type)
+      ) et ON true
       WHERE intern.calendar_id = $1`,
       [id]
     );

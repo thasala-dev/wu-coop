@@ -694,28 +694,28 @@ export default function AdminMatching() {
                               </div>
                             ),
                           },
-                          {
-                            key: "major",
-                            content: "สาขาวิชา",
-                          },
+                          // {
+                          //   key: "major",
+                          //   content: "สาขาวิชา",
+                          // },
                           {
                             key: "company_name",
                             content: "แหล่งฝึกที่จับคู่",
                           },
                           {
-                            key: "register_date",
-                            content: "วันที่จับคู่",
-                            render: (item: any) => (
-                              <span>
-                                {new Date(
-                                  item.register_date
-                                ).toLocaleDateString("th-TH", {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                })}
-                              </span>
-                            ),
+                            key: "evaluation_name",
+                            content: "ชุดแบบประเมิน",
+                            // render: (item: any) => (
+                            //   <span>
+                            //     {new Date(
+                            //       item.register_date
+                            //     ).toLocaleDateString("th-TH", {
+                            //       year: "numeric",
+                            //       month: "short",
+                            //       day: "numeric",
+                            //     })}
+                            //   </span>
+                            // ),
                           },
                           {
                             key: "id",
