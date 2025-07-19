@@ -152,8 +152,6 @@ export default function CompaniesPage() {
       });
       return;
     }
-
-    // Get selected calendar and evaluation info
     const selectedCalendar = calendar.find(
       (item: any) => item.id === calendarSelected
     );
@@ -161,21 +159,32 @@ export default function CompaniesPage() {
       (item: any) => item.id === evaluationSelected
     );
 
-    // Prepare data for Excel
     const excelData = [
       ["รายงานผลการประเมินนักศึกษา โดยอาจารย์ประจำแหล่งฝึก"],
       [
         `รอบการฝึก: ${selectedCalendar?.name} ปีการศึกษา: ${selectedCalendar?.semester}/${selectedCalendar?.year}`,
       ],
       [
-        `ระหว่างวันที่ ${selectedCalendar?.start_date} - ${selectedCalendar?.end_date}`,
+        `ระหว่างวันที่ ${new Date(
+          selectedCalendar?.start_date
+        ).toLocaleDateString("th-TH", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })} - ${new Date(selectedCalendar?.end_date).toLocaleDateString(
+          "th-TH",
+          {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }
+        )}`,
       ],
-      [
-        `กลุ่มประเมิน: ${selectedEvaluation?.group} ชุดการประเมิน: ${selectedEvaluation?.short_name}`,
-      ],
+      [`กลุ่มประเมิน: ${selectedEvaluation?.group} `],
+      [`ชุดการประเมิน: ${selectedEvaluation?.short_name}`],
       [`ชื่อการประเมิน: ${selectedEvaluation?.name}`],
-      [], // Empty row
-      ["ลำดับ", "รหัสนักศึกษา", "ชื่อนักศึกษา", "แหล่งฝึกงาน"], // Headers
+      [],
+      ["ลำดับ", "รหัสนักศึกษา", "ชื่อนักศึกษา", "แหล่งฝึกงาน"],
       ...data.map((item: any, index: number) => [
         index + 1,
         item.student_id,
@@ -301,7 +310,7 @@ export default function CompaniesPage() {
                         .filter((item: any) => item.year == yearSelected)
                         .map((item: any, index: number) => (
                           <SelectItem key={index} value={item.id}>
-                            <div className="flex flex-col ">
+                            <div className="flex flex-col items-start">
                               <span className="font-medium">
                                 {item.name} ({item.semester}/{item.year})
                               </span>
@@ -347,7 +356,7 @@ export default function CompaniesPage() {
                     <SelectContent className="w-full">
                       {evalations.map((item: any, index: number) => (
                         <SelectItem key={index} value={item.id}>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col items-start">
                             <span
                               className="font-medium truncate"
                               title={item.name}
@@ -406,17 +415,25 @@ export default function CompaniesPage() {
                       </div>
                       <div>
                         (ระหว่างวันที่{" "}
-                        {
+                        {new Date(
                           calendar.find(
                             (item: any) => item.id === calendarSelected
                           )?.start_date
-                        }{" "}
+                        ).toLocaleDateString("th-TH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
                         -{" "}
-                        {
+                        {new Date(
                           calendar.find(
                             (item: any) => item.id === calendarSelected
                           )?.end_date
-                        }
+                        ).toLocaleDateString("th-TH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                         )
                       </div>
                       <div>
@@ -425,7 +442,9 @@ export default function CompaniesPage() {
                           evalations.find(
                             (item: any) => item.id === evaluationSelected
                           )?.group
-                        }{" "}
+                        }
+                      </div>
+                      <div>
                         ชุดการประเมิน:{" "}
                         {
                           evalations.find(
