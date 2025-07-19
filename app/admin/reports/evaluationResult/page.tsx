@@ -20,8 +20,9 @@ import {
 import { Cpu, Eye, Loader, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { se } from "date-fns/locale";
+import { se, th } from "date-fns/locale";
 import * as XLSX from "xlsx";
+import { evalu } from "@/lib/evaluations_report";
 
 const currentYear = new Date().getFullYear() + 543;
 const years = Array.from({ length: currentYear - 2567 + 1 }, (_, i) =>
@@ -93,11 +94,6 @@ export default function CompaniesPage() {
 
     try {
       await fetchData();
-      toast({
-        title: "ประมวลผลสำเร็จ",
-        description: "ระบบได้ประมวลผลข้อมูลเรียบร้อยแล้ว",
-        variant: "success",
-      });
     } catch (error) {
       console.error("Processing error:", error);
       toast({
@@ -112,20 +108,8 @@ export default function CompaniesPage() {
 
   async function fetchData() {
     setLoading(true);
-    metaData = [
-      {
-        key: "student_id",
-        width: 100,
-        className: "text-nowrap",
-        content: "รหัสนักศึกษา",
-      },
-      {
-        key: "fullname",
-        width: 200,
-        className: "text-nowrap",
-        content: "ชื่อ-นามสกุล",
-      },
-    ];
+    metaData = evalu[evaluationSelected as keyof typeof evalu] || [];
+
     const response = await fetch(
       `/api/report/evaluationsResult/${calendarSelected}/${evaluationSelected}`,
       {
@@ -159,6 +143,17 @@ export default function CompaniesPage() {
       (item: any) => item.id === evaluationSelected
     );
 
+    // สร้าง header columns รวม metaData
+    const headerColumns = [
+      "ลำดับ",
+      "รหัสนักศึกษา",
+      "ชื่อนักศึกษา",
+      "แหล่งฝึกงาน",
+      "อาจารย์ประจำแหล่งฝึก",
+      "วันที่ประเมิน",
+      ...metaData.map((meta: any) => meta.label),
+    ];
+
     const excelData = [
       ["รายงานผลการประเมินนักศึกษา โดยอาจารย์ประจำแหล่งฝึก"],
       [
@@ -184,12 +179,23 @@ export default function CompaniesPage() {
       [`ชุดการประเมิน: ${selectedEvaluation?.short_name}`],
       [`ชื่อการประเมิน: ${selectedEvaluation?.name}`],
       [],
-      ["ลำดับ", "รหัสนักศึกษา", "ชื่อนักศึกษา", "แหล่งฝึกงาน"],
+      headerColumns, // ใช้ header ที่รวม metaData แล้ว
       ...data.map((item: any, index: number) => [
         index + 1,
         item.student_id,
         item.fullname,
         item.company_name,
+        item.evaluator || "-",
+        item.evaluation_date
+          ? new Date(item.evaluation_date).toLocaleDateString("th-TH", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })
+          : "-",
+        ...metaData.map((meta: any) =>
+          item.result ? item.result[meta.value] : "-"
+        ), // เพิ่มข้อมูล metaData
       ]),
     ];
 
@@ -197,14 +203,20 @@ export default function CompaniesPage() {
     const ws = XLSX.utils.aoa_to_sheet(excelData);
     const wb = XLSX.utils.book_new();
 
-    // Set column widths
+    // Set column widths รวมคอลัมน์ metaData
     const colWidths = [
       { wch: 8 }, // ลำดับ
       { wch: 15 }, // รหัสนักศึกษา
       { wch: 30 }, // ชื่อนักศึกษา
       { wch: 40 }, // แหล่งฝึกงาน
+      { wch: 25 }, // อาจารย์ประจำแหล่งฝึก
+      { wch: 15 }, // วันที่ประเมิน
+      ...metaData.map(() => ({ wch: 15 })), // คอลัมน์ metaData
     ];
     ws["!cols"] = colWidths;
+
+    // คำนวณจำนวนคอลัมน์ทั้งหมด
+    const totalColumns = 6 + metaData.length;
 
     // Style the header row (row 7, which contains the table headers)
     const headerRowIndex = 6; // 0-indexed
@@ -214,8 +226,8 @@ export default function CompaniesPage() {
       alignment: { horizontal: "center" },
     };
 
-    // Apply header styling
-    for (let col = 0; col < 4; col++) {
+    // Apply header styling สำหรับทุกคอลัมน์
+    for (let col = 0; col < totalColumns; col++) {
       const cellAddress = XLSX.utils.encode_cell({ r: headerRowIndex, c: col });
       if (!ws[cellAddress]) ws[cellAddress] = { v: "", t: "s" };
       ws[cellAddress].s = headerStyle;
@@ -242,12 +254,6 @@ export default function CompaniesPage() {
 
     // Save the file
     XLSX.writeFile(wb, filename);
-
-    toast({
-      title: "ส่งออกข้อมูลสำเร็จ",
-      description: "ไฟล์ Excel ได้ถูกดาวน์โหลดเรียบร้อยแล้ว",
-      variant: "default",
-    });
   };
 
   return (
@@ -498,45 +504,92 @@ export default function CompaniesPage() {
                       </div>
 
                       <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-                        <table className="min-w-full divide-y divide-gray-300 bg-white">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                ลำดับ
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                รหัสนักศึกษา
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                ชื่อนักศึกษา
-                              </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                แหล่งฝึกงาน
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {data.map((item: any, index: number) => (
-                              <tr
-                                key={index}
-                                className="hover:bg-gray-50 transition-colors"
-                              >
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                  {index + 1}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                  {item.student_id}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                  {item.fullname}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                  {item.company_name}
-                                </td>
+                        <div className="overflow-x-auto max-w-full">
+                          <table
+                            className="min-w-max w-full divide-y divide-gray-300 bg-white"
+                            style={{ minWidth: "max-content" }}
+                          >
+                            <thead className="bg-gray-50">
+                              <tr>
+                                <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[40px]">
+                                  ลำดับ
+                                </th>
+                                <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[80px]">
+                                  รหัสนักศึกษา
+                                </th>
+                                <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[200px]">
+                                  ชื่อนักศึกษา
+                                </th>
+                                <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[200px]">
+                                  แหล่งฝึกงาน
+                                </th>
+                                <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[200px]">
+                                  อาจารย์ประจำแหล่งฝึก
+                                </th>
+                                <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[80px]">
+                                  วันที่ประเมิน
+                                </th>
+
+                                {metaData.map((item: any, index: number) => (
+                                  <th
+                                    key={index}
+                                    className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]"
+                                  >
+                                    {item.label}
+                                  </th>
+                                ))}
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                              {data.map((item: any, index: number) => (
+                                <tr
+                                  key={index}
+                                  className="hover:bg-gray-50 transition-colors"
+                                >
+                                  <td className="p-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {index + 1}
+                                  </td>
+                                  <td className="p-4 whitespace-nowrap text-sm text-gray-900">
+                                    {item.student_id}
+                                  </td>
+                                  <td className="p-4 whitespace-nowrap text-sm text-gray-900">
+                                    {item.fullname}
+                                  </td>
+                                  <td className="p-4 whitespace-nowrap text-sm text-gray-500">
+                                    {item.company_name}
+                                  </td>
+                                  <td className="p-4 whitespace-nowrap text-sm text-gray-500">
+                                    {item.evaluator || "-"}
+                                  </td>
+                                  <td className="p-4 whitespace-nowrap text-sm text-gray-500">
+                                    {item.evaluation_date
+                                      ? new Date(
+                                          item.evaluation_date
+                                        ).toLocaleDateString("th-TH", {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                        })
+                                      : "-"}
+                                  </td>
+
+                                  {metaData.map(
+                                    (meta: any, metaIndex: number) => (
+                                      <td
+                                        key={metaIndex}
+                                        className="p-4 whitespace-nowrap text-sm text-gray-500"
+                                      >
+                                        {item.result
+                                          ? item.result[meta.value]
+                                          : "-"}
+                                      </td>
+                                    )
+                                  )}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   ) : (

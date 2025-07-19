@@ -13,7 +13,8 @@ export async function GET(request: NextRequest, { params }: any) {
       inner join user_student std on intern.student_id = std.id
       inner join user_company comp on intern.company_id = comp.id
       left join evaluations_result er on intern.id = er.intern_id and er.form_id = $2
-      where intern.calendar_id = $1`,
+      where intern.calendar_id = $1
+      order by std.student_id ASC`,
       [calendarId, formId]
     );
 

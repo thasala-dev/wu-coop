@@ -207,6 +207,12 @@ export function Sidebar({
         page: "evaluations",
       },
       {
+        label: "ติดตามการประเมินผล",
+        href: "/admin/evaluations-follow-up",
+        icon: ClipboardCheck,
+        page: "evaluations-follow-up",
+      },
+      {
         label: "รายงาน",
         href: "/admin/reports",
         icon: BarChart,
