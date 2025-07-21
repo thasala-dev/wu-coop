@@ -21,6 +21,7 @@ import SCI_p3 from "@/components/evaluations/SCI/p3";
 
 export default function EvaluationList(props: any) {
   const { subtype } = props;
+  console.log("Rendering CARE_p1 for subtype:", subtype);
   if (subtype === "1" || subtype === "2") {
     return <CARE_p1 {...props} />;
   } else if (subtype === "3") {

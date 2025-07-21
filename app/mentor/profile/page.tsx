@@ -181,7 +181,7 @@ export default function MentorProfile() {
         const uploadResult = await callUploadApi(
           documentForm.file,
           `company/${user.id}`,
-          false // ไม่ต้องลดขนาดรูป
+          false
         );
 
         if (uploadResult.success) {
@@ -312,7 +312,7 @@ export default function MentorProfile() {
                               <Building className="h-3 w-3 mr-1" />
                               {companyType.find(
                                 (type) => type.value === formData.business_type
-                              )?.label || "ไม่ได้ระบุประเภทธุรกิจ"}
+                              )?.label || "ไม่ได้ระบุประเภทแหล่งฝึก"}
                             </span>
                           </div>
                         </div>
@@ -347,7 +347,7 @@ export default function MentorProfile() {
                                 htmlFor="business_type"
                                 className="text-sm font-medium text-gray-700"
                               >
-                                ประเภทธุรกิจ
+                                ประเภทแหล่งฝึก
                               </label>
                               <Select
                                 value={formData.business_type}
@@ -356,7 +356,7 @@ export default function MentorProfile() {
                                 }
                               >
                                 <SelectTrigger className="bg-white/80 border-blue-200 focus:border-blue-500">
-                                  <SelectValue placeholder="เลือกประเภทธุรกิจ" />
+                                  <SelectValue placeholder="เลือกประเภทแหล่งฝึก" />
                                 </SelectTrigger>
 
                                 <SelectContent>

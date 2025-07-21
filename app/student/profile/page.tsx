@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, User, Camera, CalendarIcon } from "lucide-react";
-import { callUploadApi } from "@/lib/file-api";
+import { callUploadApi, callDeleteApi } from "@/lib/file-api";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { th } from "date-fns/locale";
@@ -49,9 +49,11 @@ export default function StudentProfile() {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingTranscript, setIsUploadingTranscript] = useState(false);
   const [profileData, setProfileData] = useState<any>(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const transcriptFileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<any>({
     fullname: "",
     student_id: "",
@@ -62,6 +64,7 @@ export default function StudentProfile() {
     std_year: "",
     address: "",
     gpa: "",
+    transcript: "",
     image: "",
     // Additional fields
     nickname: "",
@@ -106,6 +109,7 @@ export default function StudentProfile() {
           std_year: data.data.std_year || "",
           address: data.data.address || "",
           gpa: data.data.gpa || "",
+          transcript: data.data.transcript || "",
           image: data.data.image || "",
           // Additional fields
           nickname: data.data.nickname || "",
@@ -171,6 +175,84 @@ export default function StudentProfile() {
     }
   };
 
+  const handleTranscriptUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check if file is an image
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "ไฟล์ไม่ถูกต้อง",
+        description: "กรุณาเลือกไฟล์รูปภาพเท่านั้น (JPG, PNG, GIF)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "ไฟล์ใหญ่เกินไป",
+        description: "กรุณาเลือกไฟล์ที่มีขนาดไม่เกิน 5 MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingTranscript(true);
+
+    try {
+      const result = await callUploadApi(file, `student/${user?.id}`, false);
+      if (result.success) {
+        setFormData((prev: any) => ({
+          ...prev,
+          transcript: result.filePath,
+        }));
+      } else {
+        throw new Error(result.message || "Upload failed");
+      }
+    } catch (error) {
+      console.error("Error uploading transcript:", error);
+      toast({
+        title: "อัพโหลดไม่สำเร็จ",
+        description: "ไม่สามารถอัพโหลดไฟล์ได้ กรุณาลองใหม่อีกครั้ง",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingTranscript(false);
+    }
+  };
+
+  const removeTranscript = async () => {
+    if (formData.transcript) {
+      try {
+        // ลบไฟล์จากเซิร์ฟเวอร์
+        await callDeleteApi(formData.transcript);
+      } catch (error) {
+        console.error("Error deleting transcript file:", error);
+        toast({
+          title: "เกิดข้อผิดพลาด",
+          description: "ไม่สามารถลบไฟล์จากเซิร์ฟเวอร์ได้",
+          variant: "destructive",
+        });
+        return; // หยุดการทำงานหากลบไฟล์ไม่สำเร็จ
+      }
+    }
+
+    // ลบข้อมูลจาก state
+    setFormData((prev: any) => ({
+      ...prev,
+      transcript: "",
+    }));
+
+    // รีเซ็ต file input
+    if (transcriptFileInputRef.current) {
+      transcriptFileInputRef.current.value = "";
+    }
+  };
+
   const formatDateDisplay = (dateString: string) => {
     if (!dateString) return "เลือกวันเกิด";
     try {
@@ -223,6 +305,7 @@ export default function StudentProfile() {
           std_year: data.data.std_year || "",
           address: data.data.address || "",
           gpa: data.data.gpa || "",
+          transcript: data.data.transcript || "",
           image: data.data.image || "",
           // Additional fields
           nickname: data.data.nickname || "",
@@ -624,7 +707,7 @@ export default function StudentProfile() {
                                 htmlFor="gpa"
                                 className="text-sm font-medium text-gray-700"
                               >
-                                เกรดเฉลี่ย (GPA)
+                                เกรดเฉลี่ย
                               </label>
                               <Input
                                 id="gpa"
@@ -638,6 +721,138 @@ export default function StudentProfile() {
                                 max="4.00"
                                 className="bg-white/80 border-emerald-200 focus:border-emerald-500"
                               />
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 gap-4">
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="transcript"
+                                className="text-sm font-medium text-gray-700"
+                              >
+                                Transcript (ไฟล์รูปภาพเท่านั้น)
+                              </label>
+
+                              {/* Upload Area */}
+                              <div className="border-2 border-dashed border-emerald-300 rounded-lg p-6 bg-emerald-50/30">
+                                {formData.transcript ? (
+                                  /* Preview Area */
+                                  <div className="space-y-4">
+                                    <div className="relative group">
+                                      <img
+                                        src={formData.transcript}
+                                        alt="Transcript Preview"
+                                        className="w-full max-w-md mx-auto rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
+                                        style={{
+                                          maxHeight: "400px",
+                                          objectFit: "contain",
+                                        }}
+                                      />
+                                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center">
+                                        <Button
+                                          type="button"
+                                          variant="destructive"
+                                          size="sm"
+                                          onClick={removeTranscript}
+                                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                        >
+                                          <svg
+                                            className="h-4 w-4 mr-2"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth={2}
+                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                            />
+                                          </svg>
+                                          ลบรูป
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    <div className="text-center">
+                                      <p className="text-sm text-emerald-600 font-medium">
+                                        ✓ อัพโหลด Transcript เรียบร้อยแล้ว
+                                      </p>
+                                      <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                          transcriptFileInputRef.current?.click()
+                                        }
+                                        className="mt-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                                      >
+                                        เปลี่ยนรูปใหม่
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  /* Upload Button Area */
+                                  <div className="text-center">
+                                    <div className="mb-4">
+                                      <svg
+                                        className="mx-auto h-12 w-12 text-emerald-400"
+                                        stroke="currentColor"
+                                        fill="none"
+                                        viewBox="0 0 48 48"
+                                      >
+                                        <path
+                                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                          strokeWidth={2}
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        />
+                                      </svg>
+                                    </div>
+                                    <div className="mb-4">
+                                      <h4 className="text-lg font-medium text-gray-900">
+                                        อัพโหลด Transcript
+                                      </h4>
+                                      <p className="text-sm text-gray-500 mt-1">
+                                        คลิกเพื่อเลือกไฟล์รูปภาพ
+                                        หรือลากวางที่นี่
+                                      </p>
+                                      <p className="text-xs text-gray-400 mt-1">
+                                        รองรับไฟล์: JPG, PNG, GIF (ขนาดไม่เกิน 5
+                                        MB)
+                                      </p>
+                                    </div>
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      onClick={() =>
+                                        transcriptFileInputRef.current?.click()
+                                      }
+                                      disabled={isUploadingTranscript}
+                                      className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                                    >
+                                      {isUploadingTranscript ? (
+                                        <>
+                                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                          กำลังอัพโหลด...
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Camera className="mr-2 h-4 w-4" />
+                                          เลือกไฟล์
+                                        </>
+                                      )}
+                                    </Button>
+                                  </div>
+                                )}
+
+                                {/* Hidden File Input */}
+                                <input
+                                  ref={transcriptFileInputRef}
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleTranscriptUpload}
+                                  className="hidden"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>

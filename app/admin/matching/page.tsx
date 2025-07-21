@@ -628,11 +628,6 @@ export default function AdminMatching() {
                             ),
                           },
                           {
-                            key: "gpa",
-                            content: "GPA",
-                            className: "text-center",
-                          },
-                          {
                             key: "id",
                             width: "100px",
                             content: "Action",

@@ -460,7 +460,7 @@ export default function Page() {
                           </div>
 
                           <div className="sm:col-span-3">
-                            <label>GPAX</label>
+                            <label>เกรดเฉลี่ย</label>
                             <input
                               id="gpa"
                               type="text"
@@ -469,7 +469,7 @@ export default function Page() {
                                 "w-full p-2 border rounded-md " +
                                 (errors.gpa ? "border-red-600  border-2" : "")
                               }
-                              placeholder="กรุณากรอก GPAX (เกรดเฉลี่ย)"
+                              placeholder="กรุณากรอกเกรดเฉลี่ย"
                             />{" "}
                             {errors.gpa && (
                               <p className="text-sm text-red-600">

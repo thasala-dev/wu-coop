@@ -89,7 +89,7 @@ export const companyType = [
   },
   {
     value: "pharmacy",
-    label: "ร้านขายยา",
+    label: "ร้านยา",
   },
   {
     value: "hospital",
@@ -97,7 +97,11 @@ export const companyType = [
   },
   {
     value: "factory",
-    label: "โรงงานเภสัชกรรม",
+    label: "แหล่งฝึก SCI",
+  },
+  {
+    value: "marketing",
+    label: "การตลาด",
   },
   {
     value: "other",

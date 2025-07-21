@@ -234,7 +234,6 @@ export default function Page({ params }: { params: { id: string } }) {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-6">
                             <label>E-mail</label>
                             <input
@@ -272,7 +271,8 @@ export default function Page({ params }: { params: { id: string } }) {
                                 {errors.mobile.message}
                               </p>
                             )}
-                          </div>                          <div className="sm:col-span-6">
+                          </div>{" "}
+                          <div className="sm:col-span-6">
                             <label>สาขาวิชา</label>
                             <select
                               id="major"
@@ -306,7 +306,9 @@ export default function Page({ params }: { params: { id: string } }) {
                               {...register("advisor_id")}
                               className={
                                 "w-full p-2 border rounded-md " +
-                                (errors.advisor_id ? "border-red-600  border-2" : "")
+                                (errors.advisor_id
+                                  ? "border-red-600  border-2"
+                                  : "")
                               }
                             >
                               <option value="">เลือกอาจารย์ที่ปรึกษา</option>
@@ -351,9 +353,8 @@ export default function Page({ params }: { params: { id: string } }) {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-3">
-                            <label>GPAX</label>
+                            <label>เกรดเฉลี่ย</label>
                             <input
                               id="gpa"
                               type="text"
@@ -362,14 +363,15 @@ export default function Page({ params }: { params: { id: string } }) {
                                 "w-full p-2 border rounded-md " +
                                 (errors.gpa ? "border-red-600  border-2" : "")
                               }
-                              placeholder="กรุณากรอก GPAX (เกรดเฉลี่ย)"
+                              placeholder="กรุณากรอกเกรดเฉลี่ย"
                             />
                             {errors.gpa && (
                               <p className="text-sm text-red-600">
                                 {errors.gpa.message}
                               </p>
                             )}
-                          </div>                          <div className="sm:col-span-12">
+                          </div>{" "}
+                          <div className="sm:col-span-12">
                             <label>ที่อยู่ที่ติดต่อได้</label>
                             <input
                               id="address"
@@ -389,13 +391,11 @@ export default function Page({ params }: { params: { id: string } }) {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-12">
                             <h3 className="font-semibold text-md mb-4 border-t pt-4">
                               ข้อมูลผู้ติดต่อกรณีฉุกเฉิน
                             </h3>
                           </div>
-
                           <div className="sm:col-span-6">
                             <label>ชื่อผู้ติดต่อกรณีฉุกเฉิน</label>
                             <input
@@ -416,7 +416,6 @@ export default function Page({ params }: { params: { id: string } }) {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-6">
                             <label>เบอร์โทรผู้ติดต่อกรณีฉุกเฉิน</label>
                             <input
@@ -437,7 +436,6 @@ export default function Page({ params }: { params: { id: string } }) {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-6">
                             <label>ความสัมพันธ์</label>
                             <select
@@ -466,7 +464,6 @@ export default function Page({ params }: { params: { id: string } }) {
                               </p>
                             )}
                           </div>
-
                           <div className="sm:col-span-12">
                             <div className="flex items-center gap-2">
                               {" "}

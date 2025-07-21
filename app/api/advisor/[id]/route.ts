@@ -32,17 +32,63 @@ export async function PUT(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
-      `UPDATE user_advisor SET
-      fullname = $2,
-      email = $3,
-      mobile = $4,
-      image = $5,
-      username = $6
-      WHERE id = $1
-      RETURNING *`,
-      [id, body.fullname, body.email || null, body.mobile || null, body.image || null, body.username || null]
-    );
+
+    const updateFields = [];
+    const params = [id];
+    let paramCount = 2;
+
+    if (body.image !== undefined) {
+      updateFields.push(`image = $${paramCount++}`);
+      params.push(body.image);
+    }
+    if (body.fullname !== undefined) {
+      updateFields.push(`fullname = $${paramCount++}`);
+      params.push(body.fullname);
+    }
+    if (body.email !== undefined) {
+      updateFields.push(`email = $${paramCount++}`);
+      params.push(body.email);
+    }
+
+    if (body.mobile !== undefined) {
+      updateFields.push(`mobile = $${paramCount++}`);
+      params.push(body.mobile);
+    }
+
+    if (body.username !== undefined) {
+      updateFields.push(`username = $${paramCount++}`);
+      params.push(body.username);
+    }
+
+    if (body.password !== undefined) {
+      updateFields.push(`password_hash = $${paramCount++}`);
+      params.push(body.password);
+    }
+
+    updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
+    const query = `UPDATE user_advisor SET ${updateFields.join(
+      ", "
+    )} WHERE id = $1 RETURNING *`;
+    const data = await sql(query, params);
+
+    // const data = await sql(
+    //   `UPDATE user_advisor SET
+    //   fullname = $2,
+    //   email = $3,
+    //   mobile = $4,
+    //   image = $5,
+    //   username = $6
+    //   WHERE id = $1
+    //   RETURNING *`,
+    //   [
+    //     id,
+    //     body.fullname,
+    //     body.email || null,
+    //     body.mobile || null,
+    //     body.image || null,
+    //     body.username || null,
+    //   ]
+    // );
 
     return NextResponse.json({
       success: true,

@@ -205,7 +205,7 @@ export default function Profile() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="gpa">เกรดเฉลี่ยสะสม (GPAX)</Label>
+                            <Label htmlFor="gpa">เกรดเฉลี่ย</Label>
                             <Input id="gpa" defaultValue="3.45" />
                           </div>
                           <div className="space-y-2">

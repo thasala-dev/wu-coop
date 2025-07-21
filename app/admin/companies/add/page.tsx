@@ -18,7 +18,7 @@ import Sidebar from "@/components/sidebar";
 
 const formSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อแหล่งฝึกงาน"),
-  businessType: z.string().min(1, "กรุณาเลือกประเภทธุรกิจ"),
+  businessType: z.string().min(1, "กรุณาเลือกประเภทแหล่งฝึก"),
   detail: z.string().min(1, "กรุณากรอกรายละเอียดแหล่งฝึกงาน"),
   location: z.string().min(1, "กรุณากรอกที่อยู่แหล่งฝึกงาน"),
   image: z.string(),
@@ -249,7 +249,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                 {typeof errors.businessType?.message ===
                                 "string"
                                   ? errors.businessType.message
-                                  : "กรุณาเลือกประเภทธุรกิจ"}
+                                  : "กรุณาเลือกประเภทแหล่งฝึก"}
                               </p>
                             )}
                           </div>

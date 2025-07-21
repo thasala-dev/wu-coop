@@ -249,6 +249,11 @@ export default function NewEvaluation() {
                               </Badge>{" "}
                               {item.name}
                             </label>
+                            <Link href={`/admin/evaluations/${id}/${item.id}`}>
+                              <div className="text-sm text-yellow-600 cursor-pointer">
+                                (ดูตัวอย่างแบบประเมิน)
+                              </div>
+                            </Link>
                           </div>
                         ))}
                       </div>

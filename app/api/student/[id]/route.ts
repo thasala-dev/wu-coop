@@ -106,6 +106,10 @@ export async function PUT(request: NextRequest) {
       updateFields.push(`image = $${paramCount++}`);
       params.push(body.image);
     }
+    if (body.transcript !== undefined) {
+      updateFields.push(`transcript = $${paramCount++}`);
+      params.push(body.transcript);
+    }
 
     if (body.username !== undefined) {
       updateFields.push(`username = $${paramCount++}`);

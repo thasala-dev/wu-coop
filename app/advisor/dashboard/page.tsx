@@ -345,7 +345,7 @@ export default function AdvisorDashboard() {
                                 รหัสนักศึกษา: 64123456101
                               </p>
                               <p className="text-sm text-gray-600">
-                                วิศวกรรมคอมพิวเตอร์ • GPA: 3.75
+                                วิศวกรรมคอมพิวเตอร์ • เกรดเฉลี่ย: 3.75
                               </p>
                               <div className="flex flex-wrap items-center gap-2 mt-2">
                                 <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
@@ -385,7 +385,7 @@ export default function AdvisorDashboard() {
                                 รหัสนักศึกษา: 64123456102
                               </p>
                               <p className="text-sm text-gray-600">
-                                วิศวกรรมคอมพิวเตอร์ • GPA: 3.68
+                                วิศวกรรมคอมพิวเตอร์ • เกรดเฉลี่ย: 3.68
                               </p>
                               <div className="flex flex-wrap items-center gap-2 mt-2">
                                 <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
@@ -426,7 +426,7 @@ export default function AdvisorDashboard() {
                                 รหัสนักศึกษา: 64123456789
                               </p>
                               <p className="text-sm text-gray-600">
-                                วิศวกรรมคอมพิวเตอร์ • GPA: 3.45
+                                วิศวกรรมคอมพิวเตอร์ • เกรดเฉลี่ย: 3.45
                               </p>
                               <div className="flex flex-wrap items-center gap-2 mt-2">
                                 <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
