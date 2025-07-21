@@ -276,13 +276,18 @@ export default function StudentProfile() {
 
     setIsSaving(true);
 
+    let payload = { ...formData };
+    if (payload.password === "") {
+      delete payload.password;
+    }
+
     try {
       const response = await fetch(`/api/student/${user.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -723,7 +728,7 @@ export default function StudentProfile() {
                               />
                             </div>
                           </div>
-                          <div className="grid grid-cols-1 gap-4">
+                          <div className="grid grid-cols-1 gap-4 mt-4">
                             <div className="space-y-2">
                               <label
                                 htmlFor="transcript"
@@ -731,6 +736,10 @@ export default function StudentProfile() {
                               >
                                 Transcript (ไฟล์รูปภาพเท่านั้น)
                               </label>
+                              <div className="text-xs text-red-500">
+                                ** แนะนำให้ Capture
+                                หน้าจอแสดงเกรดติดกับรูปนักศึกษาด้วย
+                              </div>
 
                               {/* Upload Area */}
                               <div className="border-2 border-dashed border-emerald-300 rounded-lg p-6 bg-emerald-50/30">
