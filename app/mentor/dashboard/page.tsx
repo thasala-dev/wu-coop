@@ -44,6 +44,7 @@ export default function DashboardPage() {
     });
     if (!response.ok) {
       throw new Error("Failed to fetch data");
+      setLoading(false);
     }
     const res = await response.json();
     if (res.success) {
@@ -57,8 +58,8 @@ export default function DashboardPage() {
           setCalendarSelected(res.calendar[0]?.id.toString() || null);
         }
       }
-      setLoading(false);
     }
+    setLoading(false);
   }
 
   return (

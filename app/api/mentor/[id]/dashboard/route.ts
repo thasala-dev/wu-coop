@@ -20,10 +20,12 @@ export async function GET(request: NextRequest, { params }: any) {
         calendar.find((cal: any) => cal.active_id === 1)?.id || calendar[0]?.id;
     }
     if (!calendarId) {
-      return NextResponse.json(
-        { success: false, message: "ไม่พบปฏิทินที่ใช้งานอยู่" },
-        { status: 404 }
-      );
+      return NextResponse.json({
+        success: true,
+        message: "ดำเนินการสำเร็จ",
+        calendar: [],
+        student: [],
+      });
     }
 
     const student = await sql(

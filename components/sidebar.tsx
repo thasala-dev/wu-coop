@@ -183,7 +183,7 @@ export function Sidebar({
         page: "students",
       },
       {
-        label: "อาจารย์นิเทศ",
+        label: "อาจารย์",
         href: "/admin/advisors",
         icon: School,
         page: "advisors",
