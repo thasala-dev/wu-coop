@@ -23,6 +23,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+// Dynamic import สำหรับ MDEditor เพื่อหลีกเลี่ยง SSR issues
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
@@ -44,6 +48,7 @@ export default function Page() {
     formState: { errors },
     setValue,
     getValues,
+    watch,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -157,18 +162,17 @@ export default function Page() {
                           </div>
                           <div className="sm:col-span-12">
                             <label>เนื้อหาประชาสัมพันธ์</label>
-                            <textarea
-                              id="detail"
-                              {...register("detail")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.detail
-                                  ? "border-red-600  border-2"
-                                  : "")
-                              }
-                              placeholder="กรุณากรอกเนื้อหาประชาสัมพันธ์"
-                              rows={4}
-                            ></textarea>
+                            <div className="border rounded-md overflow-hidden">
+                              <MDEditor
+                                value={watch("detail") || ""}
+                                onChange={(value) =>
+                                  setValue("detail", value || "")
+                                }
+                                preview="edit"
+                                height={300}
+                                data-color-mode="light"
+                              />
+                            </div>
                             {errors.detail && (
                               <p className="text-sm text-red-600">
                                 {errors.detail.message}

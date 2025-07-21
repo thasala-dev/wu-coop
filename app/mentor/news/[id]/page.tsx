@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useParams } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
+import ReactMarkdown from "react-markdown";
 
 export default function NewsDetailPage() {
   const [loading, setLoading] = useState(true);
@@ -149,10 +150,9 @@ export default function NewsDetailPage() {
 
               {/* News Content */}
               <CardContent className="p-8">
-                <div className="prose max-w-none">
-                  <div className="text-gray-700 leading-relaxed text-base whitespace-pre-wrap">
-                    {newsData.detail}
-                  </div>
+                <div className="prose max-w-none text-gray-700 leading-relaxed text-base">
+                  {/* ใช้ ReactMarkdown สำหรับแสดงผล formatted content */}
+                  <ReactMarkdown>{newsData.detail || ""}</ReactMarkdown>
                 </div>
               </CardContent>
             </Card>

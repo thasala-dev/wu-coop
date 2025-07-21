@@ -26,9 +26,8 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
 
-// Dynamic import สำหรับ ReactQuill เพื่อหลีกเลี่ยง SSR issues
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css";
+// Dynamic import สำหรับ MDEditor เพื่อหลีกเลี่ยง SSR issues
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
@@ -210,21 +209,31 @@ export default function Page() {
                             )}
                           </div>
                           <div className="sm:col-span-12">
-                            <label>เนื้อหาประชาสัมพันธ์</label>
-                            <textarea
-                              id="detail"
-                              {...register("detail")}
-                              className={
-                                "w-full p-2 border rounded-md " +
-                                (errors.detail
-                                  ? "border-red-600  border-2"
-                                  : "")
-                              }
-                              placeholder="กรุณากรอกเนื้อหาประชาสัมพันธ์"
-                              rows={4}
-                            ></textarea>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              เนื้อหาประชาสัมพันธ์
+                            </label>
+                            <div
+                              className={`border rounded-md ${
+                                errors.detail
+                                  ? "border-red-600 border-2"
+                                  : "border-gray-300"
+                              }`}
+                            >
+                              <MDEditor
+                                value={editorContent}
+                                onChange={(value) => {
+                                  const content = value || "";
+                                  setEditorContent(content);
+                                  setValue("detail", content);
+                                }}
+                                preview="edit"
+                                hideToolbar={false}
+                                data-color-mode="light"
+                                height={300}
+                              />
+                            </div>
                             {errors.detail && (
-                              <p className="text-sm text-red-600">
+                              <p className="text-sm text-red-600 mt-1">
                                 {errors.detail.message}
                               </p>
                             )}

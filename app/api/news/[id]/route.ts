@@ -146,10 +146,9 @@ export async function PUT(
         title = $1,
         detail = $2,
         status = $3,
-        news_date = $4,
-        updated_at = NOW()
+        news_date = $4
       WHERE id = $5
-      RETURNING id, title, detail, status, news_date, created_at, updated_at
+      RETURNING id, title, detail, status, news_date
     `;
 
     const result = await sql(updateQuery, [
