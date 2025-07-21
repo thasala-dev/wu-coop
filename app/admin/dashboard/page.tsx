@@ -256,7 +256,7 @@ export default function AdminDashboard() {
                             อัตราจับคู่
                           </p>
                           <h3 className="text-3xl font-bold">
-                            {percentMatch}%
+                            {percentMatch.toLocaleString()}%
                           </h3>
                           <div className="flex items-center text-orange-100 text-sm mt-1">
                             <Star className="h-3 w-3 mr-1" />
