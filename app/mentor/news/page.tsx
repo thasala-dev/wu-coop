@@ -167,9 +167,9 @@ export default function NewsPage() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-600 leading-relaxed mb-4">
+                        {/* <p className="text-gray-600 leading-relaxed mb-4">
                           {truncateText(news.detail)}
-                        </p>
+                        </p> */}
                         <Button
                           variant="outline"
                           size="sm"
