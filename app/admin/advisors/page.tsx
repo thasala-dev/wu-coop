@@ -155,10 +155,10 @@ export default function CompaniesPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <CardTitle className="text-xl">
-                      จัดการข้อมูลอาจารย์นิเทศ
+                      จัดการข้อมูลอาจารย์
                     </CardTitle>
                     <CardDescription>
-                      รายชื่ออาจารย์นิเทศที่ร่วมทั้งหมด
+                      รายชื่ออาจารย์ที่ร่วมทั้งหมด
                     </CardDescription>
                   </div>
                   <a href={`/admin/advisors/add`}>
@@ -259,9 +259,15 @@ export default function CompaniesPage() {
                                 </div>
                                 {(row.email || row.mobile) && (
                                   <div className="text-sm text-gray-500">
-                                    {row.email && <span>อีเมล: {row.email}</span>}
-                                    {row.email && row.mobile && <span> | </span>}
-                                    {row.mobile && <span>Tel: {row.mobile}</span>}
+                                    {row.email && (
+                                      <span>อีเมล: {row.email}</span>
+                                    )}
+                                    {row.email && row.mobile && (
+                                      <span> | </span>
+                                    )}
+                                    {row.mobile && (
+                                      <span>Tel: {row.mobile}</span>
+                                    )}
                                   </div>
                                 )}
                               </div>
@@ -312,7 +318,6 @@ export default function CompaniesPage() {
                         render: (row: any) => {
                           return (
                             <div className="flex justify-end gap-2">
-                              
                               <Link href={`/admin/advisors/edit/${row.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-3.5 w-3.5" />
@@ -347,7 +352,7 @@ export default function CompaniesPage() {
           <DialogHeader>
             <DialogTitle>ยืนยันการลบข้อมูล</DialogTitle>
             <DialogDescription>
-              คุณแน่ใจหรือว่าต้องการลบข้อมูลอาจารย์นิเทศนี้?
+              คุณแน่ใจหรือว่าต้องการลบข้อมูลอาจารย์นี้?
               การกระทำนี้ไม่สามารถย้อนคืนได้
             </DialogDescription>
           </DialogHeader>

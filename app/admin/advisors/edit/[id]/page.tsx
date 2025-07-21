@@ -18,11 +18,15 @@ import AvatarDesign from "@/components/AvatarDesign";
 
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
-  fullname: z.string().min(1, "กรุณากรอกชื่ออาจารย์นิเทศ"),
+  fullname: z.string().min(1, "กรุณากรอกชื่ออาจารย์"),
   image: z.string().optional(),
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้"),
   password: z.string().optional().or(z.literal("")), // รหัสผ่าน, optional หรือค่าว่าง
-  email: z.string().email("กรุณากรอกอีเมลที่ถูกต้อง").optional().or(z.literal("")),
+  email: z
+    .string()
+    .email("กรุณากรอกอีเมลที่ถูกต้อง")
+    .optional()
+    .or(z.literal("")),
   mobile: z.string().optional().or(z.literal("")),
 });
 
@@ -116,7 +120,7 @@ export default function Page() {
       if (response.ok && data.success) {
         toast({
           title: "ดำเนินการสำเร็จ",
-          description: data.message || "แก้ไขข้อมูลอาจารย์นิเทศสำเร็จ",
+          description: data.message || "แก้ไขข้อมูลอาจารย์สำเร็จ",
           variant: "success",
         });
         router.push("/admin/advisors");
@@ -161,10 +165,10 @@ export default function Page() {
               </Button>
               <div className="flex items-center gap-1 text-sm text-gray-500">
                 <a href="/admin/advisors" className="hover:text-gray-900">
-                  อาจารย์นิเทศ
+                  อาจารย์
                 </a>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-gray-900">แก้ไขอาจารย์นิเทศ</span>
+                <span className="text-gray-900">แก้ไขอาจารย์</span>
               </div>
             </div>
 
@@ -192,7 +196,7 @@ export default function Page() {
                       </div>
 
                       <div className="sm:col-span-12">
-                        <label htmlFor="fullname">ชื่ออาจารย์นิเทศ</label>
+                        <label htmlFor="fullname">ชื่ออาจารย์</label>
                         <input
                           id="fullname"
                           type="text"
@@ -200,7 +204,7 @@ export default function Page() {
                           className={`w-full p-2 border rounded-md ${
                             errors.fullname ? "border-red-600 border-2" : ""
                           }`}
-                          placeholder="กรุณากรอกชื่ออาจารย์นิเทศ"
+                          placeholder="กรุณากรอกชื่ออาจารย์"
                         />
                         {errors.fullname && (
                           <p className="text-sm text-red-600">

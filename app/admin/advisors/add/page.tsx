@@ -17,7 +17,7 @@ import AvatarDesign from "@/components/AvatarDesign";
 
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
-  fullname: z.string().min(1, "กรุณากรอกชื่ออาจารย์นิเทศ"),
+  fullname: z.string().min(1, "กรุณากรอกชื่ออาจารย์"),
   email: z.string().email("กรุณากรอกอีเมลที่ถูกต้อง").min(1, "กรุณากรอกอีเมล"),
   mobile: z.string(),
   image: z.string().optional(),
@@ -69,7 +69,7 @@ export default function Page() {
       if (data.success) {
         toast({
           title: "ดำเนินการสำเร็จ",
-          description: data.message || "เพิ่มอาจารย์นิเทศสำเร็จ",
+          description: data.message || "เพิ่มอาจารย์สำเร็จ",
           variant: "success",
         });
         router.push("/admin/advisors");
@@ -110,7 +110,7 @@ export default function Page() {
               </Button>
               <div className="flex items-center gap-1 text-sm text-gray-500">
                 <a href="/admin/advisors" className="hover:text-gray-900">
-                  อาจารย์นิเทศ
+                  อาจารย์
                 </a>
                 <ChevronRight className="h-3 w-3" />
                 <span className="text-gray-900">เพิ่มบัญชีใหม่</span>
@@ -141,7 +141,7 @@ export default function Page() {
                           </div>
 
                           <div className="sm:col-span-12">
-                            <label>ชื่ออาจารย์นิเทศ</label>
+                            <label>ชื่ออาจารย์</label>
                             <input
                               id="fullname"
                               type="text"
@@ -152,7 +152,7 @@ export default function Page() {
                                   ? "border-red-600  border-2"
                                   : "")
                               }
-                              placeholder="กรุณากรอกชื่ออาจารย์นิเทศ"
+                              placeholder="กรุณากรอกชื่ออาจารย์"
                             />
                             {errors.fullname && (
                               <p className="text-sm text-red-600">
