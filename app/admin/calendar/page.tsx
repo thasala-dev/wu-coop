@@ -50,6 +50,20 @@ export default function AdminCalendar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredEvents, setFilteredEvents] = useState<any>([]);
   const [events, setEvents] = useState<any>([]);
+  type DeleteDialogItem = { id: number; [key: string]: any } | null;
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    type: string;
+    item: DeleteDialogItem;
+    title: string;
+    description: string;
+  }>({
+    isOpen: false,
+    type: "",
+    item: null,
+    title: "",
+    description: "",
+  });
 
   // State for calendar view
   const [currentMonthIndex, setCurrentMonthIndex] = useState(5); // June (0-indexed)
@@ -279,6 +293,89 @@ export default function AdminCalendar() {
 
     setCurrentMonthIndex(today.getMonth());
     setCurrentYear(beYear);
+  };
+
+  // Functions for delete actions
+  const openDeleteDialog = (type: string, item: any) => {
+    const isCalendar = type === "calendar";
+    setDeleteDialog({
+      isOpen: true,
+      type,
+      item,
+      title: isCalendar ? "ลบผลัดฝึกงาน" : "ลบกิจกรรม",
+      description: isCalendar
+        ? `คุณต้องการลบผลัดฝึกงาน "${item.name}" หรือไม่? การดำเนินการนี้จะไม่สามารถย้อนกลับได้`
+        : `คุณต้องการลบกิจกรรม "${item.title}" หรือไม่? การดำเนินการนี้จะไม่สามารถย้อนกลับได้`,
+    });
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialog({
+      isOpen: false,
+      type: "",
+      item: null,
+      title: "",
+      description: "",
+    });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteDialog.item) return;
+
+    setLoading(true);
+    try {
+      const endpoint =
+        deleteDialog.type === "calendar"
+          ? `/api/calendar/${deleteDialog.item.id}`
+          : `/api/event/${deleteDialog.item.id}`;
+
+      const response = await fetch(endpoint, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Show success message
+        alert(
+          data.message ||
+            `ลบ${
+              deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
+            }สำเร็จ`
+        );
+
+        // Refresh data
+        if (deleteDialog.type === "calendar") {
+          await fetchCalendar();
+          // If deleted calendar was selected, clear selection
+          if (deleteDialog.item.id === calendarSelected) {
+            setCalendarSelected(null);
+          }
+        } else {
+          await fetchEvents();
+        }
+      } else {
+        alert(
+          data.message ||
+            `ไม่สามารถลบ${
+              deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
+            }ได้`
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting:", error);
+      alert(
+        `เกิดข้อผิดพลาดในการลบ${
+          deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
+        }`
+      );
+    } finally {
+      setLoading(false);
+      closeDeleteDialog();
+    }
   };
   // Initial fetch when component mounts
   useEffect(() => {
@@ -759,6 +856,9 @@ export default function AdminCalendar() {
                                   variant="destructive"
                                   size="sm"
                                   className="bg-red-600 hover:bg-red-700 text-white"
+                                  onClick={() =>
+                                    openDeleteDialog("calendar", cal)
+                                  }
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
@@ -909,6 +1009,9 @@ export default function AdminCalendar() {
                                       variant="destructive"
                                       size="sm"
                                       className="bg-red-600 hover:bg-red-700 text-white"
+                                      onClick={() =>
+                                        openDeleteDialog("event", event)
+                                      }
                                     >
                                       <Trash2 className="h-3.5 w-3.5" />
                                     </Button>
@@ -1085,7 +1188,13 @@ export default function AdminCalendar() {
                                       แก้ไข
                                     </Button>
                                   </Link>
-                                  <Button variant="ghost" size="sm">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      openDeleteDialog("event", event)
+                                    }
+                                  >
                                     ลบ
                                   </Button>
                                 </div>
@@ -1106,6 +1215,77 @@ export default function AdminCalendar() {
           </div>
         </div>
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      {deleteDialog.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={closeDeleteDialog}
+          ></div>
+
+          {/* Dialog Content */}
+          <div className="relative z-10 max-w-md mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden">
+            {/* Dialog Header */}
+            <div className="flex items-center justify-between p-6 bg-gradient-to-r from-red-500 to-red-600 text-white">
+              <h3 className="text-xl font-bold flex items-center gap-2">
+                <Trash2 className="h-5 w-5" />
+                {deleteDialog.title}
+              </h3>
+            </div>
+
+            {/* Dialog Body */}
+            <div className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <Trash2 className="h-5 w-5 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-gray-700 leading-relaxed">
+                    {deleteDialog.description}
+                  </p>
+                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800 font-medium">
+                      ⚠️ คำเตือน: การดำเนินการนี้ไม่สามารถย้อนกลับได้
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Dialog Footer */}
+            <div className="flex justify-end gap-3 p-6 bg-gray-50 border-t">
+              <Button
+                variant="outline"
+                onClick={closeDeleteDialog}
+                className="px-6"
+                disabled={loading}
+              >
+                ยกเลิก
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={confirmDelete}
+                className="px-6 bg-red-600 hover:bg-red-700"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    กำลังลบ...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    ยืนยันการลบ
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

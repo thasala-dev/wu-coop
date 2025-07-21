@@ -68,10 +68,10 @@ export default function DashboardPage() {
           <Sidebar activePage="dashboard" userType="mentor" />
           {loading && <Loading />}
           <div className="md:col-span-4">
+            <div>
+              <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
-              </div>
               <div>
                 <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full p-6">
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-end">

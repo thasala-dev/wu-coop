@@ -37,6 +37,8 @@ import {
   Heart,
   Award,
   Shield,
+  Eye,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "@/components/sidebar";
@@ -67,6 +69,7 @@ export default function StudentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const [activities, setActivities] = useState<any[]>([]);
+  const [isTranscriptModalOpen, setIsTranscriptModalOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -449,8 +452,15 @@ export default function StudentDetailPage() {
                   </div>
                 </div>
 
-                <Tabs defaultValue="notes" className="mt-4">
-                  <TabsList className="grid w-full grid-cols-2 mb-8 h-12 rounded-xl bg-gradient-to-r from-slate-100 to-gray-100 p-1 shadow-sm">
+                <Tabs defaultValue="infomation" className="mt-4">
+                  <TabsList className="grid w-full grid-cols-3 mb-8 h-12 rounded-xl bg-gradient-to-r from-slate-100 to-gray-100 p-1 shadow-sm">
+                    <TabsTrigger
+                      value="infomation"
+                      className="rounded-lg font-medium data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-700 transition-all duration-200"
+                    >
+                      <ClipboardList className="w-4 h-4 mr-2" />
+                      ข้อมูลนักศึกษา
+                    </TabsTrigger>
                     <TabsTrigger
                       value="notes"
                       className="rounded-lg font-medium data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-700 transition-all duration-200"
@@ -467,6 +477,335 @@ export default function StudentDetailPage() {
                     </TabsTrigger>
                   </TabsList>
 
+                  <TabsContent value="infomation" className="space-y-6">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200/50">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <User className="h-5 w-5 text-blue-600" />
+                        ข้อมูลส่วนตัว
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            ชื่อ-สกุล
+                          </label>
+                          <div>
+                            {data?.fullname || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            ชื่อเล่น
+                          </label>
+                          <div>
+                            {data?.nickname || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            รหัสนักศึกษา
+                          </label>
+                          <div>
+                            {data?.student_id || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            เลขบัตรประชาชน
+                          </label>
+                          <div>
+                            {data?.id_card || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            วันเกิด
+                          </label>
+                          <div>
+                            {new Date(data?.date_of_birth).toLocaleDateString(
+                              "th-TH",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            ) || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            สัญชาติ
+                          </label>
+                          <div>
+                            {data?.nationality || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            ศาสนา
+                          </label>
+                          <div>
+                            {data?.religion || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            อีเมล
+                          </label>
+                          <div>
+                            {data?.email || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            เบอร์โทรศัพท์
+                          </label>
+                          <div>
+                            {data?.mobile || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            ที่อยู่
+                          </label>
+                          <div>
+                            {data?.address || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200/50">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg
+                          className="h-5 w-5 text-emerald-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                          />
+                        </svg>
+                        ข้อมูลการศึกษา
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            สาขาวิชา
+                          </label>
+                          <div>
+                            {data?.major || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            ปีรหัส
+                          </label>
+                          <div>
+                            {data?.std_year || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            เกรดเฉลี่ย
+                          </label>
+                          <div>
+                            {data?.gpa || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      {data?.transcript && (
+                        <div className="grid grid-cols-1 gap-4 mt-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-gray-700">
+                              Transcript
+                            </label>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setIsTranscriptModalOpen(true)}
+                              className="w-full justify-center gap-2 h-12 border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-400 transition-all duration-200"
+                            >
+                              <Eye className="h-4 w-4" />
+                              ดู Transcript
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6 border border-orange-200/50">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg
+                          className="h-5 w-5 text-orange-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                          />
+                        </svg>
+                        ข้อมูลผู้ปกครอง & ผู้ติดต่อฉุกเฉิน
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <h4 className="font-medium text-orange-700 border-b border-orange-200 pb-2">
+                            ข้อมูลผู้ปกครอง
+                          </h4>
+                          <div className="mt-4 space-y-2">
+                            <label className="text-sm font-medium text-gray-700">
+                              ชื่อผู้ปกครอง
+                            </label>
+                            <div>
+                              {data?.parent_name || (
+                                <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                              )}
+                            </div>
+                          </div>
+                          <div className="mt-4 space-y-2">
+                            <label className="text-sm font-medium text-gray-700">
+                              อาชีพผู้ปกครอง
+                            </label>
+                            <div>
+                              {data?.parent_occupation || (
+                                <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                              )}
+                            </div>
+                          </div>
+                          <div className="mt-4 space-y-2">
+                            <label className="text-sm font-medium text-gray-700">
+                              เบอร์โทรผู้ปกครอง
+                            </label>
+                            <div>
+                              {data?.parent_phone || (
+                                <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <h4 className="font-medium text-orange-700 border-b border-orange-200 pb-2">
+                            ผู้ติดต่อฉุกเฉิน
+                          </h4>
+                          <div className="mt-4 space-y-2">
+                            <label className="text-sm font-medium text-gray-700">
+                              ชื่อผู้ติดต่อฉุกเฉิน
+                            </label>
+                            <div>
+                              {data?.emergency_contact_name || (
+                                <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                              )}
+                            </div>
+                          </div>
+                          <div className="mt-4 space-y-2">
+                            <label className="text-sm font-medium text-gray-700">
+                              ความเกี่ยวข้อง
+                            </label>
+                            <div>
+                              {data?.emergency_contact_relation || (
+                                <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                              )}
+                            </div>
+                          </div>
+                          <div className="mt-4 space-y-2">
+                            <label className="text-sm font-medium text-gray-700">
+                              เบอร์โทรฉุกเฉิน
+                            </label>
+                            <div>
+                              {data?.emergency_contact_phone || (
+                                <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200/50">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg
+                          className="h-5 w-5 text-purple-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                        ข้อมูลเพิ่มเติม
+                      </h3>
+                      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            ทุนการศึกษา
+                          </label>
+                          <div>
+                            {data?.scholarship || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            ทักษะพิเศษ
+                          </label>
+                          <div>
+                            {data?.skills || (
+                              <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-4 space-y-2 md:col-span-2">
+                        <label className="text-sm font-medium text-gray-700">
+                          ประวัติสุขภาพ/โรคประจำตัว
+                        </label>
+                        <div>
+                          {data?.medical_condition || (
+                            <i className="text-sm text-gray-500">ไม่ระบุ</i>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
                   <TabsContent value="notes" className="space-y-6">
                     <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-blue-50/30">
                       <CardHeader className="pb-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-t-lg">
@@ -726,6 +1065,69 @@ export default function StudentDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Transcript Modal */}
+      {isTranscriptModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setIsTranscriptModalOpen(false)}
+          ></div>
+
+          {/* Modal Content */}
+          <div className="relative z-10 max-w-4xl max-h-[90vh] mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+              <h3 className="text-xl font-bold flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Transcript - {data?.fullname}
+              </h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsTranscriptModalOpen(false)}
+                className="text-white hover:bg-white/20 rounded-full"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 max-h-[70vh] overflow-auto">
+              <div className="flex justify-center">
+                <img
+                  src={data?.transcript}
+                  alt="Transcript"
+                  className="max-w-full max-h-full rounded-lg shadow-lg"
+                  style={{
+                    maxHeight: "60vh",
+                    objectFit: "contain",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end gap-3 p-6 bg-gray-50 border-t">
+              <Button
+                variant="outline"
+                onClick={() => setIsTranscriptModalOpen(false)}
+                className="px-6"
+              >
+                ปิด
+              </Button>
+              <Button
+                onClick={() => window.open(data?.transcript, "_blank")}
+                className="px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                ดูขนาดเต็ม
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

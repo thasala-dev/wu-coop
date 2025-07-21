@@ -97,15 +97,15 @@ export function Sidebar({
       {
         href: "/advisor/dashboard",
         page: "dashboard",
-        label: "หน้าหลัก",
-        icon: LayoutDashboard,
-      },
-      {
-        href: "/advisor/profile",
-        page: "profile",
         label: "ข้อมูลส่วนตัว",
-        icon: Users,
+        icon: User,
       },
+      // {
+      //   href: "/advisor/profile",
+      //   page: "profile",
+      //   label: "ข้อมูลส่วนตัว",
+      //   icon: Users,
+      // },
       {
         href: "/advisor/students",
         page: "students",
