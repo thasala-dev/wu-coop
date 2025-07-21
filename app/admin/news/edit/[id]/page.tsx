@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Edit, ChevronRight, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit, ChevronRight, Trash2, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,19 +15,35 @@ import Loading from "@/components/loading";
 import { callUploadApi, callDeleteApi } from "@/lib/file-api";
 import CustomAvatar from "@/components/avatar";
 import AvatarDesign from "@/components/AvatarDesign";
+import { format } from "date-fns";
+import { th } from "date-fns/locale";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+// Dynamic import สำหรับ ReactQuill เพื่อหลีกเลี่ยง SSR issues
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
 
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
-  fullname: z.string().min(1, "กรุณากรอกชื่อผู้ดูแลระบบ"),
-  image: z.string().optional(),
-  username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้"),
-  password: z.string().optional().or(z.literal("")), // รหัสผ่าน, optional หรือค่าว่าง
+  title: z.string().min(1, "กรุณากรอกหัวข้อประชาสัมพันธ์"),
+  detail: z.string().min(1, "กรุณากรอกเนื้อหาประชาสัมพันธ์"),
+  news_date: z.string().min(1, "กรุณาเลือกวันที่ประชาสัมพันธ์"),
+  status: z.string().min(1, "กรุณาเลือกสถานะ"),
 });
 
 // --- Component หลัก ---
 export default function Page() {
   const [loading, setLoading] = useState(true);
   const params = useParams();
+  const [newsDate, setNewsDate] = useState<Date | null>(null);
+  const [editorContent, setEditorContent] = useState("");
   const id = params?.id as string;
 
   const { toast } = useToast();
@@ -42,10 +58,10 @@ export default function Page() {
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: "",
-      image: "",
-      username: "",
-      password: "",
+      title: "",
+      detail: "",
+      news_date: "",
+      status: "1",
     },
   });
 
@@ -54,30 +70,33 @@ export default function Page() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/admin/${id}`);
+        const response = await fetch(`/api/news/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
 
         if (data.success) {
-          const advisorData = data.data;
-          setValue("fullname", advisorData.fullname);
-          setValue("image", advisorData.image || "");
-          setValue("username", advisorData.username);
-          // ไม่ต้อง setValue 'password' ที่ดึงมาจาก API เพราะมันไม่ควรถูกแสดง
+          const newsData = data.data;
+          setValue("title", newsData.title || "");
+          setValue("detail", newsData.detail || "");
+          setValue("news_date", newsData.news_date || "");
+          setValue("status", String(newsData.status || "1"));
+          setNewsDate(newsData.news_date ? new Date(newsData.news_date) : null);
+          setEditorContent(newsData.detail || "");
         } else {
           toast({
             title: "ไม่พบข้อมูล",
-            description: data.message || "เกิดข้อผิดพลาด",
+            description:
+              data.message || "ไม่พบข่าวประชาสัมพันธ์ที่ต้องการแก้ไข",
             variant: "destructive",
           });
         }
       } catch (error) {
-        console.error("Error fetching advisor data:", error);
+        console.error("Error fetching news data:", error);
         toast({
           title: "ไม่สามารถโหลดข้อมูลได้",
-          description: "เกิดข้อผิดพลาดในการดึงข้อมูล",
+          description: "เกิดข้อผิดพลาดในการดึงข้อมูลข่าวประชาสัมพันธ์",
           variant: "destructive",
         });
       } finally {
@@ -91,12 +110,13 @@ export default function Page() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
-      const payload = values;
-      if (payload.password === "") {
-        delete payload.password;
-      }
+      const payload = {
+        ...values,
+        detail: editorContent, // ใช้เนื้อหาจาก editor
+        status: parseInt(values.status),
+      };
 
-      const response = await fetch(`/api/admin/${id}`, {
+      const response = await fetch(`/api/news/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -106,7 +126,7 @@ export default function Page() {
       if (response.ok && data.success) {
         toast({
           title: "ดำเนินการสำเร็จ",
-          description: data.message || "แก้ไขข้อมูลผู้ดูแลระบบสำเร็จ",
+          description: data.message || "แก้ไขข่าวประชาสัมพันธ์สำเร็จ",
           variant: "success",
         });
         router.push("/admin/news");
@@ -150,10 +170,10 @@ export default function Page() {
               </Button>
               <div className="flex items-center gap-1 text-sm text-gray-500">
                 <a href="/admin/news" className="hover:text-gray-900">
-                  ผู้ดูแลระบบ
+                  ข่าวประชาสัมพันธ์
                 </a>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-gray-900">แก้ไขผู้ดูแลระบบ</span>
+                <span className="text-gray-900">แก้ไขข่าวประชาสัมพันธ์</span>
               </div>
             </div>
 
@@ -162,96 +182,145 @@ export default function Page() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <CardContent className="p-0">
                   <div className="p-6 relative">
-                    <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
-                      {/* ข้อมูลทั่วไป */}
-                      <div className="sm:col-span-12">
-                        <h2 className="font-semibold tracking-tight text-lg">
-                          ข้อมูลทั่วไป
-                        </h2>
-                      </div>
+                    <div>
+                      <div>
+                        <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
+                          <div className="sm:col-span-12">
+                            <div className="font-semibold tracking-tight text-lg">
+                              แก้ไขข่าวประชาสัมพันธ์
+                            </div>
+                          </div>
 
-                      <div className="sm:col-span-12 flex flex-col items-center justify-center text-center">
-                        <AvatarDesign
-                          value={getValues("image")}
-                          setValue={(val: any) => {
-                            setValue("image", val);
-                          }}
-                          size="32"
-                        />
-                      </div>
+                          <div className="sm:col-span-12">
+                            <label>หัวข้อประชาสัมพันธ์</label>
+                            <input
+                              id="title"
+                              type="text"
+                              {...register("title")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.title ? "border-red-600  border-2" : "")
+                              }
+                              placeholder="กรุณากรอกหัวข้อประชาสัมพันธ์"
+                            />
+                            {errors.title && (
+                              <p className="text-sm text-red-600">
+                                {errors.title.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-12">
+                            <label>เนื้อหาประชาสัมพันธ์</label>
+                            <textarea
+                              id="detail"
+                              {...register("detail")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.detail
+                                  ? "border-red-600  border-2"
+                                  : "")
+                              }
+                              placeholder="กรุณากรอกเนื้อหาประชาสัมพันธ์"
+                              rows={4}
+                            ></textarea>
+                            {errors.detail && (
+                              <p className="text-sm text-red-600">
+                                {errors.detail.message}
+                              </p>
+                            )}
+                          </div>
 
-                      <div className="sm:col-span-12">
-                        <label htmlFor="fullname">ชื่อผู้ดูแลระบบ</label>
-                        <input
-                          id="fullname"
-                          type="text"
-                          {...register("fullname")}
-                          className={`w-full p-2 border rounded-md ${
-                            errors.fullname ? "border-red-600 border-2" : ""
-                          }`}
-                          placeholder="กรุณากรอกชื่อผู้ดูแลระบบ"
-                        />
-                        {errors.fullname && (
-                          <p className="text-sm text-red-600">
-                            {errors.fullname.message}
-                          </p>
-                        )}
-                      </div>
+                          <div className="sm:col-span-12">
+                            <label>สถานะ</label>
+                            <select
+                              {...register("status")}
+                              className={
+                                "w-full p-2 border rounded-md " +
+                                (errors.status ? "border-red-600 border-2" : "")
+                              }
+                            >
+                              <option value="1">เปิดใช้งาน</option>
+                              <option value="0">ปิดใช้งาน</option>
+                            </select>
+                            {errors.status && (
+                              <p className="text-sm text-red-600">
+                                {errors.status.message}
+                              </p>
+                            )}
+                          </div>
 
-                      {/* ข้อมูลผู้ใช้งาน */}
-                      <div className="sm:col-span-12">
-                        <h2 className="font-semibold tracking-tight text-lg">
-                          ข้อมูลผู้ใช้งาน
-                        </h2>
-                      </div>
-                      <div className="sm:col-span-6">
-                        <label htmlFor="username">Username</label>
-                        <input
-                          id="username"
-                          type="text"
-                          {...register("username")}
-                          className={`w-full p-2 border rounded-md ${
-                            errors.username ? "border-red-600 border-2" : ""
-                          }`}
-                          placeholder="กรุณากรอกชื่อผู้ใช้งาน"
-                        />
-                        {errors.username && (
-                          <p className="text-sm text-red-600">
-                            {errors.username.message}
-                          </p>
-                        )}
-                      </div>
-                      <div className="sm:col-span-6">
-                        <label htmlFor="password">
-                          Password (หากไม่ต้องการแก้ไขไม่ต้องกรอก)
-                        </label>
-                        <input
-                          id="password"
-                          type="password"
-                          {...register("password")}
-                          className={`w-full p-2 border rounded-md ${
-                            errors.password ? "border-red-600 border-2" : ""
-                          }`}
-                          placeholder="กรุณากรอกรหัสผ่าน"
-                        />
-                        {errors.password && (
-                          <p className="text-sm text-red-600">
-                            {errors.password.message}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* ปุ่มบันทึก */}
-                      <div className="sm:col-span-12">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            type="submit"
-                            className="flex items-center gap-1 h-9 px-3 rounded-md bg-gray-900 hover:bg-gray-800"
-                            disabled={loading}
-                          >
-                            <Edit className="h-4 w-4 mr-2" />
-                            บันทึกข้อมูล
-                          </Button>
+                          <div className="sm:col-span-12">
+                            <label>วันที่ประชาสัมพันธ์</label>
+                            <div>
+                              <input
+                                type="hidden"
+                                {...register("news_date")}
+                                value={
+                                  newsDate ? format(newsDate, "yyyy-MM-dd") : ""
+                                }
+                              />
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    type="button"
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !newsDate && "text-muted-foreground",
+                                      errors.news_date
+                                        ? "border-red-600 border-2"
+                                        : ""
+                                    )}
+                                  >
+                                    <Calendar className="mr-2 h-4 w-4" />
+                                    {newsDate ? (
+                                      format(newsDate, "d MMMM yyyy", {
+                                        locale: th,
+                                      })
+                                    ) : (
+                                      <span>เลือกวันที่ประชาสัมพันธ์</span>
+                                    )}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-auto p-0 shadow-md rounded-md"
+                                  align="start"
+                                >
+                                  <CalendarComponent
+                                    selected={newsDate || undefined}
+                                    onSelect={(date: Date | null) => {
+                                      setNewsDate(date);
+                                      if (date) {
+                                        setValue(
+                                          "news_date",
+                                          format(date, "yyyy-MM-dd")
+                                        );
+                                      }
+                                    }}
+                                    locale={th}
+                                    className="rounded-md"
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
+                            {errors.news_date && (
+                              <p className="text-sm text-red-600">
+                                {errors.news_date.message}
+                              </p>
+                            )}
+                          </div>
+                          <div className="sm:col-span-12">
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="submit"
+                                className="flex items-center gap-1 h-9 px-3 rounded-md bg-gray-900 hover:bg-gray-800"
+                                disabled={loading}
+                              >
+                                <Edit className="h-4 w-4 mr-2" />
+                                บันทึกข้อมูล
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

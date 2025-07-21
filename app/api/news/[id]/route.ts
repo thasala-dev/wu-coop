@@ -27,9 +27,7 @@ export async function GET(
         title,
         detail,
         status,
-        news_date,
-        created_at,
-        updated_at
+        news_date
       FROM news 
       WHERE id = $1
     `;

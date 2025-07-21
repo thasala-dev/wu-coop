@@ -28,6 +28,7 @@ import {
   CircleCheck,
   HelpCircle,
   MapPinIcon,
+  Newspaper,
 } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -139,6 +140,12 @@ export function Sidebar({
         icon: Building,
       },
       {
+        label: "ประชาสัมพันธ์แหล่งฝึก",
+        href: "/mentor/news",
+        icon: Newspaper,
+        page: "news",
+      },
+      {
         href: "/mentor/students",
         page: "students",
         label: "นักศึกษาในความดูแล",
@@ -175,6 +182,12 @@ export function Sidebar({
         href: "/admin/companies",
         icon: Building,
         page: "companies",
+      },
+      {
+        label: "ประชาสัมพันธ์แหล่งฝึก",
+        href: "/admin/news",
+        icon: Newspaper,
+        page: "news",
       },
       {
         label: "นักศึกษา",

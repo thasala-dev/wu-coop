@@ -54,16 +54,14 @@ export default function CompaniesPage() {
     if (role === "all") {
       setFilterData(data);
     } else if (role === "active") {
-      setFilterData(data.filter((item: any) => item.status_id === 1));
+      setFilterData(data.filter((item: any) => item.status === 1));
     } else if (role === "inactive") {
-      setFilterData(data.filter((item: any) => item.status_id === 2));
-    } else if (role === "pending") {
-      setFilterData(data.filter((item: any) => item.status_id === 0));
+      setFilterData(data.filter((item: any) => item.status === 0));
     }
   }, [data, role]);
 
   async function fetchData() {
-    const response = await fetch("/api/admin", {
+    const response = await fetch("/api/news", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +86,7 @@ export default function CompaniesPage() {
     setLoading(true);
     setShowDeleteDialog(false);
 
-    const response = await fetch(`/api/admin/${adminToDelete}`, {
+    const response = await fetch(`/api/news/${adminToDelete}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -100,7 +98,7 @@ export default function CompaniesPage() {
       // Refresh data after successful deletion
       fetchData();
     } else {
-      alert("ไม่สามารถลบข้อมูลได้: " + res.message);
+      alert("ไม่สามารถลบข่าวประชาสัมพันธ์ได้: " + res.message);
       setLoading(false);
     }
 
@@ -114,19 +112,13 @@ export default function CompaniesPage() {
       case "1":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            <CheckCircleIcon className="h-3 w-3 mr-1" /> ใช้งาน
-          </Badge>
-        );
-      case "2":
-        return (
-          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            <XCircleIcon className="h-3 w-3 mr-1" /> ไม่ใช้งาน
+            <CheckCircleIcon className="h-3 w-3 mr-1" /> เผยแพร่
           </Badge>
         );
       case "0":
         return (
-          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-            <ClockIcon className="h-3 w-3 mr-1" /> รอดำเนินการ
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            <XCircleIcon className="h-3 w-3 mr-1" /> ไม่เผยแพร่
           </Badge>
         );
       default:
@@ -147,14 +139,14 @@ export default function CompaniesPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <CardTitle className="text-xl">
-                      จัดการข้อมูลผู้ดูแลระบบ
+                      จัดการข่าวประชาสัมพันธ์
                     </CardTitle>
-                    <CardDescription>รายชื่อผู้ดูแลระบบ</CardDescription>
+                    <CardDescription>รายการข่าวประชาสัมพันธ์</CardDescription>
                   </div>
                   <a href={`/admin/news/add`}>
                     <Button>
                       <PlusIcon className="h-4 w-4 mr-2" />
-                      สร้างบัญชีใหม่
+                      สร้างประชาสัมพันธ์ใหม่
                     </Button>
                   </a>
                 </div>
@@ -165,7 +157,7 @@ export default function CompaniesPage() {
                   <div className="relative flex-grow">
                     <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                     <Input
-                      placeholder="ค้นหาชื่อผู้ดูแลระบบ.."
+                      placeholder="ค้นหาข่าวประชาสัมพันธ์.."
                       className="pl-8"
                       value={search}
                       onChange={(e) => {
@@ -177,11 +169,9 @@ export default function CompaniesPage() {
                               ? data
                               : data.filter((item: any) => {
                                   if (role === "active")
-                                    return item.status_id === 1;
+                                    return item.status === 1;
                                   if (role === "inactive")
-                                    return item.status_id === 2;
-                                  if (role === "pending")
-                                    return item.status_id === 0;
+                                    return item.status === 0;
                                   return true;
                                 })
                           );
@@ -191,15 +181,13 @@ export default function CompaniesPage() {
                               ? data
                               : data.filter((item: any) => {
                                   if (role === "active")
-                                    return item.status_id === 1;
+                                    return item.status === 1;
                                   if (role === "inactive")
-                                    return item.status_id === 2;
-                                  if (role === "pending")
-                                    return item.status_id === 0;
+                                    return item.status === 0;
                                   return true;
                                 })
                             ).filter((item: any) =>
-                              item.fullname
+                              item.title
                                 ?.toLowerCase()
                                 .includes(value.toLowerCase())
                             )
@@ -215,16 +203,11 @@ export default function CompaniesPage() {
                       ทั้งหมด ({data.length})
                     </TabsTrigger>
                     <TabsTrigger value="active">
-                      ใช้งาน (
-                      {data.filter((c: any) => c.status_id === 1).length})
+                      เผยแพร่ ({data.filter((c: any) => c.status === 1).length})
                     </TabsTrigger>
                     <TabsTrigger value="inactive">
-                      ไม่ใช้งาน (
-                      {data.filter((c: any) => c.status_id === 2).length})
-                    </TabsTrigger>
-                    <TabsTrigger value="pending">
-                      รอดำเนินการ (
-                      {data.filter((c: any) => c.status_id === 0).length})
+                      ไม่เผยแพร่ (
+                      {data.filter((c: any) => c.status === 0).length})
                     </TabsTrigger>
                   </TabsList>
                 </div>
@@ -232,52 +215,25 @@ export default function CompaniesPage() {
                   <TableList
                     meta={[
                       {
-                        key: "id",
+                        key: "title",
                         content: "รายการ",
-                        render: (row: any) => {
-                          return (
-                            <div className="flex items-center gap-3">
-                              <CustomAvatar
-                                id={`admin${row.username}`}
-                                image={row.image}
-                                size="8"
-                              />
-                              <div>
-                                <div>{row.fullname}</div>
-                                <div className="text-sm text-gray-500">
-                                  Username: {row.username}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        },
                       },
+
                       {
-                        key: "status_id",
+                        key: "news_date",
+                        content: "วันที่เผยแพร่",
                         className: "text-center",
-                        content: "สถานะ",
-                        render: (row: any) => {
-                          return renderStatusBadge(String(row.status_id));
-                        },
-                      },
-                      {
-                        key: "last_login",
-                        content: "ใช้งานล่าสุด",
-                        className: "text-center",
-                        width: "150px",
+                        width: "100px",
                         render: (row: any) => {
                           return (
                             <div className="text-sm text-gray-500">
-                              {row.last_login ? (
-                                new Date(row.last_login).toLocaleString(
+                              {row.news_date ? (
+                                new Date(row.news_date).toLocaleString(
                                   "th-TH",
                                   {
                                     year: "numeric",
                                     month: "2-digit",
                                     day: "2-digit",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    second: "2-digit",
                                   }
                                 )
                               ) : (
@@ -288,18 +244,22 @@ export default function CompaniesPage() {
                         },
                       },
                       {
+                        key: "status",
+                        className: "text-center",
+                        content: "สถานะ",
+                        width: "100px",
+                        render: (row: any) => {
+                          return renderStatusBadge(String(row.status));
+                        },
+                      },
+                      {
                         key: "actions",
                         content: "จัดการ",
                         sort: false,
-                        width: "150px",
+                        width: "100px",
                         render: (row: any) => {
                           return (
                             <div className="flex justify-end gap-2">
-                              <Link href={`/admin/news/${row.id}`}>
-                                <Button variant="outline" size="sm">
-                                  <Eye className="h-3.5 w-3.5" />
-                                </Button>
-                              </Link>
                               <Link href={`/admin/news/edit/${row.id}`}>
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-3.5 w-3.5" />
@@ -332,9 +292,9 @@ export default function CompaniesPage() {
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>ยืนยันการลบผู้ดูแลระบบ</DialogTitle>
+            <DialogTitle>ยืนยันการลบข่าวประชาสัมพันธ์</DialogTitle>
             <DialogDescription>
-              คุณต้องการลบผู้ดูแลระบบนี้ใช่หรือไม่?
+              คุณต้องการลบข่าวประชาสัมพันธ์นี้ใช่หรือไม่?
               การดำเนินการนี้ไม่สามารถย้อนกลับได้
             </DialogDescription>
           </DialogHeader>
