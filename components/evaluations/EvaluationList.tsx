@@ -42,17 +42,17 @@ export default function EvaluationList(props: any) {
     return <CARE_p7 {...props} />;
   } else if (subtype === "22") {
     return <CARE_pm5 {...props} />;
-  } else if (subtype === "23") {
+  } else if (subtype === "23" || subtype === "39") {
     return <CARE_ssj1 {...props} />;
-  } else if (subtype === "24") {
+  } else if (subtype === "24" || subtype === "50") {
     return <CARE_ssj2 {...props} />;
-  } else if (subtype === "29" || subtype === "39") {
+  } else if (subtype === "29") {
     return <SCI_p1 {...props} />;
   } else if (subtype === "30") {
     return <SCI_p2_2 {...props} />;
   } else if (subtype === "33") {
     return <SCI_p2_8 {...props} />;
-  } else if (subtype === "34" || subtype === "50") {
+  } else if (subtype === "34") {
     return <SCI_p3 {...props} />;
   } else if (subtype === "35") {
     return <SCI_p2_4 {...props} />;
