@@ -248,12 +248,12 @@ export default function MentorProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
-      <main className="container mx-auto p-4 max-w-7xl">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div className="min-h-screen bg-gray-50">
+      <main className="container mx-auto p-2">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="profile" userType="mentor" />
 
-          <div className="lg:col-span-4 space-y-6">
+          <div className="md:col-span-4 space-y-6">
             {/* Header Card */}
             <Card className="shadow-xl border-0 bg-white overflow-hidden">
               <CardHeader className="py-6 bg-gradient-to-r from-lime-500 to-lime-600 text-white relative overflow-hidden">
