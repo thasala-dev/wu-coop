@@ -31,46 +31,28 @@ export async function GET(request: NextRequest) {
     // ดึงข้อมูลแบบประเมิน
     const satisfactionQuery = `
       SELECT 
-        id,
-        p1,
-        p2,
-        p3,
-        p4,
-        p5,
-        p6,
-        p7,
-        advice,
-        company_id,
-        created_at
-      FROM system_satisfaction 
+        sys_form.id,
+        sys_form.p1,
+        sys_form.p2,
+        sys_form.p3,
+        sys_form.p4,
+        sys_form.p5,
+        sys_form.p6,
+        sys_form.p7,
+        sys_form.advice,
+        sys_form.company_id,
+        user_company.name AS company_name,
+        sys_form.created_at
+      FROM system_satisfaction sys_form
+      inner JOIN user_company ON sys_form.company_id = user_company.id
       ${whereClause}
-      ORDER BY created_at DESC
-      LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}
-    `;
+      ORDER BY sys_form.created_at DESC`;
 
-    queryParams.push(limit, offset);
     const satisfaction = await sql(satisfactionQuery, queryParams);
-
-    // นับจำนวนรายการทั้งหมด
-    const countQuery = `
-      SELECT COUNT(*) as total 
-      FROM system_satisfaction 
-      ${whereClause}
-    `;
-
-    const countParams = queryParams.slice(0, -2); // ลบ limit และ offset
-    const countResult = await sql(countQuery, countParams);
-    const total = parseInt(countResult[0].total);
 
     return NextResponse.json({
       success: true,
       data: satisfaction,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
     });
   } catch (error) {
     console.error("Error fetching system satisfaction:", error);

@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Briefcase,
   ShieldCheck,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "@/components/sidebar";
@@ -37,13 +38,13 @@ const reportMenu = [
     color: "bg-green-500",
     description: "ผลการประเมินนักศึกษาโดยสถานประกอบการ",
   },
-  // {
-  //   name: "รายงานสถานประกอบการ",
-  //   href: "/admin/reports/company",
-  //   icon: Building,
-  //   color: "bg-purple-500",
-  //   description: "ข้อมูลสถานประกอบการที่เป็นพันธมิตรในการฝึกงาน",
-  // },
+  {
+    name: "รายงานผลการประเมินความพึงพอใจระบบ",
+    href: "/admin/reports/systemSatisfaction",
+    icon: Star,
+    color: "bg-purple-500",
+    description: "ข้อมูลความพึงพอใจของสถานประกอบการต่อระบบ",
+  },
   // {
   //   name: "รายงานผู้ดูแลสถานประกอบการ",
   //   href: "/admin/reports/companySupervisor",
