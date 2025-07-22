@@ -12,6 +12,8 @@ import CARE_p7 from "@/components/evaluations/CARE/p7";
 import CARE_pm5 from "@/components/evaluations/CARE/pm5";
 import CARE_ssj1 from "@/components/evaluations/CARE/ssj1";
 import CARE_ssj2 from "@/components/evaluations/CARE/ssj2";
+import CARE_drug1 from "@/components/evaluations/CARE/drug_1";
+import CARE_drug2 from "@/components/evaluations/CARE/drug_2";
 // SCI Components
 import SCI_p1 from "@/components/evaluations/SCI/p1";
 import SCI_p2_2 from "@/components/evaluations/SCI/p2_2";
@@ -40,6 +42,10 @@ export default function EvaluationList(props: any) {
     return <CARE_p6 {...props} />;
   } else if (subtype === "14") {
     return <CARE_p7 {...props} />;
+  } else if (subtype === "17" || subtype === "52") {
+    return <CARE_drug2 {...props} />;
+  } else if (subtype === "18" || subtype === "51") {
+    return <CARE_drug1 {...props} />;
   } else if (subtype === "22") {
     return <CARE_pm5 {...props} />;
   } else if (subtype === "23" || subtype === "39") {
