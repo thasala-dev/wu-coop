@@ -212,7 +212,7 @@ export default function Page(props: any) {
   };
 
   const handleCheckValid = () => {
-    return true;
+    return false;
     const keyList = ["suggestion"];
     return !Object.keys(data).some((key) => {
       if (!keyList.includes(key)) {
@@ -405,7 +405,7 @@ export default function Page(props: any) {
                             value="5"
                             className={
                               isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
+                                ? ""
                                 : ""
                             }
                             aria-invalid={
@@ -428,7 +428,7 @@ export default function Page(props: any) {
                             value="4"
                             className={
                               isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
+                                ? ""
                                 : ""
                             }
                             aria-invalid={
@@ -451,7 +451,7 @@ export default function Page(props: any) {
                             value="3"
                             className={
                               isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
+                                ? ""
                                 : ""
                             }
                             aria-invalid={
@@ -474,7 +474,7 @@ export default function Page(props: any) {
                             value="2"
                             className={
                               isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
+                                ? ""
                                 : ""
                             }
                             aria-invalid={
@@ -497,7 +497,7 @@ export default function Page(props: any) {
                             value="1"
                             className={
                               isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
+                                ? ""
                                 : ""
                             }
                             aria-invalid={
@@ -520,7 +520,7 @@ export default function Page(props: any) {
                             value="N/A"
                             className={
                               isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
+                                ? ""
                                 : ""
                             }
                             aria-invalid={

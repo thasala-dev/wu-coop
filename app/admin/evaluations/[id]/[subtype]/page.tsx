@@ -320,11 +320,11 @@ export default function MentorEvaluations() {
                         </div>
                         <div className="flex flex-col items-center mt-8 no-print">
                           <Button
-                            type="button"
+                            type="submit"
                             className="px-8 py-2 text-sm"
-                            onClick={() =>
-                              router.push(`/admin/evaluations/${id}`)
-                            }
+                            // onClick={() =>
+                            //   router.push(`/admin/evaluations/${id}`)
+                            // }
                           >
                             <ArrowLeft className="h-4 w-4" />
                             ย้อนกลับ
