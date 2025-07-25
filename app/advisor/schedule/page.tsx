@@ -376,7 +376,6 @@ export default function StudentSchedulePage() {
             status: "upcoming", // Default status
             day,
             month,
-            year,
             time: `${supervision.start_time} - ${supervision.end_time}`, // Assuming start_time and end_time are in HH:mm format
             is_supervision: true, // Flag to identify as supervision record
             location: supervision.company_name,
@@ -578,10 +577,10 @@ export default function StudentSchedulePage() {
               <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <CardTitle className="text-xl">
-                    ตารางนัดหมายการนิเทศ
+                    ตารางนัดหมาย
                   </CardTitle>
                   <CardDescription>
-                    ดูและจัดการตารางนัดหมายการนิเทศของคุณ
+                    ดูและจัดการตารางนัดหมายของคุณ
                   </CardDescription>
                 </div>
               </CardHeader>

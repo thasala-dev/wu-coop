@@ -137,7 +137,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center">
           <div className="mb-8 flex flex-col items-center justify-center text-green-700">
             <img src="/spm.png" alt="Logo" className="h-16 mb-2" />
-            <h1 className="text-4xl font-bold mb-2 text-center">ระบบฝึกงาน</h1>
+            <h1 className="text-4xl font-bold mb-2 text-center">ระบบฝึกปฏิบัติงานวิชาชีพเภสัชกรรม</h1>
           </div>
 
           <Card className="w-full rounded-xl max-w-md shadow-xl bg-white backdrop-blur-md bg-opacity-60  border-0">

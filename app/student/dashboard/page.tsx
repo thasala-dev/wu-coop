@@ -72,7 +72,7 @@ export default function StudentDashboard() {
                   แดชบอร์ดนักศึกษา
                 </h1>
                 <p className="text-gray-600">
-                  ยินดีต้อนรับ {user?.fullname || "นักศึกษา"} สู่ระบบการฝึกงาน
+                  ยินดีต้อนรับนักศึกษา {user?.fullname || "นักศึกษา"} สู่ระบบฝึกปฏิบัติงานวิชาชีพเภสัชกรรม
                 </p>
               </div>
             </div>
@@ -121,10 +121,10 @@ export default function StudentDashboard() {
                   <div className="bg-white/20 p-2 rounded-lg">
                     <BookOpen className="h-6 w-6" />
                   </div>
-                  ประวัติการฝึกงาน
+                  ประวัติการฝึกปฏิบัติงานวิชาชีพเภสัชกรรม
                 </CardTitle>
                 <CardDescription className="text-indigo-100">
-                  ดูประวัติการฝึกงานและบริษัทที่เคยร่วมงาน
+                  ดูประวัติการฝึกและแหล่งฝึกของคุณ
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-6">
@@ -230,126 +230,7 @@ export default function StudentDashboard() {
                                     </div>
                                   )}
 
-                                  {/* Advisor/Supervision Section */}
-                                  {calendar.supervision &&
-                                    calendar.supervision.length > 0 && (
-                                      <div className="border-t border-gray-100 pt-3 mt-3">
-                                        <div className="flex items-center gap-2 mb-3">
-                                          <div className="bg-green-100 p-1.5 rounded-full">
-                                            <Users className="h-4 w-4 text-green-600" />
-                                          </div>
-                                          <span className="font-semibold text-gray-900">
-                                            อาจารย์นิเทศ
-                                          </span>
-                                        </div>
-
-                                        {calendar.supervision.map(
-                                          (
-                                            supervision: any,
-                                            supervisionIndex: number
-                                          ) => (
-                                            <div
-                                              key={supervisionIndex}
-                                              className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 mb-2 border border-green-100"
-                                            >
-                                              <div className="flex items-start gap-3">
-                                                <Avatar className="h-12 w-12 rounded-lg border-2 border-green-200 shadow-sm">
-                                                  <AvatarImage
-                                                    src={
-                                                      supervision.advisor_image
-                                                    }
-                                                    alt={
-                                                      supervision.advisor_name
-                                                    }
-                                                    className="object-cover"
-                                                  />
-                                                  <AvatarFallback className="rounded-lg bg-gradient-to-br from-green-100 to-emerald-100 text-green-700 font-semibold text-sm">
-                                                    {supervision.advisor_name
-                                                      ?.split(" ")
-                                                      .map((n: string) => n[0])
-                                                      .join("")
-                                                      .substring(0, 2)}
-                                                  </AvatarFallback>
-                                                </Avatar>
-
-                                                <div className="flex-1 min-w-0">
-                                                  <div className="font-semibold text-gray-900 mb-1">
-                                                    {supervision.advisor_name}
-                                                  </div>
-
-                                                  {/* Supervision Schedule */}
-                                                  <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                                                    <Calendar className="h-3.5 w-3.5 text-green-600" />
-                                                    <span>
-                                                      {new Date(
-                                                        supervision.scheduled_date
-                                                      ).toLocaleDateString(
-                                                        "th-TH",
-                                                        {
-                                                          year: "numeric",
-                                                          month: "short",
-                                                          day: "numeric",
-                                                        }
-                                                      )}
-                                                    </span>
-                                                    <Clock className="h-3.5 w-3.5 text-green-600 ml-2" />
-                                                    <span>
-                                                      {supervision.start_time} -{" "}
-                                                      {supervision.end_time}
-                                                    </span>
-                                                  </div>
-
-                                                  {/* Visit Type Badge */}
-                                                  <div className="flex items-center gap-2 mb-2">
-                                                    <Badge
-                                                      variant="outline"
-                                                      className={`text-xs px-2 py-1 ${
-                                                        supervision.visit_type ===
-                                                        "online"
-                                                          ? "bg-blue-50 border-blue-200 text-blue-700"
-                                                          : "bg-orange-50 border-orange-200 text-orange-700"
-                                                      }`}
-                                                    >
-                                                      {supervision.visit_type ===
-                                                      "online"
-                                                        ? "🖥️ ออนไลน์"
-                                                        : supervision.visit_type ===
-                                                          "onsite"
-                                                        ? "🏢 เยี่ยมสถานประกอบการ"
-                                                        : "🔀 แบบผสม"}
-                                                    </Badge>
-                                                  </div>
-
-                                                  {/* Contact Information */}
-                                                  <div className="space-y-1">
-                                                    {supervision.advisor_mobile && (
-                                                      <div className="text-xs text-gray-600 flex items-center gap-1">
-                                                        <span>📱</span>
-                                                        <span>
-                                                          {
-                                                            supervision.advisor_mobile
-                                                          }
-                                                        </span>
-                                                      </div>
-                                                    )}
-                                                    {supervision.advisor_email && (
-                                                      <div className="text-xs text-gray-600 flex items-center gap-1">
-                                                        <span>✉️</span>
-                                                        <span>
-                                                          {
-                                                            supervision.advisor_email
-                                                          }
-                                                        </span>
-                                                      </div>
-                                                    )}
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          )
-                                        )}
-                                      </div>
-                                    )}
+                                  
                                 </div>
                               </div>
                             </div>

@@ -1049,32 +1049,15 @@ export default function StudentProfile() {
                               >
                                 ทุนการศึกษา
                               </label>
-                              <Select
+                              <Input
+                                id="scholarship"
+                                name="scholarship"
                                 value={formData.scholarship}
-                                onValueChange={(value) =>
-                                  handleSelectChange("scholarship", value)
-                                }
-                              >
-                                <SelectTrigger className="bg-white/80 border-purple-200 focus:border-purple-500">
-                                  <SelectValue placeholder="เลือกประเภททุน" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="ไม่มี">ไม่มี</SelectItem>
-                                  <SelectItem value="ทุนจากมหาวิทยาลัย">
-                                    ทุนจากมหาวิทยาลัย
-                                  </SelectItem>
-                                  <SelectItem value="ทุนรัฐบาล">
-                                    ทุนรัฐบาล
-                                  </SelectItem>
-                                  <SelectItem value="ทุนเอกชน">
-                                    ทุนเอกชน
-                                  </SelectItem>
-                                  <SelectItem value="ทุนกู้ยืม">
-                                    ทุนกู้ยืม
-                                  </SelectItem>
-                                  <SelectItem value="อื่นๆ">อื่นๆ</SelectItem>
-                                </SelectContent>
-                              </Select>
+                                onChange={handleChange}
+                                placeholder="เช่น ทุนการศึกษา, ทุนรัฐบาล, ทุนส่วนตัว"
+                                className="bg-white/80 border-purple-200 focus:border-purple-500"
+                              />
+                              
                             </div>
                             <div className="space-y-2">
                               <label
