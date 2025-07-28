@@ -50,7 +50,7 @@ export default function EvaluationList(props: any) {
     return <CARE_p7 {...props} />;
   } else if (subtype === "11") {
     return <CARE_p9 {...props} />;
-  } else if (subtype === "12") {
+  }  else if (subtype === "12") {
     return <CARE_p10 {...props} />;
   } else if (subtype === "17" || subtype === "52") {
     return <CARE_drug2 {...props} />;
