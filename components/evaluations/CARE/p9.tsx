@@ -539,6 +539,22 @@ export default function Page(props: any) {
     p3: parentForm.getValues("result.p3") || "",
     p4: parentForm.getValues("result.p4") || "",
     p5: parentForm.getValues("result.p5") || "",
+    p21: parentForm.getValues("result.p21") || "",
+    p31: parentForm.getValues("result.p31") || "",
+    p32: parentForm.getValues("result.p32") || "",
+    p33: parentForm.getValues("result.p33") || "",
+    p34: parentForm.getValues("result.p34") || "",
+    p35: parentForm.getValues("result.p35") || "",
+    p36: parentForm.getValues("result.p36") || "",
+    p37: parentForm.getValues("result.p37") || "",
+    p41: parentForm.getValues("result.p41") || "",
+    p42: parentForm.getValues("result.p42") || "",
+    p43: parentForm.getValues("result.p43") || "",
+    p44: parentForm.getValues("result.p44") || "",
+    p45: parentForm.getValues("result.p45") || "",
+    p51: parentForm.getValues("result.p51") || "",
+    p6: parentForm.getValues("result.p6") || "",
+    
 
     strength: parentForm.getValues("result.strength") || "",
     improvement: parentForm.getValues("result.improvement") || "",
@@ -641,7 +657,7 @@ export default function Page(props: any) {
                     <tr className="bg-slate-100">
                       <td
                         colSpan={6}
-                        className="p-2 border font-semibold text-center text-sm"
+                        className="p-2 border font-semibold text-sm"
                       >
                         {item.title}
                       </td>

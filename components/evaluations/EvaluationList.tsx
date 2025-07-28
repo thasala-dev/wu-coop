@@ -9,6 +9,7 @@ import CARE_p4 from "@/components/evaluations/CARE/p4";
 import CARE_p5 from "@/components/evaluations/CARE/p5";
 import CARE_p6 from "@/components/evaluations/CARE/p6";
 import CARE_p7 from "@/components/evaluations/CARE/p7";
+import CARE_p8 from "@/components/evaluations/CARE/p8";
 import CARE_p9 from "@/components/evaluations/CARE/p9";
 import CARE_p10 from "@/components/evaluations/CARE/p10";
 
@@ -20,12 +21,18 @@ import CARE_drug2 from "@/components/evaluations/CARE/drug_2";
 import CARE_drug3 from "@/components/evaluations/CARE/drug_3";
 import CARE_drug4 from "@/components/evaluations/CARE/drug_4";
 import CARE_drug5 from "@/components/evaluations/CARE/drug_5";
+
+import CARE_manager1 from "@/components/evaluations/CARE/manager1";
+import CARE_manager2 from "@/components/evaluations/CARE/manager2";
+import CARE_manager3 from "@/components/evaluations/CARE/manager3";
+import CARE_manager4 from "@/components/evaluations/CARE/manager4";
 // SCI Components
 import SCI_p1 from "@/components/evaluations/SCI/p1";
 import SCI_p2_2 from "@/components/evaluations/SCI/p2_2";
 import SCI_p2_4 from "@/components/evaluations/SCI/p2_4";
 import SCI_p2_8 from "@/components/evaluations/SCI/p2_8";
 import SCI_p3 from "@/components/evaluations/SCI/p3";
+
 
 export default function EvaluationList(props: any) {
   const { subtype } = props;
@@ -52,6 +59,8 @@ export default function EvaluationList(props: any) {
     return <CARE_p9 {...props} />;
   } else if (subtype === "12") {
     return <CARE_p10 {...props} />;
+  } else if (subtype === "15") {
+    return <CARE_p8 {...props} />;
   } else if (subtype === "17" || subtype === "52") {
     return <CARE_drug2 {...props} />;
   } else if (subtype === "18" || subtype === "51") {
@@ -68,6 +77,14 @@ export default function EvaluationList(props: any) {
     return <CARE_ssj1 {...props} />;
   } else if (subtype === "24" || subtype === "50") {
     return <CARE_ssj2 {...props} />;
+  } else if (subtype === "25" || subtype === "53") {
+    return <CARE_manager1 {...props} />;
+  }  else if (subtype === "26" || subtype === "54" || subtype === "55") {
+    return <CARE_manager2 {...props} />;
+  }  else if (subtype === "27") {
+    return <CARE_manager3 {...props} />;
+  } else if (subtype === "28") {
+    return <CARE_manager4 {...props} />;
   } else if (subtype === "29") {
     return <SCI_p1 {...props} />;
   } else if (subtype === "30") {

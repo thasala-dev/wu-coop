@@ -23,7 +23,7 @@ const criteriaData = [
     point: 0,
     head: 1,
     label: "p1",
-    title: "๑. ทักษะการประเมินผู้ป่วยและวิเคราะห์ใบสั่งยา",
+    title: "๑.๑. ทักษะการประเมินผู้ป่วยและวิเคราะห์ใบสั่งยา",
   },
   {
     number: "๒",
@@ -59,7 +59,7 @@ const criteriaData = [
     number: "๒",
     point: 2,
     label: "p2",
-    title: "๒. คำนวณขนาดยาได้อย่างถูกต้อง เหมาะสม",
+    title: "๑.๒. คำนวณขนาดยาได้อย่างถูกต้อง เหมาะสม",
     superd: (
       <ul className="list-disc pl-4">
         <li>คำนวณขนาดยาได้ถูกต้อง และสามารถแนะนำขนาดยาที่เหมาะสม โดยพิจารณาจากเป้าหมายการรักษาสำหรับผู้ป่วยเฉพาะราย (เช่น เพื่อให้หายขาด เพื่อยืดชีวิต หรือเพื่อประคับประคองอาการ เป็นต้น)
@@ -92,113 +92,276 @@ const criteriaData = [
       </ul>
     ),
   },
-
-  {
+{
+  number: "๑",
+  point: 1,
+  label: "p13",
+  title: "๑.๓ การเลือกสารน้ำ ความเข้ากัน ความคงตัว",
+  superd: (
+    <ul className="list-disc pl-4">
+      <li>สามารถเลือกสารน้ำทดแทนได้อย่างถูกต้อง โดยพิจารณาทั้งข้อดี–ข้อเสีย ความเข้ากัน และความคงตัว รวมทั้งคำนึงถึงสภาวะโรคของผู้ป่วย และราคา</li>
+    </ul>
+  ),
+  good: (
+    <ul className="list-disc pl-4">
+      <li>สามารถเลือกสารน้ำทดแทนได้อย่างถูกต้อง โดยพิจารณาทั้งข้อดี–ข้อเสีย ความเข้ากัน และความคงตัว</li>
+    </ul>
+  ),
+  pass: (
+    <ul className="list-disc pl-4">
+      <li>สามารถเลือกสารน้ำทดแทนได้ถูกต้อง โดยพิจารณาจากข้อดี–ข้อเสีย แต่ไม่คำนึงถึงความเข้ากัน และความคงตัว</li>
+    </ul>
+  ),
+  fail: (
+    <ul className="list-disc pl-4">
+      <li>ไม่สามารถระบุชนิดของสารน้ำทดแทนได้</li>
+      <li>หรือสามารถระบุชนิดของสารน้ำทดแทนได้ แต่ไม่สามารถเลือกชนิดของสารน้ำที่เหมาะสมได้</li>
+    </ul>
+  ),
+},  {
+    head: 1,
+    label: "p2",
+    title: "๒. อุปกรณ์ในการเตรียมยาเคมีบำบัด",
+  },  {
     number: "๑",
     point: 1,
+    label: "pCB1",
+    title: "๒.๑ การเตรียมอุปกรณ์ที่จำเป็นในการเตรียมยาเคมีบำบัด",
+    superd: (
+      <ul className="list-disc pl-4">
+        <li>สามารถเตรียมอุปกรณ์ได้ถูกต้อง ครบถ้วน และมีความเหมาะสม</li>
+      </ul>
+    ),
+    good: (
+      <ul className="list-disc pl-4">
+        <li>สามารถเตรียมอุปกรณ์ได้ถูกต้องและครบถ้วน แต่ไม่เหมาะสม</li>
+      </ul>
+    ),
+    pass: (
+      <ul className="list-disc pl-4">
+        <li>สามารถเตรียมอุปกรณ์ได้ถูกต้อง แต่ไม่ครบถ้วน</li>
+      </ul>
+    ),
+    fail: (
+      <ul className="list-disc pl-4">
+        <li>ไม่สามารถเตรียมอุปกรณ์ได้ถูกต้อง</li>
+      </ul>
+    ),
+  },{
+    head: 1,
     label: "p3",
-    title: "๓. การใช้หลักฐานทางวิชาการ",
+  title: "๓. การปฏิบัติตัวตามขั้นตอนการเตรียมยาเคมีบําบัดหรือยาที่มีพิษต่อเซลล์ (safe handling of cytotoxic drugs)",
+  },{
+    number: "๑",
+    point: 1,
+    label: "p31",
+    dis96: true,
+    title: "๓.๑ การล้างมือ",
     superd: (
       <ul className="list-disc pl-4">
-        <li>ใช้ข้อมูลที่น่าเชื่อถือ สอดคล้อง ทันสมัย ครบถ้วน</li>
-        <li>เลือกระดับของหลักฐานทางวิชาการได้เหมาะสมกับเรื่องที่นำเสนอ</li>
-      </ul>
-    ),
-    good: (
-      <ul className="list-disc pl-4">
-        <li>ใช้ข้อมูลที่น่าเชื่อถือ สอดคล้อง ทันสมัย แต่ไม่ครบถ้วน</li>
-        <li>เลือกระดับของหลักฐานทางวิชาการได้เหมาะสมกับเรื่องที่นำเสนอ</li>
-      </ul>
-    ),
-    pass: (
-      <ul className="list-disc pl-4">
-        <li>ใช้ข้อมูลที่น่าเชื่อถือ สอดคล้อง แต่ไม่ทันสมัยและไม่ครบถ้วน</li>
-        <li>เลือกระดับของหลักฐานทางวิชาการได้เหมาะสมกับเรื่องที่นำเสนอ</li>
+        <li>ทำได้ถูกต้อง</li>
       </ul>
     ),
     fail: (
       <ul className="list-disc pl-4">
-        <li>ใช้ข้อมูลที่ไม่น่าเชื่อถือ ไม่สอดคล้อง ไม่ทันสมัย และไม่ครบถ้วน</li>
-        <li>เลือกระดับของหลักฐานทางวิชาการได้ไม่เหมาะสมกับเรื่องที่นำเสนอ</li>
+        <li>ไม่ทำหรือทำไม่ถูกต้องหรือไม่ครบถ้วน</li>
+      </ul>
+    ),
+  },{
+    number: "๑",
+    point: 1,
+    label: "p32",
+        dis96: true,
+
+    title: "๓.๒ การสวมถุงมือ",
+    superd: (
+      <ul className="list-disc pl-4">
+        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
+      </ul>
+    ),
+    fail: (
+      <ul className="list-disc pl-4">
+        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
       </ul>
     ),
   },
   {
     number: "๑",
     point: 1,
-    label: "p4",
-    title: "๔. วิธีการนําเสนอ",
+    label: "p33",    dis96: true,
+
+    title: "๓.๓ เตรียมยาเคมีบำบัดด้วย aseptic technique, open window technique, critical point",
     superd: (
       <ul className="list-disc pl-4">
-        <li>มีคุณสมบัติตามเกณฑ์ดี (๘-๙ คะแนน) ร่วมกับ</li>
-        <li>นำเข้าสู่เนื้อหาได้น่าสนใจ</li>
-        <li>ใช้เทคนิคการนำเสนอที่สามารถสร้างการมีส่วนร่วมของผู้ฟัง</li>
-      </ul>
-    ),
-    good: (
-      <ul className="list-disc pl-4">
-        <li>มีคุณสมบัติตามเกณฑ์ผ่าน (๖-๗ คะแนน) ร่วมกับ</li>
-        <li>
-          สื่อสารให้ผู้ฟังด้วยบุคลิกท่าทางที่เหมาะสม (สื่อสารเสียงดังชัดเจน
-          ความเร็วเหมาะสม ศัพท์ที่ใช้เข้าใจง่าย ออกเสียงถูกต้อง
-          ท่าทางการประสานสายตากับผู้ฟังเหมาะสม)
-        </li>
-      </ul>
-    ),
-    pass: (
-      <ul className="list-disc pl-4">
-        <li>ปริมาณเนื้อหามีความเหมาะสมกับเวลาที่กำหนด</li>
-        <li>มีความเหมาะสมของลำดับในการนำเสนอ ง่ายต่อการติดตาม</li>
-        <li>เนื้อหาเอกสารและสื่อประกอบการนำเสนอสะกดถูกต้อง ชัดเจน น่าสนใจ</li>
+        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
       </ul>
     ),
     fail: (
       <ul className="list-disc pl-4">
-        <li>ปริมาณเนื้อหาไม่เหมาะสมกับเวลาที่กำหนด (มากหรือน้อยเกินไป)</li>
-        <li>ลำดับการนำเสนอไม่เหมาะสม</li>
-        <li>เนื้อหาเอกสารและสื่อประกอบการนำเสนอมีการสะกดผิดมาก</li>
-        <li>ไม่ชัดเจนหรือขนาดอักษรเล็กมาก</li>
-        <li>ไม่สามารถสื่อสารให้ผู้ฟังเข้าใจได้ หรือทำให้ผู้ฟังเกิดความสับสน</li>
+        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
       </ul>
     ),
   },
   {
     number: "๑",
     point: 1,
-    label: "p5",
-    title: "๕. การตอบคำถาม (เน้นคุณภาพในการตอบมากกว่า ปริมาณ)",
+    label: "p34",    dis96: true,
+    title: "๓.๔ การใช้งานและความสะอาดของ biological safety cabinet (BSC, Isolator)",
     superd: (
       <ul className="list-disc pl-4">
-        <li>มีคุณสมบัติตามเกณฑ์ ดี (๘-๙ คะแนน) ร่วมกับ</li>
-        <li>
-          ในกรณีที่ไม่มีข้อมูลเชิงประจักษ์ที่สนับสนุนคำตอบได้ชัดเจน
-          นิสิต/นักศึกษาสามารถสังเคราะห์คำตอบได้ด้วยตนเองโดยอ้างอิงจากองค์ความรู้พื้นฐาน
-        </li>
-      </ul>
-    ),
-    good: (
-      <ul className="list-disc pl-4">
-        <li>มีคุณสมบัติตามเกณฑ์ ผ่าน (๖-๗ คะแนน) ร่วมกับ</li>
-        <li>สามารถสื่อสารให้ผู้ฟังเข้าใจได้อย่างตรงประเด็น</li>
-      </ul>
-    ),
-    pass: (
-      <ul className="list-disc pl-4">
-        <li>
-          ตอบคำถามส่วนใหญ่ได้ถูกต้อง
-          โดยมีหลักฐานทางวิชาการอ้างอิงได้อย่างเหมาะสมกับระดับความรู้ของนิสิต/นักศึกษา
-        </li>
+        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
       </ul>
     ),
     fail: (
       <ul className="list-disc pl-4">
-        <li>
-          ไม่สามารถตอบคำถามได้อย่างถูกต้อง หรือตอบคำถามโดยไม่มีหลักฐานทางวิชาการ
-          หรือไม่สัมพันธ์กับองค์ความรู้พื้นฐาน
-        </li>
+        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
       </ul>
     ),
   },
+  {
+    number: "๑",
+    point: 1,
+    label: "p4", dis96: true,
+    title: "๔. การจัดทำฉลากและการ",
+    superd: (
+      <ul className="list-disc pl-4">
+        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
+      </ul>
+    ),
+    fail: (
+      <ul className="list-disc pl-4">
+        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
+      </ul>
+    ),
+  },
+  {
+    number: "๑",
+    point: 1,
+    label: "p5", dis96: true,
+    title: "๕. การตรวจสอบยาเคมีบำบัดที่ทำการเตรียม",
+    superd: (
+      <ul className="list-disc pl-4">
+        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
+      </ul>
+    ),
+    fail: (
+      <ul className="list-disc pl-4">
+        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
+      </ul>
+    ),
+  },
+  {
+    number: "๑",
+    point: 1,
+    label: "p6", dis96: true,
+    title: "๖. การขนส่งผลิตภัณฑ์ยาเคมีบำบัดได้อย่างถูกต้องตามมาตรฐานสากล",
+    superd: (
+      <ul className="list-disc pl-4">
+        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
+      </ul>
+    ),
+    fail: (
+      <ul className="list-disc pl-4">
+        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
+      </ul>
+    ),
+  },
+  {
+    number: "๑",
+    point: 1,
+    label: "p7", dis96: true,
+    title: "๗. การเก็บรักษาผลิตภัณฑ์ยาเคมีบำบัด",
+    superd: (
+      <ul className="list-disc pl-4">
+        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
+      </ul>
+    ),
+    fail: (
+      <ul className="list-disc pl-4">
+        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
+      </ul>
+    ),
+  },
+  {
+    number: "๑",
+    point: 1,
+    label: "p8", dis96: true,
+    title: "๘. การทำลายขยะจากการเตรียมยาเคมีบำบัด",
+    superd: (
+      <ul className="list-disc pl-4">
+        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
+      </ul>
+    ),
+    fail: (
+      <ul className="list-disc pl-4">
+        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
+      </ul>
+    ),
+  },{
+    number: "๑",
+  point: 1,
+  label: "pCB9",
+  title: "๙ การแก้ไขปัญหาที่เกิดจากการหก ตก แตก รั่วไหลของยาเคมีบำบัด",
+  superd: (
+    <ul className="list-disc pl-4">
+      <li>ระบุอุปกรณ์ที่เป็นองค์ประกอบของ spill kit</li>
+      <li>ทราบวิธีการใช้อุปกรณ์ และขั้นตอนการจัดการปัญหา</li>
+      <li>สามารถอธิบายหรือถ่ายทอดขั้นตอนการจัดการกับปัญหาให้บุคคลอื่นได้</li>
+    </ul>
+  ),
+  good: (
+    <ul className="list-disc pl-4">
+      <li>ระบุอุปกรณ์ที่เป็นองค์ประกอบของ spill kit</li>
+      <li>ทราบวิธีการใช้อุปกรณ์ และขั้นตอนการจัดการปัญหา</li>
+    </ul>
+  ),
+  pass: (
+    <ul className="list-disc pl-4">
+      <li>ระบุอุปกรณ์ที่เป็นองค์ประกอบของ spill kit ได้</li>
+      <li>แต่ไม่ทราบวิธีการใช้อุปกรณ์ และขั้นตอนการจัดการปัญหา</li>
+    </ul>
+  ),
+  fail: (
+    <ul className="list-disc pl-4">
+      <li>ไม่ทราบว่ามี spill kit หรือ</li>
+      <li>ทราบว่ามี spill kit แต่ยังไม่สามารถระบุอุปกรณ์ที่เป็นองค์ประกอบได้</li>
+    </ul>
+  ),
+},{
+  number: "๑๐",
+  point: 1,
+  label: "pCB10",
+  title: "๑๐ ภาพรวมการวางแผนระบบความปลอดภัยในการปฏิบัติงานเตรียมยาเคมีบำบัด",
+  superd: (
+    <ul className="list-disc pl-4">
+      <li>สามารถระบุปัญหา และสามารถบอกวิธี/แนวทางการแก้ปัญหาได้ รวมทั้ง</li>
+      <li>สามารถเสนอความคิดเห็น หรือคำแนะนำเพื่อปรับปรุงระบบความปลอดภัยในการปฏิบัติงานเตรียมยา ซึ่งสามารถประยุกต์ใช้กับแหล่งฝึกได้จริง หรือ</li>
+      <li>สามารถเสนอแนวทางป้องกันการเกิดปัญหาเชิงระบบได้</li>
+    </ul>
+  ),
+  good: (
+    <ul className="list-disc pl-4">
+      <li>ระบุปัญหา และสามารถบอกวิธี/แนวทางการแก้ปัญหาได้ รวมทั้ง</li>
+      <li>สามารถเสนอความคิดเห็นหรือคำแนะนำเพื่อปรับปรุงระบบความปลอดภัยในการปฏิบัติงานเตรียมยาได้ แต่ยังไม่สามารถทำได้จริงกับแหล่งฝึกนั้น ๆ</li>
+    </ul>
+  ),
+  pass: (
+    <ul className="list-disc pl-4">
+      <li>สามารถระบุปัญหาของระบบความปลอดภัยในการปฏิบัติงานเตรียมยาได้ แต่</li>
+      <li>ยังไม่สามารถบอกวิธีหรือแนวทางการแก้ปัญหาที่เกิดขึ้นได้</li>
+    </ul>
+  ),
+  fail: (
+    <ul className="list-disc pl-4">
+      <li>ไม่สามารถค้นหาปัญหา หรือ</li>
+      <li>ไม่ทราบความสำคัญของความปลอดภัยในการปฏิบัติงานเตรียมยาเคมีบำบัด</li>
+    </ul>
+  ),
+}
+
+
+
+
 ];
 
 export default function Page(props: any) {
@@ -318,7 +481,7 @@ LFT เป็นต้น)” อยู่ในเกณฑ์ดี (๘–๙
                     <tr className="bg-slate-100">
                       <td
                         colSpan={6}
-                        className="p-2 border font-semibold text-center text-sm"
+                        className="p-2 border font-semibold  text-sm"
                       >
                         {item.title}
                       </td>
@@ -404,167 +567,173 @@ LFT เป็นต้น)” อยู่ในเกณฑ์ดี (๘–๙
                         </RadioGroup>
                       </div>
                     </td>
+                  {/* ดี (8-9 คะแนน) */}
                     <td className="p-2 border align-top text-sm">
+                      {item.dis96 || item.dis91? null : (
                       <div className="flex flex-col items-center justify-center h-full">
                         <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
+                        onValueChange={(value) =>
+                          setDataValue(item.label, value)
+                        }
+                        value={data[item.label as keyof typeof data]}
+                        className="flex flex-row items-center gap-8 justify-center w-full"
                         >
-                          {[
-                            {
-                              label: "๙",
-                              value: "9",
-                            },
-                            {
-                              label: "๘",
-                              value: "8",
-                            },
-                          ].map((radio) => (
-                            <div
-                              className="flex flex-col items-center"
-                              key={radio.value}
-                            >
-                              <RadioGroupItem
-                                value={radio.value}
-                                className={
-                                  isSubmit &&
-                                  !data[item.label as keyof typeof data]
-                                    ? "border-2 border-red-600"
-                                    : ""
-                                }
-                                aria-invalid={
-                                  isSubmit &&
-                                  !data[item.label as keyof typeof data]
-                                }
-                              />
-                              <label
-                                className={
-                                  "text-xs mt-1" +
-                                  (isSubmit &&
-                                  !data[item.label as keyof typeof data]
-                                    ? " text-red-600"
-                                    : "")
-                                }
-                              >
-                                {radio.label}
-                              </label>
-                            </div>
-                          ))}
+                        {[
+                          {
+                          label: "๙",
+                          value: "9",
+                          },
+                          {
+                          label: "๘",
+                          value: "8",
+                          },
+                        ].map((radio) => (
+                          <div
+                          className="flex flex-col items-center"
+                          key={radio.value}
+                          >
+                          <RadioGroupItem
+                            value={radio.value}
+                            className={
+                            isSubmit &&
+                            !data[item.label as keyof typeof data]
+                              ? "border-2 border-red-600"
+                              : ""
+                            }
+                            aria-invalid={
+                            isSubmit &&
+                            !data[item.label as keyof typeof data]
+                            }
+                          />
+                          <label
+                            className={
+                            "text-xs mt-1" +
+                            (isSubmit &&
+                            !data[item.label as keyof typeof data]
+                              ? " text-red-600"
+                              : "")
+                            }
+                          >
+                            {radio.label}
+                          </label>
+                          </div>
+                        ))}
                         </RadioGroup>
                       </div>
+                      )}
+                    </td>
+                    {/* ผ่าน (6-7 คะแนน) */}
+                    <td className="p-2 border align-top text-sm">
+                      {item.dis96 || item.dis91 ? null : (
+                      <div className="flex flex-col items-center justify-center h-full">
+                        <RadioGroup
+                        onValueChange={(value) =>
+                          setDataValue(item.label, value)
+                        }
+                        value={data[item.label as keyof typeof data]}
+                        className="flex flex-row items-center gap-8 justify-center w-full"
+                        >
+                        {[
+                          {
+                          label: "๗",
+                          value: "7",
+                          },
+                          {
+                          label: "๖",
+                          value: "6",
+                          },
+                        ].map((radio) => (
+                          <div
+                          className="flex flex-col items-center"
+                          key={radio.value}
+                          >
+                          <RadioGroupItem
+                            value={radio.value}
+                            className={
+                            isSubmit &&
+                            !data[item.label as keyof typeof data]
+                              ? "border-2 border-red-600"
+                              : ""
+                            }
+                            aria-invalid={
+                            isSubmit &&
+                            !data[item.label as keyof typeof data]
+                            }
+                          />
+                          <label
+                            className={
+                            "text-xs mt-1" +
+                            (isSubmit &&
+                            !data[item.label as keyof typeof data]
+                              ? " text-red-600"
+                              : "")
+                            }
+                          >
+                            {radio.label}
+                          </label>
+                          </div>
+                        ))}
+                        </RadioGroup>
+                      </div>
+                      )}
                     </td>
                     <td className="p-2 border align-top text-sm">
                       <div className="flex flex-col items-center justify-center h-full">
                         <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          {[
-                            {
-                              label: "๗",
-                              value: "7",
-                            },
-                            {
-                              label: "๖",
-                              value: "6",
-                            },
-                          ].map((radio) => (
-                            <div
-                              className="flex flex-col items-center"
-                              key={radio.value}
-                            >
-                              <RadioGroupItem
-                                value={radio.value}
-                                className={
-                                  isSubmit &&
-                                  !data[item.label as keyof typeof data]
-                                    ? "border-2 border-red-600"
-                                    : ""
-                                }
-                                aria-invalid={
-                                  isSubmit &&
-                                  !data[item.label as keyof typeof data]
-                                }
-                              />
-                              <label
-                                className={
-                                  "text-xs mt-1" +
-                                  (isSubmit &&
-                                  !data[item.label as keyof typeof data]
-                                    ? " text-red-600"
-                                    : "")
-                                }
-                              >
-                                {radio.label}
-                              </label>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
+                          onValueChange={(value) => setDataValue(item.label, value)}
                           value={data[item.label as keyof typeof data]}
                           className="flex flex-row items-center gap-2 justify-center w-full"
                         >
-                          {[
-                            {
-                              label: "๕",
-                              value: "5",
-                            },
-                            {
-                              label: "๔",
-                              value: "4",
-                            },
-                            {
-                              label: "๓",
-                              value: "3",
-                            },
-                            {
-                              label: "๒",
-                              value: "2",
-                            },
-                            {
-                              label: "๑",
-                              value: "1",
-                            },
-                            {
-                              label: "๐",
-                              value: "0",
-                            },
-                          ].map((radio) => (
-                            <div
-                              className="flex flex-col items-center"
-                              key={radio.value}
-                            >
+                          {(item.dis91
+                            ? [
+                                {
+                                  label: "๐",
+                                  value: "0",
+                                },
+                              ]
+                            : [
+                                {
+                                  label: "๕",
+                                  value: "5",
+                                },
+                                {
+                                  label: "๔",
+                                  value: "4",
+                                },
+                                {
+                                  label: "๓",
+                                  value: "3",
+                                },
+                                {
+                                  label: "๒",
+                                  value: "2",
+                                },
+                                {
+                                  label: "๑",
+                                  value: "1",
+                                },
+                                {
+                                  label: "๐",
+                                  value: "0",
+                                },
+                              ]
+                          ).map((radio) => (
+                            <div className="flex flex-col items-center" key={radio.value}>
                               <RadioGroupItem
                                 value={radio.value}
                                 className={
-                                  isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                  isSubmit && !data[item.label as keyof typeof data]
                                     ? "border-2 border-red-600"
                                     : ""
                                 }
                                 aria-invalid={
-                                  isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                  isSubmit && !data[item.label as keyof typeof data]
                                 }
                               />
                               <label
                                 className={
                                   "text-xs mt-1" +
-                                  (isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                  (isSubmit && !data[item.label as keyof typeof data]
                                     ? " text-red-600"
                                     : "")
                                 }
@@ -637,9 +806,9 @@ LFT เป็นต้น)” อยู่ในเกณฑ์ดี (๘–๙
                   colSpan={6}
                   className="p-2 border align-top text-center text-md"
                 >
-                  ปรับให้เป็นคะแนนเต็ม ๑๐ คะแนน =
+                  ปรับให้เป็นคะแนนเต็ม ๒๐ คะแนน =
                   <span className="font-mono">
-                    (คะแนนที่ประเมินได้ &divide; ๕๐) &times; ๑๐
+                    (คะแนนที่ประเมินได้ &divide; ๒๐๐) &times; ๒๐
                   </span>
                   &nbsp;= ______ คะแนน
                 </td>
