@@ -433,6 +433,7 @@ export default function Page(props: any) {
           </table>
         </div>
       </div>
+      *จำนวนชิ้นงานและสัดส่วนคะแนนการประเมินผลขึ้นอยู่กับอาจารย์ประจำแหล่งฝึกปฏิบัติงาน
       <div className="sm:col-span-12">
         <div className="pt-4 pb-4">
           <h3 className="font-semibold mb-3 text-sm">ข้อเสนอแนะ</h3>
