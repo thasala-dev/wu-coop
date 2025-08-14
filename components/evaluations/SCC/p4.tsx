@@ -17,47 +17,113 @@ const toThaiNumber = (number: number) => {
     .join("");
 };
 
-const criteriaData = [
-{ label: "p1", head: false, title: "1. บทความที่ริเริ่มทำ : ความทันสมัย ความน่าสนใจ หรือประโยชน์ของการนำไปประยุกต์ใช้" },
-{ label: "p2", head: false, title: "2. แถลงที่มานำไปสู่จิตวิทยาการ : ความเหมาะสมของเอกสารวิชาการที่เลือกใช้" },
-{ label: "p3", head: true, title: "3. การประเมิน และวิพากษ์บทความ" },
-{ label: "p3_1", head: false, title: "3.1 คำถามและวัตถุประสงค์งานวิจัย" },
-{ label: "p3_2", head: true, title: "3.2 ระเบียบวิธีวิจัย" },
-{ label: "p3_2_1", head: false, title: "รูปแบบการวิจัยและการออกแบบการศึกษากับคำถามวิจัย" },
-{ label: "p3_2_2", head: false, title: "ประชากรและกลุ่มตัวอย่าง : มีความสอดคล้องกับคำถามวิจัย มีการระบุเกณฑ์การคัดเข้า/คัดออก อย่างเหมาะสม" },
-{ label: "p3_2_3", head: false, title: "ขนาดกลุ่มตัวอย่าง : มีการระบุที่มาที่ชัดเจนของจำนวนกลุ่มตัวอย่าง เหมาะสม มีการรายงานผู้ป่วยที่ออกจากการศึกษา (drop out) มีการระบุการวิเคราะห์ในรูปแบบ intention-to-treat" },
-{ label: "p3_2_4", head: false, title: "สถิติ ความเหมาะสม และความถูกต้องของสถิติที่เลือกใช้" },
-{ label: "p3_2_5", head: false, title: "จริยธรรม : มีการพิจารณาความเหมาะสมของจริยธรรมและการเก็บข้อมูล" },
-{ label: "p3_2_6", head: false, title: "เครื่องมือที่ใช้ : มีความถูกต้องตามรูปแบบงานวิจัย" },
-{ label: "p3_2_7", head: false, title: "ตัวแปรและการวัดผลหลัก/การวิเคราะห์ผล : มีความสอดคล้องกับคำถามและวัตถุประสงค์" },
-{ label: "p3_2_8", head: false, title: "การวัดผลซ้ำ : ถูกต้อง ครบถ้วน มีขอบเขต ตีความหมายต่อความต่างของผลลัพธ์ (treatment effect และ 95% confidence interval) รูปแบบการวิเคราะห์เหมาะสม" },
-{ label: "p3_3", head: false, title: "3.3 สรุปผลและการตีความ : สอดคล้องกับคำถามวิจัยและวัตถุประสงค์ มีการประเมินจุดแข็งและข้อจำกัด" },
-{ label: "p3_4", head: false, title: "3.4 การประยุกต์ใช้ผลการวิจัย : การประเมินการประยุกต์ใช้ผลวิจัยกับสถานการณ์บริบทของประเทศไทย" },
-{ label: "p4", head: true, title: "4. การนำเสนอ" },
-{ label: "p4_1", head: false, title: "4.1 นำเสนอผลงานได้ดึงดูดน่าสนใจ" },
-{ label: "p4_2", head: false, title: "4.2 อธิบายและตอบคำถามที่ชัดเจนกับการนำเสนอ ง่ายต่อการติดตาม ภายในเวลาที่กำหนด" },
-{ label: "p4_3", head: false, title: "4.3 การใช้ภาษาที่เหมาะสมกับการนำเสนอ สอดคล้องกับกลุ่มเป้าหมาย ต้องเวลา" },
-{ label: "p4_4", head: false, title: "4.4 การจัดทำสื่อ : มีความสวยงาม เหมาะสม และสื่อสารง่าย" },
-{ label: "p5", head: true, title: "5. การตอบคำถาม" },
-{ label: "p5_1", head: false, title: "5.1 การตอบข้อซักถาม : ตอบชัดเจนและถูกต้อง มีเหตุผล และมีความรู้รอบด้าน" },
-{ label: "p5_2", head: false, title: "5.2 การวิจารณ์ผลงาน : มีการประเมินข้อดีข้อเสียของงานวิจัยที่นำเสนอ รวมทั้งข้อเสนอแนะที่เป็นประโยชน์ต่อการประยุกต์ใช้ และปรับปรุงงานในอนาคต" },
+const scoreLabels = [
+  { label: "๕", value: "5" },
+  { label: "๔", value: "4" },
+  { label: "๓", value: "3" },
+  { label: "๒", value: "2" },
+  { label: "๑", value: "1" },
+];
+
+const quantityLabels = [
+  { label: "1 ครั้ง", value: "0" },
+  { label: "มากกว่า 1 ครั้ง", value: "1" },
+];
+
+const activityLabels = [
+  { label: "ไม่มีการฝึก", value: "0" },
+  { label: "1-2 กิจกรรม", value: "1" },
+  { label: ">2 กิจกรรม", value: ">2" },
+];
+
+const workLabels = [
+  { label: "ไม่มีชิ้นงาน", value: "0" },
+  { label: "1 ชิ้นงาน", value: "1" },
+  { label: ">1 ชิ้นงาน", value: ">1" },
+];
+
+// Check if checkbox is selected but score is not provided
+const checkboxScoreValidation = [
+  { select: "p1_1_select", score: "p1_1_score" },
+  { select: "p1_2_select", score: "p1_2_score" },
+  { select: "p2_1_select", score: "p2_1_score" },
+  { select: "p2_2_select", score: "p2_2_score" },
+  { select: "p2_3_select", score: "p2_3_score" },
+  { select: "p2_4_select", score: "p2_4_score" },
+  { select: "p2_5_select", score: "p2_5_score" },
+  { select: "p2_6_select", score: "p2_6_score" },
+  { select: "p2_7_select", score: "p2_7_score" },
+  { select: "p3_1_select", score: "p3_1_score" },
+  { select: "p3_2_select", score: "p3_2_score" },
+  { select: "p3_3_select", score: "p3_3_score" },
+  { select: "p3_4_select", score: "p3_4_score" },
+  { select: "p3_5_select", score: "p3_5_score" },
+  { select: "p3_6_select", score: "p3_6_score" },
+  { select: "p4_1_select", score: "p4_1_score" },
+  { select: "p4_2_select", score: "p4_2_score" },
 ];
 
 export default function Page(props: any) {
   const { form: parentForm, isSubmit, setFormValidated, isClick } = props;
 
-  const [data, setData] = useState(() => {
-    const initial: Record<string, string> = {};
-    criteriaData.forEach(item => {
-      if (!item.head) {
-        initial[item.label] = parentForm.getValues(`result.${item.label}`) || "";
-      }
-    });
-    initial.suggestion = parentForm.getValues("result.suggestion") || "";
-    return initial;
+  const [data, setData] = useState({
+    percentageProduction:
+      parentForm.getValues("result.percentageProduction") || "",
+    percentageOther: parentForm.getValues("result.percentageOther") || "",
+    otherDepartment: parentForm.getValues("result.otherDepartment") || "",
+
+    // จุดมุ่งหมายที่ 1
+    p1_quantity: parentForm.getValues("result.p1_quantity") || "",
+    p1_quantity_other: parentForm.getValues("result.p1_quantity_other") || "",
+    p1_1_score: parentForm.getValues("result.p1_1_score") || "",
+    p1_1_select: parentForm.getValues("result.p1_1_select") || false,
+
+    // จุดมุ่งหมายที่ 2
+    p2_1_quantity: parentForm.getValues("result.p2_1_quantity") || "",
+    p2_1_quantity_other: parentForm.getValues("result.p2_1_quantity_other") || "",
+    p2_1_score: parentForm.getValues("result.p2_1_score") || "",
+    p2_1_select: parentForm.getValues("result.p2_1_select") || false,
+
+    p2_2_quantity: parentForm.getValues("result.p2_2_quantity") || "",
+    p2_2_quantity_other: parentForm.getValues("result.p2_2_quantity_other") || "",
+    p2_2_score: parentForm.getValues("result.p2_2_score") || "",
+    p2_2_select: parentForm.getValues("result.p2_2_select") || false,
+
+    p2_3_quantity: parentForm.getValues("result.p2_3_quantity") || "",
+    p2_3_quantity_other: parentForm.getValues("result.p2_3_quantity_other") || "",
+    p2_3_score: parentForm.getValues("result.p2_3_score") || "",
+    p2_3_select: parentForm.getValues("result.p2_3_select") || false,
+
+    // จุดมุ่งหมายที่ 3
+    p3_quantity: parentForm.getValues("result.p3_quantity") || "",
+    p3_quantity_other: parentForm.getValues("result.p3_quantity_other") || "",
+    p3_1_score: parentForm.getValues("result.p3_1_score") || "",
+    p3_1_select: parentForm.getValues("result.p3_1_select") || false,
+
+    // จุดมุ่งหมายที่ 4
+    p4_quantity: parentForm.getValues("result.p4_quantity") || "",
+    p4_quantity_other: parentForm.getValues("result.p4_quantity_other") || "",
+    p4_1_score: parentForm.getValues("result.p4_1_score") || "",
+    p4_1_select: parentForm.getValues("result.p4_1_select") || false,
+
+    // จุดมุ่งหมายที่ 5 (อื่นๆ)
+    p5_detail: parentForm.getValues("result.p5_detail") || "",
+    p5_activity: parentForm.getValues("result.p5_activity") || "",
+    p5_quantity: parentForm.getValues("result.p5_quantity") || "",
+    p5_quantity_other: parentForm.getValues("result.p5_quantity_other") || "",
+    p5_score: parentForm.getValues("result.p5_score") || "",
+    p5_select: parentForm.getValues("result.p5_select") || false,
+
+    // คะแนนรวม
+    total_score: parentForm.getValues("result.total_score") || "",
+
+    // ข้อเสนอแนะ
+    suggestion: parentForm.getValues("result.suggestion") || "",
   });
 
   useEffect(() => {
+    console.log("handleCheckValid():", handleCheckValid());
+
     setFormValidated(handleCheckValid());
   }, [isSubmit, isClick]);
 
@@ -69,30 +135,130 @@ export default function Page(props: any) {
     parentForm.setValue(`result.${key}`, value);
   };
 
+  const setCheckboxValue = (key: string, checked: boolean) => {
+    setData((prev) => ({
+      ...prev,
+      [key]: checked,
+    }));
+    parentForm.setValue(`result.${key}`, checked);
+
+    const findScoreLabel = checkboxScoreValidation.find((item) => {
+      return item.select === key;
+    });
+    if (findScoreLabel) {
+      const scoreKey = findScoreLabel.score;
+      setDataValue(scoreKey, "");
+    }
+  };
+
+  const ScoreForm = ({
+    value,
+    label,
+    list,
+    rows = false,
+    isRequired = false,
+  }: any) => {
+    return (
+      <RadioGroup
+        onValueChange={(value) => setDataValue(label, value)}
+        value={value}
+        className={
+          rows
+            ? "flex flex-col gap-2 justify-center align-center w-full"
+            : "flex flex-row items-center gap-2 justify-center w-full"
+        }
+      >
+        {list.map((radio: any) => (
+          <div
+            className={
+              rows
+                ? "flex flex-row gap-2 items-center"
+                : "flex flex-col gap-2 items-center"
+            }
+            key={radio.value}
+          >
+            <RadioGroupItem
+              value={radio.value}
+              className={
+                isSubmit && isRequired && !value
+                  ? "border-2 border-red-600"
+                  : ""
+              }
+            />
+            <label
+              className={
+                "text-sm" +
+                (isSubmit && isRequired && !value ? " text-red-600" : "")
+              }
+            >
+              {radio.label}
+            </label>
+          </div>
+        ))}
+      </RadioGroup>
+    );
+  };
+
   const handleCheckValid = () => {
-    const keyList = ["suggestion"];
-    return !Object.keys(data).some((key) => {
-      if (!keyList.includes(key)) {
+    const keyList = [
+      "otherDepartment",
+      "p1_note",
+      "p2_note",
+      "p3_note",
+      "p4_note",
+      "p5_title",
+      "p5_note",
+      "suggestion",
+    ];
+
+    // Check required fields (exclude checkbox fields and score fields)
+    const hasEmptyField = Object.keys(data).some((key) => {
+      if (
+        !keyList.includes(key) &&
+        !key.includes("_select") &&
+        !key.includes("_score")
+      ) {
         const value = data[key as keyof typeof data];
         if (!value) {
+          console.log(`Field ${key} is empty`);
           return true;
         }
       }
       return false;
     });
+
+    const hasInvalidCheckboxScore = checkboxScoreValidation.some(
+      ({ select, score }) => {
+        const isSelected = data[select as keyof typeof data];
+        const scoreValue = data[score as keyof typeof data];
+
+        if (isSelected && !scoreValue) {
+          console.log(`${select} is checked but ${score} is empty`);
+          return true;
+        }
+        return false;
+      }
+    );
+
+    if (hasEmptyField || hasInvalidCheckboxScore) {
+      console.log("Form validation failed");
+      return false;
+    } else {
+      console.log("All fields are valid");
+      return true;
+    }
   };
 
   return (
     <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-12 ">
-      <div className="sm:col-span-12">
-        <p className="text-sm text-gray-600">
-<b>คำชี้แจง</b><br/>
-ให้ท่านทำเครื่องหมายกากบาท (x) ในช่องระดับคะแนนของแบบประเมินที่ตรงกับทักษะและความสามารถ
-ของนักศึกษาที่ท่านดูแลมากที่สุด<br/>
-        </p>
+      <div className="sm:col-span-12 ">
+        <div className="">
+          <p className="text-sm mb-2">
+กรณีแหล่งฝึกงานได้มอบหมายกิจกรรมให้นักศึกษาทำในช่วงฝึกงาน ขอความกรุณาอาจารย์ประจำ
+แหล่งฝึกช่วยระบุกิจกรรมที่มอบหมาย และประเมินผลการปฏิบัติงานของนักศึกษาตามกิจกรรมนั้นๆ ซึ่ง
+รูปแบบการประเมินขึ้นอยู่กับกิจกรรมที่ได้มอบหมายให้นักศึกษาทำ       </p> </div>
       </div>
       <div className="sm:col-span-12 ">
-        <div>ระดับขั้นการประเมิน</div>
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-slate-100">
@@ -100,7 +266,7 @@ export default function Page(props: any) {
                 className="p-2 border text-left text-sm"
                 style={{ width: "10%" }}
               >
-                คะแนน
+                ระดับคะแนนจากคะแนนเต็ม
               </th>
               <th
                 className="p-2 border text-left text-sm"
@@ -119,333 +285,154 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                90% ขึ้นไป
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีมาก
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-นักศึกษาสามารถประเมิน วิเคราะห์และวิพากษ์ รวมถึงการสังเคราะห์องค์ความรู้
-ปัจจุบัน วรรณกรรมอื่นๆที่เกี่ยวข้อง และสามารถประยุกต์ใช้ในการปฏิบัติงานได้       </td>
+            นักศึกษาแสดงให้เห็นว่ามีทักษะ/ความสามารถครบถ้วนตาม
+วัตถุประสงค์การฝึกปฏิบัติงานฯเป็นที่น่าพอใจ เกิดความบกพร่องน้อย
+สามารถปฏิบัติงานได้ด้วยตนเอง อาจได้รับคำแนะนำเป็นครั้งคราว
+              </td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                80% ขึ้นไป แต่ไม่ถึง 90%
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-นักศึกษาสามารถประเมิน วิเคราะห์และวิพากษ์ รวมถึงการสังเคราะห์องค์ความรู้
-จากวรรณกรรมที่วิพากษ์ และสามารถประยุกต์ใช้ในการปฏิบัติงานได้ อาจต้องให้
-คำแนะนำบ้าง
+            นักศึกษาแสดงให้เห็นว่ามีทักษะ/ความสามารถตามวัตถุประสงค์การฝึก
+ปฏิบัติงานฯ มีความบกพร่องในระดับยอมรับได้ สามารถปฏิบัติงานได้
+ด้วยตนเอง แต่ต้องได้รับคำแนะนำเป็นครั้งคราว
               </td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                65% แต่ไม่ถึง 80%
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-              นักศึกษาสามารถประเมิน วิเคราะห์และวิพากษ์วรรณกรรม ยังไม่สามารถ
-สังเคราะห์องค์ความรู้ และนำประยุกต์ใช้ในการปฏิบัติงานได้ ต้องได้รับคำแนะนำ
-บ้าง
+                นักศึกษาแสดงให้เห็นว่ามีทักษะ/ความสามารถตามเกณฑ์วัตถุประสงค์
+การฝึก
+ปฏิบัติงานฯ มีความบกพร่องในระดับยอมรับได้ ยังคงสามารถ
+ปฏิบัติงานได้ แต่ต้องได้รับคำแนะนำเป็นส่วนใหญ่
               </td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                50% แต่ไม่ถึง 65%
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-นักศึกษาสามารถประเมิน วิเคราะห์และวิพากษ์วรรณกรรมได้เพียงบางส่วน ไม่
-สามารถสังเคราะห์องค์ความรู้ และนำประยุกต์ใช้ในการปฏิบัติงานได้ ขาดความ
-เข้าใจภาพรวมของวรรณกรรมที่นำเสนอ ต้องได้รับคำแนะนำเป็นส่วนใหญ่
+                นักศึกษาแสดงให้เห็นว่าขาดทักษะ/ความสามารถในระดับไม่น่าเชื่อถือ
+เกิดความบกพร่องอยู่เสมอ การปฏิบัติงานอยู่ภายใต้การดูแลจาก
+อาจารย์ประจำแหล่งฝึกอย่างใกล้ชิด
               </td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                ต่ำกว่า 50%
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-              นักศึกษาไม่สามารถประเมิน วิเคราะห์และวิพากษ์วรรณกรรมได้ ไม่สามารถอธิบาย
-และตอบคำถามได้ ขาดความเข้าใจภาพรวมของวรรณกรรมที่นำเสนอ ต้องสอน
-การวิพากษ์วรรณกรรม ปฐมภูมิใหม่
-              </td>
-            </tr>
-            <tr>
-              <td className="p-2 border font-medium align-top text-sm text-center">
-                N/A
-              </td>
-              <td className="p-2 border font-medium align-top text-sm text-center" colSpan={2}>
-                ไม่สามารถประเมินได้/ไม่มีการสังเกต
+              นักศึกษาแสดงให้เห็นว่าขาดทักษะ/ความสามารถ ไม่ผ่านตาม
+วัตถุประสงค์การฝึกปฏิบัติงานฯ ไม่สามารถปฏิบัติงานได้ เกิดความ
+ผิดพลาดซ้ำ และไม่ปรับปรุงตามคำแนะนำของอาจารย์แหล่งฝึก
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+
       <div className="sm:col-span-12 py-2">
-        <p className="text-center text-md font-bold">แบบประเมินความประพฤติและทัศนคติของนักศึกษา</p>
+        <p className="text-center text-md font-bold">แบบประเมินงานมอบหมาย</p>
       </div>
 
+      <div className="sm:col-span-12">
+      
+      </div>
       <div className="sm:col-span-12">
         <div className="border rounded-md">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-slate-100">
-                <th className="p-2 border text-center text-sm">
-                  หัวข้อการประเมิน
-                </th>
-                <th
-                  className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
-                >
-                  ๕
-                </th>
-                <th
-                  className="p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
-                >
-                  ๔
-                </th>
-                <th
-                  className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
-                >
-                  ๓
-                </th>
-                <th
-                  className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
-                >
-                  ๒
-                </th>
-                <th
-                  className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
-                >
-                  ๑
-                </th>
-                <th
-                  className="=p-2 border text-center text-sm"
-                  style={{ width: "6%" }}
-                >
-                  N/A
-                </th>
+              <th className="p-2 border text-center text-sm">วันที่</th>
+              <th
+                className="p-2 border text-center text-sm"
+                style={{ width: "50%" }}
+              >
+                กิจกรรมที่มอบหมายให้นักศึกษา
+              </th>
+              <th
+                className="p-2 border text-center text-sm"
+                style={{ width: "15%" }}
+              >
+                คะแนนเต็ม
+              </th>
+              <th
+                className="p-2 border text-center text-sm"
+                style={{ width: "15%" }}
+              >
+                คะแนนที่ได้
+              </th>
               </tr>
             </thead>
-
-            {criteriaData.map((item: any, key) => {
-              return (
-                <tbody key={key}>
-                  {item.head && (
-                    <tr className="bg-slate-200">
-                      <td
-                        colSpan={7}
-                        className="p-2 border font-semibold text-sm"
-                      >
-                        {item.title}
-                      </td>
-                    </tr>
-                  )}
-                  {!item.head && (
-                    <tr>
-                      <td className="p-2 border align-top text-sm">
-                        {item.topTitle && (
-                          <div className="font-bold mb-2">{item.topTitle}</div>
-                        )}
-                        <>{item.title}</>
-                      </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="5"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="4"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="3"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="2"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="1"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="N/A"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                  </tr>
-                  )}
-                </tbody>
-              );
-            })}
             <tbody>
-              <tr>
-                <td className="p-2 border align-center text-sm font-bold text-center">
-                  รวมคะแนน (คะแนนที่ได้ x ๑๐) / {toThaiNumber(
-                    criteriaData.filter(item => {
-                      const value = data[item.label as keyof typeof data];
-                      return value !== "N/A" && value !== "";
-                    }).length * 5
-                  )}
-                </td>
-                <td
-                  className="p-2 border align-center text-sm font-bold text-center"
-                  colSpan={6}
-                >
-                  {toThaiNumber(
-                    Number(
-                      (
-                        (criteriaData.reduce((total, item) => {
-                          const value = data[item.label as keyof typeof data];
-                          if (value && value !== "N/A") {
-                            return total + parseInt(value, 10);
-                          }
-                          return total;
-                        }, 0) *
-                          10) /
-                        (criteriaData.filter(item => {
-                          const value = data[item.label as keyof typeof data];
-                          return value !== "N/A" && value !== "";
-                        }).length * 5)
-                      ).toFixed(2)
-                    )
-                  )}
-                </td>
-              </tr>
+              {Array.from({ length: 20 }, (_, i) => (
+                <tr key={i + 1}>
+                  <td className="p-2 border text-center">
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 w-full text-sm"
+                      placeholder="วันที่"
+                      value={data[`p4_date_${i + 1}`] || ""}
+                      onChange={(e) => setDataValue(`p4_date_${i + 1}`, e.target.value)}
+                    />
+                  </td>
+                  <td className="p-2 border text-center">
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 w-full text-sm"
+                      placeholder="กิจกรรม"
+                      value={data[`p4_activity_${i + 1}`] || ""}
+                      onChange={(e) => setDataValue(`p4_activity_${i + 1}`, e.target.value)}
+                    />
+                  </td>
+                  <td className="p-2 border text-center">
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 w-full text-sm"
+                      placeholder="คะแนนเต็ม"
+                      value={data[`p4_fullscore_${i + 1}`] || ""}
+                      onChange={(e) => setDataValue(`p4_fullscore_${i + 1}`, e.target.value)}
+                    />
+                  </td>
+                  <td className="p-2 border text-center">
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 w-full text-sm"
+                      placeholder="คะแนนที่ได้"
+                      value={data[`p4_score_${i + 1}`] || ""}
+                      onChange={(e) => setDataValue(`p4_score_${i + 1}`, e.target.value)}
+                    />
+                  </td>
+                </tr>
+              ))}
             </tbody>
+      
+
           </table>
         </div>
-          หมายเหตุ ในกรณีที่ไม่สามารถประเมิน ฐานคะแนนการประเมินให้ลดลงตามส่วน
       </div>
-
       <div className="sm:col-span-12">
         <div className="pt-4 pb-4">
           <h3 className="font-semibold mb-3 text-sm">ข้อเสนอแนะ</h3>
