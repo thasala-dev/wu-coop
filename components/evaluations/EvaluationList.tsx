@@ -14,8 +14,6 @@ import CARE_p9 from "@/components/evaluations/CARE/p9";
 import CARE_p10 from "@/components/evaluations/CARE/p10";
 
 import CARE_pm5 from "@/components/evaluations/CARE/pm5";
-import CARE_ssj1 from "@/components/evaluations/CARE/ssj1";
-import CARE_ssj2 from "@/components/evaluations/CARE/ssj2";
 import CARE_drug1 from "@/components/evaluations/CARE/drug_1";
 import CARE_drug2 from "@/components/evaluations/CARE/drug_2";
 import CARE_drug3 from "@/components/evaluations/CARE/drug_3";
@@ -29,9 +27,24 @@ import CARE_manager4 from "@/components/evaluations/CARE/manager4";
 // SCI Components
 import SCI_p1 from "@/components/evaluations/SCI/p1";
 import SCI_p2_2 from "@/components/evaluations/SCI/p2_2";
+import SCI_p2_3 from "@/components/evaluations/SCI/p2_3";
+import SCI_p2_5 from "@/components/evaluations/SCI/p2_5";
 import SCI_p2_4 from "@/components/evaluations/SCI/p2_4";
 import SCI_p2_8 from "@/components/evaluations/SCI/p2_8";
+import SCI_p2_10 from "@/components/evaluations/SCI/p2_10";
 import SCI_p3 from "@/components/evaluations/SCI/p3";
+
+//Social_care Components
+import CARE_ssj1 from "@/components/evaluations/SCC/ssj1";
+import CARE_ssj2 from "@/components/evaluations/SCC/ssj2";
+import SSC_p1 from "@/components/evaluations/SCC/p1";
+import SSC_p2 from "@/components/evaluations/SCC/p2";
+import SSC_p1_1 from "@/components/evaluations/SCC/p1_1";
+import SSC_p2_1 from "@/components/evaluations/SCC/p2_1";
+import SSC_p3 from "@/components/evaluations/SCC/p3";
+import SSC_p4 from "@/components/evaluations/SCC/p4";
+import SSC_p5 from "@/components/evaluations/SCC/p5";
+
 
 
 export default function EvaluationList(props: any) {
@@ -89,12 +102,35 @@ export default function EvaluationList(props: any) {
     return <SCI_p1 {...props} />;
   } else if (subtype === "30") {
     return <SCI_p2_2 {...props} />;
+  } else if (subtype === "31") {
+    return <SCI_p2_3 {...props} />;
+  } else if (subtype === "32") {
+    return <SCI_p2_5 {...props} />;
   } else if (subtype === "33") {
     return <SCI_p2_8 {...props} />;
   } else if (subtype === "34") {
     return <SCI_p3 {...props} />;
   } else if (subtype === "35") {
     return <SCI_p2_4 {...props} />;
+  } else if (subtype === "36") {
+    return <SCI_p2_10 {...props} />;
+  } else if (subtype === "37") {
+    return <SSC_p1 {...props} />;
+  } else if (subtype === "38") {
+    return <SSC_p2 {...props} />;
+  } else if (subtype === "40" || subtype ==="41") {
+    return <SSC_p1_1 {...props} />;
+  } else if (subtype === "42" || subtype === "43") {
+    return <SSC_p2_1 {...props} />;
+  } else if (subtype === "44"){
+    return <SSC_p3 {...props} />;
+  } else if (subtype === "46") {
+    return <SSC_p4 {...props} />;
+  } else if (subtype === "48") {
+    return <SSC_p5 {...props} />;
   }
+
+
+
   return <Empty {...props} />;
 }

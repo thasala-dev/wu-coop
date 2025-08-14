@@ -13,8 +13,8 @@ import CARE_p9 from "@/components/evaluations/CARE/p9";
 import CARE_p10 from "@/components/evaluations/CARE/p10";
 
 import CARE_pm5 from "@/components/evaluations/CARE/pm5";
-import CARE_ssj1 from "@/components/evaluations/CARE/ssj1";
-import CARE_ssj2 from "@/components/evaluations/CARE/ssj2";
+import CARE_ssj1 from "@/components/evaluations/SCC/ssj1";
+import CARE_ssj2 from "@/components/evaluations/SCC/ssj2";
 import CARE_drug1 from "@/components/evaluations/CARE/drug_1";
 import CARE_drug2 from "@/components/evaluations/CARE/drug_2";
 import CARE_drug3 from "@/components/evaluations/CARE/drug_3";
