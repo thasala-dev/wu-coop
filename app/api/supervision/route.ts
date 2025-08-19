@@ -96,8 +96,8 @@ export async function POST(request: Request) {
     // สร้างข้อมูลการนิเทศใหม่
     const data = await sql(
       `INSERT INTO supervisions 
-       (regist_intern_id, advisor_id, scheduled_date, start_time, end_time, status, visit_type, comments) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+       (regist_intern_id, advisor_id, scheduled_date, start_time, end_time, status, visit_type, comments, type) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
        RETURNING *`,
       [
         body.regist_intern_id,
@@ -108,6 +108,7 @@ export async function POST(request: Request) {
         body.status || 0,
         body.visit_type || null,
         body.comments || null,
+        body.type || null,
       ]
     );
 

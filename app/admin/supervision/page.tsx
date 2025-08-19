@@ -80,6 +80,7 @@ import {
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import CustomAvatar from "@/components/avatar";
+import { supervisionType } from "@/lib/global";
 
 // Interface สำหรับข้อมูลการนิเทศ
 interface SupervisionItem {
@@ -118,6 +119,7 @@ export default function SupervisionPage() {
   const [startTime, setStartTime] = useState<string>("09:00");
   const [endTime, setEndTime] = useState<string>("12:00");
   const [visitType, setVisitType] = useState<string>("");
+  const [type, setType] = useState<string>("");
   const [comments, setComments] = useState<string>("");
 
   // Fetch calendars when page loads
@@ -467,6 +469,17 @@ export default function SupervisionPage() {
       });
       return;
     }
+
+    // Validate that end time is after start time
+    if (!type) {
+      toast({
+        title: "ข้อมูลไม่ถูกต้อง",
+        description: "กรุณาเลือกประเภทการนิเทศ",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const formattedDate = format(scheduledDate, "yyyy-MM-dd");
@@ -483,6 +496,7 @@ export default function SupervisionPage() {
           start_time: startTime,
           end_time: endTime,
           visit_type: visitType || null,
+          type: type || null,
           comments: comments || null,
           status: 0,
         }),
@@ -704,19 +718,26 @@ export default function SupervisionPage() {
                                   {item.student_name}
                                 </div>
                                 <p className="text-xs text-gray-500">
-                                  {item.student_code}
+                                  {item.company_name}
                                 </p>
                               </div>
                             </div>
                           ),
                         },
-                        {
-                          key: "company_name",
-                          content: "แหล่งฝึกงาน",
-                        },
+
                         {
                           key: "advisor_name",
                           content: "อาจารย์นิเทศ",
+                        },
+                        {
+                          key: "type",
+                          content: "รูปแบบประเมิน",
+                          render: (item: any) => {
+                            const type = supervisionType.find(
+                              (type) => type.id === item.type
+                            );
+                            return type ? type.name : "ไม่ระบุ";
+                          },
                         },
                         {
                           key: "scheduled_date",
@@ -920,17 +941,36 @@ export default function SupervisionPage() {
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">รูปแบบการนิเทศ</label>
-              <Select onValueChange={setVisitType} value={visitType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="เลือกรูปแบบการนิเทศ" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="onsite">นิเทศ ณ สถานประกอบการ</SelectItem>
-                  <SelectItem value="online">นิเทศออนไลน์</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">รูปแบบการนิเทศ</label>
+                <Select onValueChange={setVisitType} value={visitType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="เลือกรูปแบบการนิเทศ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="onsite">
+                      นิเทศ ณ สถานประกอบการ
+                    </SelectItem>
+                    <SelectItem value="online">นิเทศออนไลน์</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">รูปแบบการประเมิน</label>
+                <Select onValueChange={setType} value={type}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="เลือกรูปแบบการประเมิน" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {supervisionType.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">หมายเหตุ</label>

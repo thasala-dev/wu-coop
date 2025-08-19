@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter, useParams } from "next/navigation";
 import { Calendar } from "@/components/ui/calendar";
 import { format, parse } from "date-fns";
-import { th } from "date-fns/locale";
+import { id, th } from "date-fns/locale";
 import {
   Popover,
   PopoverContent,
@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { supervisionType } from "@/lib/global";
 
 // Schema สำหรับตรวจสอบการกรอกฟอร์ม
 const formSchema = z
@@ -48,6 +49,7 @@ const formSchema = z
     start_time: z.string().min(1, "กรุณาระบุเวลาเริ่มต้น"),
     end_time: z.string().min(1, "กรุณาระบุเวลาสิ้นสุด"),
     visit_type: z.string().optional(),
+    type: z.string().optional(),
     comments: z.string().optional(),
     status: z.string().min(1, "กรุณาเลือกสถานะ"),
   })
@@ -98,6 +100,7 @@ export default function EditSupervision() {
       start_time: "09:00",
       end_time: "12:00",
       visit_type: "",
+      type: "",
       comments: "",
       status: "",
     },
@@ -185,6 +188,7 @@ export default function EditSupervision() {
         setValue("start_time", supervisionData.start_time || "09:00");
         setValue("end_time", supervisionData.end_time || "12:00");
         setValue("visit_type", supervisionData.visit_type || "");
+        setValue("type", supervisionData.type || "");
         setValue("comments", supervisionData.comments || "");
         setValue("status", supervisionData.status.toString());
 
@@ -269,6 +273,7 @@ export default function EditSupervision() {
         start_time: values.start_time,
         end_time: values.end_time,
         visit_type: values.visit_type || null,
+        type: values.type || null,
         comments: values.comments || null,
         status: parseInt(values.status),
       };
@@ -510,7 +515,7 @@ export default function EditSupervision() {
                       )}
                     </div>
 
-                    <div className="sm:col-span-6 space-y-1">
+                    <div className="sm:col-span-3 space-y-1">
                       <label
                         htmlFor="visit_type"
                         className="block text-sm font-medium"
@@ -543,6 +548,41 @@ export default function EditSupervision() {
                       {errors.visit_type && (
                         <p className="text-sm text-red-600">
                           {getErrorMessage(errors.visit_type)}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="sm:col-span-3 space-y-1">
+                      <label
+                        htmlFor="visit_type"
+                        className="block text-sm font-medium"
+                      >
+                        รูปแบบการประเมิน
+                      </label>
+                      <Select
+                        defaultValue={watch("type")}
+                        onValueChange={(value) => setValue("type", value)}
+                      >
+                        <SelectTrigger
+                          className={cn(
+                            "w-full",
+                            errors.type ? "border-red-600 border-2" : ""
+                          )}
+                        >
+                          <SelectValue placeholder="เลือกรูปแบบการประเมิน" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {supervisionType.map((item) => (
+                            <SelectItem key={item.id} value={item.id}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <input type="hidden" {...register("type")} />
+                      {errors.type && (
+                        <p className="text-sm text-red-600">
+                          {getErrorMessage(errors.type)}
                         </p>
                       )}
                     </div>

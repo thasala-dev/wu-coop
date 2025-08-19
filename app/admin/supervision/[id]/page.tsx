@@ -13,12 +13,7 @@ import {
   Edit,
   FileText,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -35,6 +30,7 @@ interface SupervisionDetail {
   start_time: string;
   end_time: string;
   visit_type: string;
+  type: string;
   comments: string;
   status: number;
   created_at: string;
@@ -68,7 +64,9 @@ export default function SupervisionDetailPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [supervision, setSupervision] = useState<SupervisionDetail | null>(null);
+  const [supervision, setSupervision] = useState<SupervisionDetail | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -120,39 +118,58 @@ export default function SupervisionDetailPage() {
   const renderStatus = (status: number) => {
     switch (status) {
       case 1:
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">รอดำเนินการ</Badge>;
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            รอดำเนินการ
+          </Badge>
+        );
       case 2:
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">เสร็จสิ้น</Badge>;
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            เสร็จสิ้น
+          </Badge>
+        );
       case 3:
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">ยกเลิก</Badge>;
+        return (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            ยกเลิก
+          </Badge>
+        );
       default:
-        return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">ไม่ระบุ</Badge>;
+        return (
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
+            ไม่ระบุ
+          </Badge>
+        );
     }
   };
 
   // ฟังก์ชั่นแปลงเวลา
   const formatTime = (timeString: string) => {
     if (!timeString) return "-";
-    
+
     // ถ้าเป็นรูปแบบ HH:MM:SS หรือ HH:MM ให้ใช้ได้เลย
-    if (typeof timeString === 'string' && timeString.match(/^\d{1,2}:\d{2}(:\d{2})?$/)) {
+    if (
+      typeof timeString === "string" &&
+      timeString.match(/^\d{1,2}:\d{2}(:\d{2})?$/)
+    ) {
       return timeString.substring(0, 5); // เอาแค่ HH:MM
     }
-    
+
     // ถ้าเป็น timestamp ให้แปลงเป็น time
     try {
       const date = new Date(timeString);
       if (!isNaN(date.getTime())) {
-        return date.toLocaleTimeString('th-TH', { 
-          hour: '2-digit', 
-          minute: '2-digit',
-          hour12: false 
+        return date.toLocaleTimeString("th-TH", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
         });
       }
     } catch (error) {
       console.error("Error formatting time:", error);
     }
-    
+
     return timeString.toString().substring(0, 5) || "-";
   };
 
@@ -271,14 +288,14 @@ export default function SupervisionDetailPage() {
                       <div className="col-span-2">
                         {formatTime(supervision.end_time)} น.
                       </div>
-                      
+
                       <div className="font-medium text-gray-500">
                         ประเภทการนิเทศ:
                       </div>
                       <div className="col-span-2">
                         {renderVisitType(supervision.visit_type)}
                       </div>
-                      
+
                       {supervision.comments && (
                         <>
                           <div className="font-medium text-gray-500">
@@ -320,19 +337,23 @@ export default function SupervisionDetailPage() {
                       <div className="col-span-2">
                         {supervision.student_faculty || "-"}
                       </div>
-                      
+
                       {supervision.student_mobile && (
                         <>
-                          <div className="font-medium text-gray-500">เบอร์โทรศัพท์:</div>
+                          <div className="font-medium text-gray-500">
+                            เบอร์โทรศัพท์:
+                          </div>
                           <div className="col-span-2">
                             {supervision.student_mobile}
                           </div>
                         </>
                       )}
-                      
+
                       {supervision.student_email && (
                         <>
-                          <div className="font-medium text-gray-500">อีเมล:</div>
+                          <div className="font-medium text-gray-500">
+                            อีเมล:
+                          </div>
                           <div className="col-span-2">
                             {supervision.student_email}
                           </div>
@@ -366,7 +387,9 @@ export default function SupervisionDetailPage() {
 
                       {supervision.advisor_email && (
                         <>
-                          <div className="font-medium text-gray-500">อีเมล:</div>
+                          <div className="font-medium text-gray-500">
+                            อีเมล:
+                          </div>
                           <div className="col-span-2">
                             {supervision.advisor_email}
                           </div>
@@ -391,7 +414,9 @@ export default function SupervisionDetailPage() {
 
                       {supervision.company_address && (
                         <>
-                          <div className="font-medium text-gray-500">ที่อยู่:</div>
+                          <div className="font-medium text-gray-500">
+                            ที่อยู่:
+                          </div>
                           <div className="col-span-2">
                             {supervision.company_address}
                           </div>
@@ -422,7 +447,9 @@ export default function SupervisionDetailPage() {
 
                       {supervision.contact_email && (
                         <>
-                          <div className="font-medium text-gray-500">อีเมล:</div>
+                          <div className="font-medium text-gray-500">
+                            อีเมล:
+                          </div>
                           <div className="col-span-2">
                             {supervision.contact_email}
                           </div>
@@ -436,15 +463,19 @@ export default function SupervisionDetailPage() {
 
                 <div className="mt-6">
                   <h3 className="text-lg font-medium mb-4">ข้อมูลเพิ่มเติม</h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="font-medium text-gray-500">วันที่สร้าง: </span>
+                      <span className="font-medium text-gray-500">
+                        วันที่สร้าง:{" "}
+                      </span>
                       {formatToThaiDate(supervision.created_at)}
                     </div>
-                    
+
                     <div>
-                      <span className="font-medium text-gray-500">แก้ไขล่าสุด: </span>
+                      <span className="font-medium text-gray-500">
+                        แก้ไขล่าสุด:{" "}
+                      </span>
                       {formatToThaiDate(supervision.updated_at)}
                     </div>
                   </div>

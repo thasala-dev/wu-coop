@@ -70,6 +70,7 @@ import {
 import Loading from "@/components/loading";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { supervisionType } from "@/lib/global";
 
 // Type definitions
 interface Student {
@@ -113,6 +114,7 @@ export default function AdvisorVisits() {
   const [startTime, setStartTime] = useState<string>("09:00");
   const [endTime, setEndTime] = useState<string>("12:00");
   const [visitType, setVisitType] = useState<string>("");
+  const [type, setType] = useState<string>("");
   const [comments, setComments] = useState<string>("");
 
   const handleAddNew = () => {
@@ -151,6 +153,7 @@ export default function AdvisorVisits() {
     setStartTime(findVisit.start_time || "09:00");
     setEndTime(findVisit.end_time || "12:00");
     setVisitType(findVisit.visit_type || "");
+    setType(findVisit.type || "");
     setComments(findVisit.comments || "");
 
     setAddSupervisionModal(true);
@@ -225,6 +228,7 @@ export default function AdvisorVisits() {
           start_time: startTime,
           end_time: endTime,
           visit_type: visitType || null,
+          type: type || null,
           comments: comments || null,
           status: 0,
         }),
@@ -270,6 +274,7 @@ export default function AdvisorVisits() {
     setStartTime("09:00");
     setEndTime("12:00");
     setVisitType("");
+    setType("");
     setComments("");
     setEditingVisitId(null);
   };
@@ -662,9 +667,21 @@ export default function AdvisorVisits() {
                                   </div>
                                 </div>
                                 <div className="flex flex-col gap-3 lg:items-end">
-                                  <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 hover:from-blue-200 hover:to-blue-300 px-3 py-1">
-                                    กำลังจะถึง
-                                  </Badge>
+                                  <div className="flex gap-2">
+                                    <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 hover:from-blue-200 hover:to-blue-300 px-3 py-1">
+                                      กำลังจะถึง
+                                    </Badge>
+                                    <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 hover:from-blue-200 hover:to-blue-300 px-3 py-1">
+                                      {
+                                        supervisionType.find(
+                                          (type) =>
+                                            String(type.id) ===
+                                            String(visit.type)
+                                        )?.name
+                                      }
+                                    </Badge>
+                                  </div>
+
                                   <div className="flex gap-2">
                                     <Button
                                       variant="outline"
@@ -784,9 +801,20 @@ export default function AdvisorVisits() {
                                   </div>
                                 </div>
                                 <div className="flex flex-col gap-3 lg:items-end">
-                                  <Badge className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 hover:from-green-200 hover:to-green-300 px-3 py-1">
-                                    เสร็จสิ้นแล้ว
-                                  </Badge>
+                                  <div className="flex gap-2">
+                                    <Badge className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 hover:from-green-200 hover:to-green-300 px-3 py-1">
+                                      เสร็จสิ้นแล้ว
+                                    </Badge>
+                                    <Badge className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 hover:from-blue-200 hover:to-blue-300 px-3 py-1">
+                                      {
+                                        supervisionType.find(
+                                          (type) =>
+                                            String(type.id) ===
+                                            String(visit.type)
+                                        )?.name
+                                      }
+                                    </Badge>
+                                  </div>
                                   <div className="flex gap-2">
                                     <Button
                                       variant="outline"
@@ -1217,21 +1245,40 @@ export default function AdvisorVisits() {
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      รูปแบบการนิเทศ
-                    </label>
-                    <Select onValueChange={setVisitType} value={visitType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="เลือกรูปแบบการนิเทศ" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="onsite">
-                          นิเทศ ณ สถานประกอบการ
-                        </SelectItem>
-                        <SelectItem value="online">นิเทศออนไลน์</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        รูปแบบการนิเทศ
+                      </label>
+                      <Select onValueChange={setVisitType} value={visitType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="เลือกรูปแบบการนิเทศ" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="onsite">
+                            นิเทศ ณ สถานประกอบการ
+                          </SelectItem>
+                          <SelectItem value="online">นิเทศออนไลน์</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        รูปแบบการประเมิน
+                      </label>
+                      <Select onValueChange={setType} value={type}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="เลือกรูปแบบการประเมิน" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {supervisionType.map((item) => (
+                            <SelectItem key={item.id} value={item.id}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">หมายเหตุ</label>

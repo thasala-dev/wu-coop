@@ -9,7 +9,7 @@ export async function GET(request: NextRequest, { params }: any) {
     const data = await sql(
       `SELECT vis.regist_intern_id,
             vis.id,intern.calendar_id, vis.scheduled_date, vis.start_time, vis.end_time,
-            vis.visit_type, vis.status, vis.result, vis.comments,
+            vis.visit_type, vis.type, vis.status, vis.result, vis.comments,
             std.id AS student_id, std.fullname AS student_name, std.student_id AS student_student_id, std.major AS student_major,
             com.id AS company_id, com.name AS company_name, com.location AS company_location,
             com.contact_name AS company_contact_name, com.contact_phone AS company_contact_phone

@@ -11,7 +11,7 @@ export async function GET(request: NextRequest, { params }: any) {
     const data = await sql(
       `SELECT 
         sup.id, sup.regist_intern_id, sup.advisor_id, sup.scheduled_date, 
-        sup.start_time, sup.end_time, sup.visit_type, sup.comments, sup.status,
+        sup.start_time, sup.end_time, sup.visit_type, sup.type, sup.comments, sup.status,
         sup.created_at, sup.updated_at,
         ri.id as ri_id, ri.student_id as ri_student_id, ri.calendar_id as ri_calendar_id, 
         ri.company_id as ri_company_id,
@@ -98,6 +98,11 @@ export async function PUT(request: NextRequest, { params }: any) {
     if (body.visit_type !== undefined) {
       updateFields.push(`visit_type = $${paramCount++}`);
       queryParams.push(body.visit_type);
+    }
+
+    if (body.type !== undefined) {
+      updateFields.push(`type = $${paramCount++}`);
+      queryParams.push(body.type);
     }
 
     if (body.comments !== undefined) {
