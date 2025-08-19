@@ -34,9 +34,6 @@ export default function Page(props: any) {
     }
   };
   const handleSubmitReport = async () => {
-    console.log("formData:", formData);
-
-    // Validate all required fields
     const validations = [
       handleCheckError("address", formData.address),
       handleCheckError("street", formData.street),
@@ -47,9 +44,7 @@ export default function Page(props: any) {
       handleCheckError("email", formData.email),
       handleCheckError("phone", formData.phone),
     ];
-
     const isFormValid = validations.every(Boolean);
-
     if (!isFormValid) {
       toast({
         title: "ข้อมูลไม่ครบถ้วน",
@@ -73,7 +68,6 @@ export default function Page(props: any) {
       }
       const result = await response.json();
       if (result.success) {
-        // Submit report logic here
         toast({
           title: "ส่งรายงานสำเร็จ",
           description: "รายงานการนิเทศถูกส่งเรียบร้อยแล้ว",
