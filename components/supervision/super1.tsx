@@ -89,7 +89,10 @@ export default function Page(props: any) {
   return (
     <Card className="bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
       <div className="p-4 space-y-6">
-        <div> ส่วนที่ 1: ข้อมูลทั่วไปของแหล่งฝึก</div>
+        <h1>แบบนิเทศงานการฝึกปฏิบัติงานเชิงวิชาชีพ สาขาโรงพยาบาล</h1>
+        <div> 
+        
+          ส่วนที่ 1: ข้อมูลทั่วไปของแหล่งฝึก</div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
           <div className="col-span-4 space-y-1">1.1 ข้อมูลติดต่อ</div>
           <div className="space-y-1">
