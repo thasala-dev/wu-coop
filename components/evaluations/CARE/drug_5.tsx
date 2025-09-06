@@ -212,7 +212,6 @@ export default function Page(props: any) {
   };
 
   const handleCheckValid = () => {
-    return false;
     const keyList = ["suggestion"];
     return !Object.keys(data).some((key) => {
       if (!keyList.includes(key)) {
