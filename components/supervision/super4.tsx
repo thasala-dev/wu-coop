@@ -112,6 +112,7 @@ export default function Page(props: any) {
   const { toast } = useToast();
 
   const [isSaving, setIsSaving] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState<FormState>(
     data
       ? data
@@ -126,7 +127,6 @@ export default function Page(props: any) {
           overall: {},
         }
   );
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) =>
     setForm((p) => ({ ...p, [k]: v }));
@@ -145,6 +145,65 @@ export default function Page(props: any) {
     });
   };
 
+  const handleCheckError = (field: string, value: any) => {
+    if (!value) {
+      let errorMessage = "กรุณากรอกข้อมูล";
+      switch (field) {
+        case "siteName":
+          errorMessage = "กรุณากรอกชื่อแหล่งฝึก";
+          break;
+        case "visitDate":
+          errorMessage = "กรุณาเลือกวันที่นิเทศ";
+          break;
+        case "visitRound":
+          errorMessage = "กรุณากรอกครั้งที่นิเทศ";
+          break;
+        case "students":
+          errorMessage = "กรุณากรอกชื่อ-สกุลนักศึกษาอย่างน้อย 1 คน";
+          break;
+        case "summary":
+          errorMessage = "กรุณากรอกสรุปผลจากการนิเทศ";
+          break;
+        case "siteInfo.supervisionResult":
+          errorMessage = "กรุณากรอกผลการติดตาม/นิเทศ ส่วนข้อมูลแหล่งฝึก";
+          break;
+        case "housing.supervisionResult":
+          errorMessage = "กรุณากรอกผลการติดตาม/นิเทศ ส่วนที่พัก";
+          break;
+        case "coordination.supervisionResult":
+          errorMessage = "กรุณากรอกผลการติดตาม/นิเทศ ส่วนการประสานงาน";
+          break;
+        case "readiness.supervisionResult":
+          errorMessage = "กรุณากรอกผลการติดตาม/นิเทศ ส่วนความพร้อม";
+          break;
+        case "supportNeeds.supervisionResult":
+          errorMessage = "กรุณากรอกผลการติดตาม/นิเทศ ส่วนการสนับสนุน";
+          break;
+        case "obstacles.supervisionResult":
+          errorMessage = "กรุณากรอกผลการติดตาม/นิเทศ ส่วนปัญหา/อุปสรรค";
+          break;
+        case "overall.futurePlan":
+          errorMessage = "กรุณากรอกแผนการพัฒนา/ปรับปรุงการนิเทศในอนาคต";
+          break;
+        case "coordination.contactDetailJudge":
+          errorMessage = "กรุณาเลือกการประเมินรายละเอียดการติดต่อ";
+          break;
+        case "readiness.workloadFit":
+          errorMessage = "กรุณาเลือกระดับภาระงานที่เหมาะสม";
+          break;
+      }
+      setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+      return false;
+    } else {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+      return true;
+    }
+  };
+
   const requireField = (k: keyof FormState, ok: boolean) => {
     setErrors((e) => {
       const n = { ...e };
@@ -156,13 +215,54 @@ export default function Page(props: any) {
   };
 
   const onSubmit = async () => {
-    const ok =
-      requireField("siteName", !!form.siteName) &&
-      requireField("visitDate", !!form.visitDate) &&
-      requireField("summary", !!form.summary) &&
-      requireField("students", !!form.students?.some((s) => s?.trim()));
-    if (!ok) {
-      toast({ title: "ข้อมูลยังไม่ครบ", variant: "destructive" });
+    const validations = [
+      handleCheckError("siteName", form.siteName),
+      handleCheckError("visitDate", form.visitDate),
+      handleCheckError("visitRound", form.visitRound),
+      handleCheckError("summary", form.summary),
+      handleCheckError(
+        "students",
+        form.students?.some((s) => s?.trim())
+      ),
+      handleCheckError(
+        "siteInfo.supervisionResult",
+        form.siteInfo?.supervisionResult
+      ),
+      handleCheckError(
+        "housing.supervisionResult",
+        form.housing?.supervisionResult
+      ),
+      handleCheckError(
+        "coordination.supervisionResult",
+        form.coordination?.supervisionResult
+      ),
+      handleCheckError(
+        "readiness.supervisionResult",
+        form.readiness?.supervisionResult
+      ),
+      handleCheckError(
+        "supportNeeds.supervisionResult",
+        form.supportNeeds?.supervisionResult
+      ),
+      handleCheckError(
+        "obstacles.supervisionResult",
+        form.obstacles?.supervisionResult
+      ),
+      handleCheckError("overall.futurePlan", form.overall?.futurePlan),
+      handleCheckError(
+        "coordination.contactDetailJudge",
+        form.coordination?.contactDetailJudge
+      ),
+      handleCheckError("readiness.workloadFit", form.readiness?.workloadFit),
+    ];
+    const isFormValid = validations.every(Boolean);
+
+    if (!isFormValid) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณากรอกข้อมูลให้ครบถ้วนก่อนส่งรายงาน",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -203,35 +303,72 @@ export default function Page(props: any) {
             1) ข้อมูลทั่วไปของนักศึกษา และแหล่งฝึก
           </div>
           <div className="grid md:grid-cols-4 gap-3">
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 space-y-1">
               <Label>ชื่อแหล่งฝึก</Label>
               <Input
                 value={form.siteName || ""}
-                onChange={(e) => setField("siteName", e.target.value)}
+                onChange={(e) => {
+                  setField("siteName", e.target.value);
+                  if (errors.siteName) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.siteName;
+                      return newErrors;
+                    });
+                  }
+                }}
                 className={errors.siteName ? "border-2 border-red-600" : ""}
                 placeholder="เช่น โรงพยาบาล/หน่วยงาน"
               />
+              {errors.siteName && (
+                <p className="text-red-600 text-sm mt-1">{errors.siteName}</p>
+              )}
             </div>
-            <div>
+            <div className="space-y-1">
               <Label>วันที่นิเทศ</Label>
               <Input
                 type="date"
                 value={form.visitDate || ""}
-                onChange={(e) => setField("visitDate", e.target.value)}
+                onChange={(e) => {
+                  setField("visitDate", e.target.value);
+                  if (errors.visitDate) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.visitDate;
+                      return newErrors;
+                    });
+                  }
+                }}
                 className={errors.visitDate ? "border-2 border-red-600" : ""}
               />
+              {errors.visitDate && (
+                <p className="text-red-600 text-sm mt-1">{errors.visitDate}</p>
+              )}
             </div>
-            <div>
+            <div className="space-y-1">
               <Label>ครั้งที่</Label>
               <Input
                 value={form.visitRound || ""}
-                onChange={(e) => setField("visitRound", e.target.value)}
+                onChange={(e) => {
+                  setField("visitRound", e.target.value);
+                  if (errors.visitRound) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.visitRound;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.visitRound ? "border-2 border-red-600" : ""}
                 placeholder="เช่น 1"
               />
+              {errors.visitRound && (
+                <p className="text-red-600 text-sm mt-1">{errors.visitRound}</p>
+              )}
             </div>
           </div>
 
-          <div>
+          <div className="space-y-1">
             <Label>ชื่อ-สกุลนักศึกษา</Label>
             <div className="grid md:grid-cols-2 gap-2 mt-1">
               {form.students?.map((v, i) => (
@@ -239,17 +376,28 @@ export default function Page(props: any) {
                   key={i}
                   placeholder={`${i + 1}. ชื่อ-สกุล`}
                   value={v}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setField(
                       "students",
                       (form.students || []).map((s, idx) =>
                         idx === i ? e.target.value : s
                       )
-                    )
-                  }
+                    );
+                    if (errors.students) {
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors.students;
+                        return newErrors;
+                      });
+                    }
+                  }}
+                  className={errors.students ? "border-2 border-red-600" : ""}
                 />
               ))}
             </div>
+            {errors.students && (
+              <p className="text-red-600 text-sm mt-1">{errors.students}</p>
+            )}
           </div>
         </section>
 
@@ -259,13 +407,27 @@ export default function Page(props: any) {
             2) สรุปผลจากการนิเทศ (จุดเด่น/สิ่งที่ควรปรับปรุง
             ทั้งในแหล่งฝึกและในนักศึกษา)
           </div>
-          <Textarea
-            rows={8}
-            value={form.summary || ""}
-            onChange={(e) => setField("summary", e.target.value)}
-            className={errors.summary ? "border-2 border-red-600" : ""}
-            placeholder="พิมพ์สรุปผล..."
-          />
+          <div className="space-y-1">
+            <Textarea
+              rows={8}
+              value={form.summary || ""}
+              onChange={(e) => {
+                setField("summary", e.target.value);
+                if (errors.summary) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.summary;
+                    return newErrors;
+                  });
+                }
+              }}
+              className={errors.summary ? "border-2 border-red-600" : ""}
+              placeholder="พิมพ์สรุปภาพรวม…"
+            />
+            {errors.summary && (
+              <p className="text-red-600 text-sm mt-1">{errors.summary}</p>
+            )}
+          </div>
         </section>
 
         {/* -------- 3) ข้อมูลเกี่ยวกับแหล่งฝึกและการฝึกปฏิบัติงาน -------- */}
@@ -312,17 +474,33 @@ export default function Page(props: any) {
             </div>
             <div className="p-3 pt-0 border-t">
               <Label className="text-sm font-medium">
-                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด) *
               </Label>
               <Textarea
-                className="mt-2"
+                className={`mt-2 ${
+                  errors["siteInfo.supervisionResult"]
+                    ? "border-2 border-red-600"
+                    : ""
+                }`}
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.siteInfo?.supervisionResult || ""}
-                onChange={(e) =>
-                  setDeep("siteInfo.supervisionResult", e.target.value)
-                }
+                onChange={(e) => {
+                  setDeep("siteInfo.supervisionResult", e.target.value);
+                  if (errors["siteInfo.supervisionResult"]) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors["siteInfo.supervisionResult"];
+                      return newErrors;
+                    });
+                  }
+                }}
               />
+              {errors["siteInfo.supervisionResult"] && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors["siteInfo.supervisionResult"]}
+                </p>
+              )}
             </div>
           </div>
 
@@ -357,17 +535,33 @@ export default function Page(props: any) {
             </div>
             <div className="p-3 pt-0 border-t">
               <Label className="text-sm font-medium">
-                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด) *
               </Label>
               <Textarea
-                className="mt-2"
+                className={`mt-2 ${
+                  errors["housing.supervisionResult"]
+                    ? "border-2 border-red-600"
+                    : ""
+                }`}
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.housing?.supervisionResult || ""}
-                onChange={(e) =>
-                  setDeep("housing.supervisionResult", e.target.value)
-                }
+                onChange={(e) => {
+                  setDeep("housing.supervisionResult", e.target.value);
+                  if (errors["housing.supervisionResult"]) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors["housing.supervisionResult"];
+                      return newErrors;
+                    });
+                  }
+                }}
               />
+              {errors["housing.supervisionResult"] && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors["housing.supervisionResult"]}
+                </p>
+              )}
             </div>
           </div>
 
@@ -398,22 +592,41 @@ export default function Page(props: any) {
             </div>
             <div className="p-3">
               <Label className="text-sm">
-                รายละเอียดช่องทางติดต่อในปฏิบัติงาน
+                รายละเอียดช่องทางติดต่อในปฏิบัติงาน *
               </Label>
               <RadioGroup
                 className="flex gap-6 mt-1"
                 value={form.coordination?.contactDetailJudge || ""}
-                onValueChange={(v) =>
-                  setDeep("coordination.contactDetailJudge", v as YesNo)
-                }
+                onValueChange={(v) => {
+                  setDeep("coordination.contactDetailJudge", v as YesNo);
+                  if (errors["coordination.contactDetailJudge"]) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors["coordination.contactDetailJudge"];
+                      return newErrors;
+                    });
+                  }
+                }}
               >
                 {(["เหมาะสม", "ควรปรับปรุง"] as const).map((v) => (
                   <label key={v} className="flex items-center gap-2 text-sm">
-                    <RadioGroupItem value={v} />
+                    <RadioGroupItem
+                      value={v}
+                      className={
+                        errors["coordination.contactDetailJudge"]
+                          ? "border-red-600"
+                          : ""
+                      }
+                    />
                     <span>{v}</span>
                   </label>
                 ))}
               </RadioGroup>
+              {errors["coordination.contactDetailJudge"] && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors["coordination.contactDetailJudge"]}
+                </p>
+              )}
               <Input
                 className="mt-2"
                 placeholder="ระบุรายละเอียด/ข้อเสนอแนะ"
@@ -425,17 +638,33 @@ export default function Page(props: any) {
             </div>
             <div className="p-3 pt-0 border-t">
               <Label className="text-sm font-medium">
-                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด) *
               </Label>
               <Textarea
-                className="mt-2"
+                className={`mt-2 ${
+                  errors["coordination.supervisionResult"]
+                    ? "border-2 border-red-600"
+                    : ""
+                }`}
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.coordination?.supervisionResult || ""}
-                onChange={(e) =>
-                  setDeep("coordination.supervisionResult", e.target.value)
-                }
+                onChange={(e) => {
+                  setDeep("coordination.supervisionResult", e.target.value);
+                  if (errors["coordination.supervisionResult"]) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors["coordination.supervisionResult"];
+                      return newErrors;
+                    });
+                  }
+                }}
               />
+              {errors["coordination.supervisionResult"] && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors["coordination.supervisionResult"]}
+                </p>
+              )}
             </div>
           </div>
 
@@ -449,22 +678,41 @@ export default function Page(props: any) {
                 <Label className="text-sm">
                   3.4.1 ความพร้อม
                   ความตั้งใจและการเอาใจใส่ต่อการฝึกปฏิบัติงานของเภสัชกรประจำแหล่งฝึก
-                  (ความคิดเห็นจากนักศึกษาและการประเมินของอาจารย์)
+                  (ความคิดเห็นจากนักศึกษาและการประเมินของอาจารย์) *
                 </Label>
                 <RadioGroup
                   className="flex gap-6 mt-1"
                   value={form.readiness?.workloadFit || ""}
-                  onValueChange={(v) =>
-                    setDeep("readiness.workloadFit", v as Level)
-                  }
+                  onValueChange={(v) => {
+                    setDeep("readiness.workloadFit", v as Level);
+                    if (errors["readiness.workloadFit"]) {
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors["readiness.workloadFit"];
+                        return newErrors;
+                      });
+                    }
+                  }}
                 >
                   {(["มาก", "ปานกลาง", "น้อย"] as const).map((v) => (
                     <label key={v} className="flex items-center gap-2 text-sm">
-                      <RadioGroupItem value={v} />
+                      <RadioGroupItem
+                        value={v}
+                        className={
+                          errors["readiness.workloadFit"]
+                            ? "border-red-600"
+                            : ""
+                        }
+                      />
                       <span>{v}</span>
                     </label>
                   ))}
                 </RadioGroup>
+                {errors["readiness.workloadFit"] && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors["readiness.workloadFit"]}
+                  </p>
+                )}
                 <Input
                   className="mt-2"
                   placeholder="หมายเหตุ"
@@ -510,17 +758,33 @@ export default function Page(props: any) {
             </div>
             <div className="p-3 pt-0 border-t">
               <Label className="text-sm font-medium">
-                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด) *
               </Label>
               <Textarea
-                className="mt-2"
+                className={`mt-2 ${
+                  errors["readiness.supervisionResult"]
+                    ? "border-2 border-red-600"
+                    : ""
+                }`}
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.readiness?.supervisionResult || ""}
-                onChange={(e) =>
-                  setDeep("readiness.supervisionResult", e.target.value)
-                }
+                onChange={(e) => {
+                  setDeep("readiness.supervisionResult", e.target.value);
+                  if (errors["readiness.supervisionResult"]) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors["readiness.supervisionResult"];
+                      return newErrors;
+                    });
+                  }
+                }}
               />
+              {errors["readiness.supervisionResult"] && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors["readiness.supervisionResult"]}
+                </p>
+              )}
             </div>
           </div>
 
@@ -559,17 +823,33 @@ export default function Page(props: any) {
             </div>
             <div className="p-3 pt-0 border-t">
               <Label className="text-sm font-medium">
-                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด) *
               </Label>
               <Textarea
-                className="mt-2"
+                className={`mt-2 ${
+                  errors["supportNeeds.supervisionResult"]
+                    ? "border-2 border-red-600"
+                    : ""
+                }`}
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.supportNeeds?.supervisionResult || ""}
-                onChange={(e) =>
-                  setDeep("supportNeeds.supervisionResult", e.target.value)
-                }
+                onChange={(e) => {
+                  setDeep("supportNeeds.supervisionResult", e.target.value);
+                  if (errors["supportNeeds.supervisionResult"]) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors["supportNeeds.supervisionResult"];
+                      return newErrors;
+                    });
+                  }
+                }}
               />
+              {errors["supportNeeds.supervisionResult"] && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors["supportNeeds.supervisionResult"]}
+                </p>
+              )}
             </div>
           </div>
 
@@ -617,17 +897,33 @@ export default function Page(props: any) {
             </div>
             <div className="p-3 pt-0 border-t">
               <Label className="text-sm font-medium">
-                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด) *
               </Label>
               <Textarea
-                className="mt-2"
+                className={`mt-2 ${
+                  errors["obstacles.supervisionResult"]
+                    ? "border-2 border-red-600"
+                    : ""
+                }`}
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.obstacles?.supervisionResult || ""}
-                onChange={(e) =>
-                  setDeep("obstacles.supervisionResult", e.target.value)
-                }
+                onChange={(e) => {
+                  setDeep("obstacles.supervisionResult", e.target.value);
+                  if (errors["obstacles.supervisionResult"]) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors["obstacles.supervisionResult"];
+                      return newErrors;
+                    });
+                  }
+                }}
               />
+              {errors["obstacles.supervisionResult"] && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors["obstacles.supervisionResult"]}
+                </p>
+              )}
             </div>
           </div>
 
@@ -718,15 +1014,33 @@ export default function Page(props: any) {
 
               <div>
                 <Label className="text-sm">
-                  การพัฒนา/ปรับปรุงแผนการนิเทศในอนาคต
+                  การพัฒนา/ปรับปรุงแผนการนิเทศในอนาคต *
                 </Label>
                 <Textarea
-                  rows={3}
-                  value={form.overall?.futurePlan || ""}
-                  onChange={(e) =>
-                    setDeep("overall.futurePlan", e.target.value)
+                  className={
+                    errors["overall.futurePlan"]
+                      ? "border-2 border-red-600"
+                      : ""
                   }
+                  rows={3}
+                  placeholder="ระบุแผนการพัฒนาหรือปรับปรุงการนิเทศในอนาคต..."
+                  value={form.overall?.futurePlan || ""}
+                  onChange={(e) => {
+                    setDeep("overall.futurePlan", e.target.value);
+                    if (errors["overall.futurePlan"]) {
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors["overall.futurePlan"];
+                        return newErrors;
+                      });
+                    }
+                  }}
                 />
+                {errors["overall.futurePlan"] && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors["overall.futurePlan"]}
+                  </p>
+                )}
               </div>
             </div>
           </div>

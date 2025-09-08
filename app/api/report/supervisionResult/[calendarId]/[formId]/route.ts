@@ -9,25 +9,21 @@ export async function GET(request: NextRequest, { params }: any) {
     const data = await sql(
       `select 
           std.fullname, 
-          std.student_id, 
-          er.evaluator, 
-          er.evaluation_date, 
-          er.result,
+          std.student_id,
           comp.name as company_name,
-          type.name as evaluation_name
+          sup.scheduled_date,
+          adv.fullname as advisor_name,
+          sup.result
       from regist_intern intern
       inner join user_student std 
           on intern.student_id = std.id
       inner join user_company comp 
           on intern.company_id = comp.id
-      inner join evaluations_type type 
-          on type.id = ANY(intern.evaluation_type)
-      inner join evaluations_form form 
-          on form.id = ANY(type.form)
-          and form.id = $2
-      left join evaluations_result er 
-          on intern.id = er.intern_id 
-        and er.form_id = $2
+      inner join supervisions sup
+          on sup.regist_intern_id = intern.id
+          and sup.type = $2
+      inner join user_advisor adv
+          on adv.id = sup.advisor_id
       where intern.calendar_id = $1
       order by std.student_id ASC`,
       [calendarId, formId]

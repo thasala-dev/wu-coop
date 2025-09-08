@@ -84,14 +84,6 @@ export default function Page(props: any) {
     "อัสสัมชัญ",
   ] as const;
 
-  const PRODUCTS = [
-    "ยา",
-    "ชีววัตถุ",
-    "เครื่องสำอาง",
-    "สมุนไพร",
-    "อาหารและผลิตภัณฑ์เสริมอาหาร",
-  ] as const;
-
   const { id, data } = props;
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const { toast } = useToast();
@@ -121,9 +113,16 @@ export default function Page(props: any) {
     // Handle form submission if needed
   };
 
-  const handleCheckError = (field: string, value: any) => {
-    if (!value) {
-      setErrors((prev) => ({ ...prev, [field]: "กรุณากรอกข้อมูล" }));
+  const handleCheckError = (
+    field: string,
+    value: any,
+    customMessage?: string
+  ) => {
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: customMessage || "กรุณากรอกข้อมูล",
+      }));
       return false;
     } else {
       setErrors((prev) => {
@@ -136,15 +135,70 @@ export default function Page(props: any) {
   };
   const handleSubmitReport = async () => {
     const validations = [
-      handleCheckError("address", formData.address),
-      handleCheckError("street", formData.street),
-      handleCheckError("subdistrict", formData.subdistrict),
-      handleCheckError("district", formData.district),
-      handleCheckError("province", formData.province),
-      handleCheckError("pharmacist", formData.pharmacist),
-      handleCheckError("email", formData.email),
-      handleCheckError("phone", formData.phone),
+      // ส่วนที่ 1: ข้อมูลทั่วไป
+      handleCheckError("siteName", formData.siteName, "กรุณากรอกชื่อแหล่งฝึก"),
+      handleCheckError("province", formData.province, "กรุณากรอกจังหวัด"),
+      handleCheckError(
+        "fullname",
+        formData.fullname,
+        "กรุณากรอกชื่อ-สกุล ผู้ติดต่อ"
+      ),
+      handleCheckError("email", formData.email, "กรุณากรอก E-mail"),
+      handleCheckError("phone", formData.phone, "กรุณากรอกเบอร์โทรศัพท์"),
+
+      // ส่วนที่ 2: ข้อมูลการฝึกของนิสิต (ต้องเลือกอย่างน้อย 1 มหาวิทยาลัย)
+      handleCheckError(
+        "uniSelected",
+        formData.uniSelected,
+        "กรุณาเลือกมหาวิทยาลัยอย่างน้อย 1 แห่ง"
+      ),
+
+      // ส่วนที่ 3: ความปลอดภัย
+      handleCheckError(
+        "accommodation",
+        formData.accommodation,
+        "กรุณาเลือกประเภทที่พัก"
+      ),
+      handleCheckError(
+        "safety_travel",
+        formData.safety_travel,
+        "กรุณาประเมินความปลอดภัยของที่พักและการเดินทาง"
+      ),
+      handleCheckError(
+        "safety_env",
+        formData.safety_env,
+        "กรุณาประเมินความปลอดภัยของสิ่งแวดล้อมโดยรอบ"
+      ),
+
+      // ส่วนที่ 4: สิ่งสนับสนุนพื้นฐาน
+      handleCheckError(
+        "support_has",
+        formData.support_has,
+        "กรุณาระบุว่ามีคอมพิวเตอร์/อุปกรณ์เกี่ยวข้องหรือไม่"
+      ),
+
+      // ส่วนที่ 5: ปัญหาและข้อเสนอแนะ
+      handleCheckError(
+        "issues",
+        formData.issues,
+        "กรุณากรอกปัญหาและข้อเสนอแนะเกี่ยวกับงาน/กิจกรรม"
+      ),
+
+      // ส่วนที่ 6: ความต้องการการสนับสนุน
+      handleCheckError(
+        "needsFromFaculty",
+        formData.needsFromFaculty,
+        "กรุณากรอกความต้องการการสนับสนุนจากคณะเภสัชศาสตร์"
+      ),
+
+      // ส่วนที่ 7: การประเมินแหล่งฝึก (ต้องมีการประเมิน)
+      handleCheckError(
+        "siteEvaluation",
+        formData.siteEvaluation_isSuitable || formData.siteEvaluation_other,
+        "กรุณาทำการประเมินแหล่งฝึก"
+      ),
     ];
+
     const isFormValid = validations.every(Boolean);
     if (!isFormValid) {
       toast({
@@ -203,33 +257,63 @@ export default function Page(props: any) {
               <Input
                 placeholder="กรอกชื่อแหล่งฝึก"
                 value={formData.siteName || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, siteName: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, siteName: e.target.value });
+                  if (errors.siteName) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.siteName;
+                      return newErrors;
+                    });
+                  }
+                }}
                 className={errors.siteName ? "border-2 border-red-600" : ""}
               />
+              {errors.siteName && (
+                <p className="text-red-600 text-sm mt-1">{errors.siteName}</p>
+              )}
             </div>
             <div className="md:col-span-2 space-y-1">
               <Label>จังหวัด</Label>
               <Input
                 placeholder="เช่น นครศรีธรรมราช"
                 value={formData.province || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, province: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, province: e.target.value });
+                  if (errors.province) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.province;
+                      return newErrors;
+                    });
+                  }
+                }}
                 className={errors.province ? "border-2 border-red-600" : ""}
               />
+              {errors.province && (
+                <p className="text-red-600 text-sm mt-1">{errors.province}</p>
+              )}
             </div>
             <div className="md:col-span-2 space-y-1">
               <Label>ชื่อ-สกุล ผู้ติดต่อ/ผู้รับผิดชอบ</Label>
               <Input
                 placeholder="ชื่อ-สกุล"
                 value={formData.fullname || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, fullname: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, fullname: e.target.value });
+                  if (errors.fullname) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.fullname;
+                      return newErrors;
+                    });
+                  }
+                }}
                 className={errors.fullname ? "border-2 border-red-600" : ""}
               />
+              {errors.fullname && (
+                <p className="text-red-600 text-sm mt-1">{errors.fullname}</p>
+              )}
             </div>
             <div className="space-y-1">
               <Label>E-mail</Label>
@@ -237,20 +321,42 @@ export default function Page(props: any) {
                 type="email"
                 placeholder="example@domain.com"
                 value={formData.email || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, email: e.target.value });
+                  if (errors.email) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.email;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.email ? "border-2 border-red-600" : ""}
               />
+              {errors.email && (
+                <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
             <div className="space-y-1">
               <Label>โทรศัพท์</Label>
               <Input
                 placeholder="0xx-xxx-xxxx"
                 value={formData.phone || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, phone: e.target.value });
+                  if (errors.phone) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.phone;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.phone ? "border-2 border-red-600" : ""}
               />
+              {errors.phone && (
+                <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+              )}
             </div>
           </div>
         </section>
@@ -260,18 +366,36 @@ export default function Page(props: any) {
           <div className="font-medium">
             ส่วนที่ 2: ข้อมูลการฝึกปฏิบัติงานที่เกี่ยวกับแหล่งฝึกในปัจจุบัน
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div
+            className={`grid grid-cols-1 md:grid-cols-3 gap-2 p-3 rounded-md ${
+              errors.uniSelected
+                ? "border-2 border-red-600 bg-red-50"
+                : "border border-gray-200"
+            }`}
+          >
             {UNIVERSITIES.map((u) => (
               <label key={u} className="flex items-center gap-2 text-sm">
                 <Checkbox
                   checked={!!formData.uniSelected?.includes(u)}
-                  onCheckedChange={(c) => toggleUni(u, !!c)}
+                  onCheckedChange={(c) => {
+                    toggleUni(u, !!c);
+                    if (errors.uniSelected) {
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors.uniSelected;
+                        return newErrors;
+                      });
+                    }
+                  }}
                   className="h-4 w-4"
                 />
                 <span>{u}</span>
               </label>
             ))}
           </div>
+          {errors.uniSelected && (
+            <p className="text-red-600 text-sm mt-1">{errors.uniSelected}</p>
+          )}
           <div className="md:w-1/2 space-y-1">
             <Label>อื่น ๆ (ระบุ)</Label>
             <Input
@@ -295,11 +419,22 @@ export default function Page(props: any) {
             </div>
             <div className="md:col-span-4">
               <RadioGroup
-                className="space-y-2"
+                className={`space-y-2 p-3 rounded-md ${
+                  errors.accommodation
+                    ? "border-2 border-red-600 bg-red-50"
+                    : ""
+                }`}
                 value={formData.accommodation?.toString() || ""}
-                onValueChange={(v) =>
-                  setFormData({ ...formData, accommodation: parseInt(v) })
-                }
+                onValueChange={(v) => {
+                  setFormData({ ...formData, accommodation: parseInt(v) });
+                  if (errors.accommodation) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.accommodation;
+                      return newErrors;
+                    });
+                  }
+                }}
               >
                 <label className="flex items-center gap-2 text-sm">
                   <RadioGroupItem value="1" id="acc-1" />
@@ -314,6 +449,11 @@ export default function Page(props: any) {
                   <span>นิสิต/นักศึกษาจัดหาเอง</span>
                 </label>
               </RadioGroup>
+              {errors.accommodation && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.accommodation}
+                </p>
+              )}
             </div>
           </div>
 
@@ -324,11 +464,22 @@ export default function Page(props: any) {
             </div>
             <div className="md:col-span-4">
               <RadioGroup
-                className="grid grid-cols-3 gap-2"
+                className={`grid grid-cols-3 gap-2 p-3 rounded-md ${
+                  errors.safety_travel
+                    ? "border-2 border-red-600 bg-red-50"
+                    : ""
+                }`}
                 value={formData.safety_travel || ""}
-                onValueChange={(v) =>
-                  setFormData({ ...formData, safety_travel: v as any })
-                }
+                onValueChange={(v) => {
+                  setFormData({ ...formData, safety_travel: v as any });
+                  if (errors.safety_travel) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.safety_travel;
+                      return newErrors;
+                    });
+                  }
+                }}
               >
                 {["มาก", "ปานกลาง", "น้อย"].map((v) => (
                   <label key={v} className="flex items-center gap-2 text-sm">
@@ -337,6 +488,11 @@ export default function Page(props: any) {
                   </label>
                 ))}
               </RadioGroup>
+              {errors.safety_travel && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.safety_travel}
+                </p>
+              )}
               <div className="mt-2">
                 <Label className="text-xs text-muted-foreground">
                   หมายเหตุ
@@ -362,11 +518,20 @@ export default function Page(props: any) {
             </div>
             <div className="md:col-span-4">
               <RadioGroup
-                className="grid grid-cols-3 gap-2"
+                className={`grid grid-cols-3 gap-2 p-3 rounded-md ${
+                  errors.safety_env ? "border-2 border-red-600 bg-red-50" : ""
+                }`}
                 value={formData.safety_env || ""}
-                onValueChange={(v) =>
-                  setFormData({ ...formData, safety_env: v as any })
-                }
+                onValueChange={(v) => {
+                  setFormData({ ...formData, safety_env: v as any });
+                  if (errors.safety_env) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.safety_env;
+                      return newErrors;
+                    });
+                  }
+                }}
               >
                 {["มาก", "ปานกลาง", "น้อย"].map((v) => (
                   <label key={v} className="flex items-center gap-2 text-sm">
@@ -375,6 +540,9 @@ export default function Page(props: any) {
                   </label>
                 ))}
               </RadioGroup>
+              {errors.safety_env && (
+                <p className="text-red-600 text-sm mt-1">{errors.safety_env}</p>
+              )}
               <div className="mt-2">
                 <Label className="text-xs text-muted-foreground">
                   หมายเหตุ
@@ -405,11 +573,22 @@ export default function Page(props: any) {
               <Label className="min-w-36">คอมพิวเตอร์/อุปกรณ์เกี่ยวข้อง</Label>
               <label className="flex items-center gap-2">
                 <RadioGroup
-                  className="flex gap-4"
+                  className={`flex gap-4 p-2 rounded-md ${
+                    errors.support_has
+                      ? "border-2 border-red-600 bg-red-50"
+                      : ""
+                  }`}
                   value={formData.support_has || ""}
-                  onValueChange={(v) =>
-                    setFormData({ ...formData, support_has: v as any })
-                  }
+                  onValueChange={(v) => {
+                    setFormData({ ...formData, support_has: v as any });
+                    if (errors.support_has) {
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors.support_has;
+                        return newErrors;
+                      });
+                    }
+                  }}
                 >
                   <label className="flex items-center gap-2">
                     <RadioGroupItem value="ไม่มี" id="has0" />
@@ -450,6 +629,9 @@ export default function Page(props: any) {
                 </div>
               )}
             </div>
+            {errors.support_has && (
+              <p className="text-red-600 text-sm mt-1">{errors.support_has}</p>
+            )}
             <Textarea
               placeholder="ระบุรายละเอียดเพิ่มเติม..."
               value={formData.support_detail || ""}
@@ -554,10 +736,21 @@ export default function Page(props: any) {
             rows={5}
             placeholder="พิมพ์รายละเอียด…"
             value={formData.issues || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, issues: e.target.value })
-            }
+            onChange={(e) => {
+              setFormData({ ...formData, issues: e.target.value });
+              if (errors.issues) {
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.issues;
+                  return newErrors;
+                });
+              }
+            }}
+            className={errors.issues ? "border-2 border-red-600" : ""}
           />
+          {errors.issues && (
+            <p className="text-red-600 text-sm mt-1">{errors.issues}</p>
+          )}
 
           <div className="font-medium">
             ส่วนที่ 6: ความต้องการการสนับสนุนจากคณะเภสัชศาสตร์
@@ -566,10 +759,23 @@ export default function Page(props: any) {
             rows={5}
             placeholder="ระบุสิ่งที่ต้องการสนับสนุน…"
             value={formData.needsFromFaculty || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, needsFromFaculty: e.target.value })
-            }
+            onChange={(e) => {
+              setFormData({ ...formData, needsFromFaculty: e.target.value });
+              if (errors.needsFromFaculty) {
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.needsFromFaculty;
+                  return newErrors;
+                });
+              }
+            }}
+            className={errors.needsFromFaculty ? "border-2 border-red-600" : ""}
           />
+          {errors.needsFromFaculty && (
+            <p className="text-red-600 text-sm mt-1">
+              {errors.needsFromFaculty}
+            </p>
+          )}
         </section>
 
         {/* ===== ส่วนที่ 7 การประเมินแหล่งฝึก โดยอาจารย์นิเทศ ===== */}
@@ -577,13 +783,26 @@ export default function Page(props: any) {
           <div className="font-medium">
             ส่วนที่ 7: การประเมินแหล่งฝึก โดยอาจารย์นิเทศ
           </div>
-          <div className="space-y-2">
+          <div
+            className={`space-y-2 p-3 rounded-md ${
+              errors.siteEvaluation
+                ? "border-2 border-red-600 bg-red-50"
+                : "border border-gray-200"
+            }`}
+          >
             <label className="flex items-center gap-2 text-sm">
               <Checkbox
                 checked={!!formData.siteEvaluation_isSuitable}
-                onCheckedChange={(c) =>
-                  setFormData({ ...formData, siteEvaluation_isSuitable: !!c })
-                }
+                onCheckedChange={(c) => {
+                  setFormData({ ...formData, siteEvaluation_isSuitable: !!c });
+                  if (errors.siteEvaluation) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.siteEvaluation;
+                      return newErrors;
+                    });
+                  }
+                }}
               />
               <span>
                 เป็นแหล่งฝึกที่เหมาะสมสำหรับนิสิต/นักศึกษาสาขาเภสัชกรรมโรงพยาบาล
@@ -592,27 +811,42 @@ export default function Page(props: any) {
             <div className="flex items-start gap-2">
               <Checkbox
                 checked={!!formData.siteEvaluation_other}
-                onCheckedChange={(c) =>
-                  !c
-                    ? setFormData({ ...formData, siteEvaluation_other: "" })
-                    : setFormData({
-                        ...formData,
-                        siteEvaluation_other:
-                          formData.siteEvaluation_other || "",
-                      })
-                }
+                onCheckedChange={(c) => {
+                  if (!c) {
+                    setFormData({ ...formData, siteEvaluation_other: "" });
+                  } else {
+                    setFormData({
+                      ...formData,
+                      siteEvaluation_other: formData.siteEvaluation_other || "",
+                    });
+                  }
+                  if (errors.siteEvaluation) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.siteEvaluation;
+                      return newErrors;
+                    });
+                  }
+                }}
               />
               <div className="grow">
                 <Label className="text-sm">อื่น ๆ โปรดระบุ</Label>
                 <Input
                   placeholder="ระบุข้อความ"
                   value={formData.siteEvaluation_other || ""}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setFormData({
                       ...formData,
                       siteEvaluation_other: e.target.value,
-                    })
-                  }
+                    });
+                    if (errors.siteEvaluation) {
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors.siteEvaluation;
+                        return newErrors;
+                      });
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -631,6 +865,9 @@ export default function Page(props: any) {
               />
             </div>
           </div>
+          {errors.siteEvaluation && (
+            <p className="text-red-600 text-sm mt-1">{errors.siteEvaluation}</p>
+          )}
         </section>
       </form>
 

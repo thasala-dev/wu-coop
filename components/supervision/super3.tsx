@@ -217,6 +217,7 @@ export default function Page(props: any) {
   const router = useRouter();
 
   const [isSaving, setIsSaving] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState<FormState>(
     data
       ? data
@@ -278,9 +279,99 @@ export default function Page(props: any) {
     return Array.from(setArr);
   };
 
+  const handleCheckError = (field: string, value: any) => {
+    if (!value) {
+      let errorMessage = "กรุณากรอกข้อมูล";
+      switch (field) {
+        case "siteName":
+          errorMessage = "กรุณากรอกชื่อแหล่งฝึก";
+          break;
+        case "branch":
+          errorMessage = "กรุณากรอกสาขา";
+          break;
+        case "address":
+          errorMessage = "กรุณากรอกที่อยู่";
+          break;
+        case "province":
+          errorMessage = "กรุณากรอกจังหวัด";
+          break;
+        case "phone":
+          errorMessage = "กรุณากรอกเบอร์โทรศัพท์";
+          break;
+        case "email":
+          errorMessage = "กรุณากรอกอีเมล";
+          break;
+        case "advisorName":
+          errorMessage = "กรุณากรอกชื่อผู้รับการชี้แจง";
+          break;
+        case "advisors":
+          errorMessage = "กรุณากรอกชื่ออาจารย์นิเทศอย่างน้อย 1 คน";
+          break;
+        case "uniCounts.total":
+          errorMessage = "กรุณากรอกจำนวนนักศึกษารวม";
+          break;
+        case "safetyStayTravel":
+          errorMessage = "กรุณาเลือกระดับความปลอดภัยของที่พัก/การเดินทาง";
+          break;
+        case "safetyEnv":
+          errorMessage = "กรุณาเลือกระดับความปลอดภัยของสภาพแวดล้อม";
+          break;
+        case "activitiesDone.overallComment":
+          errorMessage = "กรุณากรอกความเห็นโดยรวมของกิจกรรมที่ปฏิบัติ";
+          break;
+        case "consentSurvey":
+          errorMessage = "กรุณาเลือกความยินยอมในการสำรวจข้อมูลออนไลน์";
+          break;
+        case "consentClientData":
+          errorMessage = "กรุณาเลือกความยินยอมในการส่งต่อข้อมูลผู้รับบริการ";
+          break;
+        case "siteEvaluation.note":
+          errorMessage = "กรุณากรอกการประเมินแหล่งฝึกโดยอาจารย์นิเทศ";
+          break;
+      }
+      setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+      return false;
+    } else {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+      return true;
+    }
+  };
+
   const submit = async () => {
-    if (!form.siteName) {
-      toast({ title: "กรอกชื่อแหล่งฝึก", variant: "destructive" });
+    const validations = [
+      handleCheckError("siteName", form.siteName),
+      handleCheckError("branch", form.branch),
+      handleCheckError("address", form.address),
+      handleCheckError("province", form.province),
+      handleCheckError("phone", form.phone),
+      handleCheckError("email", form.email),
+      handleCheckError(
+        "advisors",
+        form.advisors?.some((a) => a?.trim())
+      ),
+      handleCheckError("uniCounts.total", form.uniCounts?.total),
+      handleCheckError("safetyStayTravel", form.safetyStayTravel),
+      handleCheckError("safetyEnv", form.safetyEnv),
+      handleCheckError(
+        "activitiesDone.overallComment",
+        form.activitiesDone?.overallComment
+      ),
+      handleCheckError("consentSurvey", form.consentSurvey),
+      handleCheckError("consentClientData", form.consentClientData),
+      handleCheckError("siteEvaluation.note", form.siteEvaluation?.note),
+    ];
+    const isFormValid = validations.every(Boolean);
+
+    if (!isFormValid) {
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณากรอกข้อมูลให้ครบถ้วนก่อนส่งรายงาน",
+        variant: "destructive",
+      });
       return;
     }
     setIsSaving(true);
@@ -318,26 +409,65 @@ export default function Page(props: any) {
         <section className="space-y-3">
           <div className="font-medium">1) ข้อมูลทั่วไป</div>
           <div className="grid md:grid-cols-2 gap-3">
-            <div>
+            <div className="space-y-1">
               <Label>ชื่อสถานปฏิบัติงาน</Label>
               <Input
                 value={form.siteName || ""}
-                onChange={(e) => set("siteName", e.target.value)}
+                onChange={(e) => {
+                  set("siteName", e.target.value);
+                  if (errors.siteName) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.siteName;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.siteName ? "border-2 border-red-600" : ""}
               />
+              {errors.siteName && (
+                <p className="text-red-600 text-sm mt-1">{errors.siteName}</p>
+              )}
             </div>
-            <div>
+            <div className="space-y-1">
               <Label>สาขา</Label>
               <Input
                 value={form.branch || ""}
-                onChange={(e) => set("branch", e.target.value)}
+                onChange={(e) => {
+                  set("branch", e.target.value);
+                  if (errors.branch) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.branch;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.branch ? "border-2 border-red-600" : ""}
               />
+              {errors.branch && (
+                <p className="text-red-600 text-sm mt-1">{errors.branch}</p>
+              )}
             </div>
-            <div className="md:col-span-2">
-              <Label>ที่อยู่</Label>
+            <div className="md:col-span-2 space-y-1">
+              <Label>ที่อยู่ *</Label>
               <Input
                 value={form.address || ""}
-                onChange={(e) => set("address", e.target.value)}
+                onChange={(e) => {
+                  set("address", e.target.value);
+                  if (errors.address) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.address;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.address ? "border-2 border-red-600" : ""}
               />
+              {errors.address && (
+                <p className="text-red-600 text-sm mt-1">{errors.address}</p>
+              )}
             </div>
             <Input
               placeholder="ตำบล/แขวง"
@@ -349,26 +479,71 @@ export default function Page(props: any) {
               value={form.amphoe || ""}
               onChange={(e) => set("amphoe", e.target.value)}
             />
-            <Input
-              placeholder="จังหวัด"
-              value={form.province || ""}
-              onChange={(e) => set("province", e.target.value)}
-            />
+            <div className="space-y-1">
+              <Input
+                placeholder="จังหวัด"
+                value={form.province || ""}
+                onChange={(e) => {
+                  set("province", e.target.value);
+                  if (errors.province) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.province;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.province ? "border-2 border-red-600" : ""}
+              />
+              {errors.province && (
+                <p className="text-red-600 text-sm mt-1">{errors.province}</p>
+              )}
+            </div>
             <Input
               placeholder="รหัสไปรษณีย์"
               value={form.postcode || ""}
               onChange={(e) => set("postcode", e.target.value)}
             />
-            <Input
-              placeholder="โทรศัพท์"
-              value={form.phone || ""}
-              onChange={(e) => set("phone", e.target.value)}
-            />
-            <Input
-              placeholder="E-mail"
-              value={form.email || ""}
-              onChange={(e) => set("email", e.target.value)}
-            />
+            <div className="space-y-1">
+              <Input
+                placeholder="โทรศัพท์ *"
+                value={form.phone || ""}
+                onChange={(e) => {
+                  set("phone", e.target.value);
+                  if (errors.phone) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.phone;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.phone ? "border-2 border-red-600" : ""}
+              />
+              {errors.phone && (
+                <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+              )}
+            </div>
+            <div className="space-y-1">
+              <Input
+                placeholder="E-mail *"
+                value={form.email || ""}
+                onChange={(e) => {
+                  set("email", e.target.value);
+                  if (errors.email) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.email;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.email ? "border-2 border-red-600" : ""}
+              />
+              {errors.email && (
+                <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -446,10 +621,21 @@ export default function Page(props: any) {
                   const a = [...(form.advisors || [])];
                   a[i] = e.target.value;
                   set("advisors", a);
+                  if (errors.advisors) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.advisors;
+                      return newErrors;
+                    });
+                  }
                 }}
+                className={errors.advisors ? "border-2 border-red-600" : ""}
               />
             ))}
           </div>
+          {errors.advisors && (
+            <p className="text-red-600 text-sm mt-1">{errors.advisors}</p>
+          )}
         </section>
 
         {/* 3. ข้อมูลการฝึกที่เกี่ยวกับแหล่งฝึกในปัจจุบัน */}
@@ -479,16 +665,33 @@ export default function Page(props: any) {
               value={form.universitiesOther || ""}
               onChange={(e) => set("universitiesOther", e.target.value)}
             />
-            <Input
-              placeholder="จำนวนรวม (คน)"
-              value={form.uniCounts?.total || ""}
-              onChange={(e) =>
-                set("uniCounts", {
-                  ...(form.uniCounts || {}),
-                  total: e.target.value,
-                })
-              }
-            />
+            <div className="space-y-1">
+              <Input
+                placeholder="จำนวนรวม (คน) *"
+                value={form.uniCounts?.total || ""}
+                onChange={(e) => {
+                  set("uniCounts", {
+                    ...(form.uniCounts || {}),
+                    total: e.target.value,
+                  });
+                  if (errors["uniCounts.total"]) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors["uniCounts.total"];
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={
+                  errors["uniCounts.total"] ? "border-2 border-red-600" : ""
+                }
+              />
+              {errors["uniCounts.total"] && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors["uniCounts.total"]}
+                </p>
+              )}
+            </div>
             <div className="grid grid-cols-2 gap-2">
               <Input
                 placeholder="ชาย"
@@ -568,20 +771,39 @@ export default function Page(props: any) {
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-3">
-            <div>
-              <Label>2) ความปลอดภัยของที่พักและการเดินทาง</Label>
+            <div className="space-y-1">
+              <Label>2) ความปลอดภัยของที่พักและการเดินทาง *</Label>
               <RadioGroup
                 className="flex gap-6 mt-1"
                 value={form.safetyStayTravel || ""}
-                onValueChange={(v) => set("safetyStayTravel", v as Level)}
+                onValueChange={(v) => {
+                  set("safetyStayTravel", v as Level);
+                  if (errors.safetyStayTravel) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.safetyStayTravel;
+                      return newErrors;
+                    });
+                  }
+                }}
               >
                 {["มาก", "ปานกลาง", "น้อย"].map((v) => (
                   <label key={v} className="flex items-center gap-2 text-sm">
-                    <RadioGroupItem value={v} />
+                    <RadioGroupItem
+                      value={v}
+                      className={
+                        errors.safetyStayTravel ? "border-red-600" : ""
+                      }
+                    />
                     <span>{v}</span>
                   </label>
                 ))}
               </RadioGroup>
+              {errors.safetyStayTravel && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.safetyStayTravel}
+                </p>
+              )}
               <Input
                 className="mt-2"
                 placeholder="หมายเหตุ"
@@ -589,20 +811,35 @@ export default function Page(props: any) {
                 onChange={(e) => set("safetyStayTravelNote", e.target.value)}
               />
             </div>
-            <div>
-              <Label>3) ความปลอดภัยของสิ่งแวดล้อมโดยรอบร้าน</Label>
+            <div className="space-y-1">
+              <Label>3) ความปลอดภัยของสิ่งแวดล้อมโดยรอบร้าน *</Label>
               <RadioGroup
                 className="flex gap-6 mt-1"
                 value={form.safetyEnv || ""}
-                onValueChange={(v) => set("safetyEnv", v as Level)}
+                onValueChange={(v) => {
+                  set("safetyEnv", v as Level);
+                  if (errors.safetyEnv) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.safetyEnv;
+                      return newErrors;
+                    });
+                  }
+                }}
               >
                 {["มาก", "ปานกลาง", "น้อย"].map((v) => (
                   <label key={v} className="flex items-center gap-2 text-sm">
-                    <RadioGroupItem value={v} />
+                    <RadioGroupItem
+                      value={v}
+                      className={errors.safetyEnv ? "border-red-600" : ""}
+                    />
                     <span>{v}</span>
                   </label>
                 ))}
               </RadioGroup>
+              {errors.safetyEnv && (
+                <p className="text-red-600 text-sm mt-1">{errors.safetyEnv}</p>
+              )}
               <Input
                 className="mt-2"
                 placeholder="หมายเหตุ"
@@ -696,20 +933,38 @@ export default function Page(props: any) {
               })
             }
           />
-          <div>
+          <div className="space-y-1">
             <Label>
-              5.2 ความคิดเห็นและคุณภาพของการศึกษาฝึกงานในแหล่งฝึก (โดยรวม)
+              5.2 ความคิดเห็นและคุณภาพของการศึกษาฝึกงานในแหล่งฝึก (โดยรวม) *
             </Label>
             <Textarea
               rows={4}
+              className={
+                errors["activitiesDone.overallComment"]
+                  ? "border-2 border-red-600"
+                  : ""
+              }
+              placeholder="ระบุความคิดเห็นโดยรวมเกี่ยวกับคุณภาพการฝึกงาน..."
               value={form.activitiesDone?.overallComment || ""}
-              onChange={(e) =>
+              onChange={(e) => {
                 set("activitiesDone", {
                   ...(form.activitiesDone || {}),
                   overallComment: e.target.value,
-                })
-              }
+                });
+                if (errors["activitiesDone.overallComment"]) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors["activitiesDone.overallComment"];
+                    return newErrors;
+                  });
+                }
+              }}
             />
+            {errors["activitiesDone.overallComment"] && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors["activitiesDone.overallComment"]}
+              </p>
+            )}
           </div>
         </section>
 
@@ -1219,26 +1474,43 @@ export default function Page(props: any) {
 
         {/* 10–11) ยินยอม */}
         <section className="grid md:grid-cols-2 gap-3">
-          <div className="rounded-md border p-3">
+          <div className="rounded-md border p-3 space-y-1">
             <div className="font-medium space-y-1">
               <div>
                 10)
                 ถ้ามีการสำรวจการฝึกงานโดยการใช้โปรแกรมการสำรวจการฝึกงานผ่านทางออนไลน์
               </div>
-              <div>ท่านยินดีจะให้ข้อมูลผ่านทางระบบหรือไม่</div>
+              <div>ท่านยินดีจะให้ข้อมูลผ่านทางระบบหรือไม่ *</div>
             </div>
             <RadioGroup
               value={form.consentSurvey || ""}
-              onValueChange={(v) => set("consentSurvey", v as YesNo)}
+              onValueChange={(v) => {
+                set("consentSurvey", v as YesNo);
+                if (errors.consentSurvey) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.consentSurvey;
+                    return newErrors;
+                  });
+                }
+              }}
               className="flex gap-6 mt-2"
             >
               {["ยินดี", "ไม่ยินดี"].map((v) => (
                 <label key={v} className="flex items-center gap-2">
-                  <RadioGroupItem value={v} />
+                  <RadioGroupItem
+                    value={v}
+                    className={errors.consentSurvey ? "border-red-600" : ""}
+                  />
                   <span className="text-sm">{v}</span>
                 </label>
               ))}
             </RadioGroup>
+            {errors.consentSurvey && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors.consentSurvey}
+              </p>
+            )}
             <Input
               className="mt-2"
               placeholder="เหตุผล"
@@ -1246,7 +1518,7 @@ export default function Page(props: any) {
               onChange={(e) => set("consentSurveyReason", e.target.value)}
             />
           </div>
-          <div className="rounded-md border p-3">
+          <div className="rounded-md border p-3 space-y-1">
             <div className="font-medium space-y-1">
               <div>
                 11) ถ้ามีโปรแกรมลงข้อมูลผู้รับบริการ ได้แก่
@@ -1255,20 +1527,38 @@ export default function Page(props: any) {
               </div>
               <div>
                 ท่านมีความต้องการใช้โปรแกรมดังกล่าวเพื่อการลงข้อมูลผู้ป่วยหรือไม่
+                *
               </div>
             </div>
             <RadioGroup
               value={form.consentClientData || ""}
-              onValueChange={(v) => set("consentClientData", v as YesNo)}
+              onValueChange={(v) => {
+                set("consentClientData", v as YesNo);
+                if (errors.consentClientData) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.consentClientData;
+                    return newErrors;
+                  });
+                }
+              }}
               className="flex gap-6 mt-2"
             >
               {["ยินดี", "ไม่ยินดี"].map((v) => (
                 <label key={v} className="flex items-center gap-2">
-                  <RadioGroupItem value={v} />
+                  <RadioGroupItem
+                    value={v}
+                    className={errors.consentClientData ? "border-red-600" : ""}
+                  />
                   <span className="text-sm">{v}</span>
                 </label>
               ))}
             </RadioGroup>
+            {errors.consentClientData && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors.consentClientData}
+              </p>
+            )}
             <Input
               className="mt-2"
               placeholder="เหตุผล"
@@ -1331,18 +1621,34 @@ export default function Page(props: any) {
               }
             />
           </div>
-          <div>
-            <Label>หมายเหตุ</Label>
+          <div className="space-y-1">
+            <Label>หมายเหตุ *</Label>
             <Textarea
               rows={3}
+              className={
+                errors["siteEvaluation.note"] ? "border-2 border-red-600" : ""
+              }
+              placeholder="ระบุหมายเหตุการประเมินแหล่งฝึก..."
               value={form.siteEvaluation?.note || ""}
-              onChange={(e) =>
+              onChange={(e) => {
                 set("siteEvaluation", {
                   ...(form.siteEvaluation || {}),
                   note: e.target.value,
-                })
-              }
+                });
+                if (errors["siteEvaluation.note"]) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors["siteEvaluation.note"];
+                    return newErrors;
+                  });
+                }
+              }}
             />
+            {errors["siteEvaluation.note"] && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors["siteEvaluation.note"]}
+              </p>
+            )}
           </div>
         </section>
       </div>

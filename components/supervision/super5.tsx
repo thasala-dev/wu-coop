@@ -24,7 +24,49 @@ export default function Page(props: any) {
 
   const handleCheckError = (field: string, value: any) => {
     if (!value) {
-      setErrors((prev) => ({ ...prev, [field]: "กรุณากรอกข้อมูล" }));
+      let errorMessage = "กรุณากรอกข้อมูล";
+      switch (field) {
+        case "address":
+          errorMessage = "กรุณากรอกที่อยู่เลขที่";
+          break;
+        case "street":
+          errorMessage = "กรุณากรอกชื่อถนน";
+          break;
+        case "subdistrict":
+          errorMessage = "กรุณากรอกชื่อตำบล/แขวง";
+          break;
+        case "district":
+          errorMessage = "กรุณากรอกชื่ออำเภอ/เขต";
+          break;
+        case "province":
+          errorMessage = "กรุณากรอกชื่อจังหวัด";
+          break;
+        case "pharmacist":
+          errorMessage = "กรุณากรอกชื่อเภสัชกรผู้รับผิดชอบ";
+          break;
+        case "email":
+          errorMessage = "กรุณากรอก E-mail";
+          break;
+        case "phone":
+          errorMessage = "กรุณากรอกหมายเลขโทรศัพท์";
+          break;
+        case "stu_round":
+          errorMessage = "กรุณากรอกผลัดที่";
+          break;
+        case "stu_uni":
+          errorMessage = "กรุณากรอกชื่อมหาวิทยาลัย";
+          break;
+        case "stu_total":
+          errorMessage = "กรุณากรอกจำนวนนิสิต/นักศึกษา";
+          break;
+        case "product":
+          errorMessage = "กรุณาเลือกประเภทการฝึกปฏิบัติอย่างน้อย 1 รายการ";
+          break;
+        case "accommodation":
+          errorMessage = "กรุณาเลือกประเภทที่พัก";
+          break;
+      }
+      setErrors((prev) => ({ ...prev, [field]: errorMessage }));
       return false;
     } else {
       setErrors((prev) => {
@@ -36,7 +78,12 @@ export default function Page(props: any) {
     }
   };
   const handleSubmitReport = async () => {
+    // ตรวจสอบว่ามีการเลือกประเภทการฝึกปฏิบัติอย่างน้อย 1 รายการ
+    const hasProduct =
+      formData.product && Object.values(formData.product).some((v: any) => v);
+
     const validations = [
+      // ข้อมูลติดต่อพื้นฐาน
       handleCheckError("address", formData.address),
       handleCheckError("street", formData.street),
       handleCheckError("subdistrict", formData.subdistrict),
@@ -45,6 +92,17 @@ export default function Page(props: any) {
       handleCheckError("pharmacist", formData.pharmacist),
       handleCheckError("email", formData.email),
       handleCheckError("phone", formData.phone),
+
+      // ประเภทการฝึกปฏิบัติ
+      handleCheckError("product", hasProduct),
+
+      // ที่พัก
+      handleCheckError("accommodation", formData.accommodation),
+
+      // ข้อมูลจากนิสิต/นักศึกษา
+      handleCheckError("stu_round", formData.stu_round),
+      handleCheckError("stu_uni", formData.stu_uni),
+      handleCheckError("stu_total", formData.stu_total),
     ];
     const isFormValid = validations.every(Boolean);
     if (!isFormValid) {
@@ -127,12 +185,22 @@ export default function Page(props: any) {
             <div>
               <Input
                 placeholder="กรุณากรอกที่อยู่เลขที่"
-                onChange={(e) =>
-                  setFormData({ ...formData, address: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, address: e.target.value });
+                  if (errors.address) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.address;
+                      return newErrors;
+                    });
+                  }
+                }}
                 value={formData.address || ""}
-                className={errors.address && "border-2 border-red-600"}
+                className={errors.address ? "border-2 border-red-600" : ""}
               />
+              {errors.address && (
+                <p className="text-red-600 text-sm mt-1">{errors.address}</p>
+              )}
             </div>
           </div>
           <div className="space-y-1">
@@ -140,12 +208,22 @@ export default function Page(props: any) {
             <div>
               <Input
                 placeholder="กรุณากรอกชื่อถนน"
-                onChange={(e) =>
-                  setFormData({ ...formData, street: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, street: e.target.value });
+                  if (errors.street) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.street;
+                      return newErrors;
+                    });
+                  }
+                }}
                 value={formData.street || ""}
-                className={errors.street && "border-2 border-red-600"}
+                className={errors.street ? "border-2 border-red-600" : ""}
               />
+              {errors.street && (
+                <p className="text-red-600 text-sm mt-1">{errors.street}</p>
+              )}
             </div>
           </div>
           <div className="col-span-2 space-y-1">
@@ -153,12 +231,24 @@ export default function Page(props: any) {
             <div>
               <Input
                 placeholder="กรุณากรอกชื่อตำบล/แขวง"
-                onChange={(e) =>
-                  setFormData({ ...formData, subdistrict: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, subdistrict: e.target.value });
+                  if (errors.subdistrict) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.subdistrict;
+                      return newErrors;
+                    });
+                  }
+                }}
                 value={formData.subdistrict || ""}
-                className={errors.subdistrict && "border-2 border-red-600"}
+                className={errors.subdistrict ? "border-2 border-red-600" : ""}
               />
+              {errors.subdistrict && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.subdistrict}
+                </p>
+              )}
             </div>
           </div>
           <div className="col-span-2 space-y-1">
@@ -166,12 +256,22 @@ export default function Page(props: any) {
             <div>
               <Input
                 placeholder="กรุณากรอกชื่ออำเภอ/เขต"
-                onChange={(e) =>
-                  setFormData({ ...formData, district: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, district: e.target.value });
+                  if (errors.district) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.district;
+                      return newErrors;
+                    });
+                  }
+                }}
                 value={formData.district || ""}
-                className={errors.district && "border-2 border-red-600"}
+                className={errors.district ? "border-2 border-red-600" : ""}
               />
+              {errors.district && (
+                <p className="text-red-600 text-sm mt-1">{errors.district}</p>
+              )}
             </div>
           </div>
           <div className="col-span-2 space-y-1">
@@ -179,12 +279,22 @@ export default function Page(props: any) {
             <div>
               <Input
                 placeholder="กรุณากรอกชื่อจังหวัด"
-                onChange={(e) =>
-                  setFormData({ ...formData, province: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, province: e.target.value });
+                  if (errors.province) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.province;
+                      return newErrors;
+                    });
+                  }
+                }}
                 value={formData.province || ""}
-                className={errors.province && "border-2 border-red-600"}
+                className={errors.province ? "border-2 border-red-600" : ""}
               />
+              {errors.province && (
+                <p className="text-red-600 text-sm mt-1">{errors.province}</p>
+              )}
             </div>
           </div>
 
@@ -193,12 +303,22 @@ export default function Page(props: any) {
             <div>
               <Input
                 placeholder="กรุณากรอกชื่อเภสัชกร"
-                onChange={(e) =>
-                  setFormData({ ...formData, pharmacist: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, pharmacist: e.target.value });
+                  if (errors.pharmacist) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.pharmacist;
+                      return newErrors;
+                    });
+                  }
+                }}
                 value={formData.pharmacist || ""}
-                className={errors.pharmacist && "border-2 border-red-600"}
+                className={errors.pharmacist ? "border-2 border-red-600" : ""}
               />
+              {errors.pharmacist && (
+                <p className="text-red-600 text-sm mt-1">{errors.pharmacist}</p>
+              )}
             </div>
           </div>
 
@@ -207,12 +327,22 @@ export default function Page(props: any) {
             <div>
               <Input
                 placeholder="กรุณากรอก E-mail"
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, email: e.target.value });
+                  if (errors.email) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.email;
+                      return newErrors;
+                    });
+                  }
+                }}
                 value={formData.email || ""}
-                className={errors.email && "border-2 border-red-600"}
+                className={errors.email ? "border-2 border-red-600" : ""}
               />
+              {errors.email && (
+                <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
           </div>
 
@@ -221,12 +351,22 @@ export default function Page(props: any) {
             <div>
               <Input
                 placeholder="กรุณากรอกหมายเลขโทรศัพท์"
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, phone: e.target.value });
+                  if (errors.phone) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.phone;
+                      return newErrors;
+                    });
+                  }
+                }}
                 value={formData.phone || ""}
-                className={errors.phone && "border-2 border-red-600"}
+                className={errors.phone ? "border-2 border-red-600" : ""}
               />
+              {errors.phone && (
+                <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+              )}
             </div>
           </div>
         </div>
@@ -329,6 +469,13 @@ export default function Page(props: any) {
                                 [key]: checked ? key : "",
                               },
                             });
+                            if (errors.product) {
+                              setErrors((prev) => {
+                                const newErrors = { ...prev };
+                                delete newErrors.product;
+                                return newErrors;
+                              });
+                            }
                           }}
                           className="h-4 w-4"
                         />
@@ -338,6 +485,9 @@ export default function Page(props: any) {
                 ))}
               </tbody>
             </table>
+            {errors.product && (
+              <p className="text-red-600 text-sm mt-1 p-2">{errors.product}</p>
+            )}
           </div>
         </div>
 
@@ -360,12 +510,24 @@ export default function Page(props: any) {
                       ...formData,
                       accommodation: checked ? index + 1 : 0,
                     });
+                    if (errors.accommodation) {
+                      setErrors((prev) => {
+                        const newErrors = { ...prev };
+                        delete newErrors.accommodation;
+                        return newErrors;
+                      });
+                    }
                   }}
                   className="h-4 w-4"
                 />
                 <span>{acc}</span>
               </div>
             ))}
+            {errors.accommodation && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors.accommodation}
+              </p>
+            )}
           </div>
         </div>
         {/* ===== 1.3 (ต่อ) สิ่งอำนวยความสะดวก/ความปลอดภัย ===== */}
@@ -549,27 +711,66 @@ export default function Page(props: any) {
         <div className="space-y-2 pt-6">
           <div className="font-medium">ส่วนที่ 2: ข้อมูลจากนิสิต/นักศึกษา</div>
           <div className="grid md:grid-cols-3 gap-2">
-            <Input
-              placeholder="ผลัดที่ ..."
-              value={formData.stu_round || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, stu_round: e.target.value })
-              }
-            />
-            <Input
-              placeholder="มหาวิทยาลัย ..."
-              value={formData.stu_uni || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, stu_uni: e.target.value })
-              }
-            />
-            <Input
-              placeholder="รวมจำนวนนิสิต/นักศึกษา (คน)"
-              value={formData.stu_total || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, stu_total: e.target.value })
-              }
-            />
+            <div className="space-y-1">
+              <Input
+                placeholder="ผลัดที่ ..."
+                value={formData.stu_round || ""}
+                onChange={(e) => {
+                  setFormData({ ...formData, stu_round: e.target.value });
+                  if (errors.stu_round) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.stu_round;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.stu_round ? "border-2 border-red-600" : ""}
+              />
+              {errors.stu_round && (
+                <p className="text-red-600 text-sm mt-1">{errors.stu_round}</p>
+              )}
+            </div>
+            <div className="space-y-1">
+              <Input
+                placeholder="มหาวิทยาลัย ..."
+                value={formData.stu_uni || ""}
+                onChange={(e) => {
+                  setFormData({ ...formData, stu_uni: e.target.value });
+                  if (errors.stu_uni) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.stu_uni;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.stu_uni ? "border-2 border-red-600" : ""}
+              />
+              {errors.stu_uni && (
+                <p className="text-red-600 text-sm mt-1">{errors.stu_uni}</p>
+              )}
+            </div>
+            <div className="space-y-1">
+              <Input
+                placeholder="รวมจำนวนนิสิต/นักศึกษา (คน)"
+                value={formData.stu_total || ""}
+                onChange={(e) => {
+                  setFormData({ ...formData, stu_total: e.target.value });
+                  if (errors.stu_total) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.stu_total;
+                      return newErrors;
+                    });
+                  }
+                }}
+                className={errors.stu_total ? "border-2 border-red-600" : ""}
+              />
+              {errors.stu_total && (
+                <p className="text-red-600 text-sm mt-1">{errors.stu_total}</p>
+              )}
+            </div>
           </div>
 
           {/* 2.1 ตารางให้คะแนน */}

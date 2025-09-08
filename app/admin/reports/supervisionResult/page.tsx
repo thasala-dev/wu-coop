@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { se, th } from "date-fns/locale";
 import * as XLSX from "xlsx";
-import { evalu } from "@/lib/evaluations_report";
+import { supervi } from "@/lib/supervisions_report";
 
 const currentYear = new Date().getFullYear() + 543;
 const years = Array.from({ length: currentYear - 2567 + 1 }, (_, i) =>
@@ -36,10 +36,10 @@ export default function CompaniesPage() {
   const [isResult, setIsResult] = useState(false);
   const [data, setData] = useState<any>([]);
   const [calendar, setCalendar] = useState<any>([]);
-  const [evalations, setEvaluations] = useState<any>([]);
+  const [supervisions, setSupervisions] = useState<any>([]);
   const [yearSelected, setYearSelected] = useState<any>(currentYear);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
-  const [evaluationSelected, setEvaluationSelected] = useState<any>(null);
+  const [evaluationSelected, setSupervisionselected] = useState<any>(null);
 
   async function fetchCalendar() {
     try {
@@ -53,21 +53,21 @@ export default function CompaniesPage() {
     }
   }
 
-  async function fetchEvaluation() {
+  async function fetchSupervisionTypes() {
     try {
-      const response = await fetch("/api/evaluations_form");
+      const response = await fetch("/api/supervision-type");
       const res = await response.json();
       if (res.success) {
-        setEvaluations(res.data || []);
+        setSupervisions(res.data || []);
       }
     } catch (error) {
-      console.error("Error fetching calendar:", error);
+      console.error("Error fetching supervision types:", error);
     }
   }
 
   useEffect(() => {
     fetchCalendar();
-    fetchEvaluation();
+    fetchSupervisionTypes();
   }, []);
 
   async function handleProcess() {
@@ -108,10 +108,10 @@ export default function CompaniesPage() {
 
   async function fetchData() {
     setLoading(true);
-    metaData = evalu[evaluationSelected as keyof typeof evalu] || [];
+    metaData = supervi[evaluationSelected as keyof typeof supervi] || [];
 
     const response = await fetch(
-      `/api/report/evaluationsResult/${calendarSelected}/${evaluationSelected}`,
+      `/api/report/supervisionResult/${calendarSelected}/${evaluationSelected}`,
       {
         method: "GET",
         headers: {
@@ -152,7 +152,7 @@ export default function CompaniesPage() {
     const selectedCalendar = calendar.find(
       (item: any) => item.id === calendarSelected
     );
-    const selectedEvaluation = evalations.find(
+    const selectedEvaluation = supervisions.find(
       (item: any) => item.id === evaluationSelected
     );
 
@@ -162,14 +162,13 @@ export default function CompaniesPage() {
       "รหัสนักศึกษา",
       "ชื่อนักศึกษา",
       "แหล่งฝึกงาน",
-      "อาจารย์ประจำแหล่งฝึก",
-      "วันที่ประเมิน",
-      "แบบประเมิน",
+      "อาจารย์นิเทศ",
+      "วันที่นิเทศ",
       ...metaData.map((meta: any) => meta.label),
     ];
 
     const excelData = [
-      ["รายงานผลการประเมินนักศึกษา โดยอาจารย์ประจำแหล่งฝึก"],
+      ["รายงานผลการนิเทศนักศึกษา"],
       [
         `รอบการฝึก: ${selectedCalendar?.name} ปีการศึกษา: ${selectedCalendar?.semester}/${selectedCalendar?.year}`,
       ],
@@ -189,8 +188,6 @@ export default function CompaniesPage() {
           }
         )}`,
       ],
-      [`กลุ่มประเมิน: ${selectedEvaluation?.group} `],
-      [`ชุดการประเมิน: ${selectedEvaluation?.short_name}`],
       [`ชื่อการประเมิน: ${selectedEvaluation?.name}`],
       [],
       headerColumns, // ใช้ header ที่รวม metaData แล้ว
@@ -199,18 +196,41 @@ export default function CompaniesPage() {
         item.student_id,
         item.fullname,
         item.company_name,
-        item.evaluator || "-",
-        item.evaluation_date
-          ? new Date(item.evaluation_date).toLocaleDateString("th-TH", {
+        item.advisor_name || "-",
+        item.scheduled_date
+          ? new Date(item.scheduled_date).toLocaleDateString("th-TH", {
               year: "numeric",
               month: "short",
               day: "numeric",
             })
           : "-",
-        item.evaluation_name,
-        ...metaData.map((meta: any) =>
-          item.result ? item.result[meta.value] : "-"
-        ), // เพิ่มข้อมูล metaData
+        ...metaData.map((meta: any) => {
+          if (!item.result) return "-";
+
+          // ถ้า value มี . แสดงว่าเป็น nested object
+          if (meta.value.includes(".")) {
+            const keys = meta.value.split(".");
+            let value = item.result;
+
+            // เดินทางลึกลงไปใน object
+            for (const key of keys) {
+              if (value && typeof value === "object") {
+                value = value[key];
+              } else {
+                value = undefined;
+                break;
+              }
+            }
+
+            return value !== undefined && value !== null ? value : "-";
+          } else {
+            // ถ้าไม่มี . ให้เข้าถึงโดยตรง
+            return item.result[meta.value] !== undefined &&
+              item.result[meta.value] !== null
+              ? item.result[meta.value]
+              : "-";
+          }
+        }), // เพิ่มข้อมูล metaData
       ]),
     ];
 
@@ -224,9 +244,8 @@ export default function CompaniesPage() {
       { wch: 15 }, // รหัสนักศึกษา
       { wch: 30 }, // ชื่อนักศึกษา
       { wch: 40 }, // แหล่งฝึกงาน
-      { wch: 25 }, // อาจารย์ประจำแหล่งฝึก
-      { wch: 15 }, // วันที่ประเมิน
-      { wch: 15 }, // แบบประเมิน
+      { wch: 25 }, // อาจารย์นิเทศ
+      { wch: 15 }, // วันที่นิเทศ
       ...metaData.map(() => ({ wch: 15 })), // คอลัมน์ metaData
     ];
     ws["!cols"] = colWidths;
@@ -264,8 +283,8 @@ export default function CompaniesPage() {
     XLSX.utils.book_append_sheet(wb, ws, "รายงานผลการประเมิน");
 
     // Generate filename
-    const filename = `รายงานผลการประเมิน_${selectedCalendar?.name}_${
-      selectedEvaluation?.short_name
+    const filename = `รายงานผลการนิเทศ_${selectedCalendar?.name}_${
+      selectedEvaluation?.name
     }_${new Date().toLocaleDateString("th-TH").replace(/\//g, "-")}.xlsx`;
 
     // Save the file
@@ -368,7 +387,7 @@ export default function CompaniesPage() {
                   <Select
                     value={evaluationSelected}
                     onValueChange={(value) => {
-                      setEvaluationSelected(value || null);
+                      setSupervisionselected(value || null);
                       setIsResult(false);
                     }}
                   >
@@ -376,7 +395,7 @@ export default function CompaniesPage() {
                       <SelectValue placeholder="เลือกชุดการประเมิน" />
                     </SelectTrigger>
                     <SelectContent className="w-full">
-                      {evalations.map((item: any, index: number) => (
+                      {supervisions.map((item: any, index: number) => (
                         <SelectItem key={index} value={item.id}>
                           <div className="flex flex-col items-start">
                             <span
@@ -385,11 +404,6 @@ export default function CompaniesPage() {
                             >
                               {item.name}
                             </span>
-                            <div className="flex space-x-1 mt-1">
-                              <span className="text-xs text-gray-500">
-                                {item.short_name} • {item.group}
-                              </span>
-                            </div>
                           </div>
                         </SelectItem>
                       ))}
@@ -412,9 +426,7 @@ export default function CompaniesPage() {
                 <div>
                   {calendarSelected && evaluationSelected && (
                     <div className="text-lg font-semibold text-gray-800 mb-4 justify-center text-center">
-                      <div>
-                        รายงานผลการประเมินนักศึกษา โดยอาจารย์ประจำแหล่งฝึก
-                      </div>
+                      <div>รายงานผลการนิเทศนักศึกษา</div>
                       <div>
                         รอบการฝึก:{" "}
                         {
@@ -458,26 +470,11 @@ export default function CompaniesPage() {
                         })}
                         )
                       </div>
-                      <div>
-                        กลุ่มประเมิน:{" "}
-                        {
-                          evalations.find(
-                            (item: any) => item.id === evaluationSelected
-                          )?.group
-                        }
-                      </div>
-                      <div>
-                        ชุดการประเมิน:{" "}
-                        {
-                          evalations.find(
-                            (item: any) => item.id === evaluationSelected
-                          )?.short_name
-                        }
-                      </div>
+
                       <div>
                         ชื่อการประเมิน:{" "}
                         {
-                          evalations.find(
+                          supervisions.find(
                             (item: any) => item.id === evaluationSelected
                           )?.name
                         }
@@ -540,14 +537,12 @@ export default function CompaniesPage() {
                                   แหล่งฝึกงาน
                                 </th>
                                 <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[200px]">
-                                  อาจารย์ประจำแหล่งฝึก
+                                  อาจารย์นิเทศ
                                 </th>
                                 <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[80px]">
-                                  วันที่ประเมิน
+                                  วันที่นิเทศ
                                 </th>
-                                <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[80px]">
-                                  แบบประเมิน
-                                </th>
+
                                 {metaData.map((item: any, index: number) => (
                                   <th
                                     key={index}
@@ -577,13 +572,13 @@ export default function CompaniesPage() {
                                     {item.company_name}
                                   </td>
                                   <td className="p-4 whitespace-nowrap text-sm text-gray-500">
-                                    {item.evaluator || "-"}
+                                    {item.advisor_name || "-"}
                                   </td>
 
                                   <td className="p-4 whitespace-nowrap text-sm text-gray-500">
-                                    {item.evaluation_date
+                                    {item.scheduled_date
                                       ? new Date(
-                                          item.evaluation_date
+                                          item.scheduled_date
                                         ).toLocaleDateString("th-TH", {
                                           year: "numeric",
                                           month: "short",
@@ -591,21 +586,37 @@ export default function CompaniesPage() {
                                         })
                                       : "-"}
                                   </td>
-                                  <td className="p-4 whitespace-nowrap text-sm text-gray-500">
-                                    {item.evaluation_name || "-"}
-                                  </td>
 
                                   {metaData.map(
-                                    (meta: any, metaIndex: number) => (
-                                      <td
-                                        key={metaIndex}
-                                        className="p-4 whitespace-nowrap text-sm text-gray-500"
-                                      >
-                                        {item.result
-                                          ? item.result[meta.value]
-                                          : "-"}
-                                      </td>
-                                    )
+                                    (meta: any, metaIndex: number) => {
+                                      const value = meta.value.split(".");
+
+                                      // Navigate through nested object using the split path
+                                      let resultValue = item.result;
+                                      if (resultValue && value.length > 0) {
+                                        for (const key of value) {
+                                          if (
+                                            resultValue &&
+                                            typeof resultValue === "object" &&
+                                            key in resultValue
+                                          ) {
+                                            resultValue = resultValue[key];
+                                          } else {
+                                            resultValue = null;
+                                            break;
+                                          }
+                                        }
+                                      }
+
+                                      return (
+                                        <td
+                                          key={metaIndex}
+                                          className="p-4 whitespace-nowrap text-sm text-gray-500"
+                                        >
+                                          {resultValue || "-"}
+                                        </td>
+                                      );
+                                    }
                                   )}
                                 </tr>
                               ))}
