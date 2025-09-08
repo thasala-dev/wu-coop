@@ -28,7 +28,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, User, Camera, CalendarIcon } from "lucide-react";
+import { Loader2, Save, User, Camera, CalendarIcon,Upload } from "lucide-react";
 import { callUploadApi, callDeleteApi } from "@/lib/file-api";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -181,11 +181,11 @@ export default function StudentProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check if file is an image
-    if (!file.type.startsWith("image/")) {
+    // Check if file is a PDF
+    if (file.type !== "application/pdf") {
       toast({
         title: "ไฟล์ไม่ถูกต้อง",
-        description: "กรุณาเลือกไฟล์รูปภาพเท่านั้น (JPG, PNG, GIF)",
+        description: "กรุณาเลือกไฟล์ PDF เท่านั้น",
         variant: "destructive",
       });
       return;
@@ -734,7 +734,7 @@ export default function StudentProfile() {
                                 htmlFor="transcript"
                                 className="text-sm font-medium text-gray-700"
                               >
-                                Transcript (ไฟล์รูปภาพเท่านั้น)
+                                Transcript (ไฟล์ PDF เท่านั้น)
                               </label>
                               <div className="text-xs text-red-500">
                                 ** แนะนำให้ Capture
@@ -747,22 +747,23 @@ export default function StudentProfile() {
                                   /* Preview Area */
                                   <div className="space-y-4">
                                     <div className="relative group">
-                                      <img
-                                        src={formData.transcript}
-                                        alt="Transcript Preview"
-                                        className="w-full max-w-md mx-auto rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
-                                        style={{
-                                          maxHeight: "400px",
-                                          objectFit: "contain",
-                                        }}
-                                      />
-                                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center">
+                                      <div className="w-full mx-auto">
+                                        <iframe
+                                          src={formData.transcript}
+                                          className="w-full rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200"
+                                          style={{
+                                            height: "800px",
+                                          }}
+                                          title="Transcript PDF Preview"
+                                        />
+                                      </div>
+                                      <div className="absolute top-2 right-2">
                                         <Button
                                           type="button"
                                           variant="destructive"
                                           size="sm"
                                           onClick={removeTranscript}
-                                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                          className="shadow-lg"
                                         >
                                           <svg
                                             className="h-4 w-4 mr-2"
@@ -777,7 +778,7 @@ export default function StudentProfile() {
                                               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                             />
                                           </svg>
-                                          ลบรูป
+                                          ลบไฟล์
                                         </Button>
                                       </div>
                                     </div>
@@ -794,7 +795,7 @@ export default function StudentProfile() {
                                         }
                                         className="mt-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50"
                                       >
-                                        เปลี่ยนรูปใหม่
+                                        เปลี่ยนไฟล์ใหม่
                                       </Button>
                                     </div>
                                   </div>
@@ -821,12 +822,11 @@ export default function StudentProfile() {
                                         อัพโหลด Transcript
                                       </h4>
                                       <p className="text-sm text-gray-500 mt-1">
-                                        คลิกเพื่อเลือกไฟล์รูปภาพ
+                                        อัพโหลดไฟล์ PDF
                                         หรือลากวางที่นี่
                                       </p>
                                       <p className="text-xs text-gray-400 mt-1">
-                                        รองรับไฟล์: JPG, PNG, GIF (ขนาดไม่เกิน 5
-                                        MB)
+                                        รองรับไฟล์: PDF (ขนาดไม่เกิน 5 MB)
                                       </p>
                                     </div>
                                     <Button
@@ -845,7 +845,7 @@ export default function StudentProfile() {
                                         </>
                                       ) : (
                                         <>
-                                          <Camera className="mr-2 h-4 w-4" />
+                                          <Upload className="mr-2 h-4 w-4" />
                                           เลือกไฟล์
                                         </>
                                       )}
@@ -857,7 +857,7 @@ export default function StudentProfile() {
                                 <input
                                   ref={transcriptFileInputRef}
                                   type="file"
-                                  accept="image/*"
+                                  accept="application/pdf"
                                   onChange={handleTranscriptUpload}
                                   className="hidden"
                                 />

@@ -1076,7 +1076,7 @@ export default function StudentDetailPage() {
           ></div>
 
           {/* Modal Content */}
-          <div className="relative z-10 max-w-4xl max-h-[90vh] mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <div className="relative z-10 max-h-[90vh] mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
               <h3 className="text-xl font-bold flex items-center gap-2">
@@ -1096,13 +1096,13 @@ export default function StudentDetailPage() {
             {/* Modal Body */}
             <div className="p-6 max-h-[70vh] overflow-auto">
               <div className="flex justify-center">
-                <img
+                <iframe
                   src={data?.transcript}
-                  alt="Transcript"
-                  className="max-w-full max-h-full rounded-lg shadow-lg"
+                  title="Transcript PDF Preview"
+                  className="max-w-full max-h-full rounded-lg shadow-lg border border-gray-200"
                   style={{
-                    maxHeight: "60vh",
-                    objectFit: "contain",
+                    width: "100%",
+                    height: "60vh",
                   }}
                 />
               </div>
