@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -19,10 +19,10 @@ const toThaiNumber = (number: number) => {
 
 const criteriaData = [
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p1",
-    title: "๑. การคัดเลือกบทความโดยนิสิต/นักศึกษา",
+    title: "1. การคัดเลือกบทความโดยนิสิต/นักศึกษา",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ดี (8-9 คะแนน) ร่วมกับ</li>
@@ -60,10 +60,10 @@ const criteriaData = [
     ),
   },
   {
-    number: "๔",
+    number: "4",
     point: 4,
     label: "p2",
-    title: "๒. การประเมินวิพากษ์บทความและการนําไปใช้",
+    title: "2. การประเมินวิพากษ์บทความและการนําไปใช้",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ดี (8-9 คะแนน) ร่วมกับ</li>
@@ -95,10 +95,10 @@ const criteriaData = [
   },
 
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p3",
-    title: "๓. วิธีการนําเสนอ",
+    title: "3. วิธีการนําเสนอ",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ ดี (8–9 คะแนน) ร่วมกับ</li>
@@ -134,13 +134,13 @@ const criteriaData = [
     ),
   },
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p4",
-    title: "๔. การตอบคําถาม (เน้นคุณภาพในการตอบมากกว่าปริมาณ)",
+    title: "4. การตอบคําถาม (เน้นคุณภาพในการตอบมากกว่าปริมาณ)",
     superd: (
       <ul className="list-disc pl-4">
-        <li>มีคุณสมบัติตามเกณฑ์ ดี (๘–๙ คะแนน) ร่วมกับ</li>
+        <li>มีคุณสมบัติตามเกณฑ์ ดี (8–9 คะแนน) ร่วมกับ</li>
         <li>
           ในกรณีที่ไม่มีข้อมูลเชิงประจักษ์ที่สนับสนุนคำตอบได้ชัดเจน
           นิสิต/นักศึกษาสามารถสังเคราะห์คำตอบได้ด้วยตนเอง
@@ -150,7 +150,7 @@ const criteriaData = [
     ),
     good: (
       <ul className="list-disc pl-4">
-        <li>มีคุณสมบัติตามเกณฑ์ ผ่าน (๖–๗ คะแนน) ร่วมกับ</li>
+        <li>มีคุณสมบัติตามเกณฑ์ ผ่าน (6–7 คะแนน) ร่วมกับ</li>
         <li>สามารถสื่อสารให้ผู้ฟังเข้าใจได้อย่างตรงประเด็น</li>
       </ul>
     ),
@@ -232,8 +232,8 @@ export default function Page(props: any) {
             </u>
             <br />
             ตัวอย่างเช่น หากท่านประเมินนิสิต/นักศึกษาว่ามีความสามารถในหัวข้อ
-            “การคัดเลือกบทความโดยนิสิต/นักศึกษา” อยู่ในเกณฑ์ “ดี” (๘-๙ คะแนน)
-            ท่านสามารถเลือกให้คะแนน ๘ หรือ ๙ แก่นิสิต/นักศึกษาได้ ทั้งนี้
+            “การคัดเลือกบทความโดยนิสิต/นักศึกษา” อยู่ในเกณฑ์ “ดี” (8-9 คะแนน)
+            ท่านสามารถเลือกให้คะแนน 8 หรือ 9 แก่นิสิต/นักศึกษาได้ ทั้งนี้
             ขึ้นกับความเห็นของท่าน
           </p>
         </div>
@@ -258,25 +258,25 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ดีมาก <div className="text-xs">(๑๐ คะแนน)</div>
+                  ดีมาก <div className="text-xs">(10 คะแนน)</div>
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ดี <div className="text-xs">(๘-๙ คะแนน)</div>
+                  ดี <div className="text-xs">(8-9 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ผ่าน <div className="text-xs">(๖-๗ คะแนน)</div>
+                  ผ่าน <div className="text-xs">(6-7 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ควรปรับปรุง <div className="text-xs">(๐-๕ คะแนน)</div>
+                  ควรปรับปรุง <div className="text-xs">(0-5 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
@@ -332,7 +332,7 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๑๐",
+                              label: "10",
                               value: "10",
                             },
                           ].map((radio) => (
@@ -380,11 +380,11 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๙",
+                              label: "9",
                               value: "9",
                             },
                             {
-                              label: "๘",
+                              label: "8",
                               value: "8",
                             },
                           ].map((radio) => (
@@ -432,11 +432,11 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๗",
+                              label: "7",
                               value: "7",
                             },
                             {
-                              label: "๖",
+                              label: "6",
                               value: "6",
                             },
                           ].map((radio) => (
@@ -484,27 +484,27 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๕",
+                              label: "5",
                               value: "5",
                             },
                             {
-                              label: "๔",
+                              label: "4",
                               value: "4",
                             },
                             {
-                              label: "๓",
+                              label: "3",
                               value: "3",
                             },
                             {
-                              label: "๒",
+                              label: "2",
                               value: "2",
                             },
                             {
-                              label: "๑",
+                              label: "1",
                               value: "1",
                             },
                             {
-                              label: "๐",
+                              label: "0",
                               value: "0",
                             },
                           ].map((radio) => (
@@ -599,9 +599,9 @@ export default function Page(props: any) {
                   colSpan={6}
                   className="p-2 border align-top text-center text-md"
                 >
-                  ปรับให้เป็นคะแนนเต็ม ๑๐ คะแนน =
+                  ปรับให้เป็นคะแนนเต็ม 10 คะแนน =
                   <span className="font-mono">
-                    (คะแนนที่ประเมินได้ &divide; ๑๐๐) &times; ๑๐
+                    (คะแนนที่ประเมินได้ &divide; 100) &times; 10
                   </span>
                   &nbsp;= ______ คะแนน
                 </td>

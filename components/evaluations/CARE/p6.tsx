@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -19,11 +19,11 @@ const toThaiNumber = (number: number) => {
 
 const criteriaData = [
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p1",
     title:
-      "๑. เชื่อมโยงแผนผังระบบงานของโรง พยาบาลกับมาตรฐานสถานพยาบาลในด้านการจัดการระบบยา",
+      "1. เชื่อมโยงแผนผังระบบงานของโรง พยาบาลกับมาตรฐานสถานพยาบาลในด้านการจัดการระบบยา",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ ดี ร่วมกับ</li>
@@ -62,11 +62,11 @@ const criteriaData = [
     ),
   },
   {
-    number: "๑",
+    number: "1",
     point: 1,
     label: "p2",
     title:
-      "๒. ตระหนักถึงปัญหาหรือความเสี่ยงของระบบยาในโรงพยาบาลที่จะส่งผลกระทบต่อความปลอดภัยของผู้ป่วย",
+      "2. ตระหนักถึงปัญหาหรือความเสี่ยงของระบบยาในโรงพยาบาลที่จะส่งผลกระทบต่อความปลอดภัยของผู้ป่วย",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ ดี ร่วมกับ</li>
@@ -104,11 +104,11 @@ const criteriaData = [
   },
 
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p3",
     title:
-      "๓. วิเคราะห์ถึงรากสาเหตุของปัญหาความไม่ปลอดภัยจากการใช้ยา (Riskidentification : RCA)",
+      "3. วิเคราะห์ถึงรากสาเหตุของปัญหาความไม่ปลอดภัยจากการใช้ยา (Riskidentification : RCA)",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ ดี ร่วมกับ</li>
@@ -146,11 +146,11 @@ const criteriaData = [
     ),
   },
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p4",
     title:
-      "๔. วิเคราะห์ถึงผลกระทบของปัญหาความไม่ปลอดภัยจากการใช้ยา (Risk assessment)",
+      "4. วิเคราะห์ถึงผลกระทบของปัญหาความไม่ปลอดภัยจากการใช้ยา (Risk assessment)",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ ดี ร่วมกับ</li>
@@ -184,11 +184,11 @@ const criteriaData = [
     ),
   },
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p5",
     title:
-      "๕. สังเคราะห์กระบวนการแก้ไขหรือป้องกันปัญหาที่สอดคล้องกับบริบทของหน่วยงาน (Risk management)",
+      "5. สังเคราะห์กระบวนการแก้ไขหรือป้องกันปัญหาที่สอดคล้องกับบริบทของหน่วยงาน (Risk management)",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ ดี ร่วมกับ</li>
@@ -247,10 +247,10 @@ const criteriaData = [
     ),
   },
   {
-    number: "๑",
+    number: "1",
     point: 1,
     label: "p6",
-    title: "๖. ความเป็นวิชาชีพ (Professionalism)",
+    title: "6. ความเป็นวิชาชีพ (Professionalism)",
     superd: (
       <ul className="list-disc pl-4">
         <li>มีคุณสมบัติตามเกณฑ์ ดี ร่วมกับ</li>
@@ -354,11 +354,11 @@ export default function Page(props: any) {
           <p className="text-xs sm:text-sm mb-4">
             ให้อาจารย์ประจำแหล่งฝึกประเมินผลโดยสังเกตจากพฤติกรรม ผลการปฏิบัติงาน
             และ/หรือจากการ อภิปราย สอบถาม การสื่อสาร ทั้งโดยวาจา
-            หรือลายลักษณ์อักษร และให้ประเมิน ๒ ครั้ง คือในสัปดาห์ที่ ๓ และ ๖
-            ของการฝึกปฏิบัติงาน ผลการประเมินในสัปดาห์ที่ ๓
+            หรือลายลักษณ์อักษร และให้ประเมิน 2 ครั้ง คือในสัปดาห์ที่ 3 และ 6
+            ของการฝึกปฏิบัติงาน ผลการประเมินในสัปดาห์ที่ 3
             ควรมีการแจ้งให้นิสิต/นักศึกษาทราบ เพื่อให้เกิด การพัฒนา
             <u className="font-bold">
-              การประเมินผลการฝึกปฏิบัติงานจะคิดจากคะแนนในสัปดาห์ที่ ๖
+              การประเมินผลการฝึกปฏิบัติงานจะคิดจากคะแนนในสัปดาห์ที่ 6
             </u>
           </p>
           <p className="text-xs sm:text-sm mb-4">
@@ -377,7 +377,7 @@ export default function Page(props: any) {
               “เชื่อมโยงแผนผังระบบงานของ
               โรงพยาบาลกับมาตรฐานสถานพยาบาลในด้านการจัดการระบบยา”
             </u>{" "}
-            อยู่ในเกณฑ์ดี (๘–๙ คะแนน) ท่าน สามารถเลือกให้คะแนน ๘ หรือ ๙
+            อยู่ในเกณฑ์ดี (8–9 คะแนน) ท่าน สามารถเลือกให้คะแนน 8 หรือ 9
             แก่นักศึกษาได้ ทั้งนี้ขึ้นกับความเห็นของท่าน
           </p>
         </div>
@@ -402,25 +402,25 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ดีมาก <div className="text-xs">(๑๐ คะแนน)</div>
+                  ดีมาก <div className="text-xs">(10 คะแนน)</div>
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ดี <div className="text-xs">(๘-๙ คะแนน)</div>
+                  ดี <div className="text-xs">(8-9 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ผ่าน <div className="text-xs">(๖-๗ คะแนน)</div>
+                  ผ่าน <div className="text-xs">(6-7 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ควรปรับปรุง <div className="text-xs">(๐-๕ คะแนน)</div>
+                  ควรปรับปรุง <div className="text-xs">(0-5 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
@@ -476,7 +476,7 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๑๐",
+                              label: "10",
                               value: "10",
                             },
                           ].map((radio) => (
@@ -524,11 +524,11 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๙",
+                              label: "9",
                               value: "9",
                             },
                             {
-                              label: "๘",
+                              label: "8",
                               value: "8",
                             },
                           ].map((radio) => (
@@ -576,11 +576,11 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๗",
+                              label: "7",
                               value: "7",
                             },
                             {
-                              label: "๖",
+                              label: "6",
                               value: "6",
                             },
                           ].map((radio) => (
@@ -628,27 +628,27 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๕",
+                              label: "5",
                               value: "5",
                             },
                             {
-                              label: "๔",
+                              label: "4",
                               value: "4",
                             },
                             {
-                              label: "๓",
+                              label: "3",
                               value: "3",
                             },
                             {
-                              label: "๒",
+                              label: "2",
                               value: "2",
                             },
                             {
-                              label: "๑",
+                              label: "1",
                               value: "1",
                             },
                             {
-                              label: "๐",
+                              label: "0",
                               value: "0",
                             },
                           ].map((radio) => (
@@ -743,9 +743,9 @@ export default function Page(props: any) {
                   colSpan={6}
                   className="p-2 border align-top text-center text-md"
                 >
-                  ปรับให้เป็นคะแนนเต็ม ๑๐ คะแนน =
+                  ปรับให้เป็นคะแนนเต็ม 10 คะแนน =
                   <span className="font-mono">
-                    (คะแนนที่ประเมินได้ &divide; ๑๐๐) &times; ๑๐
+                    (คะแนนที่ประเมินได้ &divide; 100) &times; 10
                   </span>
                   &nbsp;= ______ คะแนน
                 </td>

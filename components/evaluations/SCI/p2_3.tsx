@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -18,11 +18,11 @@ const toThaiNumber = (number: number) => {
 };
 
 const scoreLabels = [
-  { label: "๕", value: "5" },
-  { label: "๔", value: "4" },
-  { label: "๓", value: "3" },
-  { label: "๒", value: "2" },
-  { label: "๑", value: "1" },
+  { label: "5", value: "5" },
+  { label: "4", value: "4" },
+  { label: "3", value: "3" },
+  { label: "2", value: "2" },
+  { label: "1", value: "1" },
 ];
 
 const quantityLabels = [
@@ -80,17 +80,20 @@ export default function Page(props: any) {
 
     // จุดมุ่งหมายที่ 2
     p2_1_quantity: parentForm.getValues("result.p2_1_quantity") || "",
-    p2_1_quantity_other: parentForm.getValues("result.p2_1_quantity_other") || "",
+    p2_1_quantity_other:
+      parentForm.getValues("result.p2_1_quantity_other") || "",
     p2_1_score: parentForm.getValues("result.p2_1_score") || "",
     p2_1_select: parentForm.getValues("result.p2_1_select") || false,
 
     p2_2_quantity: parentForm.getValues("result.p2_2_quantity") || "",
-    p2_2_quantity_other: parentForm.getValues("result.p2_2_quantity_other") || "",
+    p2_2_quantity_other:
+      parentForm.getValues("result.p2_2_quantity_other") || "",
     p2_2_score: parentForm.getValues("result.p2_2_score") || "",
     p2_2_select: parentForm.getValues("result.p2_2_select") || false,
 
     p2_3_quantity: parentForm.getValues("result.p2_3_quantity") || "",
-    p2_3_quantity_other: parentForm.getValues("result.p2_3_quantity_other") || "",
+    p2_3_quantity_other:
+      parentForm.getValues("result.p2_3_quantity_other") || "",
     p2_3_score: parentForm.getValues("result.p2_3_score") || "",
     p2_3_select: parentForm.getValues("result.p2_3_select") || false,
 
@@ -254,11 +257,26 @@ export default function Page(props: any) {
       <div className="sm:col-span-12 ">
         <div className="">
           <p className="text-sm mb-2">
-การประเมินแบ่งออกเป็น 2 ส่วน ได้แก่ การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์ของการฝึกปฏิบัติงาน โดยทั้ง 2 ส่วนประกอบด้วยจุดมุ่งหมายหลัก 4 ข้อ นักศึกษาควรได้รับการฝึกปฏิบัติงานจนครบทั้ง 4 จุดมุ่งหมายหลัก แต่ละจุดมุ่งหมายหลัก มีวัตถุประสงค์เชิงพฤติกรรมหลายส่วน ซึ่งอาจไม่จำเป็นต้องฝึกปฏิบัติงานจนครบทุกวัตถุประสงค์ ทั้งนี้ขึ้นอยู่กับความพร้อมและบริบทของแต่ละแหล่งฝึก          </p>
+            การประเมินแบ่งออกเป็น 2 ส่วน ได้แก่
+            การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์ของการฝึกปฏิบัติงาน
+            โดยทั้ง 2 ส่วนประกอบด้วยจุดมุ่งหมายหลัก 4 ข้อ
+            นักศึกษาควรได้รับการฝึกปฏิบัติงานจนครบทั้ง 4 จุดมุ่งหมายหลัก
+            แต่ละจุดมุ่งหมายหลัก มีวัตถุประสงค์เชิงพฤติกรรมหลายส่วน
+            ซึ่งอาจไม่จำเป็นต้องฝึกปฏิบัติงานจนครบทุกวัตถุประสงค์
+            ทั้งนี้ขึ้นอยู่กับความพร้อมและบริบทของแต่ละแหล่งฝึก{" "}
+          </p>
           <p className="text-sm mb-2">
-การประเมินผลเชิงปริมาณนั้น อาจารย์ประจำแหล่งฝึกสามารถกำหนดหัวข้อและกรอบการฝึกปฏิบัติงานได้ตามความเหมาะสม โดยอ้างอิงจากข้อมูลในแต่ละวัตถุประสงค์เชิงพฤติกรรม ถ้ากิจกรรมใดมีการฝึกปฏิบัติขอให้ระบุจำนวนกิจกรรมที่เกิดขึ้น พร้อมทั้งบันทึกชื่อของกิจกรรมที่ได้ฝึกปฏิบัติไว้ในช่องหมายเหตุด้วย          </p>
+            การประเมินผลเชิงปริมาณนั้น
+            อาจารย์ประจำแหล่งฝึกสามารถกำหนดหัวข้อและกรอบการฝึกปฏิบัติงานได้ตามความเหมาะสม
+            โดยอ้างอิงจากข้อมูลในแต่ละวัตถุประสงค์เชิงพฤติกรรม
+            ถ้ากิจกรรมใดมีการฝึกปฏิบัติขอให้ระบุจำนวนกิจกรรมที่เกิดขึ้น
+            พร้อมทั้งบันทึกชื่อของกิจกรรมที่ได้ฝึกปฏิบัติไว้ในช่องหมายเหตุด้วย{" "}
+          </p>
           <p className="text-sm mb-2">
-สำหรับการประเมินผลสัมฤทธิ์นั้น อาจารย์ประจำแหล่งฝึกสามารถทำได้จากการสังเกต การสอบถาม การอภิปราย รวมไปถึงผลของการฝึกปฏิบัติงาน โดยมีแนวทางการให้คะแนนดังนี้          </p>
+            สำหรับการประเมินผลสัมฤทธิ์นั้น
+            อาจารย์ประจำแหล่งฝึกสามารถทำได้จากการสังเกต การสอบถาม การอภิปราย
+            รวมไปถึงผลของการฝึกปฏิบัติงาน โดยมีแนวทางการให้คะแนนดังนี้{" "}
+          </p>
         </div>
       </div>
       <div className="sm:col-span-12 ">
@@ -288,7 +306,7 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                5
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีมาก
@@ -302,7 +320,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                4
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
@@ -316,7 +334,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                3
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
@@ -330,7 +348,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                2
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
@@ -343,7 +361,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                1
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
@@ -359,19 +377,19 @@ export default function Page(props: any) {
       </div>
 
       <div className="sm:col-span-12 py-2">
-        <p className="text-center text-md font-bold">การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์</p>
+        <p className="text-center text-md font-bold">
+          การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์
+        </p>
       </div>
 
-      <div className="sm:col-span-12">
-      
-      </div>
+      <div className="sm:col-span-12"></div>
       <div className="sm:col-span-12">
         <div className="border rounded-md">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-slate-100">
                 <th className="p-2 border text-center text-sm">จุดมุ่งหมาย</th>
-                
+
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "25%" }}
@@ -384,7 +402,7 @@ export default function Page(props: any) {
                 >
                   กิจกรรม
                 </th>
-                  <th
+                <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "15%" }}
                 >
@@ -396,321 +414,355 @@ export default function Page(props: any) {
                 >
                   ระดับของการบรรลุวัตถุประสงค์
                 </th>
-              
               </tr>
             </thead>
-<tbody>
-  {/* 1. ทักษะพื้นฐานในการวิจัย */}
-  <tr>
-    <td className="p-2 border align-top text-sm" rowSpan={2}>
-      1. ทักษะพื้นฐานในการวิจัย
-    </td>
-    <td className="p-2 border align-top text-sm" rowSpan={2}>
-      อธิบายกระบวนการการ<br />
-      วิจัยและพัฒนา<br />
-      ผลิตภัณฑ์
-    </td>
-    <td className="p-2 border align-top text-sm">
-      ฟังการบรรยาย/อภิปราย
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p1_quantity}
-        label="p1_quantity"
-        list={quantityLabels}
-        rows={true}
-        isRequired={true}
-      />
-      ระบุ
-      <input
-        type="number"
-        value={data.p1_quantity_other || ""}
-        onChange={(e) => setDataValue("p1_quantity_other", e.target.value)}
-        className={
-          "p-1 border rounded-md text-sm w-full text-center " +
-          (isSubmit && !data.p1_quantity_other && " border-2 border-red-600")
-        }
-      />
-      ครั้ง
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p1_1_score}
-        label="p1_1_score"
-        list={scoreLabels}
-        isRequired={data.p1_1_select}
-      />
-    </td>
-  </tr>
-</tbody>
-<tbody>
-  {/* 2. ประยุกต์ใช้หลักวิทยาศาสตร์ในการพัฒนาตำรับยา */}
-  <tr>
-    <td className="p-2 border align-top text-sm" rowSpan={3}>
-      2. ประยุกต์ใช้หลักวิทยาศาสตร์ในการพัฒนาตำรับยา
-    </td>
-    <td className="p-2 border align-top text-sm" rowSpan={3}>
-      พัฒนา หรือแก้ไขปัญหา<br />
-      ในการจัดทำตำรับยา
-    </td>
-    <td className="p-2 border align-top text-sm">
-      1. ฟังการบรรยาย/อภิปราย
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p2_1_quantity}
-        label="p2_1_quantity"
-        list={quantityLabels}
-        rows={true}
-        isRequired={true}
-      />
-      ระบุ
-      <input
-        type="number"
-        value={data.p2_1_quantity_other || ""}
-        onChange={(e) => setDataValue("p2_1_quantity_other", e.target.value)}
-        className={
-          "p-1 border rounded-md text-sm w-full text-center " +
-          (isSubmit && !data.p2_1_quantity_other && " border-2 border-red-600")
-        }
-      />
-      ครั้ง
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p2_1_score}
-        label="p2_1_score"
-        list={scoreLabels}
-        isRequired={data.p2_1_select}
-      />
-    </td>
-  </tr>
-  <tr>
-    <td className="p-2 border align-top text-sm">
-      2. พัฒนาตำรับยา หรือผลิตภัณฑ์ใหม่/
-      มีส่วนร่วมในการพัฒนาตำรับยา
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p2_2_quantity}
-        label="p2_2_quantity"
-        list={quantityLabels}
-        rows={true}
-        isRequired={true}
-      />
-      ระบุ
-      <input
-        type="number"
-        value={data.p2_2_quantity_other || ""}
-        onChange={(e) => setDataValue("p2_2_quantity_other", e.target.value)}
-        className={
-          "p-1 border rounded-md text-sm w-full text-center " +
-          (isSubmit && !data.p2_2_quantity_other && " border-2 border-red-600")
-        }
-      />
-      ครั้ง
-    </td>
-    <td className="p-2 border align-top text-sm">
-      
-    </td>
-  </tr>
-  <tr>
-    <td className="p-2 border align-top text-sm">3. นำเสนอ</td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p2_3_quantity}
-        label="p2_3_quantity"
-        list={quantityLabels}
-        rows={true}
-        isRequired={true}
-      />
-      ระบุ
-      <input
-        type="number"
-        value={data.p2_3_quantity_other || ""}
-        onChange={(e) => setDataValue("p2_3_quantity_other", e.target.value)}
-        className={
-          "p-1 border rounded-md text-sm w-full text-center " +
-          (isSubmit && !data.p2_3_quantity_other && " border-2 border-red-600")
-        }
-      />
-      ครั้ง
-    </td>
-    <td className="p-2 border align-top text-sm">
-      
-    </td>
-  </tr>
+            <tbody>
+              {/* 1. ทักษะพื้นฐานในการวิจัย */}
+              <tr>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  1. ทักษะพื้นฐานในการวิจัย
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  อธิบายกระบวนการการ
+                  <br />
+                  วิจัยและพัฒนา
+                  <br />
+                  ผลิตภัณฑ์
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  ฟังการบรรยาย/อภิปราย
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p1_quantity}
+                    label="p1_quantity"
+                    list={quantityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                  ระบุ
+                  <input
+                    type="number"
+                    value={data.p1_quantity_other || ""}
+                    onChange={(e) =>
+                      setDataValue("p1_quantity_other", e.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit &&
+                        !data.p1_quantity_other &&
+                        " border-2 border-red-600")
+                    }
+                  />
+                  ครั้ง
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p1_1_score}
+                    label="p1_1_score"
+                    list={scoreLabels}
+                    isRequired={data.p1_1_select}
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              {/* 2. ประยุกต์ใช้หลักวิทยาศาสตร์ในการพัฒนาตำรับยา */}
+              <tr>
+                <td className="p-2 border align-top text-sm" rowSpan={3}>
+                  2. ประยุกต์ใช้หลักวิทยาศาสตร์ในการพัฒนาตำรับยา
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={3}>
+                  พัฒนา หรือแก้ไขปัญหา
+                  <br />
+                  ในการจัดทำตำรับยา
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังการบรรยาย/อภิปราย
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_1_quantity}
+                    label="p2_1_quantity"
+                    list={quantityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                  ระบุ
+                  <input
+                    type="number"
+                    value={data.p2_1_quantity_other || ""}
+                    onChange={(e) =>
+                      setDataValue("p2_1_quantity_other", e.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit &&
+                        !data.p2_1_quantity_other &&
+                        " border-2 border-red-600")
+                    }
+                  />
+                  ครั้ง
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_1_score}
+                    label="p2_1_score"
+                    list={scoreLabels}
+                    isRequired={data.p2_1_select}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  2. พัฒนาตำรับยา หรือผลิตภัณฑ์ใหม่/ มีส่วนร่วมในการพัฒนาตำรับยา
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_2_quantity}
+                    label="p2_2_quantity"
+                    list={quantityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                  ระบุ
+                  <input
+                    type="number"
+                    value={data.p2_2_quantity_other || ""}
+                    onChange={(e) =>
+                      setDataValue("p2_2_quantity_other", e.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit &&
+                        !data.p2_2_quantity_other &&
+                        " border-2 border-red-600")
+                    }
+                  />
+                  ครั้ง
+                </td>
+                <td className="p-2 border align-top text-sm"></td>
+              </tr>
+              <tr>
+                <td className="p-2 border align-top text-sm">3. นำเสนอ</td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p2_3_quantity}
+                    label="p2_3_quantity"
+                    list={quantityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                  ระบุ
+                  <input
+                    type="number"
+                    value={data.p2_3_quantity_other || ""}
+                    onChange={(e) =>
+                      setDataValue("p2_3_quantity_other", e.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit &&
+                        !data.p2_3_quantity_other &&
+                        " border-2 border-red-600")
+                    }
+                  />
+                  ครั้ง
+                </td>
+                <td className="p-2 border align-top text-sm"></td>
+              </tr>
 
-  {/* 3. ทักษะพื้นฐานในการถ่ายทอดเทคโนโลยี */}
-  <tr>
-    <td className="p-2 border align-top text-sm" rowSpan={2}>
-      3. ทักษะพื้นฐานในการถ่ายทอดเทคโนโลยี
-    </td>
-    <td className="p-2 border align-top text-sm" rowSpan={2}>
-      มีความรู้พื้นฐานในการถ่ายทอดเทคโนโลยี
-    </td>
-    <td className="p-2 border align-top text-sm">
-      ฟังการบรรยาย/อภิปราย/ดูการสาธิต/
-      ฝึกปฏิบัติในส่วนการขยายการผลิต (scale up)
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p3_quantity}
-        label="p3_quantity"
-        list={quantityLabels}
-        rows={true}
-        isRequired={true}
-      />
-      ระบุ
-      <input
-        type="number"
-        value={data.p3_quantity_other || ""}
-        onChange={(e) => setDataValue("p3_quantity_other", e.target.value)}
-        className={
-          "p-1 border rounded-md text-sm w-full text-center " +
-          (isSubmit && !data.p3_quantity_other && " border-2 border-red-600")
-        }
-      />
-      ครั้ง
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p3_1_score}
-        label="p3_1_score"
-        list={scoreLabels}
-        isRequired={data.p3_1_select}
-      />
-    </td>
-  </tr>
-</tbody><tbody>
-  {/* 4. ทักษะเกี่ยวกับระบบคุณภาพและหลักปฏิบัติที่ดีที่เกี่ยวข้องกับการวิจัยและพัฒนา */}
-  <tr>
-    <td className="p-2 border align-top text-sm" rowSpan={2}>
-      4. ทักษะเกี่ยวกับระบบคุณภาพและหลักปฏิบัติที่ดีที่เกี่ยวข้องกับการวิจัยและพัฒนา
-    </td>
-    <td className="p-2 border align-top text-sm" rowSpan={2}>
-      มีความรู้พื้นฐานเกี่ยวกับระบบคุณภาพและหลักปฏิบัติที่ดีที่เกี่ยวข้องกับการวิจัยและพัฒนา
-    </td>
-    <td className="p-2 border align-top text-sm">
-      ฟังการบรรยาย/อภิปราย/ดูการสาธิต/
-      ฝึกปฏิบัติในส่วนระบบประกันคุณภาพและหลักปฏิบัติที่ดีที่เกี่ยวข้องกับการวิจัยและพัฒนา
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p4_quantity}
-        label="p4_quantity"
-        list={quantityLabels}
-        rows={true}
-        isRequired={true}
-      />
-      ระบุ
-      <input
-        type="number"
-        value={data.p4_quantity_other || ""}
-        onChange={(e) => setDataValue("p4_quantity_other", e.target.value)}
-        className={
-          "p-1 border rounded-md text-sm w-full text-center " +
-          (isSubmit && !data.p4_quantity_other && " border-2 border-red-600")
-        }
-      />
-      ครั้ง
-    </td>
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.p4_1_score}
-        label="p4_1_score"
-        list={scoreLabels}
-        isRequired={data.p4_1_select}
-      />
-    </td>
-  </tr>
-</tbody>
-<tbody>
-{/* 5. อื่น ๆ (โปรดระบุ) */}
-<tr>
-  <td className="p-2 border align-top text-sm">
-    5. อื่น ๆ (โปรดระบุ)
-  </td>
-  <td className="p-2 border align-top text-sm">
-    <input
-      type="text"
-      value={data.p5_detail || ""}
-      onChange={(e) => setDataValue("p5_detail", e.target.value)}
-      className={
-        "p-1 border rounded-md text-sm w-full " +
-        (isSubmit && !data.p5_detail && " border-2 border-red-600")
-      }
-      placeholder="โปรดระบุรายละเอียด"
-    />
-  </td>
-  <td className="p-2 border align-top text-sm">
-    <input
-      type="text"
-      value={data.p5_activity || ""}
-      onChange={(e) => setDataValue("p5_activity", e.target.value)}
-      className="p-1 border rounded-md text-sm w-full"
-      placeholder="กิจกรรม"
-    />
-  </td>
-  <td className="p-2 border align-top text-sm">
-    <ScoreForm
-      value={data.p5_quantity}
-      label="p5_quantity"
-      list={quantityLabels}
-      rows={true}
-      isRequired={true}
-    />
-    ระบุ
-    <input
-      type="number"
-      value={data.p5_quantity_other || ""}
-      onChange={(e) => setDataValue("p5_quantity_other", e.target.value)}
-      className={
-        "p-1 border rounded-md text-sm w-full text-center " +
-        (isSubmit && !data.p5_quantity_other && " border-2 border-red-600")
-      }
-    />
-    ครั้ง
-  </td>
-  <td className="p-2 border align-top text-sm">
-    <ScoreForm
-      value={data.p5_score}
-      label="p5_score"
-      list={scoreLabels}
-      isRequired={data.p5_select}
-    />
-  </td>
-</tr>
+              {/* 3. ทักษะพื้นฐานในการถ่ายทอดเทคโนโลยี */}
+              <tr>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  3. ทักษะพื้นฐานในการถ่ายทอดเทคโนโลยี
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  มีความรู้พื้นฐานในการถ่ายทอดเทคโนโลยี
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  ฟังการบรรยาย/อภิปราย/ดูการสาธิต/
+                  ฝึกปฏิบัติในส่วนการขยายการผลิต (scale up)
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p3_quantity}
+                    label="p3_quantity"
+                    list={quantityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                  ระบุ
+                  <input
+                    type="number"
+                    value={data.p3_quantity_other || ""}
+                    onChange={(e) =>
+                      setDataValue("p3_quantity_other", e.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit &&
+                        !data.p3_quantity_other &&
+                        " border-2 border-red-600")
+                    }
+                  />
+                  ครั้ง
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p3_1_score}
+                    label="p3_1_score"
+                    list={scoreLabels}
+                    isRequired={data.p3_1_select}
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              {/* 4. ทักษะเกี่ยวกับระบบคุณภาพและหลักปฏิบัติที่ดีที่เกี่ยวข้องกับการวิจัยและพัฒนา */}
+              <tr>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  4.
+                  ทักษะเกี่ยวกับระบบคุณภาพและหลักปฏิบัติที่ดีที่เกี่ยวข้องกับการวิจัยและพัฒนา
+                </td>
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  มีความรู้พื้นฐานเกี่ยวกับระบบคุณภาพและหลักปฏิบัติที่ดีที่เกี่ยวข้องกับการวิจัยและพัฒนา
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  ฟังการบรรยาย/อภิปราย/ดูการสาธิต/
+                  ฝึกปฏิบัติในส่วนระบบประกันคุณภาพและหลักปฏิบัติที่ดีที่เกี่ยวข้องกับการวิจัยและพัฒนา
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p4_quantity}
+                    label="p4_quantity"
+                    list={quantityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                  ระบุ
+                  <input
+                    type="number"
+                    value={data.p4_quantity_other || ""}
+                    onChange={(e) =>
+                      setDataValue("p4_quantity_other", e.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit &&
+                        !data.p4_quantity_other &&
+                        " border-2 border-red-600")
+                    }
+                  />
+                  ครั้ง
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p4_1_score}
+                    label="p4_1_score"
+                    list={scoreLabels}
+                    isRequired={data.p4_1_select}
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              {/* 5. อื่น ๆ (โปรดระบุ) */}
+              <tr>
+                <td className="p-2 border align-top text-sm">
+                  5. อื่น ๆ (โปรดระบุ)
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.p5_detail || ""}
+                    onChange={(e) => setDataValue("p5_detail", e.target.value)}
+                    className={
+                      "p-1 border rounded-md text-sm w-full " +
+                      (isSubmit &&
+                        !data.p5_detail &&
+                        " border-2 border-red-600")
+                    }
+                    placeholder="โปรดระบุรายละเอียด"
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.p5_activity || ""}
+                    onChange={(e) =>
+                      setDataValue("p5_activity", e.target.value)
+                    }
+                    className="p-1 border rounded-md text-sm w-full"
+                    placeholder="กิจกรรม"
+                  />
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p5_quantity}
+                    label="p5_quantity"
+                    list={quantityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                  ระบุ
+                  <input
+                    type="number"
+                    value={data.p5_quantity_other || ""}
+                    onChange={(e) =>
+                      setDataValue("p5_quantity_other", e.target.value)
+                    }
+                    className={
+                      "p-1 border rounded-md text-sm w-full text-center " +
+                      (isSubmit &&
+                        !data.p5_quantity_other &&
+                        " border-2 border-red-600")
+                    }
+                  />
+                  ครั้ง
+                </td>
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.p5_score}
+                    label="p5_score"
+                    list={scoreLabels}
+                    isRequired={data.p5_select}
+                  />
+                </td>
+              </tr>
             </tbody>
 
             {/* คะแนนรวม */}
-<tr>
-  <td
-    className="p-2 border align-top text-sm font-bold text-right"
-    colSpan={4}
-  >
-    คะแนนรวม (จุดมุ่งหมาย 1–5) × 5 คะแนน
-  </td>
-  <td className="p-2 border align-top text-sm font-bold text-center">
-    {toThaiNumber(
-      Number(
-        (
-          [
-            data.p1_1_score,
-            data.p2_1_score,
-            data.p3_1_score,
-            data.p4_1_score,
-            // จุดมุ่งหมายที่ 5 เฉพาะที่มีการกรอก p5_detail เท่านั้น
-            (data.p5_detail && data.p5_detail.trim() !== "") ? data.p5_score : null
-          ].filter(score => score !== null && score !== "").reduce((total, score) => {
-            return total + (score ? parseInt(score, 10) : 0);
-          }, 0) * 5
-        ).toFixed(0)
-      )
-    )}
-  </td>
-</tr>
-
+            <tr>
+              <td
+                className="p-2 border align-top text-sm font-bold text-right"
+                colSpan={4}
+              >
+                คะแนนรวม (จุดมุ่งหมาย 1–5) × 5 คะแนน
+              </td>
+              <td className="p-2 border align-top text-sm font-bold text-center">
+                {toThaiNumber(
+                  Number(
+                    (
+                      [
+                        data.p1_1_score,
+                        data.p2_1_score,
+                        data.p3_1_score,
+                        data.p4_1_score,
+                        // จุดมุ่งหมายที่ 5 เฉพาะที่มีการกรอก p5_detail เท่านั้น
+                        data.p5_detail && data.p5_detail.trim() !== ""
+                          ? data.p5_score
+                          : null,
+                      ]
+                        .filter((score) => score !== null && score !== "")
+                        .reduce((total, score) => {
+                          return total + (score ? parseInt(score, 10) : 0);
+                        }, 0) * 5
+                    ).toFixed(0)
+                  )
+                )}
+              </td>
+            </tr>
           </table>
         </div>
       </div>

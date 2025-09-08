@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { set } from "date-fns";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")

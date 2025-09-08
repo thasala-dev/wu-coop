@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -66,13 +66,13 @@ const criteriaData = [
     point: 2,
     title: "9. ความคิดริเริ่มสร้างสรรค์",
   },
-  
+
   {
     topTitle: "ทักษะการสื่อสาร",
     label: "p4_1",
     point: 6,
     title: `10.การแสดงความคิดเห็น และทักษะการสื่อสาร`,
-  }
+  },
 ];
 
 export default function Page(props: any) {
@@ -121,19 +121,20 @@ export default function Page(props: any) {
   const calculateTotalScore = () => {
     let totalScore = 0;
     let maxScore = 0;
-    
+
     criteriaData.forEach((item) => {
       const score = parseInt(data[item.label as keyof typeof data] || "0");
       totalScore += score;
       maxScore += 5; // คะแนนเต็มแต่ละข้อคือ 5
     });
-    
+
     return { totalScore, maxScore };
   };
 
   const { totalScore, maxScore } = calculateTotalScore();
   const maxScoreDoubled = maxScore * 2; // คะแนนเต็มทั้งหมด x 2
-  const percentage = maxScore > 0 ? ((totalScore / maxScore) * 100).toFixed(2) : 0;
+  const percentage =
+    maxScore > 0 ? ((totalScore / maxScore) * 100).toFixed(2) : 0;
 
   return (
     <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-12 ">
@@ -153,35 +154,35 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๕</div>
+                  <div>5</div>
                   <div>(ดีมาก)</div>
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๔</div>
+                  <div>4</div>
                   <div>(ดี)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๓</div>
+                  <div>3</div>
                   <div>(ปานกลาง)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๒</div>
+                  <div>2</div>
                   <div>(พอใช้)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๑</div>
+                  <div>1</div>
                   <div>(ปรับปรุง)</div>
                 </th>
               </tr>
@@ -318,10 +319,11 @@ export default function Page(props: any) {
             })}
             <tbody>
               <tr className="bg-slate-50">
-                <td className="p-2 border font-bold text-sm">
-                  คะแนนรวม
-                </td>
-                <td colSpan={5} className="p-2 border text-center text-sm font-semibold">
+                <td className="p-2 border font-bold text-sm">คะแนนรวม</td>
+                <td
+                  colSpan={5}
+                  className="p-2 border text-center text-sm font-semibold"
+                >
                   {toThaiNumber(totalScore)} / {toThaiNumber(maxScore)} คะแนน
                 </td>
               </tr>
@@ -329,7 +331,10 @@ export default function Page(props: any) {
                 <td className="p-2 border font-bold text-sm">
                   เปอร์เซ็นต์ของคะแนนพฤติกรรม
                 </td>
-                <td colSpan={5} className="p-2 border text-center text-sm font-semibold">
+                <td
+                  colSpan={5}
+                  className="p-2 border text-center text-sm font-semibold"
+                >
                   {toThaiNumber(parseFloat(percentage.toString()))}%
                 </td>
               </tr>

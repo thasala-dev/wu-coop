@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -21,42 +21,42 @@ const criteriaData = [
   {
     label: "p1",
     point: 6,
-    title: `๑. เนื้อหา และสาระของชิ้นงานที่นำเสนอมีความชัดเจน เข้าใจง่าย ประกอบด้วยที่มาและเหตุผล วิธีการดำเนินและผลการปฏิบัติ รวมไปถึงประโยชน์ที่ได้รับต่อแหล่งฝึกและนักศึกษา (ค่าน้ำหนักเท่ากับ *6)`,
+    title: `1. เนื้อหา และสาระของชิ้นงานที่นำเสนอมีความชัดเจน เข้าใจง่าย ประกอบด้วยที่มาและเหตุผล วิธีการดำเนินและผลการปฏิบัติ รวมไปถึงประโยชน์ที่ได้รับต่อแหล่งฝึกและนักศึกษา (ค่าน้ำหนักเท่ากับ *6)`,
   },
   {
     label: "p2",
     point: 2,
     title:
-      "๒. การใช้หลักฐานทางวิชาการประกอบการค้นคว้าอย่างน่าเชื่อถือและทันสมัย (ค่าน้ำหนักเท่ากับ *2)",
+      "2. การใช้หลักฐานทางวิชาการประกอบการค้นคว้าอย่างน่าเชื่อถือและทันสมัย (ค่าน้ำหนักเท่ากับ *2)",
   },
   {
     label: "p3",
     point: 2,
     title:
-      "๓. บุคลิกภาพ การพูด ภาษาที่ใช้ในการนำเสนอ มีความเหมาะสม (ค่าน้ำหนักเท่ากับ *2)",
+      "3. บุคลิกภาพ การพูด ภาษาที่ใช้ในการนำเสนอ มีความเหมาะสม (ค่าน้ำหนักเท่ากับ *2)",
   },
   {
     label: "p4",
     point: 1,
     title:
-      "๔. สื่อที่ใช้ประกอบการนำเสนอ มีความถูกต้อง ชัดเจน และมีคุณภาพ (ค่าน้ำหนักเท่ากับ *1)",
+      "4. สื่อที่ใช้ประกอบการนำเสนอ มีความถูกต้อง ชัดเจน และมีคุณภาพ (ค่าน้ำหนักเท่ากับ *1)",
   },
   {
     label: "p5",
     point: 5,
     title:
-      "๕. ตอบคำถามและ/หรือแสดงความคิดเห็นได้อย่างถูกต้อง มีเหตุผล สามารถแสดงความคิดเห็นที่ได้จากการวิเคราะห์ปัญหา โดยประยุกต์ใช้ความรู้ที่มีอยู่เดิมและจากการเรียนรู้จากแหล่งฝึกมาประกอบ (ค่าน้ำหนักเท่ากับ *5)",
+      "5. ตอบคำถามและ/หรือแสดงความคิดเห็นได้อย่างถูกต้อง มีเหตุผล สามารถแสดงความคิดเห็นที่ได้จากการวิเคราะห์ปัญหา โดยประยุกต์ใช้ความรู้ที่มีอยู่เดิมและจากการเรียนรู้จากแหล่งฝึกมาประกอบ (ค่าน้ำหนักเท่ากับ *5)",
   },
   {
     label: "p6",
     point: 1,
-    title: "๖. การใช้เวลา มีความเหมาะสมกับเนื้อหา (ค่าน้ำหนักเท่ากับ *1)",
+    title: "6. การใช้เวลา มีความเหมาะสมกับเนื้อหา (ค่าน้ำหนักเท่ากับ *1)",
   },
   {
     label: "p7",
     point: 3,
     title:
-      "๗. ภาพรวมการนำเสนอ/อภิปราย ได้แก่ ความน่าสนใจของการนำเสนอ การเรียงลำดับของเนื้อหา เป็นต้น (ค่าน้ำหนักเท่ากับ *3)",
+      "7. ภาพรวมการนำเสนอ/อภิปราย ได้แก่ ความน่าสนใจของการนำเสนอ การเรียงลำดับของเนื้อหา เป็นต้น (ค่าน้ำหนักเท่ากับ *3)",
   },
 ];
 
@@ -134,7 +134,7 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                5
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีมาก
@@ -146,7 +146,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                4
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
@@ -158,7 +158,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                3
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
@@ -169,7 +169,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                2
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
@@ -181,7 +181,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                1
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
@@ -211,31 +211,31 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๕
+                  5
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๔
+                  4
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๓
+                  3
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๒
+                  2
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๑
+                  1
                 </th>
               </tr>
             </thead>

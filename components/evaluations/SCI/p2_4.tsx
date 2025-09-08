@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -18,11 +18,11 @@ const toThaiNumber = (number: number) => {
 };
 
 const scoreLabels = [
-  { label: "๕", value: "5" },
-  { label: "๔", value: "4" },
-  { label: "๓", value: "3" },
-  { label: "๒", value: "2" },
-  { label: "๑", value: "1" },
+  { label: "5", value: "5" },
+  { label: "4", value: "4" },
+  { label: "3", value: "3" },
+  { label: "2", value: "2" },
+  { label: "1", value: "1" },
 ];
 
 const dosageLabels = [
@@ -380,7 +380,7 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                5
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีมาก
@@ -394,7 +394,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                4
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
@@ -408,7 +408,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                3
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
@@ -422,7 +422,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                2
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
@@ -435,7 +435,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                1
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
@@ -691,7 +691,7 @@ export default function Page(props: any) {
                 <tr key={index}>
                   {index === 0 && (
                     <td className="p-2 border align-top text-sm" rowSpan={10}>
-                      ๑. ทักษะการวิจัย กระบวนการวิจัย การสืบค้นข้อมูล
+                      1. ทักษะการวิจัย กระบวนการวิจัย การสืบค้นข้อมูล
                       และการเผยแพร่ข้อมูล
                       รวมถึงความเข้าใจและการปฏิบัติตามหลักจริยธรรม
                       จรรยาบรรณของนักวิจัยที่ดี
@@ -805,7 +805,7 @@ export default function Page(props: any) {
                 <tr key={index}>
                   {index === 0 && (
                     <td className="p-2 border align-top text-sm" rowSpan={7}>
-                      ๒.
+                      2.
                       เทคโนโลยีการผลิตผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพระดับอุตสาหกรรม
                       การบริหารปัจจัยการผลิตและสิ่งอำนวยความสะดวกต่าง ๆ
                       รวมทั้งอาคารสถานที่และสิ่งแวดล้อม
@@ -908,7 +908,7 @@ export default function Page(props: any) {
                 <tr key={index}>
                   {index === 0 && (
                     <td className="p-2 border align-top text-sm" rowSpan={5}>
-                      ๓. การควบคุมคุณภาพวัตถุดิบและผลิตภัณฑ์สำเร็จรูป
+                      3. การควบคุมคุณภาพวัตถุดิบและผลิตภัณฑ์สำเร็จรูป
                       วิธีวิเคราะห์ การตรวจสอบคุณภาพ
                       และเครื่องมือที่ใช้ในการตรวจสอบคุณภาพ
                     </td>
@@ -1015,7 +1015,7 @@ export default function Page(props: any) {
                 <tr key={index}>
                   {index === 0 && (
                     <td className="p-2 border align-top text-sm" rowSpan={6}>
-                      ๔. กระบวนการขึ้นทะเบียนผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ
+                      4. กระบวนการขึ้นทะเบียนผลิตภัณฑ์สมุนไพรและผลิตภัณฑ์สุขภาพ
                     </td>
                   )}
                   {index === 0 && (
@@ -1087,7 +1087,7 @@ export default function Page(props: any) {
             <tbody>
               <tr>
                 <td className="p-2 border align-top text-sm">
-                  <p>๕. อื่นๆ (โปรดระบุ)</p>
+                  <p>5. อื่นๆ (โปรดระบุ)</p>
                   <Textarea
                     className="min-h-24 border-0 focus-visible:ring-0 resize-none text-sm"
                     onChange={(e) => {

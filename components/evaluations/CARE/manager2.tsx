@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -18,12 +18,27 @@ const toThaiNumber = (number: number) => {
 };
 
 const criteriaData = [
-{ label: "p1", head: false, title: `๑. ทักษะการวิเคราะห์ ความเชื่อมโยงของข้อมูลและการผสมผสานเข้ากับการปฏิบัติงาน` },
-{ label: "p2", head: false, title: `๒. ทักษะในการประยุกต์ บูรณาการ ทฤษฎี แนวคิด` },
-{ label: "p3", head: false, title: `๓. ทักษะการคิดเชิงระบบ มีความคิดเป็นขั้นเป็นตอน หรือเป็นเหตุเป็นผล (Systematic Thinking)` },
-{ label: "p4", head: false, title: `๔. ทักษะความคิดเชิงสร้างสรรค์` },
-{ label: "p5", head: false, title: `๕. ทักษะความเป็นเจ้าของธุรกิจ (ความมีเป้าหมาย ความรับผิดชอบในงานที่มอบหมาย ความเข้าใจได้ ความกระตือรือร้นในงานที่มอบหมาย)` },
-
+  {
+    label: "p1",
+    head: false,
+    title: `1. ทักษะการวิเคราะห์ ความเชื่อมโยงของข้อมูลและการผสมผสานเข้ากับการปฏิบัติงาน`,
+  },
+  {
+    label: "p2",
+    head: false,
+    title: `2. ทักษะในการประยุกต์ บูรณาการ ทฤษฎี แนวคิด`,
+  },
+  {
+    label: "p3",
+    head: false,
+    title: `3. ทักษะการคิดเชิงระบบ มีความคิดเป็นขั้นเป็นตอน หรือเป็นเหตุเป็นผล (Systematic Thinking)`,
+  },
+  { label: "p4", head: false, title: `4. ทักษะความคิดเชิงสร้างสรรค์` },
+  {
+    label: "p5",
+    head: false,
+    title: `5. ทักษะความเป็นเจ้าของธุรกิจ (ความมีเป้าหมาย ความรับผิดชอบในงานที่มอบหมาย ความเข้าใจได้ ความกระตือรือร้นในงานที่มอบหมาย)`,
+  },
 ];
 
 export default function Page(props: any) {
@@ -68,14 +83,23 @@ export default function Page(props: any) {
       <div className="sm:col-span-12">
         <h2 className="text-lg font-bold">การประเมินผลการนำเสนอ</h2>
         <p className="text-sm text-gray-600">
-          ลักษณะการประเมินผล
-ให้อาจารย์แหล่งฝึกสังเกตจากพฤติกรรม ผลการปฏิบัติงานและ/หรือจากการอธิบาย
-สอบถาม การสื่อสาร ทั้งโดยวาจา หรือเอกสารอื่นๆ อีก และให้ประเมิน 2 ครั้ง คือในสัปดาห์ที่ 4 และสัปดาห์ที่ 6 ของการ
-ฝึกปฏิบัติการ ผลการประเมินในสัปดาห์ที่ 4 ควรมีการแจ้งให้นิสิต/นักศึกษาทราบเพื่อให้เกิดการพัฒนา <b><u> 
-โดยคะแนนที่ใช้ในการประเมินผลการฝึกปฏิบัติการจะคิดจากคะแนนในสัปดาห์ที่ 6 </u></b><br/>
-<b>คำชี้แจง</b><br/>
-จากระดับขั้นการประเมินข้างล่าง ให้ท่านเติมตัวเลขที่ตรงกับทักษะและความสามารถของนิสิต/นักศึกษาที่ท่านดูแลมากที่สุด
-(ประเมินทั้งในและนอกเอกสารการฝึกปฏิบัติงานฯ)
+          ลักษณะการประเมินผล ให้อาจารย์แหล่งฝึกสังเกตจากพฤติกรรม
+          ผลการปฏิบัติงานและ/หรือจากการอธิบาย สอบถาม การสื่อสาร ทั้งโดยวาจา
+          หรือเอกสารอื่นๆ อีก และให้ประเมิน 2 ครั้ง คือในสัปดาห์ที่ 4
+          และสัปดาห์ที่ 6 ของการ ฝึกปฏิบัติการ ผลการประเมินในสัปดาห์ที่ 4
+          ควรมีการแจ้งให้นิสิต/นักศึกษาทราบเพื่อให้เกิดการพัฒนา{" "}
+          <b>
+            <u>
+              โดยคะแนนที่ใช้ในการประเมินผลการฝึกปฏิบัติการจะคิดจากคะแนนในสัปดาห์ที่
+              6{" "}
+            </u>
+          </b>
+          <br />
+          <b>คำชี้แจง</b>
+          <br />
+          จากระดับขั้นการประเมินข้างล่าง
+          ให้ท่านเติมตัวเลขที่ตรงกับทักษะและความสามารถของนิสิต/นักศึกษาที่ท่านดูแลมากที่สุด
+          (ประเมินทั้งในและนอกเอกสารการฝึกปฏิบัติงานฯ)
         </p>
       </div>
       <div className="sm:col-span-12 ">
@@ -106,62 +130,62 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                5
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีเยี่ยม
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-นิสิต/นักศึกษามีทักษะการบริหารจัดการในเรื่องที่ประเมินได้อย่างเหมาะสมดีเยี่ยม
-พร้อมสามารถอภิปรายและให้นำเสนอแนะที่เป็นประโยชน์อย่างเหมาะสม
+                นิสิต/นักศึกษามีทักษะการบริหารจัดการในเรื่องที่ประเมินได้อย่างเหมาะสมดีเยี่ยม
+                พร้อมสามารถอภิปรายและให้นำเสนอแนะที่เป็นประโยชน์อย่างเหมาะสม
               </td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                4
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-นิสิต/นักศึกษามีทักษะการบริหารจัดการในเรื่องที่ประเมินได้อย่างเหมาะสม มีความพร้อม และ
-สามารถปฏิบัติงานได้ค่อนข้างยอดเยี่ยม แต่ขาดข้อเสนอแนะเพียงเล็กน้อย
+                นิสิต/นักศึกษามีทักษะการบริหารจัดการในเรื่องที่ประเมินได้อย่างเหมาะสม
+                มีความพร้อม และ สามารถปฏิบัติงานได้ค่อนข้างยอดเยี่ยม
+                แต่ขาดข้อเสนอแนะเพียงเล็กน้อย
               </td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                3
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-นิสิต/นักศึกษามีทักษะการบริหารจัดการในเรื่องที่ประเมินอยู่ในเกณฑ์รับได้
-สามารถปฏิบัติงานได้ แต่คงจะน้อยในส่วนส่วนใหญ่
-
+                นิสิต/นักศึกษามีทักษะการบริหารจัดการในเรื่องที่ประเมินอยู่ในเกณฑ์รับได้
+                สามารถปฏิบัติงานได้ แต่คงจะน้อยในส่วนส่วนใหญ่
               </td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                2
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-นิสิต/นักศึกษามีทักษะการบริหารจัดการในเรื่องที่ประเมินไม่เหมาะสม
-ไม่สามารถปฏิบัติงานได้ เกิดความผิดพลาดซ้ำ ๆ หรือ ต้องให้คำแนะนำตลอดเวลา
+                นิสิต/นักศึกษามีทักษะการบริหารจัดการในเรื่องที่ประเมินไม่เหมาะสม
+                ไม่สามารถปฏิบัติงานได้ เกิดความผิดพลาดซ้ำ ๆ หรือ
+                ต้องให้คำแนะนำตลอดเวลา
               </td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                1
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
               </td>
-              <td className="p-2 border font-medium align-top text-sm">
-              </td>
+              <td className="p-2 border font-medium align-top text-sm"></td>
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
@@ -170,8 +194,7 @@ export default function Page(props: any) {
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่สามารถประเมินได้/ไม่มีการสังเกต
               </td>
-              <td className="p-2 border font-medium align-top text-sm">
-              </td>
+              <td className="p-2 border font-medium align-top text-sm"></td>
             </tr>
           </tbody>
         </table>
@@ -193,31 +216,31 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๕
+                  5
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๔
+                  4
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๓
+                  3
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๒
+                  2
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๑
+                  1
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
@@ -249,145 +272,157 @@ export default function Page(props: any) {
                         )}
                         <>{item.title}</>
                       </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="5"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
+                      <td className="p-2 border align-top text-sm">
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <RadioGroup
+                            onValueChange={(value) =>
+                              setDataValue(item.label, value)
                             }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
+                            value={data[item.label as keyof typeof data]}
+                            className="flex flex-row items-center gap-8 justify-center w-full"
+                          >
+                            <RadioGroupItem
+                              value="5"
+                              className={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                                  ? "border-2 border-red-600"
+                                  : ""
+                              }
+                              aria-invalid={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                              }
+                            />
+                          </RadioGroup>
+                        </div>
+                      </td>
+                      <td className="p-2 border align-top text-sm">
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <RadioGroup
+                            onValueChange={(value) =>
+                              setDataValue(item.label, value)
                             }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="4"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
+                            value={data[item.label as keyof typeof data]}
+                            className="flex flex-row items-center gap-8 justify-center w-full"
+                          >
+                            <RadioGroupItem
+                              value="4"
+                              className={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                                  ? "border-2 border-red-600"
+                                  : ""
+                              }
+                              aria-invalid={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                              }
+                            />
+                          </RadioGroup>
+                        </div>
+                      </td>
+                      <td className="p-2 border align-top text-sm">
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <RadioGroup
+                            onValueChange={(value) =>
+                              setDataValue(item.label, value)
                             }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
+                            value={data[item.label as keyof typeof data]}
+                            className="flex flex-row items-center gap-8 justify-center w-full"
+                          >
+                            <RadioGroupItem
+                              value="3"
+                              className={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                                  ? "border-2 border-red-600"
+                                  : ""
+                              }
+                              aria-invalid={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                              }
+                            />
+                          </RadioGroup>
+                        </div>
+                      </td>
+                      <td className="p-2 border align-top text-sm">
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <RadioGroup
+                            onValueChange={(value) =>
+                              setDataValue(item.label, value)
                             }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="3"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
+                            value={data[item.label as keyof typeof data]}
+                            className="flex flex-row items-center gap-8 justify-center w-full"
+                          >
+                            <RadioGroupItem
+                              value="2"
+                              className={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                                  ? "border-2 border-red-600"
+                                  : ""
+                              }
+                              aria-invalid={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                              }
+                            />
+                          </RadioGroup>
+                        </div>
+                      </td>
+                      <td className="p-2 border align-top text-sm">
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <RadioGroup
+                            onValueChange={(value) =>
+                              setDataValue(item.label, value)
                             }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
+                            value={data[item.label as keyof typeof data]}
+                            className="flex flex-row items-center gap-8 justify-center w-full"
+                          >
+                            <RadioGroupItem
+                              value="1"
+                              className={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                                  ? "border-2 border-red-600"
+                                  : ""
+                              }
+                              aria-invalid={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                              }
+                            />
+                          </RadioGroup>
+                        </div>
+                      </td>
+                      <td className="p-2 border align-top text-sm">
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <RadioGroup
+                            onValueChange={(value) =>
+                              setDataValue(item.label, value)
                             }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="2"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="1"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                    <td className="p-2 border align-top text-sm">
-                      <div className="flex flex-col items-center justify-center h-full">
-                        <RadioGroup
-                          onValueChange={(value) =>
-                            setDataValue(item.label, value)
-                          }
-                          value={data[item.label as keyof typeof data]}
-                          className="flex flex-row items-center gap-8 justify-center w-full"
-                        >
-                          <RadioGroupItem
-                            value="N/A"
-                            className={
-                              isSubmit && !data[item.label as keyof typeof data]
-                                ? "border-2 border-red-600"
-                                : ""
-                            }
-                            aria-invalid={
-                              isSubmit && !data[item.label as keyof typeof data]
-                            }
-                          />
-                        </RadioGroup>
-                      </div>
-                    </td>
-                  </tr>
+                            value={data[item.label as keyof typeof data]}
+                            className="flex flex-row items-center gap-8 justify-center w-full"
+                          >
+                            <RadioGroupItem
+                              value="N/A"
+                              className={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                                  ? "border-2 border-red-600"
+                                  : ""
+                              }
+                              aria-invalid={
+                                isSubmit &&
+                                !data[item.label as keyof typeof data]
+                              }
+                            />
+                          </RadioGroup>
+                        </div>
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               );
@@ -395,8 +430,9 @@ export default function Page(props: any) {
             <tbody>
               <tr>
                 <td className="p-2 border align-center text-sm font-bold text-center">
-                  รวมคะแนน (คะแนนที่ได้ x ๑๐) / {toThaiNumber(
-                    criteriaData.filter(item => {
+                  รวมคะแนน (คะแนนที่ได้ x 10) /{" "}
+                  {toThaiNumber(
+                    criteriaData.filter((item) => {
                       const value = data[item.label as keyof typeof data];
                       return value !== "N/A" && value !== "";
                     }).length * 5
@@ -417,10 +453,11 @@ export default function Page(props: any) {
                           return total;
                         }, 0) *
                           10) /
-                        (criteriaData.filter(item => {
+                        (criteriaData.filter((item) => {
                           const value = data[item.label as keyof typeof data];
                           return value !== "N/A" && value !== "";
-                        }).length * 5)
+                        }).length *
+                          5)
                       ).toFixed(2)
                     )
                   )}

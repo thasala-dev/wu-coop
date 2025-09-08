@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -19,62 +19,62 @@ const toThaiNumber = (number: number) => {
 
 const criteriaData = [
   {
-    topTitle: "๑. พฤติกรรมต่อสถาบัน",
+    topTitle: "1. พฤติกรรมต่อสถาบัน",
     label: "p1_1",
     point: 6,
-    title: `๑.๑. ตรงต่อเวลา`,
+    title: `1.1. ตรงต่อเวลา`,
   },
   {
     label: "p1_2",
     point: 2,
-    title: "๑.๒. การแต่งกาย",
+    title: "1.2. การแต่งกาย",
   },
   {
     label: "p1_3",
     point: 2,
-    title: "๑.๓. การปฏิบัติตามระเบียบของหน่วยงาน",
+    title: "1.3. การปฏิบัติตามระเบียบของหน่วยงาน",
   },
   {
-    topTitle: "๒. พฤติกรรมต่อผู้อื่น",
+    topTitle: "2. พฤติกรรมต่อผู้อื่น",
     label: "p2_1",
     point: 6,
-    title: `๒.๑. การมีมนุษยสัมพันธ์`,
+    title: `2.1. การมีมนุษยสัมพันธ์`,
   },
   {
     label: "p2_2",
     point: 2,
-    title: "๒.๒. ความเป็นผู้นำ",
+    title: "2.2. ความเป็นผู้นำ",
   },
   {
     label: "p2_3",
     point: 2,
-    title: "๒.๓. การรู้จักกาลเทศะ",
+    title: "2.3. การรู้จักกาลเทศะ",
   },
   {
-    topTitle: "๓. พฤติกรรมต่อตนเอง",
+    topTitle: "3. พฤติกรรมต่อตนเอง",
     label: "p3_1",
     point: 6,
-    title: `๓.๑. ความรับผิดชอบต่องานที่ได้รับมอบหมาย`,
+    title: `3.1. ความรับผิดชอบต่องานที่ได้รับมอบหมาย`,
   },
   {
     label: "p3_2",
     point: 2,
-    title: "๓.๒. ความซื่อสัตย์สุจริต",
+    title: "3.2. ความซื่อสัตย์สุจริต",
   },
   {
     label: "p3_3",
     point: 2,
-    title: "๓.๓. ความสนใจในการแสวงหาความรู้เพิ่มเติม",
+    title: "3.3. ความสนใจในการแสวงหาความรู้เพิ่มเติม",
   },
   {
     label: "p3_4",
     point: 2,
-    title: "๓.๔. ความคิดริเริ่มสร้างสรรค์",
+    title: "3.4. ความคิดริเริ่มสร้างสรรค์",
   },
   {
     label: "p3_5",
     point: 2,
-    title: "๓.๕. ความสามารถในการแสดงความคิดเห็น",
+    title: "3.5. ความสามารถในการแสดงความคิดเห็น",
   },
 ];
 
@@ -140,35 +140,35 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๕</div>
+                  <div>5</div>
                   <div>(ดีมาก)</div>
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๔</div>
+                  <div>4</div>
                   <div>(ดี)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๓</div>
+                  <div>3</div>
                   <div>(ปานกลาง)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๒</div>
+                  <div>2</div>
                   <div>(พอใช้)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๑</div>
+                  <div>1</div>
                   <div>(ปรับปรุง)</div>
                 </th>
               </tr>

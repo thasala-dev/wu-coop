@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -18,11 +18,11 @@ const toThaiNumber = (number: number) => {
 };
 
 const scoreLabels = [
-  { label: "๕", value: "5" },
-  { label: "๔", value: "4" },
-  { label: "๓", value: "3" },
-  { label: "๒", value: "2" },
-  { label: "๑", value: "1" },
+  { label: "5", value: "5" },
+  { label: "4", value: "4" },
+  { label: "3", value: "3" },
+  { label: "2", value: "2" },
+  { label: "1", value: "1" },
 ];
 
 const quantityLabels = [
@@ -80,17 +80,20 @@ export default function Page(props: any) {
 
     // จุดมุ่งหมายที่ 2
     p2_1_quantity: parentForm.getValues("result.p2_1_quantity") || "",
-    p2_1_quantity_other: parentForm.getValues("result.p2_1_quantity_other") || "",
+    p2_1_quantity_other:
+      parentForm.getValues("result.p2_1_quantity_other") || "",
     p2_1_score: parentForm.getValues("result.p2_1_score") || "",
     p2_1_select: parentForm.getValues("result.p2_1_select") || false,
 
     p2_2_quantity: parentForm.getValues("result.p2_2_quantity") || "",
-    p2_2_quantity_other: parentForm.getValues("result.p2_2_quantity_other") || "",
+    p2_2_quantity_other:
+      parentForm.getValues("result.p2_2_quantity_other") || "",
     p2_2_score: parentForm.getValues("result.p2_2_score") || "",
     p2_2_select: parentForm.getValues("result.p2_2_select") || false,
 
     p2_3_quantity: parentForm.getValues("result.p2_3_quantity") || "",
-    p2_3_quantity_other: parentForm.getValues("result.p2_3_quantity_other") || "",
+    p2_3_quantity_other:
+      parentForm.getValues("result.p2_3_quantity_other") || "",
     p2_3_score: parentForm.getValues("result.p2_3_score") || "",
     p2_3_select: parentForm.getValues("result.p2_3_select") || false,
 
@@ -254,9 +257,12 @@ export default function Page(props: any) {
       <div className="sm:col-span-12 ">
         <div className="">
           <p className="text-sm mb-2">
-กรณีแหล่งฝึกงานได้มอบหมายกิจกรรมให้นักศึกษาทำในช่วงฝึกงาน ขอความกรุณาอาจารย์ประจำ
-แหล่งฝึกช่วยระบุกิจกรรมที่มอบหมาย และประเมินผลการปฏิบัติงานของนักศึกษาตามกิจกรรมนั้นๆ ซึ่ง
-รูปแบบการประเมินขึ้นอยู่กับกิจกรรมที่ได้มอบหมายให้นักศึกษาทำ       </p> </div>
+            กรณีแหล่งฝึกงานได้มอบหมายกิจกรรมให้นักศึกษาทำในช่วงฝึกงาน
+            ขอความกรุณาอาจารย์ประจำ แหล่งฝึกช่วยระบุกิจกรรมที่มอบหมาย
+            และประเมินผลการปฏิบัติงานของนักศึกษาตามกิจกรรมนั้นๆ ซึ่ง
+            รูปแบบการประเมินขึ้นอยู่กับกิจกรรมที่ได้มอบหมายให้นักศึกษาทำ{" "}
+          </p>{" "}
+        </div>
       </div>
       <div className="sm:col-span-12 ">
         <table className="w-full border-collapse">
@@ -291,9 +297,9 @@ export default function Page(props: any) {
                 ดีมาก
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-            นักศึกษาแสดงให้เห็นว่ามีทักษะ/ความสามารถครบถ้วนตาม
-วัตถุประสงค์การฝึกปฏิบัติงานฯเป็นที่น่าพอใจ เกิดความบกพร่องน้อย
-สามารถปฏิบัติงานได้ด้วยตนเอง อาจได้รับคำแนะนำเป็นครั้งคราว
+                นักศึกษาแสดงให้เห็นว่ามีทักษะ/ความสามารถครบถ้วนตาม
+                วัตถุประสงค์การฝึกปฏิบัติงานฯเป็นที่น่าพอใจ เกิดความบกพร่องน้อย
+                สามารถปฏิบัติงานได้ด้วยตนเอง อาจได้รับคำแนะนำเป็นครั้งคราว
               </td>
             </tr>
             <tr>
@@ -304,9 +310,9 @@ export default function Page(props: any) {
                 ดี
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-            นักศึกษาแสดงให้เห็นว่ามีทักษะ/ความสามารถตามวัตถุประสงค์การฝึก
-ปฏิบัติงานฯ มีความบกพร่องในระดับยอมรับได้ สามารถปฏิบัติงานได้
-ด้วยตนเอง แต่ต้องได้รับคำแนะนำเป็นครั้งคราว
+                นักศึกษาแสดงให้เห็นว่ามีทักษะ/ความสามารถตามวัตถุประสงค์การฝึก
+                ปฏิบัติงานฯ มีความบกพร่องในระดับยอมรับได้ สามารถปฏิบัติงานได้
+                ด้วยตนเอง แต่ต้องได้รับคำแนะนำเป็นครั้งคราว
               </td>
             </tr>
             <tr>
@@ -318,9 +324,8 @@ export default function Page(props: any) {
               </td>
               <td className="p-2 border font-medium align-top text-sm">
                 นักศึกษาแสดงให้เห็นว่ามีทักษะ/ความสามารถตามเกณฑ์วัตถุประสงค์
-การฝึก
-ปฏิบัติงานฯ มีความบกพร่องในระดับยอมรับได้ ยังคงสามารถ
-ปฏิบัติงานได้ แต่ต้องได้รับคำแนะนำเป็นส่วนใหญ่
+                การฝึก ปฏิบัติงานฯ มีความบกพร่องในระดับยอมรับได้ ยังคงสามารถ
+                ปฏิบัติงานได้ แต่ต้องได้รับคำแนะนำเป็นส่วนใหญ่
               </td>
             </tr>
             <tr>
@@ -332,8 +337,8 @@ export default function Page(props: any) {
               </td>
               <td className="p-2 border font-medium align-top text-sm">
                 นักศึกษาแสดงให้เห็นว่าขาดทักษะ/ความสามารถในระดับไม่น่าเชื่อถือ
-เกิดความบกพร่องอยู่เสมอ การปฏิบัติงานอยู่ภายใต้การดูแลจาก
-อาจารย์ประจำแหล่งฝึกอย่างใกล้ชิด
+                เกิดความบกพร่องอยู่เสมอ การปฏิบัติงานอยู่ภายใต้การดูแลจาก
+                อาจารย์ประจำแหล่งฝึกอย่างใกล้ชิด
               </td>
             </tr>
             <tr>
@@ -344,46 +349,42 @@ export default function Page(props: any) {
                 ไม่ผ่าน
               </td>
               <td className="p-2 border font-medium align-top text-sm">
-              นักศึกษาแสดงให้เห็นว่าขาดทักษะ/ความสามารถ ไม่ผ่านตาม
-วัตถุประสงค์การฝึกปฏิบัติงานฯ ไม่สามารถปฏิบัติงานได้ เกิดความ
-ผิดพลาดซ้ำ และไม่ปรับปรุงตามคำแนะนำของอาจารย์แหล่งฝึก
+                นักศึกษาแสดงให้เห็นว่าขาดทักษะ/ความสามารถ ไม่ผ่านตาม
+                วัตถุประสงค์การฝึกปฏิบัติงานฯ ไม่สามารถปฏิบัติงานได้ เกิดความ
+                ผิดพลาดซ้ำ และไม่ปรับปรุงตามคำแนะนำของอาจารย์แหล่งฝึก
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
       <div className="sm:col-span-12 py-2">
         <p className="text-center text-md font-bold">แบบประเมินงานมอบหมาย</p>
       </div>
-
-      <div className="sm:col-span-12">
-      
-      </div>
+      <div className="sm:col-span-12"></div>
       <div className="sm:col-span-12">
         <div className="border rounded-md">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-slate-100">
-              <th className="p-2 border text-center text-sm">วันที่</th>
-              <th
-                className="p-2 border text-center text-sm"
-                style={{ width: "50%" }}
-              >
-                กิจกรรมที่มอบหมายให้นักศึกษา
-              </th>
-              <th
-                className="p-2 border text-center text-sm"
-                style={{ width: "15%" }}
-              >
-                คะแนนเต็ม
-              </th>
-              <th
-                className="p-2 border text-center text-sm"
-                style={{ width: "15%" }}
-              >
-                คะแนนที่ได้
-              </th>
+                <th className="p-2 border text-center text-sm">วันที่</th>
+                <th
+                  className="p-2 border text-center text-sm"
+                  style={{ width: "50%" }}
+                >
+                  กิจกรรมที่มอบหมายให้นักศึกษา
+                </th>
+                <th
+                  className="p-2 border text-center text-sm"
+                  style={{ width: "15%" }}
+                >
+                  คะแนนเต็ม
+                </th>
+                <th
+                  className="p-2 border text-center text-sm"
+                  style={{ width: "15%" }}
+                >
+                  คะแนนที่ได้
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -395,7 +396,9 @@ export default function Page(props: any) {
                       className="border rounded px-2 py-1 w-full text-sm"
                       placeholder="วันที่"
                       value={data[`p4_date_${i + 1}`] || ""}
-                      onChange={(e) => setDataValue(`p4_date_${i + 1}`, e.target.value)}
+                      onChange={(e) =>
+                        setDataValue(`p4_date_${i + 1}`, e.target.value)
+                      }
                     />
                   </td>
                   <td className="p-2 border text-center">
@@ -404,7 +407,9 @@ export default function Page(props: any) {
                       className="border rounded px-2 py-1 w-full text-sm"
                       placeholder="กิจกรรม"
                       value={data[`p4_activity_${i + 1}`] || ""}
-                      onChange={(e) => setDataValue(`p4_activity_${i + 1}`, e.target.value)}
+                      onChange={(e) =>
+                        setDataValue(`p4_activity_${i + 1}`, e.target.value)
+                      }
                     />
                   </td>
                   <td className="p-2 border text-center">
@@ -413,7 +418,9 @@ export default function Page(props: any) {
                       className="border rounded px-2 py-1 w-full text-sm"
                       placeholder="คะแนนเต็ม"
                       value={data[`p4_fullscore_${i + 1}`] || ""}
-                      onChange={(e) => setDataValue(`p4_fullscore_${i + 1}`, e.target.value)}
+                      onChange={(e) =>
+                        setDataValue(`p4_fullscore_${i + 1}`, e.target.value)
+                      }
                     />
                   </td>
                   <td className="p-2 border text-center">
@@ -422,14 +429,14 @@ export default function Page(props: any) {
                       className="border rounded px-2 py-1 w-full text-sm"
                       placeholder="คะแนนที่ได้"
                       value={data[`p4_score_${i + 1}`] || ""}
-                      onChange={(e) => setDataValue(`p4_score_${i + 1}`, e.target.value)}
+                      onChange={(e) =>
+                        setDataValue(`p4_score_${i + 1}`, e.target.value)
+                      }
                     />
                   </td>
                 </tr>
               ))}
             </tbody>
-      
-
           </table>
         </div>
       </div>

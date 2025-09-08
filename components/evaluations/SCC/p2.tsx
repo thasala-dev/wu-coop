@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -19,70 +19,81 @@ const toThaiNumber = (number: number) => {
 };
 
 const criteriaData = [
-{
-  topTitle: "สืบค้น ประเมิน และจัดเตรียมข้อมูลโรคและการรักษา",
-  label: "s1_1",
-  point: 1,
-  title: "1.1 เลือกแหล่งข้อมูลที่เหมาะสมสำหรับการสืบค้นได้",
-},
-{
-  label: "s1_2",
-  point: 2,
-  title: "1.2 จัดเตรียมข้อมูลต่อไปนี้ โดยใช้เทคนิคการสืบค้น และประเมินข้อมูลที่ถูกต้อง",
-  checklist: [
-    "โรค สาเหตุ การรักษาทั้งโดยการใช้ยาและไม่ใช้ยา",
-    "ยาที่ใช้ในการรักษาและการเลือกใช้ยา",
-    "รายละเอียดข้อมูลที่ครบถ้วนของยาที่ต้องการนำเสนอ",
-  ],
-},{
-  topTitle: "ประยุกต์ใช้ความรู้ทางเภสัชศาสตร์ และการบริหารตลาดในการทำการตลาดเภสัชภัณฑ์",
-  label: "s2_1",
-  point: 2,
-  title: "2.1 วิเคราะห์และอธิบายกลยุทธ์การทำการตลาดเภสัชภัณฑ์ของแหล่งฝึกได้ในเบื้องต้น",
-},
-{
-  label: "s2_2",
-  point: 2,
-  title: "2.2 เสนอแนวทางการทำตลาดเภสัชภัณฑ์ของแหล่งฝึกได้ในเบื้องต้น โดยแนวทางดังกล่าวเป็นแนวทางที่สอดคล้องกับกฎหมาย จริยธรรม และเอกลักษณ์วิชาชีพที่เกี่ยวข้อง",
-},
-{
-  label: "s2_3",
-  point: 2,
-  title: "2.3 เสนอโปรแกรมวิธีทำการตลาด หรือสามารถดำเนินการวิธีการทางการตลาดที่ได้รับมอบหมายให้",
-},
-{
-  topTitle: "นำเสนอและอภิปรายข้อมูลเกี่ยวกับโรคอย่างเป็นวิชาชีพแก่บุคลากรทางการแพทย์",
-  label: "s3_1",
-  point: 2,
-  title: "3.1 นำเสนอข้อมูลเภสัชบำบัดที่อย่างครบถ้วนและตอบคำถามที่เกี่ยวกับข้อมูลเภสัชบำบัด รวมถึงเหตุผลที่แนะนำการเลือกใช้ยาเพื่อการรักษาอย่างถูกต้องตามหลักวิชาการทางเภสัชศาสตร์ มีหลักฐานอ้างอิงที่ชัดเจนและมีความเป็นกลาง โดยหลีกเลี่ยงการนำเสนอข้อมูลเพื่อการจดจำ (remind)",
-},
-{
-  label: "s3_2",
-  point: 2,
-  title: "3.2 ร่วมอภิปรายกับบุคลากรทางการแพทย์เรื่องโรค และการรักษาทั้งโดยใช้ยาและไม่ใช้ยาได้",
-},
-{
-  label: "s3_3",
-  point: 2,
-  title: "3.3 แสดงออกถึงทักษะทางการเขียน การบันทึกการสื่อสาร และปฏิบัติพันธะอื่นๆ กับบุคลากรทางการแพทย์อย่างเหมาะสมกับการเป็นผู้ประกอบวิชาชีพ",
-},
-{
-  label: "s4_1",
-  point: 2,
-  topTitle: "4. อภิปรายกรณีศึกษากลยุทธ์ทางการตลาดเภสัชภัณฑ์ หรือสถานการณ์ทางการตลาดปัจจุบันในมุมมองทางจริยธรรม โดยพิจารณาจากกฎหมาย ข้อบังคับจรรยาบรรณ หรือเกณฑ์จริยธรรมที่เกี่ยวข้องได้",
-},
-{
-  label: "s5_1",
-  point: 2,
-  topTitle: "5. อธิบายวิธีการติดตามความปลอดภัยและปัญหาการใช้ยา รวมถึงสามารถรายงานผลและสรุปปัญหาอื่นๆ ที่อาจมาจากการใช้ยาได้",
-},
-{
-  label: "s6_1",
-  point: 2,
-  topTitle: "6. อธิบายความสัมพันธ์และความเชื่อมโยงในความร่วมมือนานาชาติด้านการตลาด การขายกับงานอื่นๆ ตามโครงสร้างองค์กรของแหล่งฝึก",
-},
-
-
+  {
+    topTitle: "สืบค้น ประเมิน และจัดเตรียมข้อมูลโรคและการรักษา",
+    label: "s1_1",
+    point: 1,
+    title: "1.1 เลือกแหล่งข้อมูลที่เหมาะสมสำหรับการสืบค้นได้",
+  },
+  {
+    label: "s1_2",
+    point: 2,
+    title:
+      "1.2 จัดเตรียมข้อมูลต่อไปนี้ โดยใช้เทคนิคการสืบค้น และประเมินข้อมูลที่ถูกต้อง",
+    checklist: [
+      "โรค สาเหตุ การรักษาทั้งโดยการใช้ยาและไม่ใช้ยา",
+      "ยาที่ใช้ในการรักษาและการเลือกใช้ยา",
+      "รายละเอียดข้อมูลที่ครบถ้วนของยาที่ต้องการนำเสนอ",
+    ],
+  },
+  {
+    topTitle:
+      "ประยุกต์ใช้ความรู้ทางเภสัชศาสตร์ และการบริหารตลาดในการทำการตลาดเภสัชภัณฑ์",
+    label: "s2_1",
+    point: 2,
+    title:
+      "2.1 วิเคราะห์และอธิบายกลยุทธ์การทำการตลาดเภสัชภัณฑ์ของแหล่งฝึกได้ในเบื้องต้น",
+  },
+  {
+    label: "s2_2",
+    point: 2,
+    title:
+      "2.2 เสนอแนวทางการทำตลาดเภสัชภัณฑ์ของแหล่งฝึกได้ในเบื้องต้น โดยแนวทางดังกล่าวเป็นแนวทางที่สอดคล้องกับกฎหมาย จริยธรรม และเอกลักษณ์วิชาชีพที่เกี่ยวข้อง",
+  },
+  {
+    label: "s2_3",
+    point: 2,
+    title:
+      "2.3 เสนอโปรแกรมวิธีทำการตลาด หรือสามารถดำเนินการวิธีการทางการตลาดที่ได้รับมอบหมายให้",
+  },
+  {
+    topTitle:
+      "นำเสนอและอภิปรายข้อมูลเกี่ยวกับโรคอย่างเป็นวิชาชีพแก่บุคลากรทางการแพทย์",
+    label: "s3_1",
+    point: 2,
+    title:
+      "3.1 นำเสนอข้อมูลเภสัชบำบัดที่อย่างครบถ้วนและตอบคำถามที่เกี่ยวกับข้อมูลเภสัชบำบัด รวมถึงเหตุผลที่แนะนำการเลือกใช้ยาเพื่อการรักษาอย่างถูกต้องตามหลักวิชาการทางเภสัชศาสตร์ มีหลักฐานอ้างอิงที่ชัดเจนและมีความเป็นกลาง โดยหลีกเลี่ยงการนำเสนอข้อมูลเพื่อการจดจำ (remind)",
+  },
+  {
+    label: "s3_2",
+    point: 2,
+    title:
+      "3.2 ร่วมอภิปรายกับบุคลากรทางการแพทย์เรื่องโรค และการรักษาทั้งโดยใช้ยาและไม่ใช้ยาได้",
+  },
+  {
+    label: "s3_3",
+    point: 2,
+    title:
+      "3.3 แสดงออกถึงทักษะทางการเขียน การบันทึกการสื่อสาร และปฏิบัติพันธะอื่นๆ กับบุคลากรทางการแพทย์อย่างเหมาะสมกับการเป็นผู้ประกอบวิชาชีพ",
+  },
+  {
+    label: "s4_1",
+    point: 2,
+    topTitle:
+      "4. อภิปรายกรณีศึกษากลยุทธ์ทางการตลาดเภสัชภัณฑ์ หรือสถานการณ์ทางการตลาดปัจจุบันในมุมมองทางจริยธรรม โดยพิจารณาจากกฎหมาย ข้อบังคับจรรยาบรรณ หรือเกณฑ์จริยธรรมที่เกี่ยวข้องได้",
+  },
+  {
+    label: "s5_1",
+    point: 2,
+    topTitle:
+      "5. อธิบายวิธีการติดตามความปลอดภัยและปัญหาการใช้ยา รวมถึงสามารถรายงานผลและสรุปปัญหาอื่นๆ ที่อาจมาจากการใช้ยาได้",
+  },
+  {
+    label: "s6_1",
+    point: 2,
+    topTitle:
+      "6. อธิบายความสัมพันธ์และความเชื่อมโยงในความร่วมมือนานาชาติด้านการตลาด การขายกับงานอื่นๆ ตามโครงสร้างองค์กรของแหล่งฝึก",
+  },
 ] as Array<{
   topTitle?: string;
   label: string;
@@ -110,12 +121,17 @@ export default function Page(props: any) {
   });
 
   // State สำหรับ checklist
-  const [checklistData, setChecklistData] = useState<{[key: string]: boolean[]}>(() => {
-    const initialChecklistData: {[key: string]: boolean[]} = {};
+  const [checklistData, setChecklistData] = useState<{
+    [key: string]: boolean[];
+  }>(() => {
+    const initialChecklistData: { [key: string]: boolean[] } = {};
     criteriaData.forEach((item) => {
       if (item.checklist) {
-        const savedData = parentForm.getValues(`result.${item.label}_checklist`);
-        initialChecklistData[item.label] = savedData || new Array(item.checklist.length).fill(false);
+        const savedData = parentForm.getValues(
+          `result.${item.label}_checklist`
+        );
+        initialChecklistData[item.label] =
+          savedData || new Array(item.checklist.length).fill(false);
       }
     });
     return initialChecklistData;
@@ -133,11 +149,18 @@ export default function Page(props: any) {
     parentForm.setValue(`result.${key}`, value);
   };
 
-  const setChecklistValue = (itemLabel: string, checkIndex: number, checked: boolean) => {
+  const setChecklistValue = (
+    itemLabel: string,
+    checkIndex: number,
+    checked: boolean
+  ) => {
     setChecklistData((prev) => {
       const newData = { ...prev };
       if (!newData[itemLabel]) {
-        newData[itemLabel] = new Array(criteriaData.find(item => item.label === itemLabel)?.checklist?.length || 0).fill(false);
+        newData[itemLabel] = new Array(
+          criteriaData.find((item) => item.label === itemLabel)?.checklist
+            ?.length || 0
+        ).fill(false);
       }
       newData[itemLabel][checkIndex] = checked;
       parentForm.setValue(`result.${itemLabel}_checklist`, newData[itemLabel]);
@@ -178,32 +201,36 @@ export default function Page(props: any) {
   const getRowSpanForTopTitle = (currentIndex: number): number | undefined => {
     const currentItem = criteriaData[currentIndex];
     if (!currentItem.topTitle) return undefined;
-    
+
     // หาว่า topTitle นี้ปรากฏครั้งแรกที่ index ไหน
     const firstOccurrenceIndex = criteriaData.findIndex(
-      (item, index) => index <= currentIndex && item.topTitle === currentItem.topTitle
+      (item, index) =>
+        index <= currentIndex && item.topTitle === currentItem.topTitle
     );
-    
+
     // ถ้าไม่ใช่ครั้งแรกที่ปรากฏ ไม่ต้องแสดง topTitle
     if (firstOccurrenceIndex !== currentIndex) return undefined;
-    
+
     // นับจำนวนแถวที่มี topTitle เดียวกัน
     let count = 1;
     for (let i = currentIndex + 1; i < criteriaData.length; i++) {
-      if (criteriaData[i].topTitle === currentItem.topTitle || 
-          (!criteriaData[i].topTitle && i === currentIndex + count)) {
+      if (
+        criteriaData[i].topTitle === currentItem.topTitle ||
+        (!criteriaData[i].topTitle && i === currentIndex + count)
+      ) {
         count++;
       } else {
         break;
       }
     }
-    
+
     return count;
   };
 
   const { totalScore, maxScore } = calculateTotalScore();
   const maxScoreDoubled = maxScore * 2; // คะแนนเต็มทั้งหมด x 2
-  const percentage = maxScore > 0 ? ((totalScore / maxScore) * 100).toFixed(2) : 0;
+  const percentage =
+    maxScore > 0 ? ((totalScore / maxScore) * 100).toFixed(2) : 0;
 
   return (
     <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-12 ">
@@ -215,11 +242,15 @@ export default function Page(props: any) {
         <div className="border rounded-md">
           <table className="w-full border-collapse">
             <thead>
-              <tr> 
-                <th className="p-2 border text-center text-sm" rowSpan={2} colSpan={2}>
+              <tr>
+                <th
+                  className="p-2 border text-center text-sm"
+                  rowSpan={2}
+                  colSpan={2}
+                >
                   วัตถุประสงค์เชิงพฤติกรรม
                 </th>
-                <th className="p-2 border text-center text-sm" rowSpan={2} >
+                <th className="p-2 border text-center text-sm" rowSpan={2}>
                   ไม่มีการฝึก
                 </th>
                 <th className="p-2 border text-center text-sm" colSpan={5}>
@@ -231,35 +262,35 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๕</div>
+                  <div>5</div>
                   <div>(ดีมาก)</div>
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๔</div>
+                  <div>4</div>
                   <div>(ดี)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๓</div>
+                  <div>3</div>
                   <div>(ปานกลาง)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๒</div>
+                  <div>2</div>
                   <div>(พอใช้)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "8%" }}
                 >
-                  <div>๑</div>
+                  <div>1</div>
                   <div>(ปรับปรุง)</div>
                 </th>
               </tr>
@@ -268,12 +299,12 @@ export default function Page(props: any) {
               {criteriaData.map((item, index) => {
                 const rowSpan = getRowSpanForTopTitle(index);
                 const isTopTitleOnly = item.topTitle && !item.title;
-                
+
                 return (
                   <tr key={index} className="bg-white">
                     {rowSpan && (
-                      <td 
-                        className="p-2 border text-sm font-semibold align-top" 
+                      <td
+                        className="p-2 border text-sm font-semibold align-top"
                         rowSpan={rowSpan}
                         colSpan={isTopTitleOnly ? 2 : 1}
                       >
@@ -286,12 +317,22 @@ export default function Page(props: any) {
                         {item.checklist && (
                           <div className="mt-2 space-y-2">
                             {item.checklist.map((checkItem, checkIndex) => (
-                              <div key={checkIndex} className="flex items-start space-x-2">
+                              <div
+                                key={checkIndex}
+                                className="flex items-start space-x-2"
+                              >
                                 <Checkbox
                                   id={`${item.label}_${checkIndex}`}
-                                  checked={checklistData[item.label]?.[checkIndex] || false}
+                                  checked={
+                                    checklistData[item.label]?.[checkIndex] ||
+                                    false
+                                  }
                                   onCheckedChange={(checked) =>
-                                    setChecklistValue(item.label, checkIndex, checked as boolean)
+                                    setChecklistValue(
+                                      item.label,
+                                      checkIndex,
+                                      checked as boolean
+                                    )
                                   }
                                   className="mt-1"
                                 />
@@ -338,7 +379,10 @@ export default function Page(props: any) {
                 <td className="p-2 border font-bold text-sm" colSpan={2}>
                   คะแนนรวม
                 </td>
-                <td colSpan={6} className="p-2 border text-center text-sm font-semibold">
+                <td
+                  colSpan={6}
+                  className="p-2 border text-center text-sm font-semibold"
+                >
                   {toThaiNumber(totalScore)} / {toThaiNumber(maxScore)} คะแนน
                 </td>
               </tr>
@@ -346,7 +390,10 @@ export default function Page(props: any) {
                 <td className="p-2 border font-bold text-sm" colSpan={2}>
                   เปอร์เซ็นต์ของคะแนนความรู้และทักษะที่ได้
                 </td>
-                <td colSpan={6} className="p-2 border text-center text-sm font-semibold">
+                <td
+                  colSpan={6}
+                  className="p-2 border text-center text-sm font-semibold"
+                >
                   {toThaiNumber(parseFloat(percentage.toString()))}%
                 </td>
               </tr>

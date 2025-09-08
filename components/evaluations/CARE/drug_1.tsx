@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -20,65 +20,65 @@ const toThaiNumber = (number: number) => {
 const criteriaData = [
   {
     label: "p1",
-    title: "๑. มีคุณธรรม จริยธรรม",
+    title: "1. มีคุณธรรม จริยธรรม",
   },
   {
     label: "p2",
     title:
-      "๒. ปฏิบัติตามจรรยาบรรณวิชาชีพ กฎหมาย และระเบียบข้อบังคับต่าง ๆ ที่เกี่ยวข้องกับวิชาชีพเภสัชกรรม",
+      "2. ปฏิบัติตามจรรยาบรรณวิชาชีพ กฎหมาย และระเบียบข้อบังคับต่าง ๆ ที่เกี่ยวข้องกับวิชาชีพเภสัชกรรม",
   },
   {
     label: "p3",
-    title: "๓. มีเจตคติที่ดีต่อการให้บริการเภสัชกรรม",
+    title: "3. มีเจตคติที่ดีต่อการให้บริการเภสัชกรรม",
   },
   {
     label: "p4",
-    title: "๔. ไม่มีพฤติกรรมที่เสี่ยงต่อการเปิดเผยความลับของผู้ป่วย",
+    title: "4. ไม่มีพฤติกรรมที่เสี่ยงต่อการเปิดเผยความลับของผู้ป่วย",
   },
   {
     label: "p5",
-    title: "๕. ตรงต่อเวลาและมีวินัย",
+    title: "5. ตรงต่อเวลาและมีวินัย",
   },
   {
     label: "p6",
-    title: "๖. แต่งกายเหมาะสมแสดงถึงความเป็นวิชาชีพเภสัชกรรม",
+    title: "6. แต่งกายเหมาะสมแสดงถึงความเป็นวิชาชีพเภสัชกรรม",
   },
   {
     label: "p7",
-    title: "๗. มีสัมมาคารวะ และประพฤติตนเหมาะสมกับกาลเทศะ",
+    title: "7. มีสัมมาคารวะ และประพฤติตนเหมาะสมกับกาลเทศะ",
   },
   {
     label: "p8",
-    title: "๘. มีน้ําใจไม่เพิกเฉยต่อการช่วยเหลือผู้อื่นตามสมควร",
+    title: "8. มีน้ําใจไม่เพิกเฉยต่อการช่วยเหลือผู้อื่นตามสมควร",
   },
   {
     label: "p9",
-    title: "๙. บุคลิกภาพเหมาะสม",
+    title: "9. บุคลิกภาพเหมาะสม",
   },
   {
     label: "p10",
-    title: "๑๐. ตั้งใจและกระตือรือร้นในการฝึกปฏิบัติงาน",
+    title: "10. ตั้งใจและกระตือรือร้นในการฝึกปฏิบัติงาน",
   },
   {
     label: "p11",
-    title: "๑๑. รับผิดชอบต่องานที่ได้รับมอบหมาย",
+    title: "11. รับผิดชอบต่องานที่ได้รับมอบหมาย",
   },
   {
     label: "p12",
-    title: "๑๒. การปรับตัวเข้ากับแหล่งฝึก",
+    title: "12. การปรับตัวเข้ากับแหล่งฝึก",
   },
   {
     label: "p13",
-    title: "๑๓. การทํางานร่วมกับผู้อื่น",
+    title: "13. การทํางานร่วมกับผู้อื่น",
   },
   {
     label: "p14",
-    title: "๑๔. การปรับปรุงตนเองต่อข้อเสนอแนะ",
+    title: "14. การปรับปรุงตนเองต่อข้อเสนอแนะ",
   },
   {
     label: "p15",
     title:
-      "๑๕. โดยรวมนิสิต/นักศึกษา มีทัศคติที่ดีต่อการประกอบวิชาชีพเภสัชกรรมชุมชน",
+      "15. โดยรวมนิสิต/นักศึกษา มีทัศคติที่ดีต่อการประกอบวิชาชีพเภสัชกรรมชุมชน",
   },
 ];
 
@@ -187,7 +187,7 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                5
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีมาก
@@ -200,7 +200,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                4
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
@@ -213,7 +213,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                3
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
@@ -225,7 +225,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                2
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
@@ -237,7 +237,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                1
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
@@ -267,31 +267,31 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๕
+                  5
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๔
+                  4
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๓
+                  3
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๒
+                  2
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๑
+                  1
                 </th>
               </tr>
             </thead>
@@ -428,7 +428,7 @@ export default function Page(props: any) {
             <tbody>
               <tr>
                 <td className="p-2 border align-center text-sm font-bold text-center">
-                  รวมคะแนน (คะแนนที่ได้ x ๑๐) / ๗๕
+                  รวมคะแนน (คะแนนที่ได้ x 10) / 75
                 </td>
                 <td
                   className="p-2 border align-center text-sm font-bold text-center"

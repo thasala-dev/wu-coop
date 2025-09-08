@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -266,7 +266,7 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                5
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีมาก
@@ -279,7 +279,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                4
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
@@ -292,7 +292,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                3
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
@@ -304,7 +304,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                2
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
@@ -316,7 +316,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                1
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
@@ -346,31 +346,31 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๕
+                  5
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๔
+                  4
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๓
+                  3
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๒
+                  2
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๑
+                  1
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"

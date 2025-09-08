@@ -56,7 +56,7 @@ const levelList = [
 ];
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -72,10 +72,10 @@ const toThaiNumber = (number: number) => {
 
 const criteriaData = [
   {
-    number: "๑",
+    number: "1",
     point: 1,
     label: "p1",
-    title: "๑. ทักษะการสื่อสาร",
+    title: "1. ทักษะการสื่อสาร",
     superd: (
       <ul className="list-disc pl-4">
         <li>
@@ -113,10 +113,10 @@ const criteriaData = [
     ),
   },
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p2",
-    title: "๒. ความเป็นวิชาชีพ",
+    title: "2. ความเป็นวิชาชีพ",
     superd: (
       <ul className="list-disc pl-4">
         <li>
@@ -149,10 +149,10 @@ const criteriaData = [
     ),
   },
   {
-    number: "๒",
+    number: "2",
     point: 2,
     label: "p3",
-    title: "๓. การตัดสินใจ",
+    title: "3. การตัดสินใจ",
     superd: (
       <ul className="list-disc pl-4">
         <li>
@@ -250,7 +250,7 @@ export default function Page(props: any) {
             <u className="font-medium italic">
               อาจารย์ประจำแหล่งฝึกเป็นผู้ประเมิน
             </u>
-            ทักษะทางคลินิกดังกล่าวจะประเมินนิสิต/นักศึกษาใน ๒ ประเด็น คือ
+            ทักษะทางคลินิกดังกล่าวจะประเมินนิสิต/นักศึกษาใน 2 ประเด็น คือ
             ทักษะการสัมภาษณ์ผู้ป่วย (psychomotor domain) ความเป็นวิชาชีพ
             (professional domain) โดยมุ่งเน้นทักษะใน
             <u className="font-medium italic">
@@ -273,38 +273,38 @@ export default function Page(props: any) {
           <div className="text-sm">
             <ul>
               <li>
-                ๑. อาจารย์ประจำแหล่งฝึกเตรียมหาข้อมูลผู้ป่วยไว้ล่วงหน้า
+                1. อาจารย์ประจำแหล่งฝึกเตรียมหาข้อมูลผู้ป่วยไว้ล่วงหน้า
                 โดยขออนุญาตผู้ป่วยว่าจะมีนิสิต/นักศึกษามาฝึกปฏิบัติ
               </li>
               <li>
-                ๒. อาจารย์ประจำแหล่งฝึกแนะนำขั้นตอน
+                2. อาจารย์ประจำแหล่งฝึกแนะนำขั้นตอน
                 เกณฑ์การประเมินแก่นิสิต/นักศึกษาที่เข้ารับการประเมิน
                 และให้นิสิต/นักศึกษาเลือกว่าจะสัมภาษณ์ผู้ป่วยในประเด็นใด เช่น
                 การแพ้ยา
               </li>
               <li>
-                ๓. อาจารย์ประจำแหล่งฝึกให้นิสิต/นักศึกษาปฏิบัติ
+                3. อาจารย์ประจำแหล่งฝึกให้นิสิต/นักศึกษาปฏิบัติ
                 โดยทำหน้าที่เฝ้าดูและให้การช่วยเหลือเฉพาะเมื่อจำเป็น เช่น
                 ผู้ป่วยเริ่มเหนื่อยจากการให้สัมภาษณ์
                 อาจารย์ประจำแหล่งฝึกไม่ควรช่วยนิสิต/นักศึกษาสัมภาษณ์
-                การสัมภาษณ์จะใช้เวลาไม่เกิน ๑๕ นาที
+                การสัมภาษณ์จะใช้เวลาไม่เกิน 15 นาที
               </li>
               <li>
-                ๔. หลังเสร็จสิ้นการสื่อสาร อาจารย์ประจำแหล่งฝึกจะสะท้อน
+                4. หลังเสร็จสิ้นการสื่อสาร อาจารย์ประจำแหล่งฝึกจะสะท้อน
                 (reflection) หรือแจ้ง (feedback)
-                ผลการประเมินให้นิสิต/นักศึกษาทราบ ใช้เวลาไม่เกิน ๕ นาที
+                ผลการประเมินให้นิสิต/นักศึกษาทราบ ใช้เวลาไม่เกิน 5 นาที
                 โดยใช้วิธีดังต่อไปนี้วิธีใดวิธีหนึ่งหรือรวมกัน
               </li>
               <li className="pl-4">
-                ๔.๑ Reflection: ให้อาจารย์ประจำแหล่งฝึกถาม ๓
-                คำถามเพื่อให้นิสิต/นักศึกษาสะท้อนกลับ ดังนี้ ๑)
-                เมื่อสักครู่นี้ได้ทำอะไรบ้าง รู้สึกอย่างไร ๒)
-                ได้เรียนรู้อะไรบ้าง ๓) จะนำไปใช้ประโยชน์ในอนาคตได้อย่างไร
+                4.1 Reflection: ให้อาจารย์ประจำแหล่งฝึกถาม 3
+                คำถามเพื่อให้นิสิต/นักศึกษาสะท้อนกลับ ดังนี้ 1)
+                เมื่อสักครู่นี้ได้ทำอะไรบ้าง รู้สึกอย่างไร 2)
+                ได้เรียนรู้อะไรบ้าง 3) จะนำไปใช้ประโยชน์ในอนาคตได้อย่างไร
                 เน้นให้นิสิต/นักศึกษาพรรณนา
                 และอาจารย์ประจำแหล่งฝึกคอยปรับแก้ไขหากมีความเข้าใจผิด
               </li>
               <li className="pl-4">
-                ๔.๒ Feedback:
+                4.2 Feedback:
                 โดยแจ้งสิ่งที่นิสิต/นักศึกษาปฏิบัติทั้งข้อดีและข้อควรปรับปรุงสลับกัน
                 (feedback sandwich) ในส่วนที่ระบุข้อที่ควรปรับปรุง
                 ควรมีลักษณะดังนี้ เป็นความจริง ไม่มีการเพิ่มเติมความคิดเห็น
@@ -327,7 +327,7 @@ export default function Page(props: any) {
             กรณีไม่สามารถประเมินในหัวข้อนั้นได้ให้ทำเครื่องหมาย (✗) ลงตรงช่อง
             N/A{" "}
             <u className="font-bold">
-              ทั้งนี้ ควรทำการประเมินนิสิต/นักศึกษาอย่างน้อย ๒ ครั้ง และควรให้
+              ทั้งนี้ ควรทำการประเมินนิสิต/นักศึกษาอย่างน้อย 2 ครั้ง และควรให้
               feedback นิสิต/นักศึกษาทุกครั้ง
               โดยจะคิดคะแนนจากครั้งที่ทำได้สูงสุด
             </u>
@@ -400,7 +400,7 @@ export default function Page(props: any) {
                     การให้คำแนะนำปรึกษาทางยาแก่ผู้ป่วย:
                   </u>{" "}
                   วันนี้มาพบแพทย์เพราะอะไร, ผลการรักษาโรคเรื้อรัง เช่น
-                  ความดันโลหิต, การใช้ prime questions ๓ ข้อ, การใช้เทคนิค show
+                  ความดันโลหิต, การใช้ prime questions 3 ข้อ, การใช้เทคนิค show
                   and tell, ให้ข้อมูลยาครบถ้วน
                   โดยเฉพาะยาใหม่หรือยาที่มีการเปลี่ยนแปลงวิธีการใช้ใหม่,
                   ให้ผู้ป่วยทวน, มีคำถามอะไรอีกหรือไม่ และขอบคุณผู้ป่วย
@@ -575,25 +575,25 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ดีมาก <div className="text-xs">(๑๐ คะแนน)</div>
+                  ดีมาก <div className="text-xs">(10 คะแนน)</div>
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ดี <div className="text-xs">(๘-๙ คะแนน)</div>
+                  ดี <div className="text-xs">(8-9 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ผ่าน <div className="text-xs">(๖-๗ คะแนน)</div>
+                  ผ่าน <div className="text-xs">(6-7 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "20%" }}
                 >
-                  ควรปรับปรุง <div className="text-xs">(๐-๕ คะแนน)</div>
+                  ควรปรับปรุง <div className="text-xs">(0-5 คะแนน)</div>
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
@@ -649,7 +649,7 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๑๐",
+                              label: "10",
                               value: "10",
                             },
                           ].map((radio) => (
@@ -697,11 +697,11 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๙",
+                              label: "9",
                               value: "9",
                             },
                             {
-                              label: "๘",
+                              label: "8",
                               value: "8",
                             },
                           ].map((radio) => (
@@ -749,11 +749,11 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๗",
+                              label: "7",
                               value: "7",
                             },
                             {
-                              label: "๖",
+                              label: "6",
                               value: "6",
                             },
                           ].map((radio) => (
@@ -801,27 +801,27 @@ export default function Page(props: any) {
                         >
                           {[
                             {
-                              label: "๕",
+                              label: "5",
                               value: "5",
                             },
                             {
-                              label: "๔",
+                              label: "4",
                               value: "4",
                             },
                             {
-                              label: "๓",
+                              label: "3",
                               value: "3",
                             },
                             {
-                              label: "๒",
+                              label: "2",
                               value: "2",
                             },
                             {
-                              label: "๑",
+                              label: "1",
                               value: "1",
                             },
                             {
-                              label: "๐",
+                              label: "0",
                               value: "0",
                             },
                           ].map((radio) => (
@@ -916,9 +916,9 @@ export default function Page(props: any) {
                   colSpan={6}
                   className="p-2 border align-top text-center text-md"
                 >
-                  ปรับให้เป็นคะแนนเต็ม ๑๐ คะแนน =
+                  ปรับให้เป็นคะแนนเต็ม 10 คะแนน =
                   <span className="font-mono">
-                    (คะแนนที่ประเมินได้ &divide; ๕๐) &times; ๑๐
+                    (คะแนนที่ประเมินได้ &divide; 50) &times; 10
                   </span>
                   &nbsp;= ______ คะแนน
                 </td>

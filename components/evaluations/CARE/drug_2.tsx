@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -20,7 +20,7 @@ const toThaiNumber = (number: number) => {
 const criteriaData = [
   {
     label: "p1",
-    title: `๑. การรวบรวมข้อมูลที่เหมาะสม *
+    title: `1. การรวบรวมข้อมูลที่เหมาะสม *
 ทักษะในการเก็บรวบรวมและบันทึกข้อมูล: การสังเกต การซักประวัติ
 ทั่วไป ซักประวัติแยกโรค และการประเมินระบบร่างกายเบื้องต้น (review of
 system) การใช้อุปกรณ์ทางการแพทย์พื้นฐานในการประเมินและติดตาม
@@ -30,45 +30,45 @@ system) การใช้อุปกรณ์ทางการแพทย์
   {
     label: "p2",
     title:
-      "๒. การระบุสาเหตุปัญหาทางสุขภาพ ความทุกข์ และความต้องการของผู้รับบริการ และตอบสนองต่อปัญหาอย่างเหมาะสมในฐานะเภสัชกร",
+      "2. การระบุสาเหตุปัญหาทางสุขภาพ ความทุกข์ และความต้องการของผู้รับบริการ และตอบสนองต่อปัญหาอย่างเหมาะสมในฐานะเภสัชกร",
   },
   {
     label: "p3",
     title:
-      "๓. ค้นหาและระบุปัญหาจากการได้รับยา หรือไม่ได้รับยาที่ควรได้รับ เสนอวิธีการที่เหมาะสมในการแก้ปัญหา",
+      "3. ค้นหาและระบุปัญหาจากการได้รับยา หรือไม่ได้รับยาที่ควรได้รับ เสนอวิธีการที่เหมาะสมในการแก้ปัญหา",
   },
   {
     label: "p4",
     title:
-      "๔. ระบุและจัดลําดับความสําคัญการเกิดอันตรกิริยาระหว่าง 'ยากับยา' 'ยากับผู้ป่วย' 'ยากับโรค' และแจ้งเปลี่ยนยาที่เหมาะสมได้",
+      "4. ระบุและจัดลําดับความสําคัญการเกิดอันตรกิริยาระหว่าง 'ยากับยา' 'ยากับผู้ป่วย' 'ยากับโรค' และแจ้งเปลี่ยนยาที่เหมาะสมได้",
   },
   {
     label: "p5",
     title:
-      "๕. การพิจารณาเปรียบเทียบคัดเลือกยาและ/หรือผลิตภัณฑ์สุขภาพที่เหมาะสมแก่ผู้ป่วยเฉพาะราย (ประเมินในรูปแบบ IESAC หรือรูปแบบอื่นๆ ตามความเหมาะสมของแหล่งฝึกฯ)** โดยแสดงหลักฐานเชิงประจักษ์ที่เหมาะสม",
+      "5. การพิจารณาเปรียบเทียบคัดเลือกยาและ/หรือผลิตภัณฑ์สุขภาพที่เหมาะสมแก่ผู้ป่วยเฉพาะราย (ประเมินในรูปแบบ IESAC หรือรูปแบบอื่นๆ ตามความเหมาะสมของแหล่งฝึกฯ)** โดยแสดงหลักฐานเชิงประจักษ์ที่เหมาะสม",
   },
   {
     label: "p6",
     title:
-      "๖. ทักษะการจ่ายยา โดยแจ้งชื่อยา ข้อบ่งใช้ ขนาด วิธีการใช้ ระยะเวลาในการใช้ยา อาการข้างเคียง และข้อควรระวังข้อควรปฏิบัติเมื่อเกิดปัญหาจากการใช้ยา รวมถึงการเก็บรักษา",
+      "6. ทักษะการจ่ายยา โดยแจ้งชื่อยา ข้อบ่งใช้ ขนาด วิธีการใช้ ระยะเวลาในการใช้ยา อาการข้างเคียง และข้อควรระวังข้อควรปฏิบัติเมื่อเกิดปัญหาจากการใช้ยา รวมถึงการเก็บรักษา",
   },
   {
     label: "p7",
-    title: "๗. ทักษะการเขียนฉลากยา ฉลากช่วย",
+    title: "7. ทักษะการเขียนฉลากยา ฉลากช่วย",
   },
   {
     label: "p8",
     title:
-      "๘. การให้คําแนะนําการปรับเปลี่ยนพฤติกรรมสุขภาพ หรือการพิจารณาส่งต่อผู้ป่วยอย่างเหมาะสมกับผู้ป่วยเฉพาะราย",
+      "8. การให้คําแนะนําการปรับเปลี่ยนพฤติกรรมสุขภาพ หรือการพิจารณาส่งต่อผู้ป่วยอย่างเหมาะสมกับผู้ป่วยเฉพาะราย",
   },
   {
     label: "p9",
-    title: "๙. การสื่อสารแก่ผู้ป่วย/ผู้รับบริการ* ทั้งวัจนภาษา และอวัจนภาษา",
+    title: "9. การสื่อสารแก่ผู้ป่วย/ผู้รับบริการ* ทั้งวัจนภาษา และอวัจนภาษา",
   },
   {
     label: "p10",
     title:
-      "๑๐. ติดตามและประเมินผลลัพธ์การรักษาของผู้ป่วยว่ามีความเหมาะสมกับเป้าหมายตามแนวทางการรักษา",
+      "10. ติดตามและประเมินผลลัพธ์การรักษาของผู้ป่วยว่ามีความเหมาะสมกับเป้าหมายตามแนวทางการรักษา",
   },
 ];
 
@@ -172,7 +172,7 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                5
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีมาก
@@ -185,7 +185,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                4
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
@@ -198,7 +198,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                3
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
@@ -210,7 +210,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                2
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
@@ -222,7 +222,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                1
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
@@ -252,31 +252,31 @@ export default function Page(props: any) {
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๕
+                  5
                 </th>
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๔
+                  4
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๓
+                  3
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๒
+                  2
                 </th>
                 <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "6%" }}
                 >
-                  ๑
+                  1
                 </th>
               </tr>
             </thead>
@@ -413,7 +413,7 @@ export default function Page(props: any) {
             <tbody>
               <tr>
                 <td className="p-2 border align-center text-sm font-bold text-center">
-                  รวมคะแนน (คะแนนที่ได้ x ๓๐) / ๕๐
+                  รวมคะแนน (คะแนนที่ได้ x 30) / 50
                 </td>
                 <td
                   className="p-2 border align-center text-sm font-bold text-center"

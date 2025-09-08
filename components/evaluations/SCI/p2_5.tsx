@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 
 const toThaiNumber = (number: number) => {
-  const thaiNumbers = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙"];
+  const thaiNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   return number
     .toString()
     .split("")
@@ -18,11 +18,11 @@ const toThaiNumber = (number: number) => {
 };
 
 const scoreLabels = [
-  { label: "๕", value: "5" },
-  { label: "๔", value: "4" },
-  { label: "๓", value: "3" },
-  { label: "๒", value: "2" },
-  { label: "๑", value: "1" },
+  { label: "5", value: "5" },
+  { label: "4", value: "4" },
+  { label: "3", value: "3" },
+  { label: "2", value: "2" },
+  { label: "1", value: "1" },
 ];
 
 const quantityLabels = [
@@ -35,8 +35,6 @@ const activityLabels = [
   { label: "1-2 กิจกรรม", value: "1" },
   { label: ">2 กิจกรรม", value: ">2" },
 ];
-
-
 
 // Check if checkbox is selected but score is not provided
 const checkboxScoreValidation = [
@@ -201,13 +199,13 @@ export default function Page(props: any) {
       "otherDepartment",
       "suggestion",
       "g1_1_note",
-      "g1_2_note", 
+      "g1_2_note",
       "g2_1_note",
       "g2_2_note",
       "g3_1_note",
-      "g3_2_note", 
+      "g3_2_note",
       "g3_3_note",
-      "g4_1_note"
+      "g4_1_note",
     ];
 
     // Check required fields (exclude checkbox fields, score fields, note fields, and avg/total score fields)
@@ -256,11 +254,26 @@ export default function Page(props: any) {
       <div className="sm:col-span-12 ">
         <div className="">
           <p className="text-sm mb-2">
-การประเมินแบ่งออกเป็น 2 ส่วน ได้แก่ การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์ของการฝึกปฏิบัติงาน โดยทั้ง 2 ส่วนประกอบด้วยจุดมุ่งหมายหลัก 4 ข้อ นักศึกษาควรได้รับการฝึกปฏิบัติงานจนครบทั้ง 4 จุดมุ่งหมายหลัก แต่ละจุดมุ่งหมายหลัก มีวัตถุประสงค์เชิงพฤติกรรมหลายส่วน ซึ่งอาจไม่จำเป็นต้องฝึกปฏิบัติงานจนครบทุกวัตถุประสงค์ ทั้งนี้ขึ้นอยู่กับความพร้อมและบริบทของแต่ละแหล่งฝึก          </p>
+            การประเมินแบ่งออกเป็น 2 ส่วน ได้แก่
+            การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์ของการฝึกปฏิบัติงาน
+            โดยทั้ง 2 ส่วนประกอบด้วยจุดมุ่งหมายหลัก 4 ข้อ
+            นักศึกษาควรได้รับการฝึกปฏิบัติงานจนครบทั้ง 4 จุดมุ่งหมายหลัก
+            แต่ละจุดมุ่งหมายหลัก มีวัตถุประสงค์เชิงพฤติกรรมหลายส่วน
+            ซึ่งอาจไม่จำเป็นต้องฝึกปฏิบัติงานจนครบทุกวัตถุประสงค์
+            ทั้งนี้ขึ้นอยู่กับความพร้อมและบริบทของแต่ละแหล่งฝึก{" "}
+          </p>
           <p className="text-sm mb-2">
-การประเมินผลเชิงปริมาณนั้น อาจารย์ประจำแหล่งฝึกสามารถกำหนดหัวข้อและกรอบการฝึกปฏิบัติงานได้ตามความเหมาะสม โดยอ้างอิงจากข้อมูลในแต่ละวัตถุประสงค์เชิงพฤติกรรม ถ้ากิจกรรมใดมีการฝึกปฏิบัติขอให้ระบุจำนวนกิจกรรมที่เกิดขึ้น พร้อมทั้งบันทึกชื่อของกิจกรรมที่ได้ฝึกปฏิบัติไว้ในช่องหมายเหตุด้วย          </p>
+            การประเมินผลเชิงปริมาณนั้น
+            อาจารย์ประจำแหล่งฝึกสามารถกำหนดหัวข้อและกรอบการฝึกปฏิบัติงานได้ตามความเหมาะสม
+            โดยอ้างอิงจากข้อมูลในแต่ละวัตถุประสงค์เชิงพฤติกรรม
+            ถ้ากิจกรรมใดมีการฝึกปฏิบัติขอให้ระบุจำนวนกิจกรรมที่เกิดขึ้น
+            พร้อมทั้งบันทึกชื่อของกิจกรรมที่ได้ฝึกปฏิบัติไว้ในช่องหมายเหตุด้วย{" "}
+          </p>
           <p className="text-sm mb-2">
-สำหรับการประเมินผลสัมฤทธิ์นั้น อาจารย์ประจำแหล่งฝึกสามารถทำได้จากการสังเกต การสอบถาม การอภิปราย รวมไปถึงผลของการฝึกปฏิบัติงาน โดยมีแนวทางการให้คะแนนดังนี้          </p>
+            สำหรับการประเมินผลสัมฤทธิ์นั้น
+            อาจารย์ประจำแหล่งฝึกสามารถทำได้จากการสังเกต การสอบถาม การอภิปราย
+            รวมไปถึงผลของการฝึกปฏิบัติงาน โดยมีแนวทางการให้คะแนนดังนี้{" "}
+          </p>
         </div>
       </div>
       <div className="sm:col-span-12 ">
@@ -290,7 +303,7 @@ export default function Page(props: any) {
           <tbody>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๕
+                5
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดีมาก
@@ -304,7 +317,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๔
+                4
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ดี
@@ -318,7 +331,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๓
+                3
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปานกลาง
@@ -332,7 +345,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๒
+                2
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ปรับปรุง
@@ -345,7 +358,7 @@ export default function Page(props: any) {
             </tr>
             <tr>
               <td className="p-2 border font-medium align-top text-sm text-center">
-                ๑
+                1
               </td>
               <td className="p-2 border font-medium align-top text-sm text-center">
                 ไม่ผ่าน
@@ -361,19 +374,19 @@ export default function Page(props: any) {
       </div>
 
       <div className="sm:col-span-12 py-2">
-        <p className="text-center text-md font-bold">การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์</p>
+        <p className="text-center text-md font-bold">
+          การประเมินผลเชิงปริมาณและการประเมินผลสัมฤทธิ์
+        </p>
       </div>
 
-      <div className="sm:col-span-12">
-      
-      </div>
+      <div className="sm:col-span-12"></div>
       <div className="sm:col-span-12">
         <div className="border rounded-md">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-slate-100">
                 <th className="p-2 border text-center text-sm">จุดมุ่งหมาย</th>
-                
+
                 <th
                   className="p-2 border text-center text-sm"
                   style={{ width: "25%" }}
@@ -386,7 +399,7 @@ export default function Page(props: any) {
                 >
                   กิจกรรมหรือการฝึกปฏิบัติงาน
                 </th>
-                  <th
+                <th
                   className="=p-2 border text-center text-sm"
                   style={{ width: "15%" }}
                 >
@@ -399,537 +412,634 @@ export default function Page(props: any) {
                   ระดับของการบรรลุวัตถุประสงค์
                 </th>
                 <th className="p-2 border text-center text-sm">หมายเหตุ</th>
-              
               </tr>
             </thead>
-<tbody>
-  <tr>
-    {/* จุดมุ่งหมาย */}
-    <td className="p-2 border align-top text-sm" rowSpan={2}>
-      1. กฎหมาย ระเบียบ ข้อบังคับ เกี่ยวกับ การกำกับดูแล และผลิตภัณฑ์สุขภาพ
-    </td>
+            <tbody>
+              <tr>
+                {/* จุดมุ่งหมาย */}
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  1. กฎหมาย ระเบียบ ข้อบังคับ เกี่ยวกับ การกำกับดูแล
+                  และผลิตภัณฑ์สุขภาพ
+                </td>
 
-    {/* วัตถุประสงค์เชิงพฤติกรรม */}
-    <td className="p-2 border align-top text-sm">
-      1. อธิบายสาระสำคัญของกฎ ระเบียบหรือข้อบังคับที่เกี่ยวกับยาและผลิตภัณฑ์สุขภาพ เช่น
-      พระราชบัญญัติ กฎกระทรวง ประกาศ คำสั่ง ระเบียบ ที่เกี่ยวข้องกับยาและผลิตภัณฑ์สุขภาพ
-    </td>
+                {/* วัตถุประสงค์เชิงพฤติกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  1. อธิบายสาระสำคัญของกฎ
+                  ระเบียบหรือข้อบังคับที่เกี่ยวกับยาและผลิตภัณฑ์สุขภาพ เช่น
+                  พระราชบัญญัติ กฎกระทรวง ประกาศ คำสั่ง ระเบียบ
+                  ที่เกี่ยวข้องกับยาและผลิตภัณฑ์สุขภาพ
+                </td>
 
-    {/* กิจกรรมหรือการฝึกปฏิบัติงาน */}
-    <td className="p-2 border align-top text-sm">
-      1. ฟังบรรยาย<br />
-      2. อภิปราย<br />
-      3. สัมมนา<br />
-      4. ศึกษาด้วยตนเอง ภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
-    </td>
+                {/* กิจกรรมหรือการฝึกปฏิบัติงาน */}
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังบรรยาย
+                  <br />
+                  2. อภิปราย
+                  <br />
+                  3. สัมมนา
+                  <br />
+                  4. ศึกษาด้วยตนเอง ภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
+                </td>
 
-    {/* ปริมาณงาน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g1_1_activity}
-        label="g1_1_activity"
-        list={activityLabels}
-        rows={true}
-        isRequired={true}
-      />
-    </td>
+                {/* ปริมาณงาน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g1_1_activity}
+                    label="g1_1_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
 
-    {/* คะแนน */}
-    <td className="p-2 border align-top text-sm" >
-      <ScoreForm
-        value={data.g1_1_score}
-        label="g1_1_score"
-        list={scoreLabels}
-        isRequired={data.g1_1_select}
-      />
-    </td>
+                {/* คะแนน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g1_1_score}
+                    label="g1_1_score"
+                    list={scoreLabels}
+                    isRequired={data.g1_1_select}
+                  />
+                </td>
 
-    {/* หมายเหตุ */}
-    <td className="p-2 border align-top text-sm">
-      <input
-        type="text"
-        value={data.g1_1_note || ""}
-        onChange={(e) => setDataValue("g1_1_note", e.target.value)}
-        className="p-1 border rounded-md text-sm w-full"
-      />
-    </td>
-  </tr>
-  <tr>
-    {/* วัตถุประสงค์เชิงพฤติกรรม */}
-    <td className="p-2 border align-top text-sm">
-      2. อธิบายหลักเกณฑ์ในการขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพระหว่างประเทศ เช่น ASEAN
-      Harmonization, WHO, ICH และอธิบายมาตรฐานวิชาชีพและจรรยาบรรณของนักวิชาการทะเบียน
-      และกฎหมายผลิตภัณฑ์
-    </td>
+                {/* หมายเหตุ */}
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.g1_1_note || ""}
+                    onChange={(e) => setDataValue("g1_1_note", e.target.value)}
+                    className="p-1 border rounded-md text-sm w-full"
+                  />
+                </td>
+              </tr>
+              <tr>
+                {/* วัตถุประสงค์เชิงพฤติกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  2.
+                  อธิบายหลักเกณฑ์ในการขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพระหว่างประเทศ
+                  เช่น ASEAN Harmonization, WHO, ICH
+                  และอธิบายมาตรฐานวิชาชีพและจรรยาบรรณของนักวิชาการทะเบียน
+                  และกฎหมายผลิตภัณฑ์
+                </td>
 
-    {/* กิจกรรมหรือการฝึกปฏิบัติงาน */}
-    <td className="p-2 border align-top text-sm">
-      1. ฟังบรรยาย<br />
-      2. อภิปราย<br />
-      3. สัมมนา<br />
-      4. ศึกษาด้วยตนเอง ภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
-    </td>
+                {/* กิจกรรมหรือการฝึกปฏิบัติงาน */}
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังบรรยาย
+                  <br />
+                  2. อภิปราย
+                  <br />
+                  3. สัมมนา
+                  <br />
+                  4. ศึกษาด้วยตนเอง ภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
+                </td>
 
-    {/* ปริมาณงาน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g1_2_activity}
-        label="g1_2_activity"
-        list={activityLabels}
-        rows={true}
-        isRequired={true}
-      />
-    </td>
+                {/* ปริมาณงาน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g1_2_activity}
+                    label="g1_2_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
 
-    {/* คะแนน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g1_2_score}
-        label="g1_2_score"
-        list={scoreLabels}
-        isRequired={data.g1_2_select}
-      />
-    </td>
+                {/* คะแนน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g1_2_score}
+                    label="g1_2_score"
+                    list={scoreLabels}
+                    isRequired={data.g1_2_select}
+                  />
+                </td>
 
-    {/* หมายเหตุ */}
-    <td className="p-2 border align-top text-sm">
-      <input
-        type="text"
-        value={data.g1_2_note || ""}
-        onChange={(e) => setDataValue("g1_2_note", e.target.value)}
-        className="p-1 border rounded-md text-sm w-full"
-      />
-    </td>
-  </tr>
-{/* คะแนนเฉลี่ย (จุดมุ่งหมาย 1) */}
-<tr>
-  <td
-    className="p-2 border align-top text-sm font-bold text-right"
-    colSpan={4}
-  >
-    คะแนนเฉลี่ย (จุดมุ่งหมาย 1)
-  </td>
-  <td className="p-2 border align-top text-sm font-bold text-center" colSpan={2}>
-    {toThaiNumber(
-      Number(
-        (
-          [data.g1_1_score, data.g1_2_score].filter(score => score !== "").reduce((total, score) => {
-            return total + (score ? parseInt(score, 10) : 0);
-          }, 0) / [data.g1_1_score, data.g1_2_score].filter(score => score !== "").length || 0
-        ).toFixed(2)
-      )
-    )}
-  </td>
-</tr>
-</tbody>
-<tbody>
-  <tr>
-    {/* จุดมุ่งหมาย */}
-    <td className="p-2 border align-top text-sm" rowSpan={2}>
-      2. กระบวนการขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ
-    </td>
+                {/* หมายเหตุ */}
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.g1_2_note || ""}
+                    onChange={(e) => setDataValue("g1_2_note", e.target.value)}
+                    className="p-1 border rounded-md text-sm w-full"
+                  />
+                </td>
+              </tr>
+              {/* คะแนนเฉลี่ย (จุดมุ่งหมาย 1) */}
+              <tr>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-right"
+                  colSpan={4}
+                >
+                  คะแนนเฉลี่ย (จุดมุ่งหมาย 1)
+                </td>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-center"
+                  colSpan={2}
+                >
+                  {toThaiNumber(
+                    Number(
+                      (
+                        [data.g1_1_score, data.g1_2_score]
+                          .filter((score) => score !== "")
+                          .reduce((total, score) => {
+                            return total + (score ? parseInt(score, 10) : 0);
+                          }, 0) /
+                          [data.g1_1_score, data.g1_2_score].filter(
+                            (score) => score !== ""
+                          ).length || 0
+                      ).toFixed(2)
+                    )
+                  )}
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                {/* จุดมุ่งหมาย */}
+                <td className="p-2 border align-top text-sm" rowSpan={2}>
+                  2. กระบวนการขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ
+                </td>
 
-    {/* วัตถุประสงค์เชิงพฤติกรรม */}
-    <td className="p-2 border align-top text-sm">
-      1. อธิบายบทบาท อำนาจหน้าที่ และความรับผิดชอบขององค์กรและพนักงาน เจ้าหน้าที่ใน
-      การขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ<br />
-      1.1 โครงสร้างขององค์กร โครงสร้างของงานขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ และความสัมพันธ์ของงาน
-      ขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพกับหน่วยงานอื่น ๆ ในองค์กร<br />
-      1.2 ขอบเขตหน้าที่ความรับผิดชอบขององค์กรหรือพนักงานเจ้าหน้าที่ที่ปฏิบัติหน้าที่การขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ
-    </td>
+                {/* วัตถุประสงค์เชิงพฤติกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  1. อธิบายบทบาท อำนาจหน้าที่
+                  และความรับผิดชอบขององค์กรและพนักงาน เจ้าหน้าที่ใน
+                  การขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ
+                  <br />
+                  1.1 โครงสร้างขององค์กร
+                  โครงสร้างของงานขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ
+                  และความสัมพันธ์ของงาน
+                  ขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพกับหน่วยงานอื่น ๆ ในองค์กร
+                  <br />
+                  1.2
+                  ขอบเขตหน้าที่ความรับผิดชอบขององค์กรหรือพนักงานเจ้าหน้าที่ที่ปฏิบัติหน้าที่การขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ
+                </td>
 
-    {/* กิจกรรมหรือการฝึกปฏิบัติงาน */}
-    <td className="p-2 border align-top text-sm">
-      1. ฟังบรรยาย<br />
-      2. อภิปราย<br />
-      3. สัมมนา<br />
-      4. ศึกษาด้วยตนเอง ภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
-    </td>
+                {/* กิจกรรมหรือการฝึกปฏิบัติงาน */}
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังบรรยาย
+                  <br />
+                  2. อภิปราย
+                  <br />
+                  3. สัมมนา
+                  <br />
+                  4. ศึกษาด้วยตนเอง ภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
+                </td>
 
-    {/* ปริมาณงาน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g2_1_activity}
-        label="g2_1_activity"
-        list={activityLabels}
-        rows={true}
-        isRequired={true}
-      />
-    </td>
+                {/* ปริมาณงาน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g2_1_activity}
+                    label="g2_1_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
 
-    {/* คะแนน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g2_1_score}
-        label="g2_1_score"
-        list={scoreLabels}
-        isRequired={data.g2_1_select}
-      />
-    </td>
+                {/* คะแนน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g2_1_score}
+                    label="g2_1_score"
+                    list={scoreLabels}
+                    isRequired={data.g2_1_select}
+                  />
+                </td>
 
-    {/* หมายเหตุ */}
-    <td className="p-2 border align-top text-sm">
-      <input
-        type="text"
-        value={data.g2_1_note || ""}
-        onChange={(e) => setDataValue("g2_1_note", e.target.value)}
-        className="p-1 border rounded-md text-sm w-full"
-      />
-    </td>
-  </tr>
+                {/* หมายเหตุ */}
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.g2_1_note || ""}
+                    onChange={(e) => setDataValue("g2_1_note", e.target.value)}
+                    className="p-1 border rounded-md text-sm w-full"
+                  />
+                </td>
+              </tr>
 
-  <tr>
-    {/* วัตถุประสงค์เชิงพฤติกรรม */}
-    <td className="p-2 border align-top text-sm">
-      2. อธิบายขั้นตอนการขึ้นทะเบียนและการแก้ไขเปลี่ยนแปลงทะเบียนยาและผลิตภัณฑ์สุขภาพ
-    </td>
+              <tr>
+                {/* วัตถุประสงค์เชิงพฤติกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  2.
+                  อธิบายขั้นตอนการขึ้นทะเบียนและการแก้ไขเปลี่ยนแปลงทะเบียนยาและผลิตภัณฑ์สุขภาพ
+                </td>
 
-    {/* กิจกรรมหรือการฝึกปฏิบัติงาน */}
-    <td className="p-2 border align-top text-sm">
-      1. ฟังบรรยาย<br />
-      2. อภิปราย<br />
-      3. สัมมนา<br />
-      4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
-    </td>
+                {/* กิจกรรมหรือการฝึกปฏิบัติงาน */}
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังบรรยาย
+                  <br />
+                  2. อภิปราย
+                  <br />
+                  3. สัมมนา
+                  <br />
+                  4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
+                </td>
 
-    {/* ปริมาณงาน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g2_2_activity}
-        label="g2_2_activity"
-        list={activityLabels}
-        rows={true}
-        isRequired={true}
-      />
-    </td>
+                {/* ปริมาณงาน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g2_2_activity}
+                    label="g2_2_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
 
-    {/* คะแนน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g2_2_score}
-        label="g2_2_score"
-        list={scoreLabels}
-        isRequired={data.g2_2_select}
-      />
-    </td>
+                {/* คะแนน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g2_2_score}
+                    label="g2_2_score"
+                    list={scoreLabels}
+                    isRequired={data.g2_2_select}
+                  />
+                </td>
 
-    {/* หมายเหตุ */}
-    <td className="p-2 border align-top text-sm">
-      <input
-        type="text"
-        value={data.g2_2_note || ""}
-        onChange={(e) => setDataValue("g2_2_note", e.target.value)}
-        className="p-1 border rounded-md text-sm w-full"
-      />
-    </td>
-  </tr>
+                {/* หมายเหตุ */}
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.g2_2_note || ""}
+                    onChange={(e) => setDataValue("g2_2_note", e.target.value)}
+                    className="p-1 border rounded-md text-sm w-full"
+                  />
+                </td>
+              </tr>
 
-  {/* คะแนนเฉลี่ย (จุดมุ่งหมาย 2) */}
-  <tr>
-    <td
-      className="p-2 border align-top text-sm font-bold text-right"
-      colSpan={4}
-    >
-      คะแนนเฉลี่ย (จุดมุ่งหมาย 2)
-    </td>
-    <td className="p-2 border align-top text-sm font-bold text-center" colSpan={2}>
-      {toThaiNumber(
-        Number(
-          (
-            [data.g2_1_score, data.g2_2_score].filter(score => score !== "").reduce((total, score) => {
-              return total + (score ? parseInt(score, 10) : 0);
-            }, 0) / [data.g2_1_score, data.g2_2_score].filter(score => score !== "").length || 0
-          ).toFixed(2)
-        )
-      )}
-    </td>
-  </tr>
-</tbody>
+              {/* คะแนนเฉลี่ย (จุดมุ่งหมาย 2) */}
+              <tr>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-right"
+                  colSpan={4}
+                >
+                  คะแนนเฉลี่ย (จุดมุ่งหมาย 2)
+                </td>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-center"
+                  colSpan={2}
+                >
+                  {toThaiNumber(
+                    Number(
+                      (
+                        [data.g2_1_score, data.g2_2_score]
+                          .filter((score) => score !== "")
+                          .reduce((total, score) => {
+                            return total + (score ? parseInt(score, 10) : 0);
+                          }, 0) /
+                          [data.g2_1_score, data.g2_2_score].filter(
+                            (score) => score !== ""
+                          ).length || 0
+                      ).toFixed(2)
+                    )
+                  )}
+                </td>
+              </tr>
+            </tbody>
 
-<tbody>
-  <tr>
-    {/* จุดมุ่งหมาย */}
-    <td className="p-2 border align-top text-sm" rowSpan={3}>
-      3. การประมวลและจัดทำเอกสารสำหรับการขึ้นทะเบียนตามมาตรฐานและที่กฎหมายกำหนด
-    </td>
+            <tbody>
+              <tr>
+                {/* จุดมุ่งหมาย */}
+                <td className="p-2 border align-top text-sm" rowSpan={3}>
+                  3.
+                  การประมวลและจัดทำเอกสารสำหรับการขึ้นทะเบียนตามมาตรฐานและที่กฎหมายกำหนด
+                </td>
 
-    {/* วัตถุประสงค์เชิงพฤติกรรม */}
-    <td className="p-2 border align-top text-sm">
-      1. อธิบายการจัดหมวดหมู่เอกสารราชการทั้งหมดของสำนักงานคณะกรรมการอาหารและยา
-      รวมทั้งแบบคำขอและการยื่นคำขอต่าง ๆ
-    </td>
+                {/* วัตถุประสงค์เชิงพฤติกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  1.
+                  อธิบายการจัดหมวดหมู่เอกสารราชการทั้งหมดของสำนักงานคณะกรรมการอาหารและยา
+                  รวมทั้งแบบคำขอและการยื่นคำขอต่าง ๆ
+                </td>
 
-    {/* กิจกรรม */}
-    <td className="p-2 border align-top text-sm">
-      1. ฟังบรรยาย<br />
-      2. อภิปราย<br />
-      3. สัมมนา<br />
-      4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
-    </td>
+                {/* กิจกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังบรรยาย
+                  <br />
+                  2. อภิปราย
+                  <br />
+                  3. สัมมนา
+                  <br />
+                  4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
+                </td>
 
-    {/* ปริมาณงาน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g3_1_activity}
-        label="g3_1_activity"
-        list={activityLabels}
-        rows={true}
-        isRequired={true}
-      />
-    </td>
+                {/* ปริมาณงาน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g3_1_activity}
+                    label="g3_1_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
 
-    {/* คะแนน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g3_1_score}
-        label="g3_1_score"
-        list={scoreLabels}
-        isRequired={data.g3_1_select}
-      />
-    </td>
+                {/* คะแนน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g3_1_score}
+                    label="g3_1_score"
+                    list={scoreLabels}
+                    isRequired={data.g3_1_select}
+                  />
+                </td>
 
-    {/* หมายเหตุ */}
-    <td className="p-2 border align-top text-sm">
-      <input
-        type="text"
-        value={data.g3_1_note || ""}
-        onChange={(e) => setDataValue("g3_1_note", e.target.value)}
-        className="p-1 border rounded-md text-sm w-full"
-      />
-    </td>
-  </tr>
+                {/* หมายเหตุ */}
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.g3_1_note || ""}
+                    onChange={(e) => setDataValue("g3_1_note", e.target.value)}
+                    className="p-1 border rounded-md text-sm w-full"
+                  />
+                </td>
+              </tr>
 
-  <tr>
-    {/* วัตถุประสงค์เชิงพฤติกรรม */}
-    <td className="p-2 border align-top text-sm">
-      2. ค้นคว้าข้อมูลจากแหล่งข้อมูลต่าง ๆ เพื่อประกอบข้อมูลด้านความปลอดภัย
-      ประสิทธิผล และคุณภาพของยาและผลิตภัณฑ์สุขภาพ สำหรับการขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ
-    </td>
+              <tr>
+                {/* วัตถุประสงค์เชิงพฤติกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  2. ค้นคว้าข้อมูลจากแหล่งข้อมูลต่าง ๆ
+                  เพื่อประกอบข้อมูลด้านความปลอดภัย ประสิทธิผล
+                  และคุณภาพของยาและผลิตภัณฑ์สุขภาพ
+                  สำหรับการขึ้นทะเบียนยาและผลิตภัณฑ์สุขภาพ
+                </td>
 
-    {/* กิจกรรม */}
-    <td className="p-2 border align-top text-sm">
-      1. ฟังบรรยาย<br />
-      2. อภิปราย<br />
-      3. สัมมนา<br />
-      4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
-    </td>
+                {/* กิจกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังบรรยาย
+                  <br />
+                  2. อภิปราย
+                  <br />
+                  3. สัมมนา
+                  <br />
+                  4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
+                </td>
 
-    {/* ปริมาณงาน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g3_2_activity}
-        label="g3_2_activity"
-        list={activityLabels}
-        rows={true}
-        isRequired={true}
-      />
-    </td>
+                {/* ปริมาณงาน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g3_2_activity}
+                    label="g3_2_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
 
-    {/* คะแนน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g3_2_score}
-        label="g3_2_score"
-        list={scoreLabels}
-        isRequired={data.g3_2_select}
-      />
-    </td>
+                {/* คะแนน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g3_2_score}
+                    label="g3_2_score"
+                    list={scoreLabels}
+                    isRequired={data.g3_2_select}
+                  />
+                </td>
 
-    {/* หมายเหตุ */}
-    <td className="p-2 border align-top text-sm">
-      <input
-        type="text"
-        value={data.g3_2_note || ""}
-        onChange={(e) => setDataValue("g3_2_note", e.target.value)}
-        className="p-1 border rounded-md text-sm w-full"
-      />
-    </td>
-  </tr>
+                {/* หมายเหตุ */}
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.g3_2_note || ""}
+                    onChange={(e) => setDataValue("g3_2_note", e.target.value)}
+                    className="p-1 border rounded-md text-sm w-full"
+                  />
+                </td>
+              </tr>
 
-  <tr>
-    {/* วัตถุประสงค์เชิงพฤติกรรม */}
-    <td className="p-2 border align-top text-sm">
-      3. จัดเตรียมเอกสารที่ต้องขึ้นทะเบียนและผลิตภัณฑ์สุขภาพต่อสำนักงานคณะกรรมการอาหารและยา
-    </td>
+              <tr>
+                {/* วัตถุประสงค์เชิงพฤติกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  3.
+                  จัดเตรียมเอกสารที่ต้องขึ้นทะเบียนและผลิตภัณฑ์สุขภาพต่อสำนักงานคณะกรรมการอาหารและยา
+                </td>
 
-    {/* กิจกรรม */}
-    <td className="p-2 border align-top text-sm">
-      1. ฟังบรรยาย<br />
-      2. อภิปราย<br />
-      3. สัมมนา<br />
-      4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
-    </td>
+                {/* กิจกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังบรรยาย
+                  <br />
+                  2. อภิปราย
+                  <br />
+                  3. สัมมนา
+                  <br />
+                  4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
+                </td>
 
-    {/* ปริมาณงาน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g3_3_activity}
-        label="g3_3_activity"
-        list={activityLabels}
-        rows={true}
-        isRequired={true}
-      />
-    </td>
+                {/* ปริมาณงาน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g3_3_activity}
+                    label="g3_3_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
 
-    {/* คะแนน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g3_3_score}
-        label="g3_3_score"
-        list={scoreLabels}
-        isRequired={data.g3_3_select}
-      />
-    </td>
+                {/* คะแนน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g3_3_score}
+                    label="g3_3_score"
+                    list={scoreLabels}
+                    isRequired={data.g3_3_select}
+                  />
+                </td>
 
-    {/* หมายเหตุ */}
-    <td className="p-2 border align-top text-sm">
-      <input
-        type="text"
-        value={data.g3_3_note || ""}
-        onChange={(e) => setDataValue("g3_3_note", e.target.value)}
-        className="p-1 border rounded-md text-sm w-full"
-      />
-    </td>
-  </tr>
+                {/* หมายเหตุ */}
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.g3_3_note || ""}
+                    onChange={(e) => setDataValue("g3_3_note", e.target.value)}
+                    className="p-1 border rounded-md text-sm w-full"
+                  />
+                </td>
+              </tr>
 
-  {/* คะแนนเฉลี่ย (จุดมุ่งหมาย 3) */}
-  <tr>
-    <td
-      className="p-2 border align-top text-sm font-bold text-right"
-      colSpan={4}
-    >
-      คะแนนเฉลี่ย (จุดมุ่งหมาย 3)
-    </td>
-    <td className="p-2 border align-top text-sm font-bold text-center" colSpan={2}>
-      {toThaiNumber(
-        Number(
-          (
-            [data.g3_1_score, data.g3_2_score, data.g3_3_score].filter(score => score !== "").reduce((total, score) => {
-              return total + (score ? parseInt(score, 10) : 0);
-            }, 0) / [data.g3_1_score, data.g3_2_score, data.g3_3_score].filter(score => score !== "").length || 0
-          ).toFixed(2)
-        )
-      )}
-    </td>
-  </tr>
-</tbody>
-<tbody>
-  <tr>
-    {/* จุดมุ่งหมาย */}
-    <td className="p-2 border align-top text-sm">
-      4. การประเมินคุณภาพและความถูกต้องของข้อมูลในเอกสารด้านความปลอดภัย
-      ประสิทธิผล และคุณภาพของผลิตภัณฑ์
-    </td>
+              {/* คะแนนเฉลี่ย (จุดมุ่งหมาย 3) */}
+              <tr>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-right"
+                  colSpan={4}
+                >
+                  คะแนนเฉลี่ย (จุดมุ่งหมาย 3)
+                </td>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-center"
+                  colSpan={2}
+                >
+                  {toThaiNumber(
+                    Number(
+                      (
+                        [data.g3_1_score, data.g3_2_score, data.g3_3_score]
+                          .filter((score) => score !== "")
+                          .reduce((total, score) => {
+                            return total + (score ? parseInt(score, 10) : 0);
+                          }, 0) /
+                          [
+                            data.g3_1_score,
+                            data.g3_2_score,
+                            data.g3_3_score,
+                          ].filter((score) => score !== "").length || 0
+                      ).toFixed(2)
+                    )
+                  )}
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                {/* จุดมุ่งหมาย */}
+                <td className="p-2 border align-top text-sm">
+                  4.
+                  การประเมินคุณภาพและความถูกต้องของข้อมูลในเอกสารด้านความปลอดภัย
+                  ประสิทธิผล และคุณภาพของผลิตภัณฑ์
+                </td>
 
-    {/* วัตถุประสงค์เชิงพฤติกรรม */}
-    <td className="p-2 border align-top text-sm">
-      1. ประเมินคุณภาพและความถูกต้องของข้อมูลในเอกสารด้านความปลอดภัย
-      ประสิทธิผล และคุณภาพของผลิตภัณฑ์
-    </td>
+                {/* วัตถุประสงค์เชิงพฤติกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  1. ประเมินคุณภาพและความถูกต้องของข้อมูลในเอกสารด้านความปลอดภัย
+                  ประสิทธิผล และคุณภาพของผลิตภัณฑ์
+                </td>
 
-    {/* กิจกรรม */}
-    <td className="p-2 border align-top text-sm">
-      1. ฟังบรรยาย<br />
-      2. อภิปราย<br />
-      3. สัมมนา<br />
-      4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
-    </td>
+                {/* กิจกรรม */}
+                <td className="p-2 border align-top text-sm">
+                  1. ฟังบรรยาย
+                  <br />
+                  2. อภิปราย
+                  <br />
+                  3. สัมมนา
+                  <br />
+                  4. ฝึกปฏิบัติภายใต้การดูแลของอาจารย์ประจำแหล่งฝึก
+                </td>
 
-    {/* ปริมาณงาน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g4_1_activity}
-        label="g4_1_activity"
-        list={activityLabels}
-        rows={true}
-        isRequired={true}
-      />
-    </td>
+                {/* ปริมาณงาน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g4_1_activity}
+                    label="g4_1_activity"
+                    list={activityLabels}
+                    rows={true}
+                    isRequired={true}
+                  />
+                </td>
 
-    {/* คะแนน */}
-    <td className="p-2 border align-top text-sm">
-      <ScoreForm
-        value={data.g4_1_score}
-        label="g4_1_score"
-        list={scoreLabels}
-        isRequired={data.g4_1_select}
-      />
-    </td>
+                {/* คะแนน */}
+                <td className="p-2 border align-top text-sm">
+                  <ScoreForm
+                    value={data.g4_1_score}
+                    label="g4_1_score"
+                    list={scoreLabels}
+                    isRequired={data.g4_1_select}
+                  />
+                </td>
 
-    {/* หมายเหตุ */}
-    <td className="p-2 border align-top text-sm">
-      <input
-        type="text"
-        value={data.g4_1_note || ""}
-        onChange={(e) => setDataValue("g4_1_note", e.target.value)}
-        className="p-1 border rounded-md text-sm w-full"
-      />
-    </td>
-  </tr>
+                {/* หมายเหตุ */}
+                <td className="p-2 border align-top text-sm">
+                  <input
+                    type="text"
+                    value={data.g4_1_note || ""}
+                    onChange={(e) => setDataValue("g4_1_note", e.target.value)}
+                    className="p-1 border rounded-md text-sm w-full"
+                  />
+                </td>
+              </tr>
 
-  {/* คะแนนเฉลี่ย (จุดมุ่งหมาย 4) */}
-  <tr>
-    <td
-      className="p-2 border align-top text-sm font-bold text-right"
-      colSpan={4}
-    >
-      คะแนนเฉลี่ย (จุดมุ่งหมาย 4)
-    </td>
-    <td className="p-2 border align-top text-sm font-bold text-center" colSpan={2}>
-      {toThaiNumber(
-        Number(
-          (
-            [data.g4_1_score].filter(score => score !== "").reduce((total, score) => {
-              return total + (score ? parseInt(score, 10) : 0);
-            }, 0) / [data.g4_1_score].filter(score => score !== "").length || 0
-          ).toFixed(2)
-        )
-      )}
-    </td>
-  </tr>
+              {/* คะแนนเฉลี่ย (จุดมุ่งหมาย 4) */}
+              <tr>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-right"
+                  colSpan={4}
+                >
+                  คะแนนเฉลี่ย (จุดมุ่งหมาย 4)
+                </td>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-center"
+                  colSpan={2}
+                >
+                  {toThaiNumber(
+                    Number(
+                      (
+                        [data.g4_1_score]
+                          .filter((score) => score !== "")
+                          .reduce((total, score) => {
+                            return total + (score ? parseInt(score, 10) : 0);
+                          }, 0) /
+                          [data.g4_1_score].filter((score) => score !== "")
+                            .length || 0
+                      ).toFixed(2)
+                    )
+                  )}
+                </td>
+              </tr>
 
-  {/* คะแนนรวม (จุดมุ่งหมาย 1–4) × 5 คะแนน */}
-  <tr>
-    <td
-      className="p-2 border align-top text-sm font-bold text-right"
-      colSpan={4}
-    >
-      คะแนนรวม (จุดมุ่งหมาย 1–4) × 5 คะแนน
-    </td>
-    <td className="p-2 border align-top text-sm font-bold text-center" colSpan={2}>
-      {toThaiNumber(
-        Number(
-          (
-            [
-              // คะแนนเฉลี่ยจุดมุ่งหมายที่ 1
-              [data.g1_1_score, data.g1_2_score].filter(score => score !== "").reduce((total, score) => {
-                return total + (score ? parseInt(score, 10) : 0);
-              }, 0) / ([data.g1_1_score, data.g1_2_score].filter(score => score !== "").length || 1),
-              
-              // คะแนนเฉลี่ยจุดมุ่งหมายที่ 2
-              [data.g2_1_score, data.g2_2_score].filter(score => score !== "").reduce((total, score) => {
-                return total + (score ? parseInt(score, 10) : 0);
-              }, 0) / ([data.g2_1_score, data.g2_2_score].filter(score => score !== "").length || 1),
-              
-              // คะแนนเฉลี่ยจุดมุ่งหมายที่ 3
-              [data.g3_1_score, data.g3_2_score, data.g3_3_score].filter(score => score !== "").reduce((total, score) => {
-                return total + (score ? parseInt(score, 10) : 0);
-              }, 0) / ([data.g3_1_score, data.g3_2_score, data.g3_3_score].filter(score => score !== "").length || 1),
-              
-              // คะแนนเฉลี่ยจุดมุ่งหมายที่ 4
-              [data.g4_1_score].filter(score => score !== "").reduce((total, score) => {
-                return total + (score ? parseInt(score, 10) : 0);
-              }, 0) / ([data.g4_1_score].filter(score => score !== "").length || 1)
-            ].reduce((total, avgScore) => {
-              return total + (isNaN(avgScore) ? 0 : avgScore);
-            }, 0) * 5
-          ).toFixed(2)
-        )
-      )}
-    </td>
-  </tr>
-</tbody>
+              {/* คะแนนรวม (จุดมุ่งหมาย 1–4) × 5 คะแนน */}
+              <tr>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-right"
+                  colSpan={4}
+                >
+                  คะแนนรวม (จุดมุ่งหมาย 1–4) × 5 คะแนน
+                </td>
+                <td
+                  className="p-2 border align-top text-sm font-bold text-center"
+                  colSpan={2}
+                >
+                  {toThaiNumber(
+                    Number(
+                      (
+                        [
+                          // คะแนนเฉลี่ยจุดมุ่งหมายที่ 1
+                          [data.g1_1_score, data.g1_2_score]
+                            .filter((score) => score !== "")
+                            .reduce((total, score) => {
+                              return total + (score ? parseInt(score, 10) : 0);
+                            }, 0) /
+                            ([data.g1_1_score, data.g1_2_score].filter(
+                              (score) => score !== ""
+                            ).length || 1),
 
+                          // คะแนนเฉลี่ยจุดมุ่งหมายที่ 2
+                          [data.g2_1_score, data.g2_2_score]
+                            .filter((score) => score !== "")
+                            .reduce((total, score) => {
+                              return total + (score ? parseInt(score, 10) : 0);
+                            }, 0) /
+                            ([data.g2_1_score, data.g2_2_score].filter(
+                              (score) => score !== ""
+                            ).length || 1),
+
+                          // คะแนนเฉลี่ยจุดมุ่งหมายที่ 3
+                          [data.g3_1_score, data.g3_2_score, data.g3_3_score]
+                            .filter((score) => score !== "")
+                            .reduce((total, score) => {
+                              return total + (score ? parseInt(score, 10) : 0);
+                            }, 0) /
+                            ([
+                              data.g3_1_score,
+                              data.g3_2_score,
+                              data.g3_3_score,
+                            ].filter((score) => score !== "").length || 1),
+
+                          // คะแนนเฉลี่ยจุดมุ่งหมายที่ 4
+                          [data.g4_1_score]
+                            .filter((score) => score !== "")
+                            .reduce((total, score) => {
+                              return total + (score ? parseInt(score, 10) : 0);
+                            }, 0) /
+                            ([data.g4_1_score].filter((score) => score !== "")
+                              .length || 1),
+                        ].reduce((total, avgScore) => {
+                          return total + (isNaN(avgScore) ? 0 : avgScore);
+                        }, 0) * 5
+                      ).toFixed(2)
+                    )
+                  )}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
