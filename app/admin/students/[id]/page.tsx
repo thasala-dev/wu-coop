@@ -504,7 +504,9 @@ export default function AdminStudentDetailPage() {
                                 ทักษะ
                               </h4>
                               <div className="flex flex-wrap gap-2">
-                                {student.skills && student.skills.length > 0 ? (
+                                {student.skills &&
+                                Array.isArray(student.skills) &&
+                                student.skills.length > 0 ? (
                                   student.skills.map(
                                     (skill: string, index: number) => (
                                       <Badge
@@ -515,6 +517,11 @@ export default function AdminStudentDetailPage() {
                                       </Badge>
                                     )
                                   )
+                                ) : student.skills &&
+                                  typeof student.skills === "string" ? (
+                                  <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300 font-medium text-xs px-3 py-1 shadow-sm">
+                                    {student.skills}
+                                  </Badge>
                                 ) : (
                                   <span className="text-sm text-gray-500 italic">
                                     ไม่ได้ระบุทักษะ
