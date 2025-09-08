@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import NextAuthProvider from "@/contexts/next-auth-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const sarabun = Sarabun({
   subsets: ["thai", "latin"],
@@ -42,6 +43,7 @@ export default function RootLayout({
         >
           <NextAuthProvider>{children}</NextAuthProvider>
           <Toaster />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
