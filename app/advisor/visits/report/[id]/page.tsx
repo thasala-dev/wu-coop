@@ -9,6 +9,18 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -18,15 +30,25 @@ import {
   UserIcon,
   BuildingIcon,
   ArrowLeftIcon,
+  SaveIcon,
   FileTextIcon,
   CheckCircleIcon,
-  PrinterIcon,
+  AlertCircleIcon,
+  StarIcon,
+  Loader2,
 } from "lucide-react";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+
+import Page1 from "@/components/supervision/super1";
+import Page2 from "@/components/supervision/super2";
+import Page3 from "@/components/supervision/super3";
+import Page4 from "@/components/supervision/super4";
+import Page5 from "@/components/supervision/super5";
 
 const formatVisitTime = (date: string) => {
   try {
@@ -44,29 +66,33 @@ const formatVisitTime = (date: string) => {
   }
 };
 
-const ratingColors: Record<string, string> = {
-  excellent: "bg-green-100 text-green-800",
-  good: "bg-blue-100 text-blue-800",
-  satisfactory: "bg-yellow-100 text-yellow-800",
-  needs_improvement: "bg-orange-100 text-orange-800",
-  unsatisfactory: "bg-red-100 text-red-800",
-};
-
-const ratingLabels: Record<string, string> = {
-  excellent: "ดีเยี่ยม",
-  good: "ดี",
-  satisfactory: "พอใช้",
-  needs_improvement: "ต้องปรับปรุง",
-  unsatisfactory: "ไม่ผ่าน",
-};
-
-export default function VisitDetails() {
+export default function RecordVisit() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
+  const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
+
+  // Form state
+  const [evaluationScores, setEvaluationScores] = useState<
+    Record<string, string>
+  >({});
+  const [strengths, setStrengths] = useState<string>("");
+  const [improvements, setImprovements] = useState<string>("");
+  const [recommendations, setRecommendations] = useState<string>("");
+  const [overallRating, setOverallRating] = useState<string>("");
+  const [summary, setSummary] = useState<string>("");
+  const [studentInterview, setStudentInterview] = useState<string>("");
+  const [mentorInterview, setMentorInterview] = useState<string>("");
+  const [workEnvironment, setWorkEnvironment] = useState<string>("");
+  const [assignedTasks, setAssignedTasks] = useState<string>("");
+
+  // Validation state
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [activeTab, setActiveTab] = useState<string>("evaluation");
 
   async function fetchVisitData() {
     setIsLoading(true);
@@ -78,6 +104,20 @@ export default function VisitDetails() {
       const data = await response.json();
       if (data.success) {
         setData(data.data);
+        if (data.data.result) {
+          // Populate form fields with existing visit data
+          setEvaluationScores(data.data.result.evaluation_scores || {});
+          setStrengths(data.data.result.strengths || "");
+          setImprovements(data.data.result.improvements || "");
+          setRecommendations(data.data.result.recommendations || "");
+          setOverallRating(data.data.result.overall_rating || "");
+          setSummary(data.data.result.summary || "");
+          setStudentInterview(data.data.result.student_interview || "");
+          setMentorInterview(data.data.result.mentor_interview || "");
+          setWorkEnvironment(data.data.result.work_environment || "");
+          setAssignedTasks(data.data.result.assigned_tasks || "");
+          setActiveTab("evaluation");
+        }
       }
     } catch (error) {
       console.error("Error fetching visit data:", error);
@@ -85,23 +125,9 @@ export default function VisitDetails() {
       setIsLoading(false);
     }
   }
-
   useEffect(() => {
     fetchVisitData();
   }, []);
-
-  const handlePrint = () => {
-    const printContent = document.getElementById("contentPrint");
-    if (printContent) {
-      const originalContent = document.body.innerHTML;
-      const printableContent = printContent.innerHTML;
-
-      document.body.innerHTML = printableContent;
-      window.print();
-      document.body.innerHTML = originalContent;
-      window.location.reload(); // Reload to restore React functionality
-    }
-  };
 
   // Mock data for evaluation criteria
   const evaluationCriteria = [
@@ -115,84 +141,211 @@ export default function VisitDetails() {
     { id: "discipline", name: "ระเบียบวินัย" },
   ];
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  // Validation functions
+  const validateEvaluation = () => {
+    const newErrors: Record<string, string> = {};
 
-  if (!data) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
-        <main className="container mx-auto p-4">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <Sidebar userType="advisor" activePage="visits" />
-            <div className="md:col-span-4">
-              <Alert variant="destructive">
-                <AlertDescription>
-                  ไม่พบข้อมูลการนิเทศ กรุณาตรวจสอบอีกครั้ง
-                </AlertDescription>
-              </Alert>
-            </div>
-          </div>
-        </main>
-      </div>
+    // Check if all evaluation criteria have scores
+    evaluationCriteria.forEach((criteria) => {
+      if (!evaluationScores[criteria.id]) {
+        newErrors[criteria.id] = "กรุณาให้คะแนนการประเมิน";
+      }
+    });
+
+    if (!overallRating) {
+      newErrors.overallRating = "กรุณาเลือกผลการประเมินโดยรวม";
+    }
+
+    if (!summary.trim()) {
+      newErrors.summary = "กรุณาระบุสรุปผลการนิเทศ";
+    }
+
+    if (!strengths.trim()) {
+      newErrors.strengths = "กรุณาระบุจุดเด่นของนักศึกษา";
+    }
+
+    setErrors((err) => ({ ...err, ...newErrors }));
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateInterview = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!studentInterview.trim()) {
+      newErrors.studentInterview = "กรุณาบันทึกการสัมภาษณ์นักศึกษา";
+    }
+
+    if (!mentorInterview.trim()) {
+      newErrors.mentorInterview = "กรุณาบันทึกการสัมภาษณ์แหล่งฝึก";
+    }
+
+    if (!workEnvironment.trim()) {
+      newErrors.workEnvironment = "กรุณาบันทึกข้อมูลสภาพแวดล้อมการทำงาน";
+    }
+
+    if (!assignedTasks.trim()) {
+      newErrors.assignedTasks = "กรุณาบันทึกข้อมูลงานที่ได้รับมอบหมาย";
+    }
+
+    setErrors((err) => ({ ...err, ...newErrors }));
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Check if all radio buttons are selected
+  const validateAllRadioButtons = () => {
+    const missingScores = evaluationCriteria.filter(
+      (criteria) => !evaluationScores[criteria.id]
     );
-  }
+
+    if (missingScores.length > 0) {
+      const newErrors: Record<string, string> = {};
+      missingScores.forEach((criteria) => {
+        newErrors[criteria.id] = "กรุณาให้คะแนนการประเมิน";
+      });
+      setErrors((prev) => ({ ...prev, ...newErrors }));
+
+      // Show specific toast for missing radio buttons
+      toast({
+        title: "การประเมินไม่ครบถ้วน",
+        description: `กรุณาให้คะแนนในหัวข้อ: ${missingScores
+          .map((c) => c.name)
+          .join(", ")}`,
+        variant: "destructive",
+      });
+
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmitReport = async () => {
+    // First validate all radio buttons are selected
+    const allRadioSelected = validateAllRadioButtons();
+    const isEvaluationValid = validateEvaluation();
+    const isInterviewValid = validateInterview();
+
+    if (!allRadioSelected || !isEvaluationValid || !isInterviewValid) {
+      console.log("errors:", errors, allRadioSelected);
+
+      toast({
+        title: "ข้อมูลไม่ครบถ้วน",
+        description: "กรุณากรอกข้อมูลให้ครบถ้วนก่อนส่งรายงาน",
+        variant: "destructive",
+      });
+
+      // Switch to the tab with errors
+      if (!allRadioSelected || !isEvaluationValid) {
+        setActiveTab("evaluation");
+      } else if (!isInterviewValid) {
+        setActiveTab("interview");
+      }
+      return;
+    }
+
+    // Calculate average score
+    const totalScore = Object.values(evaluationScores).reduce(
+      (sum, score) => sum + parseInt(score),
+      0
+    );
+    const averageScore = totalScore / evaluationCriteria.length;
+
+    // Prepare form data
+    const formData = {
+      visit_id: id,
+      evaluation_scores: evaluationScores,
+      average_score: averageScore.toFixed(2),
+      strengths: strengths.trim(),
+      improvements: improvements.trim(),
+      recommendations: recommendations.trim(),
+      overall_rating: overallRating,
+      summary: summary.trim(),
+      student_interview: studentInterview.trim(),
+      mentor_interview: mentorInterview.trim(),
+      work_environment: workEnvironment.trim(),
+      assigned_tasks: assignedTasks.trim(),
+      submission_date: new Date().toISOString(),
+    };
+
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/advisor/visits/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ result: formData }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit report");
+      }
+      const result = await response.json();
+      if (result.success) {
+        // Submit report logic here
+        toast({
+          title: "ส่งรายงานสำเร็จ",
+          description: "รายงานการนิเทศถูกส่งเรียบร้อยแล้ว",
+          variant: "success",
+        });
+        router.push("/advisor/visits");
+      }
+    } catch (error) {
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถส่งรายงานได้",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
       <main className="container mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar userType="advisor" activePage="visits" />
-          <div className="md:col-span-4 space-y-6" id="contentPrint">
+          {isLoading && <Loading />}
+          <div className="md:col-span-4 space-y-6">
             {/* Header Card */}
-            <Card className="bg-gradient-to-r from-purple-600 to-purple-700 text-white border-0 shadow-xl print:shadow-none print:border print:border-gray-200 print:text-black print:bg-white">
+            <Card className="bg-gradient-to-r from-purple-600 to-purple-700 text-white border-0 shadow-xl">
               <CardHeader>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2 mb-2">
                   <Link href={`/advisor/visits`}>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="gap-1 text-white hover:bg-white/20 print:hidden"
+                      className="gap-1 text-white hover:bg-white/20"
                     >
                       <ArrowLeftIcon className="h-4 w-4" />
                       กลับไปยังรายการนิเทศ
                     </Button>
                   </Link>
-                  <Button
-                    onClick={handlePrint}
-                    variant="ghost"
-                    size="sm"
-                    className="gap-1 text-white hover:bg-white/20 print:hidden"
-                  >
-                    <PrinterIcon className="h-4 w-4" />
-                    พิมพ์รายงาน
-                  </Button>
                 </div>
-                <CardTitle className="text-2xl flex items-center gap-2 print:text-black">
+                <CardTitle className="text-2xl flex items-center gap-2">
                   <FileTextIcon className="h-6 w-6" />
-                  รายงานการนิเทศนักศึกษา
+                  บันทึกการนิเทศนักศึกษา
                 </CardTitle>
-                <CardDescription className="text-purple-100 print:text-gray-600">
-                  รายละเอียดผลการนิเทศและประเมินนักศึกษา ณ แหล่งฝึกงาน
+                <CardDescription className="text-purple-100">
+                  บันทึกผลการนิเทศและประเมินนักศึกษา ณ แหล่งฝึกงาน
                 </CardDescription>
               </CardHeader>
             </Card>
 
             {/* Visit Information Card */}
-            <Card className="bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 print:shadow-none print:border print:border-gray-200">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg border-b print:bg-white print:border-b print:border-gray-200">
-                <CardTitle className="text-lg text-blue-900 flex items-center gap-2 print:text-black">
+            <Card className="bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg border-b">
+                <CardTitle className="text-lg text-blue-900 flex items-center gap-2">
                   <CalendarIcon className="h-5 w-5" />
                   ข้อมูลการนิเทศ
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6 print:p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:gap-4">
-                  <div className="space-y-4 print:space-y-2">
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg print:bg-white print:p-2 print:border-b print:border-gray-100">
-                      <CalendarIcon className="h-5 w-5 text-purple-500 print:text-gray-600" />
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <CalendarIcon className="h-5 w-5 text-purple-500" />
                       <div>
-                        <span className="text-sm font-medium text-gray-600 print:text-gray-800">
+                        <span className="text-sm font-medium text-gray-600">
                           วันที่นิเทศ:
                         </span>
                         <div className="font-semibold text-gray-900">
@@ -200,10 +353,10 @@ export default function VisitDetails() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg print:bg-white print:p-2 print:border-b print:border-gray-100">
-                      <ClockIcon className="h-5 w-5 text-purple-500 print:text-gray-600" />
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <ClockIcon className="h-5 w-5 text-purple-500" />
                       <div>
-                        <span className="text-sm font-medium text-gray-600 print:text-gray-800">
+                        <span className="text-sm font-medium text-gray-600">
                           เวลา:
                         </span>
                         <div className="font-semibold text-gray-900">
@@ -211,26 +364,26 @@ export default function VisitDetails() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg print:bg-white print:p-2 print:border-b print:border-gray-100">
-                      <UserIcon className="h-5 w-5 text-purple-500 print:text-gray-600" />
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <UserIcon className="h-5 w-5 text-purple-500" />
                       <div>
-                        <span className="text-sm font-medium text-gray-600 print:text-gray-800">
+                        <span className="text-sm font-medium text-gray-600">
                           นักศึกษา:
                         </span>
                         <div className="font-semibold text-gray-900">
                           {data?.student_name}
                         </div>
-                        <div className="text-sm text-gray-500 print:text-gray-600">
+                        <div className="text-sm text-gray-500">
                           ({data?.student_student_id})
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-4 print:space-y-2">
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg print:bg-white print:p-2 print:border-b print:border-gray-100">
-                      <BuildingIcon className="h-5 w-5 text-purple-500 print:text-gray-600" />
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <BuildingIcon className="h-5 w-5 text-purple-500" />
                       <div>
-                        <span className="text-sm font-medium text-gray-600 print:text-gray-800">
+                        <span className="text-sm font-medium text-gray-600">
                           แหล่งฝึกงาน:
                         </span>
                         <div className="font-semibold text-gray-900">
@@ -238,10 +391,10 @@ export default function VisitDetails() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg print:bg-white print:p-2 print:border-b print:border-gray-100">
-                      <MapPinIcon className="h-5 w-5 text-purple-500 print:text-gray-600" />
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <MapPinIcon className="h-5 w-5 text-purple-500" />
                       <div>
-                        <span className="text-sm font-medium text-gray-600 print:text-gray-800">
+                        <span className="text-sm font-medium text-gray-600">
                           ที่อยู่:
                         </span>
                         <div className="font-semibold text-gray-900">
@@ -249,16 +402,16 @@ export default function VisitDetails() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg print:bg-white print:p-2 print:border-b print:border-gray-100">
-                      <UserIcon className="h-5 w-5 text-purple-500 print:text-gray-600" />
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <UserIcon className="h-5 w-5 text-purple-500" />
                       <div>
-                        <span className="text-sm font-medium text-gray-600 print:text-gray-800">
+                        <span className="text-sm font-medium text-gray-600">
                           ผู้ประสานงาน:
                         </span>
                         <div className="font-semibold text-gray-900">
                           {data?.company_contact_name}
                         </div>
-                        <div className="text-sm text-gray-500 print:text-gray-600">
+                        <div className="text-sm text-gray-500">
                           ({data?.company_contact_phone})
                         </div>
                       </div>
@@ -268,246 +421,22 @@ export default function VisitDetails() {
               </CardContent>
             </Card>
 
-            {/* Evaluation Results */}
-            {data.result && (
-              <>
-                {/* Evaluation Scores Section */}
-                <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 print:bg-white print:border print:border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-blue-900 flex items-center gap-2 print:text-black">
-                      <CheckCircleIcon className="h-5 w-5" />
-                      ผลการประเมินการปฏิบัติงาน
-                    </CardTitle>
-                    <CardDescription className="text-blue-700 print:text-gray-600">
-                      คะแนนการประเมินผลการปฏิบัติงานของนักศึกษาในแต่ละด้าน
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6 print:space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 print:grid-cols-4 print:gap-4">
-                      {evaluationCriteria.map((criteria) => (
-                        <div
-                          key={criteria.id}
-                          className="p-4 rounded-lg border-2 border-gray-200 bg-white print:border print:border-gray-200 print:p-3"
-                        >
-                          <label className="text-sm font-medium mb-3 block text-gray-900">
-                            {criteria.name}
-                          </label>
-                          <div className="flex justify-center">
-                            <div className="text-2xl font-bold text-purple-600 print:text-black">
-                              {data.result.evaluation_scores?.[criteria.id] ||
-                                "-"}
-                              <span className="text-sm font-normal text-gray-500 print:text-gray-600">
-                                /5
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+            {data?.type == "1" ? (
+              <Page1 id={id} />
+            ) : data?.type == "2" ? (
+              <Page2 id={id} />
+            ) : data?.type == "3" ? (
+              <Page3 id={id} />
+            ) : data?.type == "4" ? (
+              <Page4 id={id} />
+            ) : data?.type == "5" ? (
+              <Page5 id={id} />
+            ) : null}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          คะแนนเฉลี่ย
-                        </label>
-                        <div className="text-3xl font-bold text-purple-600 print:text-black">
-                          {data.result.average_score || "-"}
-                          <span className="text-sm font-normal text-gray-500 print:text-gray-600 ml-1">
-                            /5
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          ผลการประเมินโดยรวม
-                        </label>
-                        {data.result.overall_rating ? (
-                          <Badge
-                            className={cn(
-                              "text-lg px-4 py-2",
-                              ratingColors[data.result.overall_rating]
-                            )}
-                          >
-                            {ratingLabels[data.result.overall_rating]}
-                          </Badge>
-                        ) : (
-                          <div className="text-gray-500">-</div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Comments and Feedback Section */}
-                <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 print:bg-white print:border print:border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-green-900 flex items-center gap-2 print:text-black">
-                      <FileTextIcon className="h-5 w-5" />
-                      ความคิดเห็นและข้อเสนอแนะ
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6 print:space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 print:gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          จุดเด่นของนักศึกษา
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[120px] print:border print:border-gray-200 print:p-3">
-                          {data.result.strengths || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          จุดที่ควรปรับปรุง
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[120px] print:border print:border-gray-200 print:p-3">
-                          {data.result.improvements || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          ข้อเสนอแนะเพิ่มเติม
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[120px] print:border print:border-gray-200 print:p-3">
-                          {data.result.recommendations || "-"}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-900">
-                        สรุปผลการนิเทศ
-                      </label>
-                      <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[120px] print:border print:border-gray-200 print:p-3">
-                        {data.result.summary || "-"}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Interview Section */}
-                <Card className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200 print:bg-white print:border print:border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-orange-900 print:text-black">
-                      บันทึกการสัมภาษณ์
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          การสัมภาษณ์นักศึกษา
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[150px] print:border print:border-gray-200 print:p-3">
-                          {data.result.student_interview || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          การสัมภาษณ์แหล่งฝึก
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[150px] print:border print:border-gray-200 print:p-3">
-                          {data.result.mentor_interview || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          สภาพแวดล้อมการทำงาน
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[100px] print:border print:border-gray-200 print:p-3">
-                          {data.result.work_environment || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          งานที่ได้รับมอบหมาย
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[100px] print:border print:border-gray-200 print:p-3">
-                          {data.result.assigned_tasks || "-"}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {!data.result && (
-              <Card className="bg-white border-0 shadow-lg print:shadow-none print:border print:border-gray-200">
-                <CardContent className="p-6 print:p-4">
-                  <Alert variant="destructive">
-                    <AlertDescription>
-                      ยังไม่มีผลการประเมินสำหรับการนิเทศครั้งนี้
-                    </AlertDescription>
-                  </Alert>
-                </CardContent>
-              </Card>
-            )}
+            {/* Main Form Card */}
           </div>
         </div>
       </main>
-
-      {/* Print-specific styles */}
-      <style jsx global>{`
-        @media print {
-          body {
-            background: white;
-            color: black;
-          }
-          .print-hidden {
-            display: none !important;
-          }
-          .container {
-            max-width: 100% !important;
-            padding: 0 !important;
-          }
-          .grid {
-            display: block !important;
-          }
-          .gap-6 {
-            gap: 0 !important;
-          }
-          .space-y-6 > :not([hidden]) ~ :not([hidden]) {
-            margin-top: 1rem !important;
-          }
-          .md\\:col-span-4 {
-            grid-column: span 4 / span 4;
-          }
-          .shadow-none {
-            box-shadow: none !important;
-          }
-          .print\\:border {
-            border: 1px solid #e5e7eb !important;
-          }
-          .print\\:border-gray-200 {
-            border-color: #e5e7eb !important;
-          }
-          .print\\:p-4 {
-            padding: 1rem !important;
-          }
-          .print\\:bg-white {
-            background-color: white !important;
-          }
-          .print\\:text-black {
-            color: black !important;
-          }
-          .print\\:text-gray-600 {
-            color: #4b5563 !important;
-          }
-          .print\\:text-gray-800 {
-            color: #1f2937 !important;
-          }
-          .sidebar {
-            display: none !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

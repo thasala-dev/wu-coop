@@ -15,18 +15,18 @@ import { useRouter } from "next/navigation";
 type FormState = {
   // 1) ข้อมูลทั่วไปของนักศึกษาและแหล่งฝึก
   siteName?: string;
-  informedBrief?: boolean;         // “เคล้า/ได้รับชี้แจง…”
-  visitDate?: string;              // วันที่นิเทศ
-  visitRound?: string;             // ครั้งที่
-  students?: string[];             // ชื่อ-สกุลนักศึกษา 1..4
+  informedBrief?: boolean; // “เคล้า/ได้รับชี้แจง…”
+  visitDate?: string; // วันที่นิเทศ
+  visitRound?: string; // ครั้งที่
+  students?: string[]; // ชื่อ-สกุลนักศึกษา 1..4
 
   // 2) สรุปผลจากการนิเทศ
   summary?: string;
 
   // 3.1 ข้อมูลแหล่งฝึก
   acceptIntern?: "รับ" | "ไม่รับ" | "";
-  withDormFromUni?: boolean;       // มีนักศึกษาจากสถาบันอื่น...
-  withDormFromUni_desc?: string;   // (ระบุ จำนวน/ชั้นปี/สถาบัน)
+  withDormFromUni?: boolean; // มีนักศึกษาจากสถาบันอื่น...
+  withDormFromUni_desc?: string; // (ระบุ จำนวน/ชั้นปี/สถาบัน)
   withoutDormFromUni?: boolean;
   supervisionResult_section1?: string; // ผลการติดตาม/นิเทศ ส่วนที่ 3.1
 
@@ -91,26 +91,30 @@ type FormState = {
 
   // 3.8 สรุปผลโดยรวม
   overall?: {
-    shouldContinue?: boolean;      // ควรเป็นแหล่งฝึกฯ ต่อไป
-    shouldImprove?: string;        // ควรพัฒนาแหล่งฝึกฯ ด้านนี้
-    shouldNotUse?: string;         // ไม่ควรใช้ฯ เนื่องจาก
-    futurePlan?: string;           // การพัฒนาแผนการนิเทศในอนาคต
+    shouldContinue?: boolean; // ควรเป็นแหล่งฝึกฯ ต่อไป
+    shouldImprove?: string; // ควรพัฒนาแหล่งฝึกฯ ด้านนี้
+    shouldNotUse?: string; // ไม่ควรใช้ฯ เนื่องจาก
+    futurePlan?: string; // การพัฒนาแผนการนิเทศในอนาคต
   };
 };
 
 export default function Page(props: any) {
-  const { id } = props;
+  const { id, data } = props;
   const [isSaving, setIsSaving] = useState(false);
-  const [form, setForm] = useState<FormState>({
-    students: ["", "", "", ""],
-    housing_opts: {},
-    coord: { contactDetailProper: "" },
-    readiness_site: { workloadFit: "" },
-    readiness_student: {},
-    needSupport: {},
-    issues: {},
-    overall: {},
-  });
+  const [form, setForm] = useState<FormState>(
+    data
+      ? data
+      : {
+          students: ["", "", "", ""],
+          housing_opts: {},
+          coord: { contactDetailProper: "" },
+          readiness_site: { workloadFit: "" },
+          readiness_student: {},
+          needSupport: {},
+          issues: {},
+          overall: {},
+        }
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
   const router = useRouter();
@@ -173,13 +177,14 @@ export default function Page(props: any) {
     <Card className="bg-white border-0 shadow-lg hover:shadow-xl transition-all">
       <div className="p-4 space-y-8">
         <h1 className="text-xl font-semibold">
-          แบบนิเทศงานการฝึกปฏิบัติงานเชิงวิชาชีพ (เภสัชกรรมปฐมภูมิ)
-)
+          แบบนิเทศงานการฝึกปฏิบัติงานเชิงวิชาชีพ (เภสัชกรรมปฐมภูมิ) )
         </h1>
 
         {/* ===== 1. ข้อมูลทั่วไป ===== */}
         <section className="space-y-3">
-          <div className="font-medium">1) ข้อมูลทั่วไปของนักศึกษาและแหล่งฝึก</div>
+          <div className="font-medium">
+            1) ข้อมูลทั่วไปของนักศึกษาและแหล่งฝึก
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div className="md:col-span-2 space-y-1">
               <Label>ชื่อแหล่งฝึก</Label>
@@ -209,7 +214,6 @@ export default function Page(props: any) {
             </div>
           </div>
 
-
           <div>
             <Label>ชื่อ-สกุลนักศึกษา (สูงสุด 4 คน)</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1">
@@ -235,7 +239,8 @@ export default function Page(props: any) {
         {/* ===== 2. สรุปผลจากการนิเทศ ===== */}
         <section className="space-y-2">
           <div className="font-medium">
-            2) สรุปผลจากการนิเทศ (จุดเด่น/สิ่งที่ควรปรับปรุง ทั้งในแหล่งฝึกและในนักศึกษา)
+            2) สรุปผลจากการนิเทศ (จุดเด่น/สิ่งที่ควรปรับปรุง
+            ทั้งในแหล่งฝึกและในนักศึกษา)
           </div>
           <Textarea
             rows={6}
@@ -248,11 +253,15 @@ export default function Page(props: any) {
 
         {/* ===== 3.1 ข้อมูลแหล่งฝึก ===== */}
         <section className="space-y-3">
-          <div className="font-medium">3) ข้อมูลเกี่ยวกับแหล่งฝึกและการฝึกปฏิบัติงาน</div>
+          <div className="font-medium">
+            3) ข้อมูลเกี่ยวกับแหล่งฝึกและการฝึกปฏิบัติงาน
+          </div>
 
           {/* ===== 3.1 ข้อมูลแหล่งฝึก ===== */}
           <div className="rounded-md border">
-            <div className="p-3 font-medium bg-slate-50">3.1 ข้อมูลแหล่งฝึก</div>
+            <div className="p-3 font-medium bg-slate-50">
+              3.1 ข้อมูลแหล่งฝึก
+            </div>
             <div className="p-3 space-y-3">
               <div>
                 <Label className="text-sm">การรับนักศึกษาฝึกงาน</Label>
@@ -284,7 +293,9 @@ export default function Page(props: any) {
                       disabled={!form.withDormFromUni}
                       placeholder="ระบุ จำนวน/ชั้นปี/สถาบัน"
                       value={form.withDormFromUni_desc || ""}
-                      onChange={(e) => set("withDormFromUni_desc", e.target.value)}
+                      onChange={(e) =>
+                        set("withDormFromUni_desc", e.target.value)
+                      }
                     />
                   </div>
                 </label>
@@ -294,7 +305,9 @@ export default function Page(props: any) {
                     checked={!!form.withoutDormFromUni}
                     onCheckedChange={(c) => set("withoutDormFromUni", !!c)}
                   />
-                  <span className="text-sm">ไม่มีนักศึกษาจากสถาบันอื่นร่วม</span>
+                  <span className="text-sm">
+                    ไม่มีนักศึกษาจากสถาบันอื่นร่วม
+                  </span>
                 </label>
               </div>
 
@@ -307,7 +320,9 @@ export default function Page(props: any) {
                   rows={3}
                   placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับข้อมูลแหล่งฝึก..."
                   value={form.supervisionResult_section1 || ""}
-                  onChange={(e) => set("supervisionResult_section1", e.target.value)}
+                  onChange={(e) =>
+                    set("supervisionResult_section1", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -327,7 +342,11 @@ export default function Page(props: any) {
               ].map((o) => (
                 <label key={o.key} className="flex items-center gap-2">
                   <Checkbox
-                    checked={!!form.housing_opts?.[o.key as keyof typeof form.housing_opts]}
+                    checked={
+                      !!form.housing_opts?.[
+                        o.key as keyof typeof form.housing_opts
+                      ]
+                    }
                     onCheckedChange={(c) =>
                       set("housing_opts", {
                         ...form.housing_opts,
@@ -345,7 +364,7 @@ export default function Page(props: any) {
                 value={form.housing_note || ""}
                 onChange={(e) => set("housing_note", e.target.value)}
               />
-              
+
               {/* ผลการติดตาม/นิเทศ ส่วนที่ 3.2 */}
               <div className="space-y-2 pt-2 border-t">
                 <Label className="text-sm font-medium text-blue-700">
@@ -355,7 +374,9 @@ export default function Page(props: any) {
                   rows={3}
                   placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับที่พักและความปลอดภัย..."
                   value={form.supervisionResult_section2 || ""}
-                  onChange={(e) => set("supervisionResult_section2", e.target.value)}
+                  onChange={(e) =>
+                    set("supervisionResult_section2", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -395,7 +416,9 @@ export default function Page(props: any) {
                       set("coord", { ...form.coord!, useMobile: !!c })
                     }
                   />
-                  <span className="text-sm">สะดวกให้ติดต่อผ่านหมายเลขโทรศัพท์มือถือ</span>
+                  <span className="text-sm">
+                    สะดวกให้ติดต่อผ่านหมายเลขโทรศัพท์มือถือ
+                  </span>
                 </label>
 
                 <label className="flex items-center gap-2">
@@ -415,7 +438,9 @@ export default function Page(props: any) {
                       set("coord", { ...form.coord!, useEmailSocial: !!c })
                     }
                   />
-                  <span className="text-sm">สะดวกให้ติดต่อผ่าน e-mail / social network อื่นๆ</span>
+                  <span className="text-sm">
+                    สะดวกให้ติดต่อผ่าน e-mail / social network อื่นๆ
+                  </span>
                 </label>
               </div>
 
@@ -425,7 +450,10 @@ export default function Page(props: any) {
                   className="flex gap-6 mt-1"
                   value={form.coord?.contactDetailProper || ""}
                   onValueChange={(v) =>
-                    set("coord", { ...form.coord!, contactDetailProper: v as any })
+                    set("coord", {
+                      ...form.coord!,
+                      contactDetailProper: v as any,
+                    })
                   }
                 >
                   {["เหมาะสม", "ควรปรับปรุง"].map((v) => (
@@ -440,7 +468,10 @@ export default function Page(props: any) {
                   placeholder="ระบุรายละเอียดเพิ่มเติมหาก 'ควรปรับปรุง'"
                   value={form.coord?.contactDetail_note || ""}
                   onChange={(e) =>
-                    set("coord", { ...form.coord!, contactDetail_note: e.target.value })
+                    set("coord", {
+                      ...form.coord!,
+                      contactDetail_note: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -454,7 +485,9 @@ export default function Page(props: any) {
                   rows={3}
                   placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับการประสานงาน..."
                   value={form.supervisionResult_section3 || ""}
-                  onChange={(e) => set("supervisionResult_section3", e.target.value)}
+                  onChange={(e) =>
+                    set("supervisionResult_section3", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -469,7 +502,11 @@ export default function Page(props: any) {
             <div className="p-3 space-y-3">
               <div>
                 <Label className="text-sm">
-                  3.4.1 ความพร้อม/ความตั้งใจและการเอาใจใส่ต่อการฝึกงาน<b><u>ของเภสัชกรประจำแหล่งฝึก</u></b>(ความเห็นจากนักศึกษาและการประเมินของอาจารย์นิเทศ)
+                  3.4.1 ความพร้อม/ความตั้งใจและการเอาใจใส่ต่อการฝึกงาน
+                  <b>
+                    <u>ของเภสัชกรประจำแหล่งฝึก</u>
+                  </b>
+                  (ความเห็นจากนักศึกษาและการประเมินของอาจารย์นิเทศ)
                 </Label>
                 <Input
                   className="mt-2"
@@ -490,7 +527,10 @@ export default function Page(props: any) {
                   {[
                     ["personality", "บุคลิกภาพและความประพฤติ"],
                     ["academic", "ความรู้และการเตรียมตัวก่อนการฝึกงาน"],
-                    ["responsibility", "ความกระตือรือร้น ความรับผิดชอบและเอาใจใส่"],
+                    [
+                      "responsibility",
+                      "ความกระตือรือร้น ความรับผิดชอบและเอาใจใส่",
+                    ],
                   ].map(([k, label]) => (
                     <label key={k} className="flex items-center gap-2">
                       <Checkbox
@@ -528,7 +568,9 @@ export default function Page(props: any) {
                   rows={3}
                   placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับความพร้อมในการฝึก..."
                   value={form.supervisionResult_section4 || ""}
-                  onChange={(e) => set("supervisionResult_section4", e.target.value)}
+                  onChange={(e) =>
+                    set("supervisionResult_section4", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -563,7 +605,10 @@ export default function Page(props: any) {
                 placeholder="อื่น ๆ (ระบุ)"
                 value={form.needSupport?.other || ""}
                 onChange={(e) =>
-                  set("needSupport", { ...form.needSupport!, other: e.target.value })
+                  set("needSupport", {
+                    ...form.needSupport!,
+                    other: e.target.value,
+                  })
                 }
               />
             </div>
@@ -580,7 +625,12 @@ export default function Page(props: any) {
                   <Checkbox
                     checked={!!form.issues?.none}
                     onCheckedChange={(c) =>
-                      set("issues", { ...form.issues!, none: !!c, found: false, found_note: "" })
+                      set("issues", {
+                        ...form.issues!,
+                        none: !!c,
+                        found: false,
+                        found_note: "",
+                      })
                     }
                   />
                   <span className="text-sm">ไม่พบปัญหา/อุปสรรค</span>
@@ -589,7 +639,11 @@ export default function Page(props: any) {
                   <Checkbox
                     checked={!!form.issues?.found}
                     onCheckedChange={(c) =>
-                      set("issues", { ...form.issues!, found: !!c, none: false })
+                      set("issues", {
+                        ...form.issues!,
+                        found: !!c,
+                        none: false,
+                      })
                     }
                   />
                   <span className="text-sm">พบปัญหา/อุปสรรค</span>
@@ -612,7 +666,9 @@ export default function Page(props: any) {
                   rows={3}
                   placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับปัญหา/อุปสรรค..."
                   value={form.supervisionResult_section6 || ""}
-                  onChange={(e) => set("supervisionResult_section6", e.target.value)}
+                  onChange={(e) =>
+                    set("supervisionResult_section6", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -638,7 +694,9 @@ export default function Page(props: any) {
                   rows={3}
                   placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับประเด็นอื่น ๆ..."
                   value={form.supervisionResult_section7 || ""}
-                  onChange={(e) => set("supervisionResult_section7", e.target.value)}
+                  onChange={(e) =>
+                    set("supervisionResult_section7", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -658,14 +716,23 @@ export default function Page(props: any) {
                   }
                 />
                 <div className="flex-1 space-y-1">
-                  <span className="text-sm">ควรเป็นแหล่งฝึกในปีถัดไป เนื่องจาก</span>
+                  <span className="text-sm">
+                    ควรเป็นแหล่งฝึกในปีถัดไป เนื่องจาก
+                  </span>
                   <Textarea
                     rows={2}
                     placeholder="ระบุเหตุผล..."
                     disabled={!form.overall?.shouldContinue}
-                    value={form.overall?.shouldContinue ? form.overall?.shouldImprove || "" : ""}
+                    value={
+                      form.overall?.shouldContinue
+                        ? form.overall?.shouldImprove || ""
+                        : ""
+                    }
                     onChange={(e) =>
-                      set("overall", { ...form.overall!, shouldImprove: e.target.value })
+                      set("overall", {
+                        ...form.overall!,
+                        shouldImprove: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -678,7 +745,10 @@ export default function Page(props: any) {
                     if (!c) {
                       set("overall", { ...form.overall!, shouldImprove: "" });
                     } else {
-                      set("overall", { ...form.overall!, shouldImprove: form.overall?.shouldImprove || " " });
+                      set("overall", {
+                        ...form.overall!,
+                        shouldImprove: form.overall?.shouldImprove || " ",
+                      });
                     }
                   }}
                 />
@@ -690,7 +760,10 @@ export default function Page(props: any) {
                     disabled={!form.overall?.shouldImprove}
                     value={form.overall?.shouldImprove || ""}
                     onChange={(e) =>
-                      set("overall", { ...form.overall!, shouldImprove: e.target.value })
+                      set("overall", {
+                        ...form.overall!,
+                        shouldImprove: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -703,32 +776,45 @@ export default function Page(props: any) {
                     if (!c) {
                       set("overall", { ...form.overall!, shouldNotUse: "" });
                     } else {
-                      set("overall", { ...form.overall!, shouldNotUse: form.overall?.shouldNotUse || " " });
+                      set("overall", {
+                        ...form.overall!,
+                        shouldNotUse: form.overall?.shouldNotUse || " ",
+                      });
                     }
                   }}
                 />
                 <div className="flex-1 space-y-1">
-                  <span className="text-sm">ไม่ควรส่งนักศึกษาฝึก เนื่องจาก</span>
+                  <span className="text-sm">
+                    ไม่ควรส่งนักศึกษาฝึก เนื่องจาก
+                  </span>
                   <Textarea
                     rows={2}
                     placeholder="ระบุเหตุผล..."
                     disabled={!form.overall?.shouldNotUse}
                     value={form.overall?.shouldNotUse || ""}
                     onChange={(e) =>
-                      set("overall", { ...form.overall!, shouldNotUse: e.target.value })
+                      set("overall", {
+                        ...form.overall!,
+                        shouldNotUse: e.target.value,
+                      })
                     }
                   />
                 </div>
               </label>
 
               <div className="space-y-1">
-                <Label className="text-sm">การพัฒนารูปแบบการปฏิบัติงานในอนาคต</Label>
+                <Label className="text-sm">
+                  การพัฒนารูปแบบการปฏิบัติงานในอนาคต
+                </Label>
                 <Textarea
                   rows={3}
                   placeholder="ระบุแนวทางการพัฒนา..."
                   value={form.overall?.futurePlan || ""}
                   onChange={(e) =>
-                    set("overall", { ...form.overall!, futurePlan: e.target.value })
+                    set("overall", {
+                      ...form.overall!,
+                      futurePlan: e.target.value,
+                    })
                   }
                 />
               </div>

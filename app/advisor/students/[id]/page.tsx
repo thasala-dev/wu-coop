@@ -504,7 +504,21 @@ export default function AdminStudentDetailPage() {
                                 ทักษะ
                               </h4>
                               <div className="flex flex-wrap gap-2">
-                                {student.skills && student.skills.length > 0 ? (
+                                {student.skills &&
+                                typeof student.skills === "string" &&
+                                student.skills.trim() ? (
+                                  student.skills
+                                    .split(",")
+                                    .map((skill: string, index: number) => (
+                                      <Badge
+                                        key={index}
+                                        className="bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300 font-medium text-xs px-3 py-1 shadow-sm"
+                                      >
+                                        {skill.trim()}
+                                      </Badge>
+                                    ))
+                                ) : Array.isArray(student.skills) &&
+                                  student.skills.length > 0 ? (
                                   student.skills.map(
                                     (skill: string, index: number) => (
                                       <Badge

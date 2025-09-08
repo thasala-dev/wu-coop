@@ -829,7 +829,7 @@ export default function AdvisorVisits() {
                                     </Button>
 
                                     <Link
-                                      href={`/advisor/visits/report/${visit.id}`}
+                                      href={`/advisor/visits/record/${visit.id}`}
                                     >
                                       <Button
                                         size="sm"
@@ -1050,7 +1050,7 @@ export default function AdvisorVisits() {
                                           </Button>
 
                                           <Link
-                                            href={`/advisor/visits/report/${visit.id}`}
+                                            href={`/advisor/visits/record/${visit.id}`}
                                           >
                                             <Button
                                               size="sm"

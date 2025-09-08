@@ -39,7 +39,7 @@ type FormState = {
   // 3.2 ที่พัก (รายละเอียดการเดินทาง/ความปลอดภัย)
   housing?: {
     workplaceDorm?: boolean; // ที่พักที่ทำงานจัดให้
-    privateDorm?: boolean;   // เอกชนที่แหล่งฝึกแนะนำ
+    privateDorm?: boolean; // เอกชนที่แหล่งฝึกแนะนำ
     houseOrRelative?: boolean;
     other?: boolean;
     note?: string;
@@ -96,32 +96,36 @@ type FormState = {
 
   // 3.8 สรุปผลโดยรวม
   overall?: {
-    shouldContinue?: boolean;   // ควรเป็นแหล่งฝึกในปีต่อไป
+    shouldContinue?: boolean; // ควรเป็นแหล่งฝึกในปีต่อไป
     shouldContinueText?: string; // เนื่องจาก (สำหรับ shouldContinue)
-    shouldImprove?: boolean;    // ควรพัฒนาแหล่งฝึก
-    shouldNotUse?: boolean;     // ไม่ควรใช้แหล่งฝึก
+    shouldImprove?: boolean; // ควรพัฒนาแหล่งฝึก
+    shouldNotUse?: boolean; // ไม่ควรใช้แหล่งฝึก
     shouldImproveText?: string; // ควรพัฒนาแหล่งฝึกด้านนี้
-    shouldNotUseText?: string;  // ไม่ควรใช้แหล่งฝึก เนื่องจาก
-    futurePlan?: string;        // การพัฒนา/ปรับปรุงแผนการนิเทศในอนาคต
+    shouldNotUseText?: string; // ไม่ควรใช้แหล่งฝึก เนื่องจาก
+    futurePlan?: string; // การพัฒนา/ปรับปรุงแผนการนิเทศในอนาคต
   };
 };
 
 export default function Page(props: any) {
-  const { id } = props;
+  const { id, data } = props;
   const router = useRouter();
   const { toast } = useToast();
 
   const [isSaving, setIsSaving] = useState(false);
-  const [form, setForm] = useState<FormState>({
-    students: ["", "", "", ""],
-    siteInfo: {},
-    housing: {},
-    coordination: { contactDetailJudge: "" },
-    readiness: { workloadFit: "" },
-    supportNeeds: {},
-    obstacles: {},
-    overall: {},
-  });
+  const [form, setForm] = useState<FormState>(
+    data
+      ? data
+      : {
+          students: ["", "", "", ""],
+          siteInfo: {},
+          housing: {},
+          coordination: { contactDetailJudge: "" },
+          readiness: { workloadFit: "" },
+          supportNeeds: {},
+          obstacles: {},
+          overall: {},
+        }
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) =>
@@ -175,7 +179,11 @@ export default function Page(props: any) {
       toast({ title: "บันทึกสำเร็จ", variant: "success" });
       router.push("/advisor/visits");
     } catch {
-      toast({ title: "ส่งไม่สำเร็จ", description: "ลองใหม่", variant: "destructive" });
+      toast({
+        title: "ส่งไม่สำเร็จ",
+        description: "ลองใหม่",
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -185,12 +193,15 @@ export default function Page(props: any) {
     <Card className="bg-white border-0 shadow-lg">
       <div className="p-4 space-y-8">
         <h1 className="text-xl font-semibold">
-          แบบนิเทศงาน การฝึกปฏิบัติงานวิชาชีพ งานคุ้มครองผู้บริโภค ปีการศึกษา 2568
+          แบบนิเทศงาน การฝึกปฏิบัติงานวิชาชีพ งานคุ้มครองผู้บริโภค ปีการศึกษา
+          2568
         </h1>
 
         {/* -------- 1) ข้อมูลทั่วไป -------- */}
         <section className="space-y-3">
-          <div className="font-medium">1) ข้อมูลทั่วไปของนักศึกษา และแหล่งฝึก</div>
+          <div className="font-medium">
+            1) ข้อมูลทั่วไปของนักศึกษา และแหล่งฝึก
+          </div>
           <div className="grid md:grid-cols-4 gap-3">
             <div className="md:col-span-2">
               <Label>ชื่อแหล่งฝึก</Label>
@@ -231,7 +242,9 @@ export default function Page(props: any) {
                   onChange={(e) =>
                     setField(
                       "students",
-                      (form.students || []).map((s, idx) => (idx === i ? e.target.value : s))
+                      (form.students || []).map((s, idx) =>
+                        idx === i ? e.target.value : s
+                      )
                     )
                   }
                 />
@@ -243,7 +256,8 @@ export default function Page(props: any) {
         {/* -------- 2) สรุปผลจากการนิเทศ -------- */}
         <section className="space-y-2">
           <div className="font-medium">
-            2) สรุปผลจากการนิเทศ (จุดเด่น/สิ่งที่ควรปรับปรุง ทั้งในแหล่งฝึกและในนักศึกษา)
+            2) สรุปผลจากการนิเทศ (จุดเด่น/สิ่งที่ควรปรับปรุง
+            ทั้งในแหล่งฝึกและในนักศึกษา)
           </div>
           <Textarea
             rows={8}
@@ -256,17 +270,27 @@ export default function Page(props: any) {
 
         {/* -------- 3) ข้อมูลเกี่ยวกับแหล่งฝึกและการฝึกปฏิบัติงาน -------- */}
         <section className="space-y-4">
-          <div className="font-medium">3) ข้อมูลเกี่ยวกับแหล่งฝึกและการฝึกปฏิบัติงาน</div>
+          <div className="font-medium">
+            3) ข้อมูลเกี่ยวกับแหล่งฝึกและการฝึกปฏิบัติงาน
+          </div>
 
           {/* 3.1 */}
           <div className="rounded-md border">
-            <div className="p-2 font-medium bg-slate-50">3.1 ข้อมูลแหล่งฝึก</div>
+            <div className="p-2 font-medium bg-slate-50">
+              3.1 ข้อมูลแหล่งฝึก
+            </div>
             <div className="p-3 grid md:grid-cols-2 gap-2">
               {[
                 ["everAccepted", "เคยรับนักศึกษาฝึกงาน"],
                 ["neverAccepted", "ไม่เคยรับนักศึกษาฝึกงาน"],
-                ["hasOtherUniWithDorm", "มีนักศึกษาจากสถาบันอื่นร่วมฝึก พร้อมกับนักศึกษาจาก มวล. (ระบุ จำนวน/ชั้นปี/สถาบัน)"],
-                ["hasOtherUniWithoutDorm", "ไม่มีนักศึกษาจากสถาบันอื่นร่วมฝึก พร้อมกับนักศึกษาจาก มวล."],
+                [
+                  "hasOtherUniWithDorm",
+                  "มีนักศึกษาจากสถาบันอื่นร่วมฝึก พร้อมกับนักศึกษาจาก มวล. (ระบุ จำนวน/ชั้นปี/สถาบัน)",
+                ],
+                [
+                  "hasOtherUniWithoutDorm",
+                  "ไม่มีนักศึกษาจากสถาบันอื่นร่วมฝึก พร้อมกับนักศึกษาจาก มวล.",
+                ],
               ].map(([k, label]) => (
                 <label key={k} className="flex items-start gap-2">
                   <Checkbox
@@ -281,17 +305,23 @@ export default function Page(props: any) {
               <Input
                 placeholder="ระบุ จำนวน/ชั้นปี/สถาบัน (ถ้ามี)"
                 value={form.siteInfo?.otherUniDesc || ""}
-                onChange={(e) => setDeep("siteInfo.otherUniDesc", e.target.value)}
+                onChange={(e) =>
+                  setDeep("siteInfo.otherUniDesc", e.target.value)
+                }
               />
             </div>
             <div className="p-3 pt-0 border-t">
-              <Label className="text-sm font-medium">ผลการติดตาม/นิเทศ (ระบุรายละเอียด)</Label>
+              <Label className="text-sm font-medium">
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+              </Label>
               <Textarea
                 className="mt-2"
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.siteInfo?.supervisionResult || ""}
-                onChange={(e) => setDeep("siteInfo.supervisionResult", e.target.value)}
+                onChange={(e) =>
+                  setDeep("siteInfo.supervisionResult", e.target.value)
+                }
               />
             </div>
           </div>
@@ -326,13 +356,17 @@ export default function Page(props: any) {
               />
             </div>
             <div className="p-3 pt-0 border-t">
-              <Label className="text-sm font-medium">ผลการติดตาม/นิเทศ (ระบุรายละเอียด)</Label>
+              <Label className="text-sm font-medium">
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+              </Label>
               <Textarea
                 className="mt-2"
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.housing?.supervisionResult || ""}
-                onChange={(e) => setDeep("housing.supervisionResult", e.target.value)}
+                onChange={(e) =>
+                  setDeep("housing.supervisionResult", e.target.value)
+                }
               />
             </div>
           </div>
@@ -348,7 +382,10 @@ export default function Page(props: any) {
                 ["needMoreDocs", "ต้องส่งเอกสารเพิ่มเติม"],
                 ["viaMobile", "สาขาติดต่อผ่านหมายเลขโทรศัพท์มือถือ"],
                 ["viaLandlineOrProject", "สาขาติดต่อผ่านโทรศัพท์ภายใน/โครงการ"],
-                ["viaEmailOrSocial", "สาขาติดต่อผ่าน e-mail หรือ social network อื่น ๆ"],
+                [
+                  "viaEmailOrSocial",
+                  "สาขาติดต่อผ่าน e-mail หรือ social network อื่น ๆ",
+                ],
               ].map(([k, label]) => (
                 <label key={k} className="flex items-center gap-2">
                   <Checkbox
@@ -360,11 +397,15 @@ export default function Page(props: any) {
               ))}
             </div>
             <div className="p-3">
-              <Label className="text-sm">รายละเอียดช่องทางติดต่อในปฏิบัติงาน</Label>
+              <Label className="text-sm">
+                รายละเอียดช่องทางติดต่อในปฏิบัติงาน
+              </Label>
               <RadioGroup
                 className="flex gap-6 mt-1"
                 value={form.coordination?.contactDetailJudge || ""}
-                onValueChange={(v) => setDeep("coordination.contactDetailJudge", v as YesNo)}
+                onValueChange={(v) =>
+                  setDeep("coordination.contactDetailJudge", v as YesNo)
+                }
               >
                 {(["เหมาะสม", "ควรปรับปรุง"] as const).map((v) => (
                   <label key={v} className="flex items-center gap-2 text-sm">
@@ -377,17 +418,23 @@ export default function Page(props: any) {
                 className="mt-2"
                 placeholder="ระบุรายละเอียด/ข้อเสนอแนะ"
                 value={form.coordination?.contactDetailNote || ""}
-                onChange={(e) => setDeep("coordination.contactDetailNote", e.target.value)}
+                onChange={(e) =>
+                  setDeep("coordination.contactDetailNote", e.target.value)
+                }
               />
             </div>
             <div className="p-3 pt-0 border-t">
-              <Label className="text-sm font-medium">ผลการติดตาม/นิเทศ (ระบุรายละเอียด)</Label>
+              <Label className="text-sm font-medium">
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+              </Label>
               <Textarea
                 className="mt-2"
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.coordination?.supervisionResult || ""}
-                onChange={(e) => setDeep("coordination.supervisionResult", e.target.value)}
+                onChange={(e) =>
+                  setDeep("coordination.supervisionResult", e.target.value)
+                }
               />
             </div>
           </div>
@@ -400,12 +447,16 @@ export default function Page(props: any) {
             <div className="p-3 space-y-4">
               <div>
                 <Label className="text-sm">
-                3.4.1 ความพร้อม ความตั้งใจและการเอาใจใส่ต่อการฝึกปฏิบัติงานของเภสัชกรประจำแหล่งฝึก (ความคิดเห็นจากนักศึกษาและการประเมินของอาจารย์)
+                  3.4.1 ความพร้อม
+                  ความตั้งใจและการเอาใจใส่ต่อการฝึกปฏิบัติงานของเภสัชกรประจำแหล่งฝึก
+                  (ความคิดเห็นจากนักศึกษาและการประเมินของอาจารย์)
                 </Label>
                 <RadioGroup
                   className="flex gap-6 mt-1"
                   value={form.readiness?.workloadFit || ""}
-                  onValueChange={(v) => setDeep("readiness.workloadFit", v as Level)}
+                  onValueChange={(v) =>
+                    setDeep("readiness.workloadFit", v as Level)
+                  }
                 >
                   {(["มาก", "ปานกลาง", "น้อย"] as const).map((v) => (
                     <label key={v} className="flex items-center gap-2 text-sm">
@@ -418,17 +469,25 @@ export default function Page(props: any) {
                   className="mt-2"
                   placeholder="หมายเหตุ"
                   value={form.readiness?.workloadNote || ""}
-                  onChange={(e) => setDeep("readiness.workloadNote", e.target.value)}
+                  onChange={(e) =>
+                    setDeep("readiness.workloadNote", e.target.value)
+                  }
                 />
               </div>
 
               <div>
-                <Label className="text-sm">3.4.2 ความพร้อม ของนักศึกษา (ความคิดเห็นจากเภสัชกรประจำแหล่งฝึกและการประเมินของอาจารย์)</Label>
+                <Label className="text-sm">
+                  3.4.2 ความพร้อม ของนักศึกษา
+                  (ความคิดเห็นจากเภสัชกรประจำแหล่งฝึกและการประเมินของอาจารย์)
+                </Label>
                 <div className="grid md:grid-cols-2 gap-2 mt-1">
                   {[
                     ["studentPersonality", "บุคลิกภาพและความประพฤติ"],
                     ["studentAcademic", "ความรู้และการเตรียมตัวก่อนการฝึกงาน"],
-                    ["studentResponsibility", "ความกระตือรือร้น ความรับผิดชอบและเอาใจใส่"],
+                    [
+                      "studentResponsibility",
+                      "ความกระตือรือร้น ความรับผิดชอบและเอาใจใส่",
+                    ],
                   ].map(([k, label]) => (
                     <label key={k} className="flex items-center gap-2">
                       <Checkbox
@@ -443,18 +502,24 @@ export default function Page(props: any) {
                   className="mt-2"
                   placeholder="อื่น ๆ (ระบุ)"
                   value={form.readiness?.studentOther || ""}
-                  onChange={(e) => setDeep("readiness.studentOther", e.target.value)}
+                  onChange={(e) =>
+                    setDeep("readiness.studentOther", e.target.value)
+                  }
                 />
               </div>
             </div>
             <div className="p-3 pt-0 border-t">
-              <Label className="text-sm font-medium">ผลการติดตาม/นิเทศ (ระบุรายละเอียด)</Label>
+              <Label className="text-sm font-medium">
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+              </Label>
               <Textarea
                 className="mt-2"
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.readiness?.supervisionResult || ""}
-                onChange={(e) => setDeep("readiness.supervisionResult", e.target.value)}
+                onChange={(e) =>
+                  setDeep("readiness.supervisionResult", e.target.value)
+                }
               />
             </div>
           </div>
@@ -493,27 +558,38 @@ export default function Page(props: any) {
               />
             </div>
             <div className="p-3 pt-0 border-t">
-              <Label className="text-sm font-medium">ผลการติดตาม/นิเทศ (ระบุรายละเอียด)</Label>
+              <Label className="text-sm font-medium">
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+              </Label>
               <Textarea
                 className="mt-2"
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.supportNeeds?.supervisionResult || ""}
-                onChange={(e) => setDeep("supportNeeds.supervisionResult", e.target.value)}
+                onChange={(e) =>
+                  setDeep("supportNeeds.supervisionResult", e.target.value)
+                }
               />
             </div>
           </div>
 
           {/* 3.6 */}
           <div className="rounded-md border">
-            <div className="p-2 font-medium bg-slate-50">3.6 ปัญหา/อุปสรรคของการฝึกปฏิบัติงาน</div>
+            <div className="p-2 font-medium bg-slate-50">
+              3.6 ปัญหา/อุปสรรคของการฝึกปฏิบัติงาน
+            </div>
             <div className="p-3 space-y-2">
               <div className="flex gap-6">
                 <label className="flex items-center gap-2">
                   <Checkbox
                     checked={!!form.obstacles?.none}
                     onCheckedChange={(c) =>
-                      setField("obstacles", { ...(form.obstacles || {}), none: !!c, has: false, note: "" })
+                      setField("obstacles", {
+                        ...(form.obstacles || {}),
+                        none: !!c,
+                        has: false,
+                        note: "",
+                      })
                     }
                   />
                   <span className="text-sm">ไม่พบปัญหา/อุปสรรค</span>
@@ -522,7 +598,11 @@ export default function Page(props: any) {
                   <Checkbox
                     checked={!!form.obstacles?.has}
                     onCheckedChange={(c) =>
-                      setField("obstacles", { ...(form.obstacles || {}), has: !!c, none: false })
+                      setField("obstacles", {
+                        ...(form.obstacles || {}),
+                        has: !!c,
+                        none: false,
+                      })
                     }
                   />
                   <span className="text-sm">พบปัญหา/อุปสรรค (ระบุ)</span>
@@ -536,13 +616,17 @@ export default function Page(props: any) {
               />
             </div>
             <div className="p-3 pt-0 border-t">
-              <Label className="text-sm font-medium">ผลการติดตาม/นิเทศ (ระบุรายละเอียด)</Label>
+              <Label className="text-sm font-medium">
+                ผลการติดตาม/นิเทศ (ระบุรายละเอียด)
+              </Label>
               <Textarea
                 className="mt-2"
                 rows={3}
                 placeholder="ระบุรายละเอียดผลการติดตาม/นิเทศ..."
                 value={form.obstacles?.supervisionResult || ""}
-                onChange={(e) => setDeep("obstacles.supervisionResult", e.target.value)}
+                onChange={(e) =>
+                  setDeep("obstacles.supervisionResult", e.target.value)
+                }
               />
             </div>
           </div>
@@ -562,13 +646,17 @@ export default function Page(props: any) {
 
           {/* 3.8 */}
           <div className="rounded-md border">
-            <div className="p-2 font-medium bg-slate-50">3.8 สรุปผลโดยรวมของการติดตาม/นิเทศ</div>
+            <div className="p-2 font-medium bg-slate-50">
+              3.8 สรุปผลโดยรวมของการติดตาม/นิเทศ
+            </div>
             <div className="p-3 space-y-3">
               <div>
                 <label className="flex items-center gap-2">
                   <Checkbox
                     checked={!!form.overall?.shouldContinue}
-                    onCheckedChange={(c) => setDeep("overall.shouldContinue", !!c)}
+                    onCheckedChange={(c) =>
+                      setDeep("overall.shouldContinue", !!c)
+                    }
                   />
                   <span className="text-sm">ควรเป็นแหล่งฝึกในปีต่อไป</span>
                 </label>
@@ -578,15 +666,19 @@ export default function Page(props: any) {
                   placeholder="ควรเป็นแหล่งฝึกในปีต่อไป เนื่องจาก..."
                   disabled={!form.overall?.shouldContinue}
                   value={form.overall?.shouldContinueText || ""}
-                  onChange={(e) => setDeep("overall.shouldContinueText", e.target.value)}
+                  onChange={(e) =>
+                    setDeep("overall.shouldContinueText", e.target.value)
+                  }
                 />
               </div>
-              
+
               <div>
                 <label className="flex items-center gap-2">
                   <Checkbox
                     checked={!!form.overall?.shouldImprove}
-                    onCheckedChange={(c) => setDeep("overall.shouldImprove", !!c)}
+                    onCheckedChange={(c) =>
+                      setDeep("overall.shouldImprove", !!c)
+                    }
                   />
                   <span className="text-sm">ควรมีการพัฒนาแหล่งฝึก</span>
                 </label>
@@ -596,7 +688,9 @@ export default function Page(props: any) {
                   placeholder="ควรมีการพัฒนาแหล่งฝึกดังนี้..."
                   disabled={!form.overall?.shouldImprove}
                   value={form.overall?.shouldImproveText || ""}
-                  onChange={(e) => setDeep("overall.shouldImproveText", e.target.value)}
+                  onChange={(e) =>
+                    setDeep("overall.shouldImproveText", e.target.value)
+                  }
                 />
               </div>
 
@@ -604,7 +698,9 @@ export default function Page(props: any) {
                 <label className="flex items-center gap-2">
                   <Checkbox
                     checked={!!form.overall?.shouldNotUse}
-                    onCheckedChange={(c) => setDeep("overall.shouldNotUse", !!c)}
+                    onCheckedChange={(c) =>
+                      setDeep("overall.shouldNotUse", !!c)
+                    }
                   />
                   <span className="text-sm">ไม่ควรใช้แหล่งฝึก</span>
                 </label>
@@ -614,16 +710,22 @@ export default function Page(props: any) {
                   placeholder="ไม่ควรส่งนักศึกษาฝึกงาน เนื่องจาก..."
                   disabled={!form.overall?.shouldNotUse}
                   value={form.overall?.shouldNotUseText || ""}
-                  onChange={(e) => setDeep("overall.shouldNotUseText", e.target.value)}
+                  onChange={(e) =>
+                    setDeep("overall.shouldNotUseText", e.target.value)
+                  }
                 />
               </div>
 
               <div>
-                <Label className="text-sm">การพัฒนา/ปรับปรุงแผนการนิเทศในอนาคต</Label>
+                <Label className="text-sm">
+                  การพัฒนา/ปรับปรุงแผนการนิเทศในอนาคต
+                </Label>
                 <Textarea
                   rows={3}
                   value={form.overall?.futurePlan || ""}
-                  onChange={(e) => setDeep("overall.futurePlan", e.target.value)}
+                  onChange={(e) =>
+                    setDeep("overall.futurePlan", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -633,7 +735,9 @@ export default function Page(props: any) {
 
       <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
         <Link href="/advisor/visits">
-          <Button variant="outline" className="border-gray-300 text-gray-600">ยกเลิก</Button>
+          <Button variant="outline" className="border-gray-300 text-gray-600">
+            ยกเลิก
+          </Button>
         </Link>
         <Button
           onClick={onSubmit}

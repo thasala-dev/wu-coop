@@ -7,22 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   CalendarIcon,
   ClockIcon,
@@ -30,19 +15,13 @@ import {
   UserIcon,
   BuildingIcon,
   ArrowLeftIcon,
-  SaveIcon,
   FileTextIcon,
-  CheckCircleIcon,
-  AlertCircleIcon,
-  StarIcon,
-  Loader2,
 } from "lucide-react";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 
 import Page1 from "@/components/supervision/super1";
 import Page2 from "@/components/supervision/super2";
@@ -73,27 +52,9 @@ export default function RecordVisit() {
   const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
 
   // Form state
-  const [evaluationScores, setEvaluationScores] = useState<
-    Record<string, string>
-  >({});
-  const [strengths, setStrengths] = useState<string>("");
-  const [improvements, setImprovements] = useState<string>("");
-  const [recommendations, setRecommendations] = useState<string>("");
-  const [overallRating, setOverallRating] = useState<string>("");
-  const [summary, setSummary] = useState<string>("");
-  const [studentInterview, setStudentInterview] = useState<string>("");
-  const [mentorInterview, setMentorInterview] = useState<string>("");
-  const [workEnvironment, setWorkEnvironment] = useState<string>("");
-  const [assignedTasks, setAssignedTasks] = useState<string>("");
-
-  // Validation state
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [activeTab, setActiveTab] = useState<string>("evaluation");
-
   async function fetchVisitData() {
     setIsLoading(true);
     try {
@@ -104,20 +65,6 @@ export default function RecordVisit() {
       const data = await response.json();
       if (data.success) {
         setData(data.data);
-        if (data.data.result) {
-          // Populate form fields with existing visit data
-          setEvaluationScores(data.data.result.evaluation_scores || {});
-          setStrengths(data.data.result.strengths || "");
-          setImprovements(data.data.result.improvements || "");
-          setRecommendations(data.data.result.recommendations || "");
-          setOverallRating(data.data.result.overall_rating || "");
-          setSummary(data.data.result.summary || "");
-          setStudentInterview(data.data.result.student_interview || "");
-          setMentorInterview(data.data.result.mentor_interview || "");
-          setWorkEnvironment(data.data.result.work_environment || "");
-          setAssignedTasks(data.data.result.assigned_tasks || "");
-          setActiveTab("evaluation");
-        }
       }
     } catch (error) {
       console.error("Error fetching visit data:", error);
@@ -128,176 +75,6 @@ export default function RecordVisit() {
   useEffect(() => {
     fetchVisitData();
   }, []);
-
-  // Mock data for evaluation criteria
-  const evaluationCriteria = [
-    { id: "work_quality", name: "คุณภาพงาน" },
-    { id: "knowledge", name: "ความรู้และทักษะ" },
-    { id: "responsibility", name: "ความรับผิดชอบ" },
-    { id: "teamwork", name: "การทำงานร่วมกับผู้อื่น" },
-    { id: "adaptation", name: "การปรับตัว" },
-    { id: "communication", name: "การสื่อสาร" },
-    { id: "problem_solving", name: "การแก้ไขปัญหา" },
-    { id: "discipline", name: "ระเบียบวินัย" },
-  ];
-
-  // Validation functions
-  const validateEvaluation = () => {
-    const newErrors: Record<string, string> = {};
-
-    // Check if all evaluation criteria have scores
-    evaluationCriteria.forEach((criteria) => {
-      if (!evaluationScores[criteria.id]) {
-        newErrors[criteria.id] = "กรุณาให้คะแนนการประเมิน";
-      }
-    });
-
-    if (!overallRating) {
-      newErrors.overallRating = "กรุณาเลือกผลการประเมินโดยรวม";
-    }
-
-    if (!summary.trim()) {
-      newErrors.summary = "กรุณาระบุสรุปผลการนิเทศ";
-    }
-
-    if (!strengths.trim()) {
-      newErrors.strengths = "กรุณาระบุจุดเด่นของนักศึกษา";
-    }
-
-    setErrors((err) => ({ ...err, ...newErrors }));
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const validateInterview = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!studentInterview.trim()) {
-      newErrors.studentInterview = "กรุณาบันทึกการสัมภาษณ์นักศึกษา";
-    }
-
-    if (!mentorInterview.trim()) {
-      newErrors.mentorInterview = "กรุณาบันทึกการสัมภาษณ์แหล่งฝึก";
-    }
-
-    if (!workEnvironment.trim()) {
-      newErrors.workEnvironment = "กรุณาบันทึกข้อมูลสภาพแวดล้อมการทำงาน";
-    }
-
-    if (!assignedTasks.trim()) {
-      newErrors.assignedTasks = "กรุณาบันทึกข้อมูลงานที่ได้รับมอบหมาย";
-    }
-
-    setErrors((err) => ({ ...err, ...newErrors }));
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Check if all radio buttons are selected
-  const validateAllRadioButtons = () => {
-    const missingScores = evaluationCriteria.filter(
-      (criteria) => !evaluationScores[criteria.id]
-    );
-
-    if (missingScores.length > 0) {
-      const newErrors: Record<string, string> = {};
-      missingScores.forEach((criteria) => {
-        newErrors[criteria.id] = "กรุณาให้คะแนนการประเมิน";
-      });
-      setErrors((prev) => ({ ...prev, ...newErrors }));
-
-      // Show specific toast for missing radio buttons
-      toast({
-        title: "การประเมินไม่ครบถ้วน",
-        description: `กรุณาให้คะแนนในหัวข้อ: ${missingScores
-          .map((c) => c.name)
-          .join(", ")}`,
-        variant: "destructive",
-      });
-
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmitReport = async () => {
-    // First validate all radio buttons are selected
-    const allRadioSelected = validateAllRadioButtons();
-    const isEvaluationValid = validateEvaluation();
-    const isInterviewValid = validateInterview();
-
-    if (!allRadioSelected || !isEvaluationValid || !isInterviewValid) {
-      console.log("errors:", errors, allRadioSelected);
-
-      toast({
-        title: "ข้อมูลไม่ครบถ้วน",
-        description: "กรุณากรอกข้อมูลให้ครบถ้วนก่อนส่งรายงาน",
-        variant: "destructive",
-      });
-
-      // Switch to the tab with errors
-      if (!allRadioSelected || !isEvaluationValid) {
-        setActiveTab("evaluation");
-      } else if (!isInterviewValid) {
-        setActiveTab("interview");
-      }
-      return;
-    }
-
-    // Calculate average score
-    const totalScore = Object.values(evaluationScores).reduce(
-      (sum, score) => sum + parseInt(score),
-      0
-    );
-    const averageScore = totalScore / evaluationCriteria.length;
-
-    // Prepare form data
-    const formData = {
-      visit_id: id,
-      evaluation_scores: evaluationScores,
-      average_score: averageScore.toFixed(2),
-      strengths: strengths.trim(),
-      improvements: improvements.trim(),
-      recommendations: recommendations.trim(),
-      overall_rating: overallRating,
-      summary: summary.trim(),
-      student_interview: studentInterview.trim(),
-      mentor_interview: mentorInterview.trim(),
-      work_environment: workEnvironment.trim(),
-      assigned_tasks: assignedTasks.trim(),
-      submission_date: new Date().toISOString(),
-    };
-
-    setIsSaving(true);
-    try {
-      const response = await fetch(`/api/advisor/visits/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ result: formData }),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to submit report");
-      }
-      const result = await response.json();
-      if (result.success) {
-        // Submit report logic here
-        toast({
-          title: "ส่งรายงานสำเร็จ",
-          description: "รายงานการนิเทศถูกส่งเรียบร้อยแล้ว",
-          variant: "success",
-        });
-        router.push("/advisor/visits");
-      }
-    } catch (error) {
-      toast({
-        title: "เกิดข้อผิดพลาด",
-        description: "ไม่สามารถส่งรายงานได้",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
@@ -422,15 +199,15 @@ export default function RecordVisit() {
             </Card>
 
             {data?.type == "1" ? (
-              <Page1 id={id} />
+              <Page1 id={id} data={data.result} />
             ) : data?.type == "2" ? (
-              <Page2 id={id} />
+              <Page2 id={id} data={data.result} />
             ) : data?.type == "3" ? (
-              <Page3 id={id} />
+              <Page3 id={id} data={data.result} />
             ) : data?.type == "4" ? (
-              <Page4 id={id} />
+              <Page4 id={id} data={data.result} />
             ) : data?.type == "5" ? (
-              <Page5 id={id} />
+              <Page5 id={id} data={data.result} />
             ) : null}
 
             {/* Main Form Card */}

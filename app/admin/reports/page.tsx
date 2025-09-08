@@ -39,6 +39,13 @@ const reportMenu = [
     description: "ผลการประเมินนักศึกษาโดยสถานประกอบการ",
   },
   {
+    name: "รายงานผลการนิเทศนักศึกษา",
+    href: "/admin/reports/supervisionResult",
+    icon: Users,
+    color: "bg-yellow-500",
+    description: "ผลการนิเทศนักศึกษาโดยสถานประกอบการ",
+  },
+  {
     name: "รายงานผลการประเมินความพึงพอใจระบบ",
     href: "/admin/reports/systemSatisfaction",
     icon: Star,
