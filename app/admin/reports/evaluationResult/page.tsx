@@ -124,6 +124,19 @@ export default function CompaniesPage() {
       setData(res.data || []);
       setLoading(false);
       setIsResult(true);
+
+      if (metaData.length === 0) {
+        res.data.forEach((item: any) => {
+          if (item.result) {
+            metaData.push(
+              ...Object.keys(item.result).map((key) => ({
+                label: key,
+                value: key,
+              }))
+            );
+          }
+        });
+      }
     }
   }
 
@@ -151,6 +164,7 @@ export default function CompaniesPage() {
       "แหล่งฝึกงาน",
       "อาจารย์ประจำแหล่งฝึก",
       "วันที่ประเมิน",
+      "แบบประเมิน",
       ...metaData.map((meta: any) => meta.label),
     ];
 
@@ -193,6 +207,7 @@ export default function CompaniesPage() {
               day: "numeric",
             })
           : "-",
+        item.evaluation_name,
         ...metaData.map((meta: any) =>
           item.result ? item.result[meta.value] : "-"
         ), // เพิ่มข้อมูล metaData
@@ -211,15 +226,16 @@ export default function CompaniesPage() {
       { wch: 40 }, // แหล่งฝึกงาน
       { wch: 25 }, // อาจารย์ประจำแหล่งฝึก
       { wch: 15 }, // วันที่ประเมิน
+      { wch: 15 }, // แบบประเมิน
       ...metaData.map(() => ({ wch: 15 })), // คอลัมน์ metaData
     ];
     ws["!cols"] = colWidths;
 
     // คำนวณจำนวนคอลัมน์ทั้งหมด
-    const totalColumns = 6 + metaData.length;
+    const totalColumns = 7 + metaData.length;
 
     // Style the header row (row 7, which contains the table headers)
-    const headerRowIndex = 6; // 0-indexed
+    const headerRowIndex = 7; // 0-indexed
     const headerStyle = {
       font: { bold: true, color: { rgb: "FFFFFF" } },
       fill: { fgColor: { rgb: "4F46E5" } },
@@ -234,7 +250,7 @@ export default function CompaniesPage() {
     }
 
     // Style the title rows (first 5 rows)
-    for (let row = 0; row < 5; row++) {
+    for (let row = 0; row < 6; row++) {
       const cellAddress = XLSX.utils.encode_cell({ r: row, c: 0 });
       if (ws[cellAddress]) {
         ws[cellAddress].s = {
@@ -529,7 +545,9 @@ export default function CompaniesPage() {
                                 <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[80px]">
                                   วันที่ประเมิน
                                 </th>
-
+                                <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[80px]">
+                                  แบบประเมิน
+                                </th>
                                 {metaData.map((item: any, index: number) => (
                                   <th
                                     key={index}
@@ -561,6 +579,7 @@ export default function CompaniesPage() {
                                   <td className="p-4 whitespace-nowrap text-sm text-gray-500">
                                     {item.evaluator || "-"}
                                   </td>
+
                                   <td className="p-4 whitespace-nowrap text-sm text-gray-500">
                                     {item.evaluation_date
                                       ? new Date(
@@ -571,6 +590,9 @@ export default function CompaniesPage() {
                                           day: "numeric",
                                         })
                                       : "-"}
+                                  </td>
+                                  <td className="p-4 whitespace-nowrap text-sm text-gray-500">
+                                    {item.evaluation_name || "-"}
                                   </td>
 
                                   {metaData.map(
