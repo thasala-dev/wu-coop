@@ -159,9 +159,6 @@ export default function PaymentsPage() {
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">
-                          <CardTitle className="text-lg leading-6 group-hover:text-blue-600 transition-colors">
-                            {payment.company_name || "ไม่ระบุบริษัท"}
-                          </CardTitle>
                           <div className="flex items-center gap-4 mt-2">
                             <div className="flex items-center gap-1 text-sm text-gray-500">
                               <CalendarIcon className="h-4 w-4" />
@@ -182,11 +179,13 @@ export default function PaymentsPage() {
                       <div className="space-y-3">
                         <div>
                           <p className="text-sm text-gray-500">
-                            ปีการศึกษา: {payment.calendar_name || "ไม่ระบุ"}
+                            ผลัดการฝึกงาน: {payment.calendar_name || "ไม่ระบุ"}{" "}
+                            ({payment.semester || "ไม่ระบุ"}/
+                            {payment.year || "ไม่ระบุ"})
                           </p>
                           {payment.detail && (
                             <p className="text-sm text-gray-600 mt-1">
-                              {truncateText(payment.detail, 100)}
+                              {payment.detail}
                             </p>
                           )}
                         </div>
