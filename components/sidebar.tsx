@@ -29,6 +29,8 @@ import {
   HelpCircle,
   MapPinIcon,
   Newspaper,
+  PillIcon,
+  Banknote,
 } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -163,6 +165,12 @@ export function Sidebar({
         label: "ตารางนัดหมาย",
         icon: Calendar,
       },
+      {
+        label: "ค่าตอบแทน",
+        href: "/mentor/payments",
+        icon: Banknote,
+        page: "payments",
+      },
     ],
     admin: [
       {
@@ -236,6 +244,12 @@ export function Sidebar({
         href: "/admin/admins",
         icon: Shield,
         page: "admins",
+      },
+      {
+        label: "ค่าตอบแทน",
+        href: "/admin/payments",
+        icon: Banknote,
+        page: "payments",
       },
       {
         label: "Logs",
