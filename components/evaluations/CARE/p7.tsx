@@ -127,8 +127,8 @@ const criteriaData = [
     ),
   },
   {
-    number: "1",
-    point: 1,
+    number: "2",
+    point: 2,
     label: "p13",
     title: "1.3 การเลือกสารน้ำ ความเข้ากัน ความคงตัว",
     superd: (
@@ -171,8 +171,8 @@ const criteriaData = [
     title: "2. อุปกรณ์ในการเตรียมยาเคมีบำบัด",
   },
   {
-    number: "1",
-    point: 1,
+    number: "2",
+    point: 2,
     label: "pCB1",
     title: "2.1 การเตรียมอุปกรณ์ที่จำเป็นในการเตรียมยาเคมีบำบัด",
     superd: (
@@ -393,8 +393,8 @@ const criteriaData = [
     ),
   },
   {
-    number: "10",
-    point: 1,
+    number: "2",
+    point: 2,
     label: "pCB10",
     title: "10 ภาพรวมการวางแผนระบบความปลอดภัยในการปฏิบัติงานเตรียมยาเคมีบำบัด",
     superd: (
@@ -888,11 +888,37 @@ export default function Page(props: any) {
                   colSpan={6}
                   className="p-2 border align-top text-center text-md"
                 >
-                  ปรับให้เป็นคะแนนเต็ม 20 คะแนน =
-                  <span className="font-mono">
-                    (คะแนนที่ประเมินได้ &divide; 200) &times; 20
-                  </span>
-                  &nbsp;= ______ คะแนน
+                  {(() => {
+                    // คำนวณคะแนนรวม
+                    let totalScore = 0;
+                    let hasNA = false;
+
+                    criteriaData.forEach((item) => {
+                      // ข้าม header rows
+                      if (item.head === 1 || !item.label || !item.point) return;
+                      
+                      const value = data[item.label as keyof typeof data];
+                      if (value === "N/A") {
+                        hasNA = true;
+                      } else if (value && value !== "") {
+                        totalScore += parseFloat(value) * item.point;
+                      }
+                    });
+
+                    // คำนวณคะแนนเต็ม 20
+                    const finalScore = (totalScore / 200) * 20;
+                    const displayScore = hasNA ? "N/A" : toThaiNumber(parseFloat(finalScore.toFixed(2)));
+
+                    return (
+                      <>
+                        ปรับให้เป็นคะแนนเต็ม 20 คะแนน =
+                        <span className="font-mono">
+                          ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 200) &times; 20
+                        </span>
+                        &nbsp;= <span className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
+                      </>
+                    );
+                  })()}
                 </td>
               </tr>
             </tbody>

@@ -611,6 +611,35 @@ export default function Page(props: any) {
                   />
                 </td>
               </tr>
+              <tr>
+                <td
+                  className="p-2 border align-center text-sm font-bold text-center"
+                  colSpan={4}
+                >
+                  คะแนนเฉลี่ยของจุดมุ่งหมายที่ 1
+                </td>
+                <td className="p-2 border align-center text-sm font-bold text-center">
+                  {(() => {
+                    const scores = [
+                      data.p1_1_select && data.p1_1_score
+                        ? Number(data.p1_1_score)
+                        : null,
+                      data.p1_2_select && data.p1_2_score
+                        ? Number(data.p1_2_score)
+                        : null,
+                    ].filter((s) => s !== null);
+
+                    if (scores.length === 0) return "-";
+
+                    const avg = (
+                      scores.reduce((sum, s) => sum + (s || 0), 0) /
+                      scores.length
+                    ).toFixed(2);
+                    return toThaiNumber(Number(avg));
+                  })()}
+                </td>
+                <td className="p-2 border align-center text-sm"></td>
+              </tr>
             </tbody>
             <tbody>
               <tr>
@@ -835,6 +864,50 @@ export default function Page(props: any) {
                   />
                 </td>
               </tr>
+              <tr>
+                <td
+                  className="p-2 border align-center text-sm font-bold text-center"
+                  colSpan={4}
+                >
+                  คะแนนเฉลี่ยของจุดมุ่งหมายที่ 2
+                </td>
+                <td className="p-2 border align-center text-sm font-bold text-center">
+                  {(() => {
+                    const scores = [
+                      data.p2_1_select && data.p2_1_score
+                        ? Number(data.p2_1_score)
+                        : null,
+                      data.p2_2_select && data.p2_2_score
+                        ? Number(data.p2_2_score)
+                        : null,
+                      data.p2_3_select && data.p2_3_score
+                        ? Number(data.p2_3_score)
+                        : null,
+                      data.p2_4_select && data.p2_4_score
+                        ? Number(data.p2_4_score)
+                        : null,
+                      data.p2_5_select && data.p2_5_score
+                        ? Number(data.p2_5_score)
+                        : null,
+                      data.p2_6_select && data.p2_6_score
+                        ? Number(data.p2_6_score)
+                        : null,
+                      data.p2_7_select && data.p2_7_score
+                        ? Number(data.p2_7_score)
+                        : null,
+                    ].filter((s) => s !== null);
+
+                    if (scores.length === 0) return "-";
+
+                    const avg = (
+                      scores.reduce((sum, s) => sum + (s || 0), 0) /
+                      scores.length
+                    ).toFixed(2);
+                    return toThaiNumber(Number(avg));
+                  })()}
+                </td>
+                <td className="p-2 border align-center text-sm"></td>
+              </tr>
             </tbody>
             <tbody>
               <tr>
@@ -866,9 +939,7 @@ export default function Page(props: any) {
                       className="mt-1"
                     />
                     <span>
-                      เข้าใจลักษณะผังโครงสร้างองค์กร ทราบ บทบาทหน้าที่
-                      และความรับผิดชอบของบุคลากรฝ่ายผลิต เภสัชผู้ควบคุมการผลิต
-                      และเข้าใจความเชื่อมโยงระหว่างฝ่ายผลิตกับฝ่ายอื่นที่เกี่ยวข้อง
+                      ทราบข้อกําหนดและกฎระเบียบเกี่ยวกับการขออนุญาตผลิต เช่น การขออนุญาตสถานที่ผลิต การส่งรายงานการผลิต
                     </span>
                   </div>
                 </td>
@@ -1043,6 +1114,47 @@ export default function Page(props: any) {
                   />
                 </td>
               </tr>
+              <tr>
+                <td
+                  className="p-2 border align-center text-sm font-bold text-center"
+                  colSpan={4}
+                >
+                  คะแนนเฉลี่ยของจุดมุ่งหมายที่ 3
+                </td>
+                <td className="p-2 border align-center text-sm font-bold text-center">
+                  {(() => {
+                    const scores = [
+                      data.p3_1_select && data.p3_1_score
+                        ? Number(data.p3_1_score)
+                        : null,
+                      data.p3_2_select && data.p3_2_score
+                        ? Number(data.p3_2_score)
+                        : null,
+                      data.p3_3_select && data.p3_3_score
+                        ? Number(data.p3_3_score)
+                        : null,
+                      data.p3_4_select && data.p3_4_score
+                        ? Number(data.p3_4_score)
+                        : null,
+                      data.p3_5_select && data.p3_5_score
+                        ? Number(data.p3_5_score)
+                        : null,
+                      data.p3_6_select && data.p3_6_score
+                        ? Number(data.p3_6_score)
+                        : null,
+                    ].filter((s) => s !== null);
+
+                    if (scores.length === 0) return "-";
+
+                    const avg = (
+                      scores.reduce((sum, s) => sum + (s || 0), 0) /
+                      scores.length
+                    ).toFixed(2);
+                    return toThaiNumber(Number(avg));
+                  })()}
+                </td>
+                <td className="p-2 border align-center text-sm"></td>
+              </tr>
             </tbody>
             <tbody>
               <tr>
@@ -1136,6 +1248,35 @@ export default function Page(props: any) {
                   />
                 </td>
               </tr>
+              <tr>
+                <td
+                  className="p-2 border align-center text-sm font-bold text-center"
+                  colSpan={4}
+                >
+                  คะแนนเฉลี่ยของจุดมุ่งหมายที่ 4
+                </td>
+                <td className="p-2 border align-center text-sm font-bold text-center">
+                  {(() => {
+                    const scores = [
+                      data.p4_1_select && data.p4_1_score
+                        ? Number(data.p4_1_score)
+                        : null,
+                      data.p4_2_select && data.p4_2_score
+                        ? Number(data.p4_2_score)
+                        : null,
+                    ].filter((s) => s !== null);
+
+                    if (scores.length === 0) return "-";
+
+                    const avg = (
+                      scores.reduce((sum, s) => sum + (s || 0), 0) /
+                      scores.length
+                    ).toFixed(2);
+                    return toThaiNumber(Number(avg));
+                  })()}
+                </td>
+                <td className="p-2 border align-center text-sm"></td>
+              </tr>
             </tbody>
             <tbody>
               <tr>
@@ -1182,6 +1323,83 @@ export default function Page(props: any) {
                     value={data.p5_note}
                   />
                 </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td
+                  className="p-2 border align-center text-sm font-bold text-center bg-slate-100"
+                  colSpan={4}
+                >
+                  รวมคะแนนเฉลี่ยทั้งหมด
+                </td>
+                <td className="p-2 border align-center text-sm font-bold text-center bg-slate-100">
+                  {(() => {
+                    const allScores = [
+                      data.p1_1_select && data.p1_1_score
+                        ? Number(data.p1_1_score)
+                        : null,
+                      data.p1_2_select && data.p1_2_score
+                        ? Number(data.p1_2_score)
+                        : null,
+                      data.p2_1_select && data.p2_1_score
+                        ? Number(data.p2_1_score)
+                        : null,
+                      data.p2_2_select && data.p2_2_score
+                        ? Number(data.p2_2_score)
+                        : null,
+                      data.p2_3_select && data.p2_3_score
+                        ? Number(data.p2_3_score)
+                        : null,
+                      data.p2_4_select && data.p2_4_score
+                        ? Number(data.p2_4_score)
+                        : null,
+                      data.p2_5_select && data.p2_5_score
+                        ? Number(data.p2_5_score)
+                        : null,
+                      data.p2_6_select && data.p2_6_score
+                        ? Number(data.p2_6_score)
+                        : null,
+                      data.p2_7_select && data.p2_7_score
+                        ? Number(data.p2_7_score)
+                        : null,
+                      data.p3_1_select && data.p3_1_score
+                        ? Number(data.p3_1_score)
+                        : null,
+                      data.p3_2_select && data.p3_2_score
+                        ? Number(data.p3_2_score)
+                        : null,
+                      data.p3_3_select && data.p3_3_score
+                        ? Number(data.p3_3_score)
+                        : null,
+                      data.p3_4_select && data.p3_4_score
+                        ? Number(data.p3_4_score)
+                        : null,
+                      data.p3_5_select && data.p3_5_score
+                        ? Number(data.p3_5_score)
+                        : null,
+                      data.p3_6_select && data.p3_6_score
+                        ? Number(data.p3_6_score)
+                        : null,
+                      data.p4_1_select && data.p4_1_score
+                        ? Number(data.p4_1_score)
+                        : null,
+                      data.p4_2_select && data.p4_2_score
+                        ? Number(data.p4_2_score)
+                        : null,
+                      data.p5_score ? Number(data.p5_score) : null,
+                    ].filter((s) => s !== null);
+
+                    if (allScores.length === 0) return "-";
+
+                    const avg = (
+                      allScores.reduce((sum, s) => sum + (s || 0), 0) /
+                      allScores.length
+                    ).toFixed(2);
+                    return toThaiNumber(Number(avg));
+                  })()}
+                </td>
+                <td className="p-2 border align-center text-sm bg-slate-100"></td>
               </tr>
             </tbody>
           </table>

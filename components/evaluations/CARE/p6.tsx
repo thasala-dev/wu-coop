@@ -743,11 +743,34 @@ export default function Page(props: any) {
                   colSpan={6}
                   className="p-2 border align-top text-center text-md"
                 >
-                  ปรับให้เป็นคะแนนเต็ม 10 คะแนน =
-                  <span className="font-mono">
-                    (คะแนนที่ประเมินได้ &divide; 100) &times; 10
-                  </span>
-                  &nbsp;= ______ คะแนน
+                  {(() => {
+                    // คำนวณคะแนนรวม
+                    let totalScore = 0;
+                    let hasNA = false;
+
+                    criteriaData.forEach((item) => {
+                      const value = data[item.label as keyof typeof data];
+                      if (value === "N/A") {
+                        hasNA = true;
+                      } else if (value && value !== "") {
+                        totalScore += parseFloat(value) * item.point;
+                      }
+                    });
+
+                    // คำนวณคะแนนเต็ม 60
+                    const finalScore = (totalScore / 100) * 60;
+                    const displayScore = hasNA ? "N/A" : toThaiNumber(parseFloat(finalScore.toFixed(2)));
+
+                    return (
+                      <>
+                        ปรับให้เป็นคะแนนเต็ม 60 คะแนน =
+                        <span className="font-mono">
+                          ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 100) &times; 60
+                        </span>
+                        &nbsp;= <span className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
+                      </>
+                    );
+                  })()}
                 </td>
               </tr>
             </tbody>

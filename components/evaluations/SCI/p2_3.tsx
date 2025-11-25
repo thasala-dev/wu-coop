@@ -515,7 +515,7 @@ export default function Page(props: any) {
               </tr>
               <tr>
                 <td className="p-2 border align-top text-sm">
-                  2. พัฒนาตำรับยา หรือผลิตภัณฑ์ใหม่/ มีส่วนร่วมในการพัฒนาตำรับยา
+                  2. ประยุกต์ใช้หลักวิทยาศาสตร์ในการพัฒนาตํารับยา
                 </td>
                 <td className="p-2 border align-top text-sm">
                   <ScoreForm

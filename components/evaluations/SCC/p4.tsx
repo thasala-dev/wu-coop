@@ -395,7 +395,7 @@ export default function Page(props: any) {
                       type="text"
                       className="border rounded px-2 py-1 w-full text-sm"
                       placeholder="วันที่"
-                      value={data[`p4_date_${i + 1}`] || ""}
+                      value={data[`p4_date_${i + 1}` as keyof typeof data] || ""}
                       onChange={(e) =>
                         setDataValue(`p4_date_${i + 1}`, e.target.value)
                       }
@@ -406,7 +406,7 @@ export default function Page(props: any) {
                       type="text"
                       className="border rounded px-2 py-1 w-full text-sm"
                       placeholder="กิจกรรม"
-                      value={data[`p4_activity_${i + 1}`] || ""}
+                      value={data[`p4_activity_${i + 1}` as keyof typeof data] || ""}
                       onChange={(e) =>
                         setDataValue(`p4_activity_${i + 1}`, e.target.value)
                       }
@@ -417,7 +417,7 @@ export default function Page(props: any) {
                       type="text"
                       className="border rounded px-2 py-1 w-full text-sm"
                       placeholder="คะแนนเต็ม"
-                      value={data[`p4_fullscore_${i + 1}`] || ""}
+                      value={data[`p4_fullscore_${i + 1}` as keyof typeof data] || ""}
                       onChange={(e) =>
                         setDataValue(`p4_fullscore_${i + 1}`, e.target.value)
                       }
@@ -428,7 +428,7 @@ export default function Page(props: any) {
                       type="text"
                       className="border rounded px-2 py-1 w-full text-sm"
                       placeholder="คะแนนที่ได้"
-                      value={data[`p4_score_${i + 1}`] || ""}
+                      value={data[`p4_score_${i + 1}` as keyof typeof data] || ""}
                       onChange={(e) =>
                         setDataValue(`p4_score_${i + 1}`, e.target.value)
                       }
@@ -437,10 +437,45 @@ export default function Page(props: any) {
                 </tr>
               ))}
             </tbody>
+            <tbody>
+              <tr>
+                <td
+                  className="p-2 border align-center text-sm font-bold text-center"
+                  colSpan={2}
+                >
+                  รวมคะแนน
+                </td>
+                <td className="p-2 border align-center text-sm font-bold text-center">
+                  {toThaiNumber(
+                    Array.from({ length: 20 }, (_, i) => {
+                      const fullScore = data[
+                        `p4_fullscore_${i + 1}` as keyof typeof data
+                      ];
+                      return fullScore && !isNaN(Number(fullScore))
+                        ? Number(fullScore)
+                        : 0;
+                    }).reduce((total, score) => total + score, 0)
+                  )}
+                </td>
+                <td className="p-2 border align-center text-sm font-bold text-center">
+                  {toThaiNumber(
+                    Array.from({ length: 20 }, (_, i) => {
+                      const score = data[
+                        `p4_score_${i + 1}` as keyof typeof data
+                      ];
+                      return score && !isNaN(Number(score))
+                        ? Number(score)
+                        : 0;
+                    }).reduce((total, score) => total + score, 0)
+                  )}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
-      </div>
+      </div>   <div className="sm:col-span-12">
       *จำนวนชิ้นงานและสัดส่วนคะแนนการประเมินผลขึ้นอยู่กับอาจารย์ประจำแหล่งฝึกปฏิบัติงาน
+      </div>
       <div className="sm:col-span-12">
         <div className="pt-4 pb-4">
           <h3 className="font-semibold mb-3 text-sm">ข้อเสนอแนะ</h3>

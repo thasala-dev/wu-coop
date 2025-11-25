@@ -374,23 +374,6 @@ const criteriaData = [
       </ul>
     ),
   },
-  {
-    number: "1",
-    point: 1,
-    label: "p31",
-    dis96: true,
-    title: "3.1 การล้างมือ",
-    superd: (
-      <ul className="list-disc pl-4">
-        <li>ทำได้ถูกต้อง ครบถ้วนทุกขั้นตอน</li>
-      </ul>
-    ),
-    fail: (
-      <ul className="list-disc pl-4">
-        <li>ไม่ทำ หรือทำไม่ถูกต้อง หรือไม่ครบถ้วน</li>
-      </ul>
-    ),
-  },
 
   {
     number: "1",
@@ -517,8 +500,8 @@ const criteriaData = [
     ),
   },
   {
-    number: "0.5",
-    point: 0.5,
+    number: "1",
+    point: 1,
     label: "p42",
     dis91: true,
     title: "4.2 เศษตะกอนจากวัสดุที่ใช้ในการเตรียม ความขุ่น/ใส",

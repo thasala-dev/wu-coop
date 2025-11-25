@@ -19,7 +19,7 @@ const toThaiNumber = (number: number) => {
 
 const criteriaData = [
   {
-    number: "1",
+    number: "2",
     point: 2,
     label: "p1",
     title: "1. การระบุปัญหาจากการเตรียมยาเคมีบําบัดโดยนิสิต/นักศึกษา",
@@ -50,7 +50,7 @@ const criteriaData = [
   },
 
   {
-    number: "2",
+    number: "1",
     point: 1,
     label: "p2",
     title: "2. ระบุข้อมูลที่สัมพันธ์กับปัญหาจากการเตรียมยาเคมีบำบัด",
@@ -123,7 +123,7 @@ const criteriaData = [
   },
 
   {
-    number: "4",
+    number: "2",
     point: 2,
     label: "p4",
     title: "4. แผนการแก้ไขปัญหาจากการเตรียมยาเคมีบำบัด",
@@ -157,7 +157,7 @@ const criteriaData = [
   },
 
   {
-    number: "5",
+    number: "2",
     point: 2,
     label: "p5",
     title: "5. แผนการติดตามการแก้ไขปัญหาจากการเตรียมยาเคมีบำบัด",
@@ -189,7 +189,7 @@ const criteriaData = [
   },
 
   {
-    number: "6",
+    number: "1",
     point: 1,
     label: "p6",
     title: "6. แผนการป้องกันปัญหาจากการเตรียมยาเคมีบำบัด",
@@ -221,7 +221,7 @@ const criteriaData = [
   },
 
   {
-    number: "7",
+    number: "1",
     point: 1,
     label: "p7",
     title: "7. การใช้หลักฐานทางวิชาการ",
@@ -252,7 +252,7 @@ const criteriaData = [
   },
 
   {
-    number: "8",
+    number: "1",
     point: 1,
     label: "p8",
     title: "8. วิธีการนำเสนอ",
@@ -291,7 +291,7 @@ const criteriaData = [
   },
 
   {
-    number: "9",
+    number: "2",
     point: 2,
     label: "p9",
     title: "9. การตอบคำถาม (เน้นคุณภาพในการตอบมากกว่าปริมาณ)",
@@ -781,11 +781,37 @@ export default function Page(props: any) {
                   colSpan={6}
                   className="p-2 border align-top text-center text-md"
                 >
-                  ปรับให้เป็นคะแนนเต็ม 10 คะแนน =
-                  <span className="font-mono">
-                    (คะแนนที่ประเมินได้ &divide; 150) &times; 10
-                  </span>
-                  &nbsp;= ______ คะแนน
+                  {(() => {
+                    // คำนวณคะแนนรวม
+                    let totalScore = 0;
+                    let hasNA = false;
+
+                    criteriaData.forEach((item: any) => {
+                      // ข้าม header rows
+                      if (item.head === 1 || !item.label || !item.point) return;
+                      
+                      const value = data[item.label as keyof typeof data];
+                      if (value === "N/A") {
+                        hasNA = true;
+                      } else if (value && value !== "") {
+                        totalScore += parseFloat(value) * item.point;
+                      }
+                    });
+
+                    // คำนวณคะแนนเต็ม 5
+                    const finalScore = (totalScore / 150) * 5;
+                    const displayScore = hasNA ? "N/A" : toThaiNumber(parseFloat(finalScore.toFixed(2)));
+
+                    return (
+                      <>
+                        ปรับให้เป็นคะแนนเต็ม 5 คะแนน =
+                        <span className="font-mono">
+                          ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 150) &times; 5
+                        </span>
+                        &nbsp;= <span className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
+                      </>
+                    );
+                  })()}
                 </td>
               </tr>
             </tbody>
