@@ -45,8 +45,8 @@ export const supervi = {
     },
     { label: "มหาวิทยาลัยที่รับฝึก - พะเยา", value: "uniSelected.พะเยา" },
     {
-      label: "มหาวิทยาลัยที่รับฝึก - อัสสัมชัญ",
-      value: "uniSelected.อัสสัมชัญ",
+      label: "มหาวิทยาลัยที่รับฝึก - อีสเทิร์น",
+      value: "uniSelected.อีสเทิร์น",
     },
     { label: "มหาวิทยาลัยอื่นๆ (ระบุ)", value: "uniOther" },
     { label: "ที่พัก", value: "accommodation" },
@@ -310,8 +310,8 @@ export const supervi = {
       value: "universities.พะเยา",
     },
     {
-      label: "มหาวิทยาลัยที่ส่งนักศึกษามาฝึก - อัสสัมชัญ",
-      value: "universities.อัสสัมชัญ",
+      label: "มหาวิทยาลัยที่ส่งนักศึกษามาฝึก - อีสเทิร์น",
+      value: "universities.อีสเทิร์น",
     },
     {
       label: "มหาวิทยาลัยที่ส่งนักศึกษามาฝึก - บูรพา",

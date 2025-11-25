@@ -177,7 +177,69 @@ export default function Page(props: any) {
   return (
     <Card className="bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
       <div className="p-4 space-y-6">
-        <div> ส่วนที่ 1: ข้อมูลทั่วไปของแหล่งฝึก</div>
+        <div className="font-medium">ส่วนที่ 1: ข้อมูลทั่วไปของแหล่งฝึก</div>
+        <div className="space-y-2 pt-4">
+          <div className="font-medium">รูปแบบการนิเทศ</div>
+          <div className="flex flex-wrap items-center gap-4">
+            <label className="flex items-center gap-2">
+              <Checkbox
+                checked={formData.supervision_mode?.includes("เดินทางไปแหล่งฝึก")}
+                onCheckedChange={(checked) => {
+                  const value = "เดินทางไปแหล่งฝึก";
+                  setFormData((prev) => ({
+                    ...prev,
+                    supervision_mode: checked
+                      ? [...(prev.supervision_mode || []), value]
+                      : prev.supervision_mode?.filter((v: string) => v !== value) || [],
+                  }));
+                }}
+              />
+              <span>เดินทางไปแหล่งฝึก</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <Checkbox
+                checked={formData.supervision_mode?.includes("สอบถามทางโทรศัพท์")}
+                onCheckedChange={(checked) => {
+                  const value = "สอบถามทางโทรศัพท์";
+                  setFormData((prev) => ({
+                    ...prev,
+                    supervision_mode: checked
+                      ? [...(prev.supervision_mode || []), value]
+                      : prev.supervision_mode?.filter((v: string) => v !== value) || [],
+                  }));
+                }}
+              />
+              <span>สอบถามทางโทรศัพท์</span>
+            </label>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={formData.supervision_mode?.includes("อื่น ๆ")}
+                onCheckedChange={(checked) => {
+                  const value = "อื่น ๆ";
+                  setFormData((prev) => ({
+                    ...prev,
+                    supervision_mode: checked
+                      ? [...(prev.supervision_mode || []), value]
+                      : prev.supervision_mode?.filter((v: string) => v !== value) || [],
+                  }));
+                }}
+              />
+              <span>อื่น ๆ (ระบุ)</span>
+              <Input
+                className="w-64"
+                placeholder="ระบุ..."
+                value={formData.supervision_mode_other || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    supervision_mode_other: e.target.value,
+                  })
+                }
+                disabled={!formData.supervision_mode?.includes("อื่น ๆ")}
+              />
+            </div>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
           <div className="col-span-4 space-y-1">1.1 ข้อมูลติดต่อ</div>
           <div className="space-y-1">
@@ -774,111 +836,114 @@ export default function Page(props: any) {
           </div>
 
           {/* 2.1 ตารางให้คะแนน */}
-          <div className="border rounded-md overflow-hidden mt-2">
+            <div className="border rounded-md overflow-hidden mt-2">
             <div className="p-2 bg-slate-100 font-medium">
-              2.1 ความคิดเห็นของนิสิต/นักศึกษาก่อนแหล่งฝึก (ให้คะแนน 4–0)
+              2.1 ความคิดเห็นของนิสิต/นักศึกษาก่อนแหล่งฝึก (พิจารณาจากการสัมภาษณ์หรือการสังเกต) โดยมีเกณฑ์ดังนี้ 4 = ดีมาก, 3 = ดี, 2 = พอใช้, 1 = ควรปรับปรุง, 0 = ประเมินไม่ได้
             </div>
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr>
-                  <th className="p-2 border text-left">รายละเอียด</th>
-                  {SCORE.map((s) => (
-                    <th key={s} className="p-2 border w-10 text-center">
-                      {s}
-                    </th>
-                  ))}
-                </tr>
+              <tr>
+                <th className="p-2 border text-left">รายละเอียด</th>
+                {SCORE.map((s) => (
+                <th key={s} className="p-2 border w-10 text-center">
+                  {s}
+                </th>
+                ))}
+              </tr>
               </thead>
               <tbody>
-                <RatingRow
-                  label="นิสิต/นักศึกษามีความพร้อมในการฝึกปฏิบัติงาน"
-                  name="s21_ready"
+              <RatingRow
+                label="นิสิต/นักศึกษามีความพร้อมในการฝึกปฏิบัติงาน"
+                name="s21_ready"
+              />
+              <RatingRow
+                label="อาจารย์แหล่งฝึกใส่ใจดูแลการฝึกปฏิบัติงาน"
+                name="s21_care"
+              />
+              <RatingRow
+                label="แหล่งฝึกมีการวางแผนการฝึกปฏิบัติงานอย่างเป็นระบบ"
+                name="s21_systematic"
+              />
+              <RatingRow
+                label="แหล่งฝึกมีความหลากหลายของหน่วยงานที่เหมาะสมกับการฝึกปฏิบัติงาน"
+                name="s21_variety"
+              />
+              <tr>
+                <td className="p-2 border text-sm">
+                จำนวนนิสิต/นักศึกษาที่ฝึกปฏิบัติงานในช่วงเดียวกัน
+                <Input
+                  className="inline-block w-20 mx-2"
+                  placeholder="จำนวน"
+                  value={formData.student_count || ""}
+                  onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    student_count: e.target.value,
+                  })
+                  }
                 />
-                <RatingRow
-                  label="อาจารย์แหล่งฝึกใส่ใจดูแลการฝึกปฏิบัติงาน"
-                  name="s21_care"
+                คน/ผลัดจำนวนดังกล่าวเหมาะสมต่อการฝึกปฏิบัติงาน
+                </td>
+                {SCORE.map((v) => (
+                <td key={v} className="p-2 border text-center">
+                  <input
+                  type="radio"
+                  name="s21_student_count"
+                  value={v}
+                  checked={
+                    (formData.ratings || {})["s21_student_count"] === v
+                  }
+                  onChange={() => setRating("s21_student_count", v)}
+                  className="h-4 w-4"
+                  />
+                </td>
+                ))}
+              </tr>
+              <tr>
+                <td className="p-2 border text-sm">
+                จำนวนอาจารย์ที่ดูแลการฝึกปฏิบัติงาน
+                <Input
+                  className="inline-block w-20 mx-2"
+                  placeholder="จำนวน"
+                  value={formData.teacher_count || ""}
+                  onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    teacher_count: e.target.value,
+                  })
+                  }
                 />
-                <RatingRow
-                  label="แหล่งฝึกมีการวางแผนการฝึกปฏิบัติงานอย่างเป็นระบบ"
-                  name="s21_systematic"
-                />
-                <RatingRow
-                  label="แหล่งฝึกมีความหลากหลายของหน่วยงานที่เหมาะสมกับการฝึกปฏิบัติงาน"
-                  name="s21_variety"
-                />
-                <tr>
-                  <td className="p-2 border text-sm">
-                    จำนวนนิสิต/นักศึกษาที่ฝึกปฏิบัติงานในช่วงเดียวกัน
-                    <Input
-                      className="inline-block w-20 mx-2"
-                      placeholder="จำนวน"
-                      value={formData.student_count || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          student_count: e.target.value,
-                        })
-                      }
-                    />
-                    คน/ผลัด
-                  </td>
-                  {SCORE.map((v) => (
-                    <td key={v} className="p-2 border text-center">
-                      <input
-                        type="radio"
-                        name="s21_student_count"
-                        value={v}
-                        checked={
-                          (formData.ratings || {})["s21_student_count"] === v
-                        }
-                        onChange={() => setRating("s21_student_count", v)}
-                        className="h-4 w-4"
-                      />
-                    </td>
-                  ))}
-                </tr>
-                <RatingRow
-                  label="จำนวนดังกล่าวเหมาะสมต่อการฝึกปฏิบัติงาน"
-                  name="s21_student_appropriate"
-                />
-                <tr>
-                  <td className="p-2 border text-sm">
-                    จำนวนอาจารย์ที่ดูแลการฝึกปฏิบัติงาน
-                    <Input
-                      className="inline-block w-20 mx-2"
-                      placeholder="จำนวน"
-                      value={formData.teacher_count || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          teacher_count: e.target.value,
-                        })
-                      }
-                    />
-                    คน/ผลัด
-                  </td>
-                  {SCORE.map((v) => (
-                    <td key={v} className="p-2 border text-center">
-                      <input
-                        type="radio"
-                        name="s21_teacher_count"
-                        value={v}
-                        checked={
-                          (formData.ratings || {})["s21_teacher_count"] === v
-                        }
-                        onChange={() => setRating("s21_teacher_count", v)}
-                        className="h-4 w-4"
-                      />
-                    </td>
-                  ))}
-                </tr>
-                <RatingRow
-                  label="จำนวนดังกล่าวเหมาะสมต่อการฝึกปฏิบัติงาน"
-                  name="s21_teacher_appropriate"
-                />
+                คน/ผลัด จำนวนดังกล่าวเหมาะสมต่อการฝึกปฏิบัติงาน
+                </td>
+                {SCORE.map((v) => (
+                <td key={v} className="p-2 border text-center">
+                  <input
+                  type="radio"
+                  name="s21_teacher_count"
+                  value={v}
+                  checked={
+                    (formData.ratings || {})["s21_teacher_count"] === v
+                  }
+                  onChange={() => setRating("s21_teacher_count", v)}
+                  className="h-4 w-4"
+                  />
+                </td>
+                ))}
+              </tr>
               </tbody>
             </table>
-          </div>
+            <div className="p-2">
+              <div className="text-sm mb-1">ข้อเสนอแนะ</div>
+              <Textarea
+              rows={3}
+              placeholder="กรุณากรอกข้อเสนอแนะ..."
+              value={formData.s21_note || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, s21_note: e.target.value })
+              }
+              />
+            </div>
+            </div>
         </div>
 
         {/* ===== ส่วนที่ 3: ข้อมูลจากอาจารย์ประจำแหล่งฝึก ===== */}
@@ -931,53 +996,64 @@ export default function Page(props: any) {
           </div>
 
           {/* 3.1.2 ความรู้/การเตรียมตัว */}
-          <div className="border rounded-md overflow-hidden">
+            <div className="border rounded-md overflow-hidden">
             <div className="p-2 bg-slate-100 font-medium">
               3.1.2 ความรู้และการเตรียมตัวก่อนรับการฝึก
             </div>
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr>
-                  <th className="p-2 border text-left">รายละเอียด</th>
-                  {SCORE.map((s) => (
-                    <th key={s} className="p-2 border w-10 text-center">
-                      {s}
-                    </th>
-                  ))}
-                </tr>
+              <tr>
+                <th className="p-2 border text-left">รายละเอียด</th>
+                {SCORE.map((s) => (
+                <th key={s} className="p-2 border w-10 text-center">
+                  {s}
+                </th>
+                ))}
+              </tr>
               </thead>
               <tbody>
-                <RatingRow
-                  label="มีความรู้เพียงพอและเหมาะสม"
-                  name="s312_knowledge"
-                />
-                <RatingRow
-                  label="มีการเตรียมตัวก่อนการฝึกปฏิบัติงาน"
-                  name="s312_prepare"
-                />
-                <RatingRow
-                  label="มีความคิดเชิงวิเคราะห์และสังเคราะห์"
-                  name="s312_critical"
-                />
-                <RatingRow
-                  label="มีการเรียนรู้แบบ active learning"
-                  name="s312_active"
-                />
-                <RatingRow
-                  label="มีความสามารถในการประสานงาน และทำงานเป็นทีม"
-                  name="s312_team"
-                />
-                <RatingRow
-                  label="มีทักษะในการสื่อสาร และการใช้เทคโนโลยีสารสนเทศ"
-                  name="s312_it"
-                />
-                <RatingRow
-                  label="มีความสามารถในการใช้ภาษาอังกฤษ"
-                  name="s312_eng"
-                />
+              <RatingRow
+                label="มีความรู้เพียงพอและเหมาะสม"
+                name="s312_knowledge"
+              />
+              <RatingRow
+                label="มีการเตรียมตัวก่อนการฝึกปฏิบัติงาน"
+                name="s312_prepare"
+              />
+              <RatingRow
+                label="มีความคิดเชิงวิเคราะห์และสังเคราะห์"
+                name="s312_critical"
+              />
+              <RatingRow
+                label="มีการเรียนรู้แบบ active learning"
+                name="s312_active"
+              />
+              <RatingRow
+                label="มีความสามารถในการประสานงาน และทำงานเป็นทีม"
+                name="s312_team"
+              />
+              <RatingRow
+                label="มีทักษะในการสื่อสาร และการใช้เทคโนโลยีสารสนเทศ"
+                name="s312_it"
+              />
+              <RatingRow
+                label="มีความสามารถในการใช้ภาษาอังกฤษ"
+                name="s312_eng"
+              />
               </tbody>
             </table>
-          </div>
+            <div className="p-2">
+              <div className="text-sm mb-1">ข้อเสนอแนะ</div>
+              <Textarea
+              rows={3}
+              placeholder="กรุณากรอกข้อเสนอแนะ..."
+              value={formData.s312_note || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, s312_note: e.target.value })
+              }
+              />
+            </div>
+            </div>
 
           {/* 3.2 กิจกรรม/ประเมินผล */}
           <div className="space-y-3">
@@ -987,7 +1063,7 @@ export default function Page(props: any) {
 
             <div>
               <div className="text-sm mb-1">
-                3.2.1 กิจกรรมฝึกที่หน่วยงานให้กับนักศึกษา (สรุป)
+                3.2.1 กิจกรรมการฝึกปฏิบัติงานที่มอบหมายให้นักศึกษาฝึกปฏิบัติ
               </div>
               <Textarea
                 rows={4}
@@ -1000,7 +1076,7 @@ export default function Page(props: any) {
 
             <div>
               <div className="text-sm mb-1">
-                3.2.2 กิจกรรมที่ทำได้เทียบกับคู่มือการฝึก
+                3.2.2 กิจกรรมการฝึกงานที่กาหนดในคู่มือการฝึกปฏิบัติงานสอดคล้องกับการฝึกปฏิบัติจริงหรือไม่
               </div>
               <div className="flex flex-wrap gap-4">
                 {[
@@ -1035,7 +1111,7 @@ export default function Page(props: any) {
 
             <div>
               <div className="text-sm mb-1">
-                3.2.3 ระยะเวลาการฝึกที่เหมาะสม (ต่อประเภท)
+                3.2.3 ระยะเวลาในการฝึกงานที่เหมาะสม (ต่อการฝึก 1 ประเภท)
               </div>
               <div className="flex flex-wrap gap-4">
                 {[
@@ -1078,7 +1154,7 @@ export default function Page(props: any) {
 
             <div>
               <div className="text-sm mb-1">
-                3.2.4 หัวข้อและรูปแบบการประเมินผลตามคู่มือเหมาะสมหรือไม่
+                3.2.4 หัวข้อและรูปแบบการประเมินผลตามคู่มือการฝึกปฏิบัติงานเหมาะสมหรือไม่
               </div>
               <div className="flex gap-6">
                 {["เหมาะสม", "ควรปรับปรุง"].map((w) => (
@@ -1176,11 +1252,26 @@ export default function Page(props: any) {
             <div>
               <div className="text-sm mb-1">ข้อเสนอแนะอื่น ๆ</div>
               <Textarea
-                rows={4}
-                value={formData.c_other || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, c_other: e.target.value })
-                }
+              rows={4}
+              value={formData.c_other || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, c_other: e.target.value })
+              }
+              />
+            </div>
+
+            {/* 3.4 ความคิดเห็นของอาจารย์นิเทศ */}
+            <div className="space-y-3 pt-4">
+              <div className="font-medium">
+              ความคิดเห็นของอาจารย์นิเทศ
+              </div>
+              <Textarea
+              rows={6}
+              placeholder="กรุณากรอกความคิดเห็นของอาจารย์นิเทศ..."
+              value={formData.advisor_comment || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, advisor_comment: e.target.value })
+              }
               />
             </div>
           </div>

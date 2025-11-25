@@ -212,105 +212,148 @@ export default function Page(props: any) {
   };
 
   const calculateAverageScores = () => {
+    // Get the latest values from form
+    const currentData = {
+      rd1_1_select: parentForm.getValues("result.rd1_1_select"),
+      rd1_1_score: parentForm.getValues("result.rd1_1_score"),
+      rd1_2_select: parentForm.getValues("result.rd1_2_select"),
+      rd1_2_score: parentForm.getValues("result.rd1_2_score"),
+      rd1_3_select: parentForm.getValues("result.rd1_3_select"),
+      rd1_3_score: parentForm.getValues("result.rd1_3_score"),
+      rd1_4_select: parentForm.getValues("result.rd1_4_select"),
+      rd1_4_score: parentForm.getValues("result.rd1_4_score"),
+      rd1_5_select: parentForm.getValues("result.rd1_5_select"),
+      rd1_5_score: parentForm.getValues("result.rd1_5_score"),
+      rd1_6_select: parentForm.getValues("result.rd1_6_select"),
+      rd1_6_score: parentForm.getValues("result.rd1_6_score"),
+      rd1_7_select: parentForm.getValues("result.rd1_7_select"),
+      rd1_7_score: parentForm.getValues("result.rd1_7_score"),
+      rd1_8_select: parentForm.getValues("result.rd1_8_select"),
+      rd1_8_score: parentForm.getValues("result.rd1_8_score"),
+      rd1_9_select: parentForm.getValues("result.rd1_9_select"),
+      rd1_9_score: parentForm.getValues("result.rd1_9_score"),
+      rd2_1_select: parentForm.getValues("result.rd2_1_select"),
+      rd2_1_score: parentForm.getValues("result.rd2_1_score"),
+      rd2_2_select: parentForm.getValues("result.rd2_2_select"),
+      rd2_2_score: parentForm.getValues("result.rd2_2_score"),
+      rd3_1_select: parentForm.getValues("result.rd3_1_select"),
+      rd3_1_score: parentForm.getValues("result.rd3_1_score"),
+      rd3_2_select: parentForm.getValues("result.rd3_2_select"),
+      rd3_2_score: parentForm.getValues("result.rd3_2_score"),
+      rd3_3_select: parentForm.getValues("result.rd3_3_select"),
+      rd3_3_score: parentForm.getValues("result.rd3_3_score"),
+      rd3_4_select: parentForm.getValues("result.rd3_4_select"),
+      rd3_4_score: parentForm.getValues("result.rd3_4_score"),
+      rd3_5_select: parentForm.getValues("result.rd3_5_select"),
+      rd3_5_score: parentForm.getValues("result.rd3_5_score"),
+      rd4_1_select: parentForm.getValues("result.rd4_1_select"),
+      rd4_1_score: parentForm.getValues("result.rd4_1_score"),
+      rd4_2_select: parentForm.getValues("result.rd4_2_select"),
+      rd4_2_score: parentForm.getValues("result.rd4_2_score"),
+      rd4_3_select: parentForm.getValues("result.rd4_3_select"),
+      rd4_3_score: parentForm.getValues("result.rd4_3_score"),
+      rd4_4_select: parentForm.getValues("result.rd4_4_select"),
+      rd4_4_score: parentForm.getValues("result.rd4_4_score"),
+      rd5_1_select: parentForm.getValues("result.rd5_1_select"),
+      rd5_1_score: parentForm.getValues("result.rd5_1_score"),
+      rd5_2_select: parentForm.getValues("result.rd5_2_select"),
+      rd5_2_score: parentForm.getValues("result.rd5_2_score"),
+      rd5_3_select: parentForm.getValues("result.rd5_3_select"),
+      rd5_3_score: parentForm.getValues("result.rd5_3_score"),
+      rd5_4_select: parentForm.getValues("result.rd5_4_select"),
+      rd5_4_score: parentForm.getValues("result.rd5_4_score"),
+      rd5_5_select: parentForm.getValues("result.rd5_5_select"),
+      rd5_5_score: parentForm.getValues("result.rd5_5_score"),
+      rd5_6_select: parentForm.getValues("result.rd5_6_select"),
+      rd5_6_score: parentForm.getValues("result.rd5_6_score"),
+    };
+
     // จุดมุ่งหมาย 1 (9 items)
     const rd1_scores = [
-      data.rd1_1_select && data.rd1_1_score ? Number(data.rd1_1_score) : null,
-      data.rd1_2_select && data.rd1_2_score ? Number(data.rd1_2_score) : null,
-      data.rd1_3_select && data.rd1_3_score ? Number(data.rd1_3_score) : null,
-      data.rd1_4_select && data.rd1_4_score ? Number(data.rd1_4_score) : null,
-      data.rd1_5_select && data.rd1_5_score ? Number(data.rd1_5_score) : null,
-      data.rd1_6_select && data.rd1_6_score ? Number(data.rd1_6_score) : null,
-      data.rd1_7_select && data.rd1_7_score ? Number(data.rd1_7_score) : null,
-      data.rd1_8_select && data.rd1_8_score ? Number(data.rd1_8_score) : null,
-      data.rd1_9_select && data.rd1_9_score ? Number(data.rd1_9_score) : null,
+      currentData.rd1_1_select && currentData.rd1_1_score ? Number(currentData.rd1_1_score) : null,
+      currentData.rd1_2_select && currentData.rd1_2_score ? Number(currentData.rd1_2_score) : null,
+      currentData.rd1_3_select && currentData.rd1_3_score ? Number(currentData.rd1_3_score) : null,
+      currentData.rd1_4_select && currentData.rd1_4_score ? Number(currentData.rd1_4_score) : null,
+      currentData.rd1_5_select && currentData.rd1_5_score ? Number(currentData.rd1_5_score) : null,
+      currentData.rd1_6_select && currentData.rd1_6_score ? Number(currentData.rd1_6_score) : null,
+      currentData.rd1_7_select && currentData.rd1_7_score ? Number(currentData.rd1_7_score) : null,
+      currentData.rd1_8_select && currentData.rd1_8_score ? Number(currentData.rd1_8_score) : null,
+      currentData.rd1_9_select && currentData.rd1_9_score ? Number(currentData.rd1_9_score) : null,
     ].filter((score) => score !== null);
 
-    if (rd1_scores.length > 0) {
-      const rd1_avg = (
-        rd1_scores.reduce((sum, score) => sum + score, 0) / rd1_scores.length
-      ).toFixed(2);
-      setData((prev) => ({ ...prev, rd1_avg_score: rd1_avg }));
-      parentForm.setValue("result.rd1_avg_score", rd1_avg);
-    }
+    const rd1_avg = rd1_scores.length > 0 
+      ? (rd1_scores.reduce((sum, score) => sum + score, 0) / rd1_scores.length).toFixed(2)
+      : "0.00";
 
     // จุดมุ่งหมาย 2 (2 items)
     const rd2_scores = [
-      data.rd2_1_select && data.rd2_1_score ? Number(data.rd2_1_score) : null,
-      data.rd2_2_select && data.rd2_2_score ? Number(data.rd2_2_score) : null,
+      currentData.rd2_1_select && currentData.rd2_1_score ? Number(currentData.rd2_1_score) : null,
+      currentData.rd2_2_select && currentData.rd2_2_score ? Number(currentData.rd2_2_score) : null,
     ].filter((score) => score !== null);
 
-    if (rd2_scores.length > 0) {
-      const rd2_avg = (
-        rd2_scores.reduce((sum, score) => sum + score, 0) / rd2_scores.length
-      ).toFixed(2);
-      setData((prev) => ({ ...prev, rd2_avg_score: rd2_avg }));
-      parentForm.setValue("result.rd2_avg_score", rd2_avg);
-    }
+    const rd2_avg = rd2_scores.length > 0
+      ? (rd2_scores.reduce((sum, score) => sum + score, 0) / rd2_scores.length).toFixed(2)
+      : "0.00";
 
     // จุดมุ่งหมาย 3 (5 items)
     const rd3_scores = [
-      data.rd3_1_select && data.rd3_1_score ? Number(data.rd3_1_score) : null,
-      data.rd3_2_select && data.rd3_2_score ? Number(data.rd3_2_score) : null,
-      data.rd3_3_select && data.rd3_3_score ? Number(data.rd3_3_score) : null,
-      data.rd3_4_select && data.rd3_4_score ? Number(data.rd3_4_score) : null,
-      data.rd3_5_select && data.rd3_5_score ? Number(data.rd3_5_score) : null,
+      currentData.rd3_1_select && currentData.rd3_1_score ? Number(currentData.rd3_1_score) : null,
+      currentData.rd3_2_select && currentData.rd3_2_score ? Number(currentData.rd3_2_score) : null,
+      currentData.rd3_3_select && currentData.rd3_3_score ? Number(currentData.rd3_3_score) : null,
+      currentData.rd3_4_select && currentData.rd3_4_score ? Number(currentData.rd3_4_score) : null,
+      currentData.rd3_5_select && currentData.rd3_5_score ? Number(currentData.rd3_5_score) : null,
     ].filter((score) => score !== null);
 
-    if (rd3_scores.length > 0) {
-      const rd3_avg = (
-        rd3_scores.reduce((sum, score) => sum + score, 0) / rd3_scores.length
-      ).toFixed(2);
-      setData((prev) => ({ ...prev, rd3_avg_score: rd3_avg }));
-      parentForm.setValue("result.rd3_avg_score", rd3_avg);
-    }
+    const rd3_avg = rd3_scores.length > 0
+      ? (rd3_scores.reduce((sum, score) => sum + score, 0) / rd3_scores.length).toFixed(2)
+      : "0.00";
 
     // จุดมุ่งหมาย 4 (4 items)
     const rd4_scores = [
-      data.rd4_1_select && data.rd4_1_score ? Number(data.rd4_1_score) : null,
-      data.rd4_2_select && data.rd4_2_score ? Number(data.rd4_2_score) : null,
-      data.rd4_3_select && data.rd4_3_score ? Number(data.rd4_3_score) : null,
-      data.rd4_4_select && data.rd4_4_score ? Number(data.rd4_4_score) : null,
+      currentData.rd4_1_select && currentData.rd4_1_score ? Number(currentData.rd4_1_score) : null,
+      currentData.rd4_2_select && currentData.rd4_2_score ? Number(currentData.rd4_2_score) : null,
+      currentData.rd4_3_select && currentData.rd4_3_score ? Number(currentData.rd4_3_score) : null,
+      currentData.rd4_4_select && currentData.rd4_4_score ? Number(currentData.rd4_4_score) : null,
     ].filter((score) => score !== null);
 
-    if (rd4_scores.length > 0) {
-      const rd4_avg = (
-        rd4_scores.reduce((sum, score) => sum + score, 0) / rd4_scores.length
-      ).toFixed(2);
-      setData((prev) => ({ ...prev, rd4_avg_score: rd4_avg }));
-      parentForm.setValue("result.rd4_avg_score", rd4_avg);
-    }
+    const rd4_avg = rd4_scores.length > 0
+      ? (rd4_scores.reduce((sum, score) => sum + score, 0) / rd4_scores.length).toFixed(2)
+      : "0.00";
 
     // จุดมุ่งหมาย 5 (6 items)
     const rd5_scores = [
-      data.rd5_1_select && data.rd5_1_score ? Number(data.rd5_1_score) : null,
-      data.rd5_2_select && data.rd5_2_score ? Number(data.rd5_2_score) : null,
-      data.rd5_3_select && data.rd5_3_score ? Number(data.rd5_3_score) : null,
-      data.rd5_4_select && data.rd5_4_score ? Number(data.rd5_4_score) : null,
-      data.rd5_5_select && data.rd5_5_score ? Number(data.rd5_5_score) : null,
-      data.rd5_6_select && data.rd5_6_score ? Number(data.rd5_6_score) : null,
+      currentData.rd5_1_select && currentData.rd5_1_score ? Number(currentData.rd5_1_score) : null,
+      currentData.rd5_2_select && currentData.rd5_2_score ? Number(currentData.rd5_2_score) : null,
+      currentData.rd5_3_select && currentData.rd5_3_score ? Number(currentData.rd5_3_score) : null,
+      currentData.rd5_4_select && currentData.rd5_4_score ? Number(currentData.rd5_4_score) : null,
+      currentData.rd5_5_select && currentData.rd5_5_score ? Number(currentData.rd5_5_score) : null,
+      currentData.rd5_6_select && currentData.rd5_6_score ? Number(currentData.rd5_6_score) : null,
     ].filter((score) => score !== null);
 
-    if (rd5_scores.length > 0) {
-      const rd5_avg = (
-        rd5_scores.reduce((sum, score) => sum + score, 0) / rd5_scores.length
-      ).toFixed(2);
-      setData((prev) => ({ ...prev, rd5_avg_score: rd5_avg }));
-      parentForm.setValue("result.rd5_avg_score", rd5_avg);
-    }
+    const rd5_avg = rd5_scores.length > 0
+      ? (rd5_scores.reduce((sum, score) => sum + score, 0) / rd5_scores.length).toFixed(2)
+      : "0.00";
 
     // คะแนนรวม (จุดมุ่งหมาย 1-5) × 4 คะแนน
-    const allAvgScores = [
-      data.rd1_avg_score ? Number(data.rd1_avg_score) : 0,
-      data.rd2_avg_score ? Number(data.rd2_avg_score) : 0,
-      data.rd3_avg_score ? Number(data.rd3_avg_score) : 0,
-      data.rd4_avg_score ? Number(data.rd4_avg_score) : 0,
-      data.rd5_avg_score ? Number(data.rd5_avg_score) : 0,
-    ];
-
-    const totalAvg = allAvgScores.reduce((sum, score) => sum + score, 0);
+    const totalAvg = Number(rd1_avg) + Number(rd2_avg) + Number(rd3_avg) + Number(rd4_avg) + Number(rd5_avg);
     const totalScore = (totalAvg * 4).toFixed(2);
 
-    setData((prev) => ({ ...prev, total_score_1_5: totalScore }));
+    // Update all calculated values
+    setData((prev) => ({ 
+      ...prev, 
+      rd1_avg_score: rd1_avg,
+      rd2_avg_score: rd2_avg,
+      rd3_avg_score: rd3_avg,
+      rd4_avg_score: rd4_avg,
+      rd5_avg_score: rd5_avg,
+      total_score_1_5: totalScore 
+    }));
+    
+    parentForm.setValue("result.rd1_avg_score", rd1_avg);
+    parentForm.setValue("result.rd2_avg_score", rd2_avg);
+    parentForm.setValue("result.rd3_avg_score", rd3_avg);
+    parentForm.setValue("result.rd4_avg_score", rd4_avg);
+    parentForm.setValue("result.rd5_avg_score", rd5_avg);
     parentForm.setValue("result.total_score_1_5", totalScore);
   };
 
@@ -1631,10 +1674,9 @@ export default function Page(props: any) {
                       className="mt-1"
                     />
                     <span>
-                      อธิบายลักษณะและโครงสร้างองค์กร บทบาทหน้าที่
-                      และความรับผิดชอบของบุคลากรที่ผลิต
-                      เจ้าหน้าที่ผู้ควบคุมการผลิต
-                      และอธิบายความเชื่อมโยงระหว่างหน่วยงานที่เกี่ยวข้องที่มีหน้าที่ชัดเจนได้
+                      อธิบายลักษณะผังโครงสร้างองค์กร บทบาทหน้าที่ และความรับผิดชอบ
+                      ของบุคลากรฝ่ายผลิต เภสัชกรผู้ควบคุมการผลิต 
+                      และอธิบายความเชื่อมโยงระหว่างฝ่ายผลิตกับฝ่ายอื่นที่เกี่ยวข้องได้
                     </span>
                   </div>
                 </td>
@@ -1838,9 +1880,13 @@ export default function Page(props: any) {
                       className="mt-1"
                     />
                     <span>
-                      อธิบายสาระสำคัญของกฎหมาย ระเบียบ
-                      หรือข้อบังคับที่เกี่ยวกับเครื่องสำอางและผลิตภัณฑ์สุขภาพ
-                      เช่น พระราชบัญญัติ กฎกระทรวง ประกาศ คำสั่ง ระเบียบ
+                      อธิบายสาระสําคัญของกฎ ระเบียบ
+                      หรือขอบังคับที่เกี่ยวกับเครื่องสําอาง
+                      และผลิตภัณฑสุขภาพ เชน
+                      พระราชบัญญัติ กฎกระทรวง
+                      ประกาศ คําสั่ง ระเบียบ ที่เกี่ยวของ
+                      กับเครื่องสําอางและผลิตภัณฑ
+                      สุขภาพ
                     </span>
                   </div>
                 </td>
@@ -1963,8 +2009,7 @@ export default function Page(props: any) {
                       className="mt-1"
                     />
                     <span>
-                      อธิบายการจัดทำเอกสารตามข้อกำหนดของสำนักงานคณะกรรมการอาหารและยา
-                      รวมทั้งแบบฟอร์ม และการบันทึกต่าง ๆ
+                      อธิบายการจัดหมวดหมู่เอกสาร ตามข้อกำหนดของสำนักงานคณะกรรมการอาหารและยา รวมทั้งแบบคำขอ และการยื่นคำขอต่าง ๆ
                     </span>
                   </div>
                 </td>
@@ -2000,10 +2045,10 @@ export default function Page(props: any) {
                       className="mt-1"
                     />
                     <span>
-                      ศึกษาข้อมูลจากแหล่งข้อมูลต่าง ๆ
-                      เพื่อประมวลข้อมูลด้านความปลอดภัย ประสิทธิผล
-                      และคุณภาพของเครื่องสำอางและผลิตภัณฑ์สุขภาพ
-                      สำหรับการขึ้นทะเบียนได้
+                      ค้นคว้าข้อมูลจากแหล่งข้อมูลต่าง ๆ
+                      เพื่อประมวลข้อมูลด้านความปลอดภัย ประสิทธิผล และคุณภาพ
+                      ของเครื่องสำอาง และผลิตภัณฑ์สุขภาพ
+                      สำหรับการขึ้นทะเบียนเครื่องสำอางและผลิตภัณฑ์สุขภาพได้
                     </span>
                   </div>
                 </td>

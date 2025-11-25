@@ -207,7 +207,7 @@ export const supervisionType = [
   },
   {
     id: "3",
-    name: "ภสัชกรรมชุมชน (ร้านยา)",
+    name: "เภสัชกรรมชุมชน (ร้านยา)",
   },
   {
     id: "4",
@@ -215,6 +215,6 @@ export const supervisionType = [
   },
   {
     id: "5",
-    name: "เภสัชอุตสาหการ",
+    name: "เภสัชกรรมอุตสาหการ",
   },
 ];

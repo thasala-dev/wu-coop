@@ -194,7 +194,7 @@ const UNIVERSITIES = [
   "พายัพ",
   "วลัยลักษณ์",
   "พะเยา",
-  "อัสสัมชัญ",
+  "อีสเทิร์นเอเชีย",
   "บูรพา",
   "ธรรมศาสตร์",
   "อื่น ๆ (ระบุ)",
@@ -408,6 +408,26 @@ export default function Page(props: any) {
         {/* 1. ข้อมูลทั่วไป */}
         <section className="space-y-3">
           <div className="font-medium">1) ข้อมูลทั่วไป</div>
+          <div className="space-y-1">
+            <Label>เภสัชกรผู้รับผิดชอบการฝึกงาน</Label>
+            <Input
+              value={form.advisorName || ""}
+              onChange={(e) => {
+                set("advisorName", e.target.value);
+                if (errors.advisorName) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.advisorName;
+                    return newErrors;
+                  });
+                }
+              }}
+              className={errors.advisorName ? "border-2 border-red-600" : ""}
+            />
+            {errors.advisorName && (
+              <p className="text-red-600 text-sm mt-1">{errors.advisorName}</p>
+            )}
+          </div>
           <div className="grid md:grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label>ชื่อสถานปฏิบัติงาน</Label>
@@ -935,7 +955,7 @@ export default function Page(props: any) {
           />
           <div className="space-y-1">
             <Label>
-              5.2 ความคิดเห็นและคุณภาพของการศึกษาฝึกงานในแหล่งฝึก (โดยรวม) *
+              5.2 ความคิดเห็นในแง่คุณภาพของการฝึกงานในแหล่งฝึก (โดยรวม) *
             </Label>
             <Textarea
               rows={4}

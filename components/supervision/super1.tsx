@@ -62,6 +62,8 @@ export default function Page(props: any) {
     subdistrict?: string;
     district?: string;
     pharmacist?: string;
+    other6?: string;
+    other7?: string;
   };
 
   const UNIVERSITIES = [
@@ -81,7 +83,7 @@ export default function Page(props: any) {
     "พายัพ",
     "วลัยลักษณ์",
     "พะเยา",
-    "อัสสัมชัญ",
+    "อีสเทิร์นฯ",
   ] as const;
 
   const { id, data } = props;
@@ -570,7 +572,7 @@ export default function Page(props: any) {
 
           <div className="space-y-2">
             <div className="flex flex-wrap gap-4 items-center">
-              <Label className="min-w-36">คอมพิวเตอร์/อุปกรณ์เกี่ยวข้อง</Label>
+              <Label className="min-w-36">คอมพิวเตอร์/อุปกรณ์เกี่ยวข้อง  (เช่น อุปกรณ์ wireless, printer ฯลฯ) สำหรับนักศึกษาฝึกงาน</Label>
               <label className="flex items-center gap-2">
                 <RadioGroup
                   className={`flex gap-4 p-2 rounded-md ${
@@ -702,7 +704,7 @@ export default function Page(props: any) {
             {/* ตำราไทย */}
             <div className="grid grid-cols-2 border-t">
               <div className="p-3 border-r space-y-2">
-                <div className="font-medium">ตำรา bahasa ไทย</div>
+                <div className="font-medium">ตำราภาษาไทย</div>
                 <p className="text-xs text-muted-foreground">
                   ระบุชื่อหนังสือ/แหล่งข้อมูลที่ใช้ (ถ้ามี)
                 </p>
@@ -869,7 +871,552 @@ export default function Page(props: any) {
             <p className="text-red-600 text-sm mt-1">{errors.siteEvaluation}</p>
           )}
         </section>
+
+        {/* ===== รายละเอียด setting การฝึกปฏิบัติงาน ===== */}
+        <section className="space-y-3">
+          <div className="font-medium text-lg">
+            รายละเอียด setting การฝึกปฏิบัติงาน
+          </div>
+
+          {/* ตารางกิจกรรมผู้ป่วยนอก Ambulatory */}
+          <div className="border rounded-md overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-100 border-b">
+                  <th className="p-3 text-left font-medium border-r">
+                    กิจกรรมการฝึกปฏิบัติผู้ป่วยนอก
+                  </th>
+                  <th className="p-3 text-center font-medium w-32 border-r">
+                    Preceptor พี่เลี้ยง
+                  </th>
+                  <th className="p-3 text-left font-medium">
+                    สภาพแวดล้อมการฝึกที่เหมาะสม
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* กิจกรรมบริการยาผู้ป่วยนอก Ambulatory */}
+                <tr className="border-b">
+                  <td className="p-3 border-r align-top">
+                    <div className="space-y-2">
+                      <div className="font-medium">
+                        กิจกรรมบริการยาผู้ป่วยนอก Ambulatory
+                      </div>
+                      <div className="text-xs space-y-1">
+                        <div>
+                          1) รายละเอียดกิจกรรมผู้ป่วยนอก (แตกต่างกันรายคนหรือรวม)
+                        </div>
+                        <div className="flex gap-4 ml-4">
+                          <label className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.ambulatory_individual}
+                              onCheckedChange={(c) =>
+                                setFormData({
+                                  ...formData,
+                                  ambulatory_individual: !!c,
+                                })
+                              }
+                            />
+                            <span>รายบุคคล</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.ambulatory_group}
+                              onCheckedChange={(c) =>
+                                setFormData({
+                                  ...formData,
+                                  ambulatory_group: !!c,
+                                })
+                              }
+                            />
+                            <span>รายกลุ่ม</span>
+                          </label>
+                        </div>
+                        <div className="space-y-1 mt-2">
+                          <Input
+                            placeholder="2. "
+                            value={formData.ambulatory_detail_2 || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                ambulatory_detail_2: e.target.value,
+                              })
+                            }
+                            className="text-xs"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Input
+                            placeholder="3."
+                            value={formData.ambulatory_detail_3 || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                ambulatory_detail_3: e.target.value,
+                              })
+                            }
+                            className="text-xs"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Input
+                            placeholder="4."
+                            value={formData.ambulatory_detail_4 || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                ambulatory_detail_4: e.target.value,
+                              })
+                            }
+                            className="text-xs"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Input
+                            placeholder="5. "
+                            value={formData.ambulatory_detail_5 || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                ambulatory_detail_5: e.target.value,
+                              })
+                            }
+                            className="text-xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-3 border-r align-top text-center">
+                    <Textarea
+                      placeholder="บรรยายบทบาท/หน้าที่/คุณสมบัติ/จำนวน routine"
+                      rows={8}
+                      value={formData.ambulatory_preceptor || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          ambulatory_preceptor: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                  <td className="p-3 align-top">
+                    <Textarea
+                      placeholder="บรรยายสภาพแวดล้อมที่เหมาะสมกับการฝึกฯ ของนิสิต routine"
+                      rows={8}
+                      value={formData.ambulatory_environment || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          ambulatory_environment: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                </tr>
+
+                {/* กิจกรรมบริการยา Medicine/Acute Care */}
+                <tr className="border-b">
+                  <td className="p-3 border-r align-top">
+                    <div className="space-y-2">
+                      <div className="font-medium">
+                        กิจกรรมบริการยา Medicine/Acute Care
+                      </div>
+                      <div className="text-xs space-y-1">
+                        <div>รูปแบบบริการจำหน่าย/นำจ่ายยาที่มี</div>
+                        <div className="space-y-1 ml-4">
+                          <label className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.medicine_unit_dose}
+                              onCheckedChange={(c) =>
+                                setFormData({
+                                  ...formData,
+                                  medicine_unit_dose: !!c,
+                                })
+                              }
+                            />
+                            <span>ยาแบบหน่วยรวม (unit dose)</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.medicine_ward_stock}
+                              onCheckedChange={(c) =>
+                                setFormData({
+                                  ...formData,
+                                  medicine_ward_stock: !!c,
+                                })
+                              }
+                            />
+                            <span>ยาแบบระบบ ward stock</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.medicine_individual_order}
+                              onCheckedChange={(c) =>
+                                setFormData({
+                                  ...formData,
+                                  medicine_individual_order: !!c,
+                                })
+                              }
+                            />
+                            <span>ยาแบบสั่งรายบุคคล</span>
+                          </label>
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.medicine_other}
+                              onCheckedChange={(c) => {
+                                if (!c) {
+                                  setFormData({
+                                    ...formData,
+                                    medicine_other: "",
+                                    medicine_other_checked: false,
+                                  });
+                                } else {
+                                  setFormData({
+                                    ...formData,
+                                    medicine_other_checked: true,
+                                  });
+                                }
+                              }}
+                            />
+                            <Input
+                              placeholder="อื่นๆ ระบุ"
+                              value={formData.medicine_other || ""}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  medicine_other: e.target.value,
+                                  medicine_other_checked: true,
+                                })
+                              }
+                              className="text-xs flex-1"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.medicine_other_2}
+                              onCheckedChange={(c) => {
+                                if (!c) {
+                                  setFormData({
+                                    ...formData,
+                                    medicine_other_2: "",
+                                    medicine_other_2_checked: false,
+                                  });
+                                } else {
+                                  setFormData({
+                                    ...formData,
+                                    medicine_other_2_checked: true,
+                                  });
+                                }
+                              }}
+                            />
+                            <Input
+                              placeholder="อื่นๆ ระบุ"
+                              value={formData.medicine_other_2 || ""}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  medicine_other_2: e.target.value,
+                                  medicine_other_2_checked: true,
+                                })
+                              }
+                              className="text-xs flex-1"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-3 border-r align-top text-center">
+                    <Textarea
+                      placeholder="บรรยายสภาพแวดล้อมที่เหมาะสมกับการฝึกฯ ของนิสิต routine"
+                      rows={10}
+                      value={formData.medicine_preceptor || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          medicine_preceptor: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                  <td className="p-3 align-top">
+                    <Textarea
+                      placeholder="บรรยายสภาพแวดล้อมที่เหมาะสมกับการฝึกฯ ของนิสิต routine"
+                      rows={10}
+                      value={formData.medicine_environment || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          medicine_environment: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                </tr>
+
+                {/* กิจกรรมบริการยัน DIS */}
+                <tr className="border-b">
+                  <td className="p-3 border-r align-top">
+                    <div className="space-y-2">
+                      <div className="font-medium">กิจกรรมบริการยัน DIS</div>
+                      <div className="text-xs space-y-1">
+                        <div className="flex gap-4">
+                          <label className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.dis_has_center}
+                              onCheckedChange={(c) =>
+                                setFormData({
+                                  ...formData,
+                                  dis_has_center: !!c,
+                                })
+                              }
+                            />
+                            <span>ไม่มีศูนย์ DIS ซึ่งรวม</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <Checkbox
+                              checked={!!formData.dis_no_center}
+                              onCheckedChange={(c) =>
+                                setFormData({
+                                  ...formData,
+                                  dis_no_center: !!c,
+                                })
+                              }
+                            />
+                            <span>มีศูนย์ DIS ซึ่งแยก</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-3 border-r align-top text-center">
+                    <Textarea
+                      placeholder="บรรยายบทบาท/หน้าที่/คุณสมบัติ/จำนวน routine"
+                      rows={6}
+                      value={formData.dis_preceptor || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          dis_preceptor: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                  <td className="p-3 align-top">
+                    <Textarea
+                      placeholder="บรรยายสภาพแวดล้อมที่เหมาะสมกับการฝึกฯ ของนิสิต routine"
+                      rows={6}
+                      value={formData.dis_environment || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          dis_environment: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                </tr>
+
+                {/* กิจกรรมบริการยัน Patient Safety */}
+                <tr className="border-b">
+                  <td className="p-3 border-r align-top">
+                    <div className="space-y-2">
+                      <div className="font-medium">
+                        กิจกรรมบริการยัน Patient Safety (การจัดการความปลอดภัย)
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-3 border-r align-top text-center">
+                    <Textarea
+                      placeholder="บรรยายบทบาท/หน้าที่/คุณสมบัติ/จำนวน routine"
+                      rows={6}
+                      value={formData.patient_safety_preceptor || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          patient_safety_preceptor: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                  <td className="p-3 align-top">
+                    <Textarea
+                      placeholder="บรรยายสภาพแวดล้อมที่เหมาะสมกับการฝึกฯ ของนิสิต routine"
+                      rows={6}
+                      value={formData.patient_safety_environment || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          patient_safety_environment: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                </tr>
+
+                {/* กิจกรรม (ระบุ) - แถวที่ 1 */}
+                <tr className="border-b">
+                  <td className="p-3 border-r align-top">
+                    <div className="space-y-2">
+                      <div className="font-medium">กิจกรรม</div>
+                      <Input
+                        placeholder="ระบุกิจกรรม"
+                        value={formData.activity_1_name || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            activity_1_name: e.target.value,
+                          })
+                        }
+                        className="text-xs"
+                      />
+                    </div>
+                  </td>
+                  <td className="p-3 border-r align-top text-center">
+                    <Textarea
+                      placeholder="บรรยายบทบาท/หน้าที่/คุณสมบัติ/จำนวน routine"
+                      rows={6}
+                      value={formData.activity_1_preceptor || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          activity_1_preceptor: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                  <td className="p-3 align-top">
+                    <Textarea
+                      placeholder="บรรยายสภาพแวดล้อมที่เหมาะสมกับการฝึกฯ ของนิสิต routine"
+                      rows={6}
+                      value={formData.activity_1_environment || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          activity_1_environment: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                </tr>
+
+                {/* กิจกรรม (ระบุ) - แถวที่ 2 */}
+                <tr className="border-b">
+                  <td className="p-3 border-r align-top">
+                    <div className="space-y-2">
+                      <div className="font-medium">กิจกรรม</div>
+                      <Input
+                        placeholder="ระบุกิจกรรม"
+                        value={formData.activity_2_name || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            activity_2_name: e.target.value,
+                          })
+                        }
+                        className="text-xs"
+                      />
+                    </div>
+                  </td>
+                  <td className="p-3 border-r align-top text-center">
+                    <Textarea
+                      placeholder="บรรยายบทบาท/หน้าที่/คุณสมบัติ/จำนวน routine"
+                      rows={6}
+                      value={formData.activity_2_preceptor || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          activity_2_preceptor: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                  <td className="p-3 align-top">
+                    <Textarea
+                      placeholder="บรรยายสภาพแวดล้อมที่เหมาะสมกับการฝึกฯ ของนิสิต routine"
+                      rows={6}
+                      value={formData.activity_2_environment || ""}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          activity_2_environment: e.target.value,
+                        })
+                      }
+                      className="text-xs"
+                    />
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </section>
+      
+      {/* ===== ส่วนที่ 5–6 ข้อเสนอแนะ/ความต้องการ ===== */}
+        <section className="space-y-3">
+            <div className="font-medium">
+            กิจกรรมอื่นของโรงพยาบาลที่ยังไม่มีนักศึกษาวลัยลักษณ์ฝึกงาน และมีแนวโน้มเป็นกิจกรรมฝึกงานสำหรับนักศึกษาชั้นปีที่ 6 ได้
+            </div>
+          <Textarea
+            rows={5}
+            placeholder=""
+            value={formData.other7 || ""}
+            onChange={(e) => {
+              setFormData({ ...formData, other6: e.target.value });
+              if (errors.other7) {
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.other7;
+                  return newErrors;
+                });
+              }
+            }}
+            className={errors.other7 ? "border-2 border-red-600" : ""}
+          />
+          {errors.other7 && (
+            <p className="text-red-600 text-sm mt-1">{errors.other7}</p>
+          )}
+
+            <div className="font-medium">
+            คำแนะนำอื่นๆ
+            </div>
+          <Textarea
+            rows={5}
+            placeholder="ระบุสิ่งที่ต้องการสนับสนุน…"
+            value={formData.other7 || ""}
+            onChange={(e) => {
+              setFormData({ ...formData, other7: e.target.value });
+              if (errors.other7) {
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.other7;
+                  return newErrors;
+                });
+              }
+            }}
+            className={errors.other7 ? "border-2 border-red-600" : ""}
+          />
+          {errors.other7 && (
+            <p className="text-red-600 text-sm mt-1">
+              {errors.other7}
+            </p>
+          )}
+        </section>
       </form>
+
+      
 
       <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
         <Link href="/advisor/visits">

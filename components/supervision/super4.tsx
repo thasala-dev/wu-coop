@@ -21,6 +21,7 @@ type FormState = {
   siteName?: string;
   visitDate?: string;
   visitRound?: string;
+  responsiblePharmacist?: string;
   students?: string[]; // 1..4
 
   // 2) สรุปผลจากการนิเทศ
@@ -400,6 +401,19 @@ export default function Page(props: any) {
             )}
           </div>
         </section>
+        <div className="space-y-1">
+          <Label>เภสัชกรผู้รับผิดชอบการฝึกปฏิบัติงาน</Label>
+          <Input
+            value={form.responsiblePharmacist || ""}
+            onChange={(e) => setField("responsiblePharmacist", e.target.value)}
+            className={errors.responsiblePharmacist ? "border-2 border-red-600" : ""}
+            placeholder="ชื่อเภสัชกร"
+          />
+          {errors.responsiblePharmacist && (
+            <p className="text-red-600 text-sm mt-1">{errors.responsiblePharmacist}</p>
+          )}
+        </div>
+        
 
         {/* -------- 2) สรุปผลจากการนิเทศ -------- */}
         <section className="space-y-2">
@@ -568,17 +582,15 @@ export default function Page(props: any) {
           {/* 3.3 */}
           <div className="rounded-md border">
             <div className="p-2 font-medium bg-slate-50">
-              3.3 การประสานงานระหว่างมหาวิทยาลัยกับแหล่งฝึก
+              3.3 การประสานงานระหว่างมหาวิทยาลัยกับแหล่งฝึก (ระบุข้อเสนอแนะเกี่ยวกับการติดต่อประสานงาน ระบุรายละเอียด)
             </div>
             <div className="p-3 grid md:grid-cols-2 gap-2">
               {[
-                ["contactPersonProvided", "แหล่งฝึกได้ให้รายชื่อการประสานงาน"],
+                ["contactPersonProvided", "แหล่งฝึกได้รับเอกสารครบถ้วน"],
                 ["needMoreDocs", "ต้องส่งเอกสารเพิ่มเติม"],
-                ["viaMobile", "สาขาติดต่อผ่านหมายเลขโทรศัพท์มือถือ"],
-                ["viaLandlineOrProject", "สาขาติดต่อผ่านโทรศัพท์ภายใน/โครงการ"],
-                [
-                  "viaEmailOrSocial",
-                  "สาขาติดต่อผ่าน e-mail หรือ social network อื่น ๆ",
+                ["viaMobile", "สะดวกให้ติดต่อผ่านทางโทรศัพท์มือถือ"],
+                ["viaLandlineOrProject", "สะดวกให้ติดต่อผ่านทาง โทรสาร"],
+                ["viaEmailOrSocial","สะดวกให้ติดต่อผ่านทาง e-mail หรือ socialnetwork อื่นๆ",
                 ],
               ].map(([k, label]) => (
                 <label key={k} className="flex items-center gap-2">
@@ -592,7 +604,7 @@ export default function Page(props: any) {
             </div>
             <div className="p-3">
               <Label className="text-sm">
-                รายละเอียดช่องทางติดต่อในปฏิบัติงาน *
+                รายละเอียดหรือเนื้อหาในคู่มือฝึกปฏิบัติงาน *
               </Label>
               <RadioGroup
                 className="flex gap-6 mt-1"
@@ -608,7 +620,7 @@ export default function Page(props: any) {
                   }
                 }}
               >
-                {(["เหมาะสม", "ควรปรับปรุง"] as const).map((v) => (
+                {(["เหมาะสม", "ควรปรับปรุง (ระบุรายละเอียด)"] as const).map((v) => (
                   <label key={v} className="flex items-center gap-2 text-sm">
                     <RadioGroupItem
                       value={v}
@@ -998,7 +1010,7 @@ export default function Page(props: any) {
                       setDeep("overall.shouldNotUse", !!c)
                     }
                   />
-                  <span className="text-sm">ไม่ควรใช้แหล่งฝึก</span>
+                  <span className="text-sm">ไม่ควรส่งนักศึกษาฝึกงาน</span>
                 </label>
                 <Textarea
                   className="mt-2"
@@ -1014,7 +1026,7 @@ export default function Page(props: any) {
 
               <div>
                 <Label className="text-sm">
-                  การพัฒนา/ปรับปรุงแผนการนิเทศในอนาคต *
+                  การพัฒนารูปแบบการฝึกปฏิบัติงานในอนาคต. *
                 </Label>
                 <Textarea
                   className={
