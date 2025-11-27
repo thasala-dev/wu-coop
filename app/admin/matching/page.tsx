@@ -926,23 +926,19 @@ export default function AdminMatching() {
       {/* Dialog should be in JSX tree here */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
-          <div>
-            <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleSelectAllMatchingStudents}
-              >
-                เลือกทั้งหมด
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={handleClearGroupSelection}
-              >
-                ล้าง
-              </Button>
-            </div>
+          <DialogHeader>
+            <DialogTitle>
+              <span className="flex items-center gap-2">
+                <InfoIcon className="h-5 w-5" />
+                {dialogType === "link"
+                  ? "ยืนยันการจับคู่นักศึกษา"
+                  : dialogType === "unlink"
+                  ? "ยืนยันการยกเลิกจับคู่"
+                  : "ยืนยันการนำนักศึกษาออก"}
+              </span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
             {dialogType === "link"
               ? "คุณต้องการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"
               : dialogType === "unlink"
