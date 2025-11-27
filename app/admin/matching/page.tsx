@@ -33,6 +33,7 @@ import {
   SearchIcon,
   Trash2,
   UserIcon,
+  UsersIcon,
   XIcon,
 } from "lucide-react";
 import Sidebar from "@/components/sidebar";
@@ -95,6 +96,18 @@ export default function AdminMatching() {
   // Modal states
   const [studentImportModal, setStudentImportModal] = useState(false);
   const [companyImportModal, setCompanyImportModal] = useState(false);
+  const [groupMatchingModal, setGroupMatchingModal] = useState(false);
+  const [groupConfirmOpen, setGroupConfirmOpen] = useState(false);
+  const [groupSelectedStudents, setGroupSelectedStudents] = useState<string[]>(
+    []
+  );
+  const [groupSelectedCompany, setGroupSelectedCompany] = useState<
+    string | null
+  >(null);
+  const [groupProcessing, setGroupProcessing] = useState(false);
+  // Modal performance helpers
+  const [groupStudentSearch, setGroupStudentSearch] = useState<string>("");
+  const [groupCompanySearch, setGroupCompanySearch] = useState<string>("");
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<string>("placeholder");
   const [capacity, setCapacity] = useState<string>("1");
@@ -427,6 +440,156 @@ export default function AdminMatching() {
     }
   };
 
+  // Group matching helpers
+  const handleToggleGroupStudentSelection = (id: string) => {
+    setGroupSelectedStudents((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAllMatchingStudents = () => {
+    const filtered = info.intern.filter(
+      (item: any) =>
+        (!item.register_date &&
+          (item.fullname || "")
+            .toLowerCase()
+            .includes(groupStudentSearch.toLowerCase())) ||
+        (item.student_id || "")
+          .toLowerCase()
+          .includes(groupStudentSearch.toLowerCase())
+    );
+    const ids = filtered.map((s: any) => s.id);
+    setGroupSelectedStudents(ids);
+  };
+
+  const handleClearGroupSelection = () => setGroupSelectedStudents([]);
+
+  const handleOpenGroupMatching = () => {
+    setGroupSelectedStudents([]);
+    setGroupSelectedCompany(null);
+    setGroupMatchingModal(true);
+  };
+
+  const handleConfirmGroupMatching = () => {
+    if (!groupSelectedCompany) {
+      toast({
+        title: "ไม่สามารถจับคู่ได้",
+        description: "กรุณาเลือกแหล่งฝึก",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (!groupSelectedStudents.length) {
+      toast({
+        title: "ไม่สามารถจับคู่ได้",
+        description: "กรุณาเลือกนักศึกษาอย่างน้อย 1 คน",
+        variant: "destructive",
+      });
+      return;
+    }
+    setGroupConfirmOpen(true);
+  };
+
+  const handleExecuteGroupMatching = async () => {
+    if (!groupSelectedCompany || !groupSelectedStudents.length) return;
+    setGroupProcessing(true);
+    setGroupConfirmOpen(false);
+    const companyId = groupSelectedCompany;
+
+    // find evaluation type/name from info.company
+    const selectedCompanyItem = info.company.find(
+      (c: any) => String(c.company_id) == String(companyId)
+    );
+
+    const successes: string[] = [];
+    const failures: { id: string; message?: string }[] = [];
+
+    // Process in batches to avoid overwhelming the server and browser
+    const batchSize = 5;
+    for (let i = 0; i < groupSelectedStudents.length; i += batchSize) {
+      const batch = groupSelectedStudents.slice(i, i + batchSize);
+      const promises = batch.map(async (studentId) => {
+        try {
+          const response = await fetch(`/api/registIntern/${studentId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              company_id: companyId,
+              register_date: new Date().toISOString(),
+              evaluation_type: selectedCompanyItem?.evaluation_type || null,
+            }),
+          });
+          const data = await response.json();
+          if (response.ok && data.success) {
+            successes.push(studentId);
+            try {
+              await recordLog(
+                `จับคู่นักศึกษา ${
+                  info.intern.find((i: any) => i.id === studentId).fullname
+                } กับแหล่งฝึกงาน ${
+                  selectedCompanyItem?.name || "(ไม่ระบุ)"
+                } สำเร็จ`
+              );
+            } catch (err) {
+              console.error("log error", err);
+            }
+          } else {
+            failures.push({ id: studentId, message: data?.message });
+          }
+        } catch (err: any) {
+          failures.push({ id: studentId, message: err.message });
+        }
+      });
+      await Promise.all(promises);
+    }
+
+    // summary toast
+    if (successes.length) {
+      toast({
+        title: "จับคู่อัตโนมัติสำเร็จ",
+        description: `จับคู่ ${successes.length} คนเรียบร้อยแล้ว`,
+        variant: "success",
+      });
+    }
+    if (failures.length) {
+      toast({
+        title: "เกิดข้อผิดพลาดบางรายการ",
+        description: `${failures.length} รายการไม่สำเร็จ`,
+        variant: "destructive",
+      });
+      console.error("Group matching failures:", failures);
+    }
+
+    // refresh
+    await fetchInterns();
+
+    setGroupProcessing(false);
+    setGroupMatchingModal(false);
+    setGroupSelectedStudents([]);
+    setGroupSelectedCompany(null);
+  };
+
+  // Derived lists for modal (support large data)
+  const pendingStudents = info.intern.filter(
+    (item: any) => !item.register_date
+  );
+  const filteredGroupStudents = pendingStudents.filter((item: any) => {
+    const q = groupStudentSearch.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      (item.fullname || "").toLowerCase().includes(q) ||
+      (item.student_id || "").toLowerCase().includes(q)
+    );
+  });
+  const totalFilteredGroupStudents = filteredGroupStudents.length;
+  const groupVisibleStudents = filteredGroupStudents;
+
+  const filteredCompanies = info.company.filter((c: any) => {
+    const q = groupCompanySearch.trim().toLowerCase();
+    if (!q) return true;
+    return (c.name || "").toLowerCase().includes(q);
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
@@ -484,8 +647,8 @@ export default function AdminMatching() {
                                     day: "numeric",
                                   }
                                 )
-                              : "-"}{" "}
-                            -{" "}
+                              : "-"}
+                            -
                             {cal.end_date
                               ? new Date(cal.end_date).toLocaleDateString(
                                   "th-TH",
@@ -525,6 +688,10 @@ export default function AdminMatching() {
                       <Button onClick={() => setCompanyImportModal(true)}>
                         <BuildingIcon className="h-4 w-4 mr-2" />
                         นำเข้าแหล่งฝึก
+                      </Button>
+                      <Button onClick={handleOpenGroupMatching}>
+                        <UsersIcon className="h-4 w-4 mr-2" />
+                        จับคู่เป็นกลุ่ม
                       </Button>
                     </div>
                   </div>
@@ -759,20 +926,23 @@ export default function AdminMatching() {
       {/* Dialog should be in JSX tree here */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
-          <DialogHeader>
-            {" "}
-            <DialogTitle>
-              <span className="flex items-center gap-2">
-                <InfoIcon className="h-5 w-5" />
-                {dialogType === "link"
-                  ? "ยืนยันการจับคู่นักศึกษา"
-                  : dialogType === "unlink"
-                  ? "ยืนยันการยกเลิกจับคู่"
-                  : "ยืนยันการนำนักศึกษาออก"}
-              </span>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleSelectAllMatchingStudents}
+              >
+                เลือกทั้งหมด
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleClearGroupSelection}
+              >
+                ล้าง
+              </Button>
+            </div>
             {dialogType === "link"
               ? "คุณต้องการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"
               : dialogType === "unlink"
@@ -798,7 +968,7 @@ export default function AdminMatching() {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>{" "}
+      </Dialog>
       {/* Student Import Modal */}
       <Dialog open={studentImportModal} onOpenChange={setStudentImportModal}>
         <DialogContent className="max-w-2xl">
@@ -926,7 +1096,7 @@ export default function AdminMatching() {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>{" "}
+      </Dialog>
       {/* Company Import Modal */}
       <Dialog open={companyImportModal} onOpenChange={setCompanyImportModal}>
         <DialogContent className="max-w-2xl">
@@ -944,7 +1114,7 @@ export default function AdminMatching() {
               >
                 <SelectTrigger className="h-10">
                   <SelectValue placeholder="เลือกแหล่งฝึก" />
-                </SelectTrigger>{" "}
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="placeholder">เลือกแหล่งฝึก</SelectItem>
                   {info.companyList.map((company: any) => (
@@ -983,6 +1153,165 @@ export default function AdminMatching() {
             >
               <CheckIcon className="h-3.5 w-3.5" />
               นำเข้า
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Group Matching Modal */}
+      <Dialog open={groupMatchingModal} onOpenChange={setGroupMatchingModal}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>จับคู่เป็นกลุ่ม</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="mb-2 items-center">
+                  <div className="font-medium">นักศึกษาที่รอจับคู่</div>
+                  <div className="text-sm text-gray-500">
+                    เลือกแล้ว: {groupSelectedStudents.length} /{" "}
+                    {totalFilteredGroupStudents}
+                  </div>
+                </div>
+
+                <div className="flex gap-2 mb-1">
+                  <Input
+                    placeholder="ค้นหา ชื่อ หรือ รหัส"
+                    value={groupStudentSearch}
+                    onChange={(e) => setGroupStudentSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2 max-h-[420px] overflow-auto">
+                {groupVisibleStudents.map((item: any) => (
+                  <label
+                    key={item.id}
+                    className={`flex items-center justify-between p-1 rounded border cursor-pointer ${
+                      groupSelectedStudents.includes(item.id)
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <CustomAvatar
+                        id={`student${item.student_id}`}
+                        image={item.image}
+                        size="8"
+                      />
+                      <div>
+                        <div className="text-sm truncate">{item.fullname}</div>
+                        <p className="text-xs text-gray-500">
+                          {item.student_id}
+                        </p>
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={groupSelectedStudents.includes(item.id)}
+                      onChange={() =>
+                        handleToggleGroupStudentSelection(item.id)
+                      }
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="mb-2 items-center">
+                  <div className="font-medium">เลือกรายการแหล่งฝึก</div>
+                  <div className="text-sm text-gray-500">
+                    {filteredCompanies.length} รายการ
+                  </div>
+                </div>
+                <div className="mb-2">
+                  <Input
+                    placeholder="ค้นหาแหล่งฝึก"
+                    value={groupCompanySearch}
+                    onChange={(e) => setGroupCompanySearch(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2 max-h-[420px] overflow-auto">
+                {filteredCompanies.map((c: any) => (
+                  <label
+                    key={c.company_id}
+                    className={`flex items-center justify-between p-1 rounded border cursor-pointer ${
+                      String(groupSelectedCompany) === String(c.company_id)
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <div>
+                      <div className="text-sm">{c.name}</div>
+                      <div className="text-xs text-gray-500">
+                        {c.total} ตำแหน่ง
+                      </div>
+                    </div>
+                    <input
+                      type="radio"
+                      name="group-company"
+                      className="ml-4"
+                      checked={
+                        String(groupSelectedCompany) === String(c.company_id)
+                      }
+                      onChange={() =>
+                        setGroupSelectedCompany(String(c.company_id))
+                      }
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setGroupMatchingModal(false)}
+            >
+              <XIcon className="h-3.5 w-3.5" />
+              ยกเลิก
+            </Button>
+            <Button
+              onClick={handleConfirmGroupMatching}
+              disabled={
+                groupProcessing ||
+                !groupSelectedStudents.length ||
+                !groupSelectedCompany
+              }
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <CheckIcon className="h-3.5 w-3.5" />
+              ยืนยันการจับคู่
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Group Matching Confirm Dialog */}
+      <Dialog open={groupConfirmOpen} onOpenChange={setGroupConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>ยืนยันการจับคู่อัตโนมัติ</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            คุณต้องการจับคู่นักศึกษา {groupSelectedStudents.length}
+            คนกับแหล่งฝึกนี้หรือไม่?
+            การกระทำนี้สามารถย้อนกลับได้ด้วยการยกเลิกทีละคนเท่านั้น
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setGroupConfirmOpen(false)}
+            >
+              <XIcon className="h-3.5 w-3.5" /> ยกเลิก
+            </Button>
+            <Button
+              onClick={handleExecuteGroupMatching}
+              disabled={groupProcessing}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <CheckIcon className="h-3.5 w-3.5" /> ยืนยัน
             </Button>
           </DialogFooter>
         </DialogContent>
