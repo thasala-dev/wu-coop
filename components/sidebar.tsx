@@ -95,6 +95,12 @@ export function Sidebar({
         label: "ตารางนัดหมาย",
         icon: Calendar,
       },
+      {
+        href: "/student/manual",
+        page: "manual",
+        label: "คู่มือการใช้งาน",
+        icon: FileText,
+      },
     ],
     advisor: [
       {
@@ -127,6 +133,12 @@ export function Sidebar({
         label: "ตารางนัดหมาย",
         icon: Calendar,
       },
+      {
+        href: "/advisor/manual",
+        page: "manual",
+        label: "คู่มือการใช้งาน",
+        icon: FileText,
+      }
     ],
     mentor: [
       {
@@ -171,6 +183,12 @@ export function Sidebar({
         icon: Banknote,
         page: "payments",
       },
+      {
+        href: "/mentor/manual",
+        page: "manual",
+        label: "คู่มือการใช้งาน",
+        icon: FileText,
+      }
     ],
     admin: [
       {
@@ -257,6 +275,12 @@ export function Sidebar({
         icon: FileText,
         page: "logs",
       },
+      {
+        href: "/admin/manual",
+        page: "manual",
+        label: "คู่มือการใช้งาน",
+        icon: FileText,
+      }
 
       // {
       //   label: "ตั้งค่าระบบ",
@@ -273,11 +297,10 @@ export function Sidebar({
         key={page}
         href={href}
         onClick={onClickClose}
-        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
-          activePage === page
-            ? `bg-${colors[userType]}-100 text-${colors[userType]}-600 font-medium border-1 border-${colors[userType]}-600 shadow-sm`
-            : `text-gray-600 hover:bg-${colors[userType]}-50 hover:text-${colors[userType]}-600`
-        }`}
+        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${activePage === page
+          ? `bg-${colors[userType]}-100 text-${colors[userType]}-600 font-medium border-1 border-${colors[userType]}-600 shadow-sm`
+          : `text-gray-600 hover:bg-${colors[userType]}-50 hover:text-${colors[userType]}-600`
+          }`}
       >
         <Icon className="h-5 w-5" />
         <span>{label}</span>
