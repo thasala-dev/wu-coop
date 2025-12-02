@@ -115,23 +115,32 @@ let metaData: any[] = [
 export default function CompaniesPage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
+  const [roleFilter, setRoleFilter] = useState<string>("all"); // default role filter
+  const [viewFilter, setViewFilter] = useState<string>("summary"); // default view filter (summary or all)
 
   useEffect(() => {
-    fetchData();
+    // initial load
+    fetchData(roleFilter, viewFilter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function fetchData() {
+  async function fetchData(role: string, view: string) {
     setLoading(true);
-    const response = await fetch(`/api/system-satisfaction`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const res = await response.json();
-    if (res.success) {
-      setData(res.data || []);
-
+    try {
+      const qs = new URLSearchParams({ role, view }).toString();
+      const response = await fetch(`/api/system-satisfaction?${qs}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const res = await response.json();
+      if (res.success) {
+        setData(res.data || []);
+      }
+    } catch (e) {
+      console.error("Fetch system satisfaction error", e);
+    } finally {
       setLoading(false);
     }
   }
@@ -152,6 +161,47 @@ export default function CompaniesPage() {
                   <CardDescription>
                     ข้อมูลความพึงพอใจของสถานประกอบการต่อระบบ
                   </CardDescription>
+                </div>
+                {/* Filters Section */}
+                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                  <div className="flex flex-col gap-1 w-full sm:w-48">
+                    <label className="text-xs font-medium text-gray-600">กลุ่มผู้ใช้งาน</label>
+                    <Select
+                      value={roleFilter}
+                      onValueChange={(val) => {
+                        setRoleFilter(val);
+                        fetchData(val, viewFilter);
+                      }}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue placeholder="เลือกบทบาท" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">ทั้งหมด</SelectItem>
+                        <SelectItem value="mentor">แหล่งฝึกงาน</SelectItem>
+                        <SelectItem value="advisor">อาจารย์</SelectItem>
+                        <SelectItem value="student">นักศึกษา</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex flex-col gap-1 w-full sm:w-40">
+                    <label className="text-xs font-medium text-gray-600">รูปแบบข้อมูล</label>
+                    <Select
+                      value={viewFilter}
+                      onValueChange={(val) => {
+                        setViewFilter(val);
+                        fetchData(roleFilter, val);
+                      }}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue placeholder="เลือกมุมมอง" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="summary">สรุป</SelectItem>
+                        <SelectItem value="all">ทั้งหมด</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -328,8 +378,7 @@ export default function CompaniesPage() {
                           data.length > 0
                             ? (
                               data.reduce(
-                                (sum: number, row: any) =>
-                                  sum + row[item.key],
+                                (sum: number, row: any) => sum + row[item.key],
                                 0
                               ) / data.length
                             ).toFixed(2)
@@ -381,6 +430,7 @@ export default function CompaniesPage() {
               <div className="my-4 overflow-x-auto">
                 <TableList meta={metaData} data={data} loading={loading} />
               </div>
+
             </CardContent>
           </Card>
         </div>

@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const role = searchParams.get("role");
+    const view = searchParams.get("view");
 
     const offset = (page - 1) * limit;
 
@@ -18,36 +19,76 @@ export async function GET(request: NextRequest) {
     const queryParams: any[] = [];
 
 
-    if (role) {
+    if (role && role !== "all") {
       whereClause += ` AND sys_form.role = $${queryParams.length + 1}`;
       queryParams.push(role);
     }
 
     // ดึงข้อมูลแบบประเมิน
-    const satisfactionQuery = `
-      SELECT 
-        sys_form.id,
-        sys_form.p1,
-        sys_form.p2,
-        sys_form.p3,
-        sys_form.p4,
-        sys_form.p5,
-        sys_form.p6,
-        sys_form.p7,
-        sys_form.advice,
-        sys_form.company_id,
-        sys_form.role,
-        case when sys_form.role = 'student' then user_student.fullname
-             when sys_form.role = 'advisor' then user_advisor.fullname
-             when sys_form.role = 'mentor' then user_company.name
-             else 'Unknown' end as company_name,
-        sys_form.created_at
-      FROM system_satisfaction sys_form
-      left JOIN user_company ON sys_form.company_id = user_company.id
-      left JOIN user_student ON sys_form.company_id = user_student.id
-      left JOIN user_advisor ON sys_form.company_id = user_advisor.id
-      ${whereClause}
-      ORDER BY sys_form.created_at DESC`;
+    let satisfactionQuery = `
+      WITH ranked AS (
+          SELECT
+              sys_form.id,
+              sys_form.p1,
+              sys_form.p2,
+              sys_form.p3,
+              sys_form.p4,
+              sys_form.p5,
+              sys_form.p6,
+              sys_form.p7,
+              sys_form.advice,
+              sys_form.company_id,
+              sys_form.role,
+              CASE 
+                  WHEN sys_form.role = 'student' THEN user_student.fullname
+                  WHEN sys_form.role = 'advisor' THEN user_advisor.fullname
+                  WHEN sys_form.role = 'mentor' THEN user_company.name
+                  ELSE 'Unknown'
+              END AS company_name,
+              sys_form.created_at,
+              ROW_NUMBER() OVER (
+                  PARTITION BY sys_form.company_id, sys_form.role
+                  ORDER BY sys_form.created_at DESC
+              ) AS rn
+          FROM system_satisfaction AS sys_form
+          LEFT JOIN user_company  ON sys_form.company_id = user_company.id
+          LEFT JOIN user_student  ON sys_form.company_id = user_student.id
+          LEFT JOIN user_advisor  ON sys_form.company_id = user_advisor.id
+          ${whereClause}
+      )
+      SELECT *
+      FROM ranked
+      WHERE rn = 1
+      ORDER BY created_at DESC;`;
+
+    if (view === "all") {
+      satisfactionQuery = `
+        SELECT
+            sys_form.id,
+            sys_form.p1,
+            sys_form.p2,
+            sys_form.p3,
+            sys_form.p4,
+            sys_form.p5,
+            sys_form.p6,
+            sys_form.p7,
+            sys_form.advice,
+            sys_form.company_id,
+            sys_form.role,
+            CASE 
+                WHEN sys_form.role = 'student' THEN user_student.fullname
+                WHEN sys_form.role = 'advisor' THEN user_advisor.fullname
+                WHEN sys_form.role = 'mentor' THEN user_company.name
+                ELSE 'Unknown'
+            END AS company_name,
+            sys_form.created_at
+        FROM system_satisfaction AS sys_form
+        LEFT JOIN user_company  ON sys_form.company_id = user_company.id
+        LEFT JOIN user_student  ON sys_form.company_id = user_student.id
+        LEFT JOIN user_advisor  ON sys_form.company_id = user_advisor.id
+        ${whereClause}
+        ORDER BY sys_form.created_at DESC;`;
+    }
 
     const satisfaction = await sql(satisfactionQuery, queryParams);
 
