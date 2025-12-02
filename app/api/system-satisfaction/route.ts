@@ -9,8 +9,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const search = searchParams.get("search") || "";
-    const company_id = searchParams.get("company_id");
+    const role = searchParams.get("role");
 
     const offset = (page - 1) * limit;
 
@@ -18,14 +17,10 @@ export async function GET(request: NextRequest) {
     let whereClause = "WHERE 1=1";
     const queryParams: any[] = [];
 
-    if (company_id) {
-      whereClause += ` AND company_id = $${queryParams.length + 1}`;
-      queryParams.push(parseInt(company_id));
-    }
 
-    if (search) {
-      whereClause += ` AND advice ILIKE $${queryParams.length + 1}`;
-      queryParams.push(`%${search}%`);
+    if (role) {
+      whereClause += ` AND sys_form.role = $${queryParams.length + 1}`;
+      queryParams.push(role);
     }
 
     // ดึงข้อมูลแบบประเมิน
@@ -41,10 +36,16 @@ export async function GET(request: NextRequest) {
         sys_form.p7,
         sys_form.advice,
         sys_form.company_id,
-        user_company.name AS company_name,
+        sys_form.role,
+        case when sys_form.role = 'student' then user_student.fullname
+             when sys_form.role = 'advisor' then user_advisor.fullname
+             when sys_form.role = 'mentor' then user_company.name
+             else 'Unknown' end as company_name,
         sys_form.created_at
       FROM system_satisfaction sys_form
-      inner JOIN user_company ON sys_form.company_id = user_company.id
+      left JOIN user_company ON sys_form.company_id = user_company.id
+      left JOIN user_student ON sys_form.company_id = user_student.id
+      left JOIN user_advisor ON sys_form.company_id = user_advisor.id
       ${whereClause}
       ORDER BY sys_form.created_at DESC`;
 
@@ -67,7 +68,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { p1, p2, p3, p4, p5, p6, p7, advice, company_id } = body;
+    const { p1, p2, p3, p4, p5, p6, p7, advice, company_id, role } = body;
 
     // ตรวจสอบข้อมูลที่จำเป็น
     if (!company_id) {
@@ -91,10 +92,10 @@ export async function POST(request: NextRequest) {
     const insertQuery = `
       INSERT INTO system_satisfaction (
         p1, p2, p3, p4, p5, p6, p7, 
-        advice, company_id, created_at
+        advice, company_id, role, created_at
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, 
-        $8, $9, NOW()
+        $8, $9, $10, NOW()
       ) RETURNING *
     `;
 
@@ -108,6 +109,7 @@ export async function POST(request: NextRequest) {
       p7,
       advice || null,
       company_id,
+      role
     ]);
 
     return NextResponse.json({

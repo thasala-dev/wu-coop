@@ -38,9 +38,25 @@ let metaData: any[] = [
       }),
   },
   {
+    key: "role",
+    content: "บทบาทผู้ประเมิน",
+    render: (row: any) => {
+      if (row.role === 'admin') {
+        return <span>ผู้ดูแลระบบ</span>;
+      } else if (row.role === 'mentor') {
+        return <span>แหล่งฝึกงาน</span>;
+      } else if (row.role === 'advisor') {
+        return <span>อาจารย์</span>;
+      } else if (row.role === 'student') {
+        return <span>นักศึกษา</span>;
+      } else {
+        return <span>-</span>;
+      }
+    }
+  },
+  {
     key: "company_name",
     width: 200,
-    className: "text-nowrap",
     content: "แหล่งฝึกงาน",
   },
   {
@@ -183,20 +199,20 @@ export default function CompaniesPage() {
                           <p className="text-2xl font-bold text-gray-800">
                             {data.length > 0
                               ? (
-                                  data.reduce(
-                                    (sum: number, item: any) =>
-                                      sum +
-                                      item.p1 +
-                                      item.p2 +
-                                      item.p3 +
-                                      item.p4 +
-                                      item.p5 +
-                                      item.p6 +
-                                      item.p7,
-                                    0
-                                  ) /
-                                  (data.length * 7)
-                                ).toFixed(2)
+                                data.reduce(
+                                  (sum: number, item: any) =>
+                                    sum +
+                                    item.p1 +
+                                    item.p2 +
+                                    item.p3 +
+                                    item.p4 +
+                                    item.p5 +
+                                    item.p6 +
+                                    item.p7,
+                                  0
+                                ) /
+                                (data.length * 7)
+                              ).toFixed(2)
                               : "0.00"}
                           </p>
                         </div>
@@ -216,18 +232,18 @@ export default function CompaniesPage() {
                           <p className="text-2xl font-bold text-gray-800">
                             {data.length > 0
                               ? Math.max(
-                                  ...data.map((item: any) =>
-                                    Math.max(
-                                      item.p1,
-                                      item.p2,
-                                      item.p3,
-                                      item.p4,
-                                      item.p5,
-                                      item.p6,
-                                      item.p7
-                                    )
+                                ...data.map((item: any) =>
+                                  Math.max(
+                                    item.p1,
+                                    item.p2,
+                                    item.p3,
+                                    item.p4,
+                                    item.p5,
+                                    item.p6,
+                                    item.p7
                                   )
                                 )
+                              )
                               : "0"}
                           </p>
                         </div>
@@ -247,18 +263,18 @@ export default function CompaniesPage() {
                           <p className="text-2xl font-bold text-gray-800">
                             {data.length > 0
                               ? Math.min(
-                                  ...data.map((item: any) =>
-                                    Math.min(
-                                      item.p1,
-                                      item.p2,
-                                      item.p3,
-                                      item.p4,
-                                      item.p5,
-                                      item.p6,
-                                      item.p7
-                                    )
+                                ...data.map((item: any) =>
+                                  Math.min(
+                                    item.p1,
+                                    item.p2,
+                                    item.p3,
+                                    item.p4,
+                                    item.p5,
+                                    item.p6,
+                                    item.p7
                                   )
                                 )
+                              )
                               : "0"}
                           </p>
                         </div>
@@ -311,12 +327,12 @@ export default function CompaniesPage() {
                         const average =
                           data.length > 0
                             ? (
-                                data.reduce(
-                                  (sum: number, row: any) =>
-                                    sum + row[item.key],
-                                  0
-                                ) / data.length
-                              ).toFixed(2)
+                              data.reduce(
+                                (sum: number, row: any) =>
+                                  sum + row[item.key],
+                                0
+                              ) / data.length
+                            ).toFixed(2)
                             : "0.00";
                         const score = parseFloat(average);
                         const percentage = (score / 5) * 100;
@@ -338,15 +354,14 @@ export default function CompaniesPage() {
                               <div className="flex-1">
                                 <div className="w-full bg-gray-200 rounded-full h-3">
                                   <div
-                                    className={`h-3 rounded-full transition-all duration-500 ${
-                                      score >= 4.5
-                                        ? "bg-gradient-to-r from-green-400 to-green-600"
-                                        : score >= 3.5
+                                    className={`h-3 rounded-full transition-all duration-500 ${score >= 4.5
+                                      ? "bg-gradient-to-r from-green-400 to-green-600"
+                                      : score >= 3.5
                                         ? "bg-gradient-to-r from-blue-400 to-blue-600"
                                         : score >= 2.5
-                                        ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
-                                        : "bg-gradient-to-r from-red-400 to-red-600"
-                                    }`}
+                                          ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
+                                          : "bg-gradient-to-r from-red-400 to-red-600"
+                                      }`}
                                     style={{ width: `${percentage}%` }}
                                   ></div>
                                 </div>

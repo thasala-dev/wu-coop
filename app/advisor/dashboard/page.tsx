@@ -23,11 +23,12 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, User, Camera } from "lucide-react";
+import { Loader2, Save, User, Camera, Star } from "lucide-react";
 import { callUploadApi } from "@/lib/file-api";
 import AvatarDesign from "@/components/AvatarDesign";
 import CustomAvatar from "@/components/avatar";
 import Loading from "@/components/loading";
+import Link from "next/link";
 
 export default function StudentProfile() {
   const { data: session, status } = useSession();
@@ -172,9 +173,53 @@ export default function StudentProfile() {
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto p-2">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Sidebar activePage="profile" userType="advisor" />
+          <Sidebar activePage="dashboard" userType="advisor" />
 
           <div className="md:col-span-4">
+            <Link href="/advisor/systemSatisfaction">
+              <div className="relative rounded-xl border-0 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 text-card-foreground shadow-2xl w-full p-8 mb-6 overflow-hidden group hover:scale-[1.02] transition-all duration-300 ease-out">
+                {/* Background decorative elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full  group-hover:scale-110 transition-transform duration-500"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full  group-hover:scale-110 transition-transform duration-500"></div>
+                <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-gradient-to-r from-yellow-400/20 to-pink-400/20 rounded-full blur-3xl group-hover:blur-2xl transition-all duration-500"></div>
+
+                {/* Content */}
+                <div className="relative z-10 flex flex-col items-center text-center">
+                  <div className="flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4 group-hover:bg-white/30 transition-colors duration-300 backdrop-blur-sm">
+                    <Star
+                      className="h-8 w-8 text-yellow-300 group-hover:text-yellow-200 transition-colors duration-300"
+                      fill="currentColor"
+                    />
+                  </div>
+
+                  <h1 className="text-3xl font-bold text-white mb-2 group-hover:text-yellow-100 transition-colors duration-300 drop-shadow-lg">
+                    ประเมินความพึงพอใจระบบ
+                  </h1>
+
+                  <p className="text-blue-100 text-lg mb-4 font-medium">
+                    แบ่งปันความคิดเห็นของคุณเพื่อพัฒนาระบบให้ดีขึ้น
+                  </p>
+
+                  <div className="flex items-center gap-2 text-white/90 group-hover:text-white transition-colors duration-300">
+                    <span className="text-sm font-medium">
+                      คลิกเพื่อเริ่มประเมิน
+                    </span>
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    <div
+                      className="w-2 h-2 bg-white/70 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-white/50 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.4s" }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12  transition-transform duration-1000 ease-out"></div>
+              </div>
+            </Link>
             <Card className="border-sky-200 shadow-md overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-fuchsia-500 to-fuchsia-600 text-white">
                 <div className="flex items-center justify-between">
