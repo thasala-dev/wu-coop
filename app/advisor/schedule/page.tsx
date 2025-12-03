@@ -364,11 +364,10 @@ export default function StudentSchedulePage() {
           // Create a formatted event from supervision data
           const formattedEvent = {
             ...supervision,
-            id: `supervision-${
-              supervision.supervision_id || supervision.id || Math.random()
-            }`,
-            title: `นิเทศ : ${supervision.student_name}`,
-            description: `นิเทศ ${supervision.student_name} โดย ${supervision.advisor_name} ที่ ${supervision.company_name}`,
+            id: `supervision-${supervision.supervision_id || supervision.id || Math.random()
+              }`,
+            title: `นิเทศ : ${supervision.company_name}`,
+            description: `นิเทศ ${supervision.company_name} โดย ${supervision.advisor_name} ที่ ${supervision.company_name}`,
             event_date: supervision.visit_date,
             date: dateString,
             category: "การนิเทศ", // Fixed category for supervision
@@ -660,9 +659,8 @@ export default function StudentSchedulePage() {
                           calendarDays.map((day, index) => (
                             <div
                               key={`day-${index}`}
-                              className={`min-h-24 border rounded-md p-1 ${
-                                day.day ? "hover:bg-gray-50" : "bg-gray-50"
-                              }`}
+                              className={`min-h-24 border rounded-md p-1 ${day.day ? "hover:bg-gray-50" : "bg-gray-50"
+                                }`}
                             >
                               {day.day && (
                                 <>
@@ -678,20 +676,19 @@ export default function StudentSchedulePage() {
                                             (event: any, eventIdx: number) => (
                                               <div
                                                 key={`event-${eventIdx}`}
-                                                className={`p-1 text-xs rounded truncate  ${
-                                                  event.category === "สำคัญ"
+                                                className={`p-1 text-xs rounded truncate  ${event.category === "สำคัญ"
                                                     ? "bg-red-100 text-red-800"
                                                     : event.category ===
                                                       "กำหนดส่ง"
-                                                    ? "bg-blue-100 text-blue-800"
-                                                    : event.category ===
-                                                      "การนิเทศ"
-                                                    ? "bg-purple-100 text-purple-800"
-                                                    : event.category ===
-                                                      "การนำเสนอ"
-                                                    ? "bg-green-100 text-green-800"
-                                                    : "bg-gray-100 text-gray-800"
-                                                }`}
+                                                      ? "bg-blue-100 text-blue-800"
+                                                      : event.category ===
+                                                        "การนิเทศ"
+                                                        ? "bg-purple-100 text-purple-800"
+                                                        : event.category ===
+                                                          "การนำเสนอ"
+                                                          ? "bg-green-100 text-green-800"
+                                                          : "bg-gray-100 text-gray-800"
+                                                  }`}
                                                 onClick={() =>
                                                   openDialog(event)
                                                 }
