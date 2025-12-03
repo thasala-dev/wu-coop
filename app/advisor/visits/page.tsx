@@ -991,7 +991,7 @@ export default function AdvisorVisits() {
                                     วันที่นิเทศ
                                   </TableHead>
                                   <TableHead className="font-semibold">
-                                    นักศึกษา
+                                    ผู้ประสานงาน
                                   </TableHead>
                                   <TableHead className="font-semibold">
                                     แหล่งฝึกงาน

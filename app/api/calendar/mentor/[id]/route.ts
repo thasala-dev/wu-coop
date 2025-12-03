@@ -7,22 +7,20 @@ export async function GET(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     const supervision = await sql(
-      `SELECT supervisions.scheduled_date,supervisions.start_time,supervisions.end_time,
-      student.fullname AS student_name,
+      `SELECT sup.scheduled_date,sup.start_time,sup.end_time,
       advisor.fullname AS advisor_name,
-      company.name AS company_name,
+      advisor.mobile AS advisor_mobile,
+      com.name AS company_name,
       calendar.name AS calendar_name, 
       calendar.start_date, 
       calendar.end_date,
       calendar.year,
       calendar.semester
-      FROM supervisions
-      JOIN regist_intern ON regist_intern.id = supervisions.regist_intern_id
-      JOIN user_student student ON regist_intern.student_id = student.id
-      JOIN user_advisor advisor ON supervisions.advisor_id = advisor.id
-      JOIN user_company company ON regist_intern.company_id = company.id
-      JOIN calendar ON regist_intern.calendar_id = calendar.id
-      WHERE regist_intern.company_id = $1`,
+      FROM supervisions sup
+      JOIN user_company com ON sup.regist_intern_id = com.id
+      JOIN calendar ON sup.calendar_id = calendar.id
+      JOIN user_advisor advisor ON sup.advisor_id = advisor.id
+      WHERE sup.regist_intern_id = $1`,
       [id]
     );
 
