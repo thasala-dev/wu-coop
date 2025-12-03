@@ -104,6 +104,7 @@ export default function AdvisorVisits() {
   // State for modal form data
   const [students, setStudents] = useState<any[]>([]);
   const [calendars, setCalendars] = useState<any[]>([]);
+  const [mentors, setMentors] = useState<any[]>([]);
 
   // Modal states
   const [addSupervisionModal, setAddSupervisionModal] = useState(false);
@@ -231,6 +232,7 @@ export default function AdvisorVisits() {
           type: type || null,
           comments: comments || null,
           status: 0,
+          calendar_id: selectedCalendar || null,
         }),
       });
 
@@ -353,17 +355,41 @@ export default function AdvisorVisits() {
 
   useEffect(() => {
     if (!user?.id) return;
+    fetchMentors();
     fetchVisits();
     fetchCalendars();
   }, [user]);
 
+
+
+  const fetchMentors = async () => {
+    try {
+      const response = await fetch(
+        `/api/mentor`
+      );
+      const data = await response.json();
+      if (data.success) {
+        const mentorsList = data.data;
+        setMentors(mentorsList);
+      }
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลนักศึกษาได้",
+        variant: "destructive",
+      });
+    }
+  };
+
+
   const filteredVisits = visits.filter((visit: any) => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
-    const studentsMatch = visit.student_name
+    const studentsMatch = visit.company_contact_name
       .toLowerCase()
       .includes(searchLower);
-    const studentIdsMatch = visit.student_student_id.includes(searchLower);
+    const studentIdsMatch = visit.company_contact_phone.includes(searchLower);
     const companyMatch = visit.company_name.toLowerCase().includes(searchLower);
 
     return studentsMatch || studentIdsMatch || companyMatch;
@@ -523,7 +549,7 @@ export default function AdvisorVisits() {
                       <div className="space-y-1 text-sm text-gray-600">
                         <div className="flex items-center gap-2">
                           <UserIcon className="h-4 w-4" />
-                          <span>{nextVisit.student_name}</span>
+                          <span>{nextVisit.company_contact_name}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <MapPinIcon className="h-4 w-4" />
@@ -545,7 +571,7 @@ export default function AdvisorVisits() {
                       <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 justify-center">
                         {nextVisit.visit_type === "online"
                           ? "ออนไลน์"
-                          : "เยี่ยมสถานประกอบการ"}
+                          : "เยี่ยมแหล่งฝึก"}
                       </Badge>
 
                       <Button
@@ -593,7 +619,7 @@ export default function AdvisorVisits() {
                       <div className="relative flex-grow lg:w-80">
                         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <Input
-                          placeholder="ค้นหาชื่อนักศึกษา หรือชื่อบริษัท..."
+                          placeholder="ค้นหาชื่อบริษัท..."
                           className="pl-10 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
@@ -629,7 +655,7 @@ export default function AdvisorVisits() {
                                       <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
                                         {visit.visit_type === "online"
                                           ? "ออนไลน์"
-                                          : "เยี่ยมสถานประกอบการ"}
+                                          : "เยี่ยมแหล่งฝึก"}
                                       </Badge>
                                     </div>
 
@@ -637,10 +663,10 @@ export default function AdvisorVisits() {
                                       <div className="flex items-center gap-2">
                                         <UserIcon className="h-4 w-4 text-purple-500" />
                                         <span className="font-medium">
-                                          {visit.student_name}
+                                          {visit.company_contact_name}
                                         </span>
                                         <span className="text-gray-400">
-                                          ({visit.student_student_id})
+                                          ({visit.company_contact_phone})
                                         </span>
                                       </div>
                                       <div className="flex items-center gap-2">
@@ -716,27 +742,27 @@ export default function AdvisorVisits() {
                       {filteredVisits.filter(
                         (visit: any) => visit.status == "0"
                       ).length === 0 && (
-                        <Card className="border-2 border-dashed border-gray-300">
-                          <CardContent className="text-center py-12">
-                            <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                              <CalendarIcon className="h-8 w-8 text-gray-400" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                              ไม่พบการนิเทศที่กำลังจะถึง
-                            </h3>
-                            <p className="text-gray-500 mb-4">
-                              คุณสามารถวางแผนการนิเทศใหม่ได้ที่นี่
-                            </p>
-                            <Button
-                              onClick={handleAddNew}
-                              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-                            >
-                              <PlusIcon className="h-4 w-4 mr-2" />
-                              วางแผนการนิเทศ
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      )}
+                          <Card className="border-2 border-dashed border-gray-300">
+                            <CardContent className="text-center py-12">
+                              <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                <CalendarIcon className="h-8 w-8 text-gray-400" />
+                              </div>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                ไม่พบการนิเทศที่กำลังจะถึง
+                              </h3>
+                              <p className="text-gray-500 mb-4">
+                                คุณสามารถวางแผนการนิเทศใหม่ได้ที่นี่
+                              </p>
+                              <Button
+                                onClick={handleAddNew}
+                                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+                              >
+                                <PlusIcon className="h-4 w-4 mr-2" />
+                                วางแผนการนิเทศ
+                              </Button>
+                            </CardContent>
+                          </Card>
+                        )}
                     </div>
                   </TabsContent>
 
@@ -763,7 +789,7 @@ export default function AdvisorVisits() {
                                       <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
                                         {visit.visit_type === "online"
                                           ? "ออนไลน์"
-                                          : "เยี่ยมสถานประกอบการ"}
+                                          : "เยี่ยมแหล่งฝึก"}
                                       </Badge>
                                     </div>
 
@@ -771,10 +797,10 @@ export default function AdvisorVisits() {
                                       <div className="flex items-center gap-2">
                                         <UserIcon className="h-4 w-4 text-green-500" />
                                         <span className="font-medium">
-                                          {visit.student_name}
+                                          {visit.company_contact_name}
                                         </span>
                                         <span className="text-gray-400">
-                                          ({visit.student_student_id})
+                                          ({visit.company_contact_phone})
                                         </span>
                                       </div>
                                       <div className="flex items-center gap-2">
@@ -849,20 +875,20 @@ export default function AdvisorVisits() {
                       {filteredVisits.filter(
                         (visit: any) => visit.status == "1"
                       ).length === 0 && (
-                        <Card className="border-2 border-dashed border-gray-300">
-                          <CardContent className="text-center py-12">
-                            <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                              <CheckCircleIcon className="h-8 w-8 text-gray-400" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                              ยังไม่มีการนิเทศที่เสร็จสิ้น
-                            </h3>
-                            <p className="text-gray-500">
-                              เมื่อคุณบันทึกการนิเทศเสร็จสิ้น ข้อมูลจะแสดงที่นี่
-                            </p>
-                          </CardContent>
-                        </Card>
-                      )}
+                          <Card className="border-2 border-dashed border-gray-300">
+                            <CardContent className="text-center py-12">
+                              <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                <CheckCircleIcon className="h-8 w-8 text-gray-400" />
+                              </div>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                ยังไม่มีการนิเทศที่เสร็จสิ้น
+                              </h3>
+                              <p className="text-gray-500">
+                                เมื่อคุณบันทึกการนิเทศเสร็จสิ้น ข้อมูลจะแสดงที่นี่
+                              </p>
+                            </CardContent>
+                          </Card>
+                        )}
                     </div>
                   </TabsContent>
 
@@ -933,8 +959,8 @@ export default function AdvisorVisits() {
                             <div className="text-3xl font-bold text-blue-700 mb-2">
                               {totalVisits > 0
                                 ? Math.round(
-                                    (completedVisits / totalVisits) * 100
-                                  )
+                                  (completedVisits / totalVisits) * 100
+                                )
                                 : 0}
                               %
                             </div>
@@ -1001,10 +1027,10 @@ export default function AdvisorVisits() {
                                       <TableCell>
                                         <div>
                                           <div className="font-medium">
-                                            {visit.student_name}
+                                            {visit.company_contact_name}
                                           </div>
                                           <div className="text-sm text-gray-500">
-                                            {visit.student_student_id}
+                                            {visit.company_contact_phone}
                                           </div>
                                         </div>
                                       </TableCell>
@@ -1020,15 +1046,14 @@ export default function AdvisorVisits() {
                                       </TableCell>
                                       <TableCell>
                                         <Badge
-                                          className={`${
-                                            visit.visit_type === "online"
-                                              ? "bg-blue-100 text-blue-800"
-                                              : "bg-orange-100 text-orange-800"
-                                          } hover:bg-current`}
+                                          className={`${visit.visit_type === "online"
+                                            ? "bg-blue-100 text-blue-800"
+                                            : "bg-orange-100 text-orange-800"
+                                            } hover:bg-current`}
                                         >
                                           {visit.visit_type === "online"
                                             ? "ออนไลน์"
-                                            : "เยี่ยมสถานประกอบการ"}
+                                            : "เยี่ยมแหล่งฝึก"}
                                         </Badge>
                                       </TableCell>
                                       <TableCell>
@@ -1071,18 +1096,18 @@ export default function AdvisorVisits() {
                           {filteredVisits.filter(
                             (visit: any) => visit.status == "1"
                           ).length === 0 && (
-                            <div className="text-center py-12">
-                              <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                <FileTextIcon className="h-8 w-8 text-gray-400" />
+                              <div className="text-center py-12">
+                                <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                  <FileTextIcon className="h-8 w-8 text-gray-400" />
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                  ยังไม่มีรายงานการนิเทศ
+                                </h3>
+                                <p className="text-gray-500">
+                                  รายงานการนิเทศจะแสดงที่นี่เมื่อคุณบันทึกการนิเทศ
+                                </p>
                               </div>
-                              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                ยังไม่มีรายงานการนิเทศ
-                              </h3>
-                              <p className="text-gray-500">
-                                รายงานการนิเทศจะแสดงที่นี่เมื่อคุณบันทึกการนิเทศ
-                              </p>
-                            </div>
-                          )}
+                            )}
                         </CardContent>
                       </Card>
                     </div>
@@ -1126,23 +1151,23 @@ export default function AdvisorVisits() {
                                 <div className="text-sm text-gray-500">
                                   {cal.start_date
                                     ? new Date(
-                                        cal.start_date
-                                      ).toLocaleDateString("th-TH", {
-                                        year: "numeric",
-                                        month: "short",
-                                        day: "numeric",
-                                      })
+                                      cal.start_date
+                                    ).toLocaleDateString("th-TH", {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    })
                                     : ""}{" "}
                                   -{" "}
                                   {cal.end_date
                                     ? new Date(cal.end_date).toLocaleDateString(
-                                        "th-TH",
-                                        {
-                                          year: "numeric",
-                                          month: "short",
-                                          day: "numeric",
-                                        }
-                                      )
+                                      "th-TH",
+                                      {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      }
+                                    )
                                     : ""}
                                 </div>
                               </div>
@@ -1152,38 +1177,31 @@ export default function AdvisorVisits() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">นักศึกษา</label>
-                      {studentLoading ? (
-                        <div className="flex items-center justify-center h-10 gap-2">
-                          <Loader2 className="animate-spin h-5 w-5 text-green-600" />
-                          <div className="text-sm">
-                            กำลังดึงข้อมูลนักศึกษา...
-                          </div>
-                        </div>
-                      ) : (
-                        <Select
-                          onValueChange={setSelectedStudent}
-                          value={selectedStudent}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="เลือกนักศึกษา" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {students.map((student) => (
-                              <SelectItem key={student.id} value={student.id}>
+                      <label className="text-sm font-medium">แหล่งฝึก</label>
+
+                      <Select
+                        onValueChange={setSelectedStudent}
+                        value={selectedStudent}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="เลือกแหล่งฝึก" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {mentors.map((mentor) => (
+                            <SelectItem key={mentor.id} value={mentor.id}>
+                              <div>
                                 <div>
-                                  <div>
-                                    {student.name} ({student.student_id})
-                                  </div>
-                                  <div className="text-sm text-gray-500">
-                                    {student.company}
-                                  </div>
+                                  {mentor.name} ({mentor.location})
                                 </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
+                                <div className="text-sm text-gray-500">
+                                  {mentor.contact_name && mentor.contact_name !== "-" ? mentor.contact_name : ""} {mentor.contact_name && mentor.contact_name !== "-" && mentor.contact_phone && mentor.contact_phone !== "-" ? "-" : ""} {mentor.contact_phone && mentor.contact_phone !== "-" ? mentor.contact_phone : ""}
+                                </div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-4">
@@ -1256,7 +1274,7 @@ export default function AdvisorVisits() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="onsite">
-                            นิเทศ ณ สถานประกอบการ
+                            นิเทศ ณ แหล่งฝึก
                           </SelectItem>
                           <SelectItem value="online">นิเทศออนไลน์</SelectItem>
                         </SelectContent>

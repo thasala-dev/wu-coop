@@ -177,7 +177,7 @@ export default function SupervisionDetailPage() {
   const renderVisitType = (type: string) => {
     switch (type) {
       case "onsite":
-        return "นิเทศ ณ สถานประกอบการ";
+        return "นิเทศ ณ แหล่งฝึก";
       case "online":
         return "นิเทศออนไลน์";
       case "hybrid":
@@ -401,7 +401,7 @@ export default function SupervisionDetailPage() {
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium flex items-center">
                       <Building className="h-5 w-5 mr-2 text-blue-500" />
-                      สถานประกอบการ
+                      แหล่งฝึก
                     </h3>
 
                     <div className="grid grid-cols-3 gap-2 text-sm">

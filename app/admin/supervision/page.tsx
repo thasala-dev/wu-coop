@@ -111,6 +111,7 @@ export default function SupervisionPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [students, setStudents] = useState<any[]>([]);
   const [advisors, setAdvisors] = useState<any[]>([]);
+  const [mentors, setMentors] = useState<any[]>([]);
   // Modal states
   const [addSupervisionModal, setAddSupervisionModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<string>("");
@@ -121,11 +122,15 @@ export default function SupervisionPage() {
   const [visitType, setVisitType] = useState<string>("");
   const [type, setType] = useState<string>("");
   const [comments, setComments] = useState<string>("");
+  // Search states
+  const [mentorSearchQuery, setMentorSearchQuery] = useState<string>("");
+  const [advisorSearchQuery, setAdvisorSearchQuery] = useState<string>("");
 
   // Fetch calendars when page loads
   useEffect(() => {
     fetchCalendars();
     fetchAdvisors();
+    fetchMentors();
   }, []);
 
   // Fetch supervisions when calendar is selected
@@ -135,6 +140,7 @@ export default function SupervisionPage() {
       fetchStudents();
     }
   }, [calendarSelected]);
+
 
   // Fetch all calendars
   const fetchCalendars = async () => {
@@ -196,6 +202,28 @@ export default function SupervisionPage() {
       toast({
         title: "เกิดข้อผิดพลาด",
         description: "ไม่สามารถดึงข้อมูลการนิเทศได้",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMentors = async () => {
+    try {
+      const response = await fetch(
+        `/api/mentor`
+      );
+      const data = await response.json();
+      if (data.success) {
+        const mentorsList = data.data;
+        setMentors(mentorsList);
+      }
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      toast({
+        title: "เกิดข้อผิดพลาด",
+        description: "ไม่สามารถดึงข้อมูลนักศึกษาได้",
         variant: "destructive",
       });
     } finally {
@@ -278,10 +306,7 @@ export default function SupervisionPage() {
   const filteredSupervisions = supervisions.filter(
     (supervision: SupervisionItem) => {
       const matchesSearch =
-        supervision.student_name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        supervision.student_code.includes(searchQuery) ||
+
         supervision.company_name
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
@@ -406,6 +431,8 @@ export default function SupervisionPage() {
     setEndTime("12:00");
     setVisitType("");
     setComments("");
+    setMentorSearchQuery("");
+    setAdvisorSearchQuery("");
   };
 
   // Open add supervision modal
@@ -413,6 +440,23 @@ export default function SupervisionPage() {
     resetAddSupervisionForm();
     setAddSupervisionModal(true);
   };
+
+  // Filter mentors based on search query
+  const filteredMentors = mentors.filter((mentor) => {
+    const searchLower = mentorSearchQuery.toLowerCase();
+    return (
+      mentor.name?.toLowerCase().includes(searchLower) ||
+      mentor.location?.toLowerCase().includes(searchLower) ||
+      mentor.contact_name?.toLowerCase().includes(searchLower) ||
+      mentor.contact_phone?.toLowerCase().includes(searchLower)
+    );
+  });
+
+  // Filter advisors based on search query
+  const filteredAdvisors = advisors.filter((advisor) => {
+    const searchLower = advisorSearchQuery.toLowerCase();
+    return advisor.name?.toLowerCase().includes(searchLower);
+  });
   // Handle add supervision form submission
   const handleAddSupervision = async () => {
     if (!selectedStudent) {
@@ -499,6 +543,7 @@ export default function SupervisionPage() {
           type: type || null,
           comments: comments || null,
           status: 0,
+          calendar_id: calendarSelected,
         }),
       });
 
@@ -510,10 +555,8 @@ export default function SupervisionPage() {
 
         // Log activity (you can implement your own logging system here)
         console.log(
-          `เพิ่มการนิเทศสำหรับนักศึกษา ${
-            student?.name || selectedStudent
-          } โดยอาจารย์ ${
-            advisor?.name || selectedAdvisor
+          `เพิ่มการนิเทศสำหรับนักศึกษา ${student?.name || selectedStudent
+          } โดยอาจารย์ ${advisor?.name || selectedAdvisor
           } วันที่ ${formatToThaiDate(
             formattedDate
           )} เวลา ${startTime}-${endTime} น.`
@@ -575,11 +618,10 @@ export default function SupervisionPage() {
                     pageLength={4}
                     render={(cal: any) => (
                       <Card
-                        className={`cursor-pointer hover:border-blue-300 transition-colors ${
-                          cal.id === calendarSelected
-                            ? "border-blue-500 bg-blue-50"
-                            : ""
-                        }`}
+                        className={`cursor-pointer hover:border-blue-300 transition-colors ${cal.id === calendarSelected
+                          ? "border-blue-500 bg-blue-50"
+                          : ""
+                          }`}
                         onClick={() => {
                           setCalendarSelected(cal.id);
                         }}
@@ -597,24 +639,24 @@ export default function SupervisionPage() {
                           <p className="text-sm text-gray-600">
                             {cal.start_date
                               ? new Date(cal.start_date).toLocaleDateString(
-                                  "th-TH",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  }
-                                )
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )
                               : ""}{" "}
                             -{" "}
                             {cal.end_date
                               ? new Date(cal.end_date).toLocaleDateString(
-                                  "th-TH",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  }
-                                )
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )
                               : ""}
                           </p>
                           <div className="flex justify-between mt-2 text-sm">
@@ -703,22 +745,17 @@ export default function SupervisionPage() {
                     <TableList
                       meta={[
                         {
-                          key: "student_name",
-                          content: "นักศึกษา",
+                          key: "company_name",
+                          content: "แหล่งฝึก",
                           width: "200px",
                           render: (item: any) => (
                             <div className="flex items-center gap-2">
-                              <CustomAvatar
-                                id={`student${item.student_code}`}
-                                image={item.student_image}
-                                size="8"
-                              />
                               <div>
                                 <div className="truncate">
-                                  {item.student_name}
+                                  {item.company_name}
                                 </div>
                                 <p className="text-xs text-gray-500">
-                                  {item.company_name}
+                                  {item.company_location}
                                 </p>
                               </div>
                             </div>
@@ -760,7 +797,7 @@ export default function SupervisionPage() {
                           render: (item: any) => {
                             switch (item.visit_type) {
                               case "onsite":
-                                return "ณ สถานประกอบการ";
+                                return "ณ แหล่งฝึก";
                               case "online":
                                 return "ออนไลน์";
                               case "hybrid":
@@ -812,7 +849,7 @@ export default function SupervisionPage() {
                                   variant="destructive"
                                   size="sm"
                                   className="bg-red-600 hover:bg-red-700 text-white"
-                                  // onClick={() => confirmDelete(row.id)}
+                                // onClick={() => confirmDelete(row.id)}
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
@@ -841,27 +878,45 @@ export default function SupervisionPage() {
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">นักศึกษา</label>
+                <label className="text-sm font-medium">แหล่งฝึก</label>
                 <Select
                   onValueChange={setSelectedStudent}
                   value={selectedStudent}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="เลือกนักศึกษา" />
+                    <SelectValue placeholder="เลือกแหล่งฝึก" />
                   </SelectTrigger>
                   <SelectContent>
-                    {students.map((student) => (
-                      <SelectItem key={student.id} value={student.id}>
-                        <div>
+                    <div className="px-2 py-1.5 sticky top-0 bg-white border-b z-10">
+                      <Input
+                        placeholder="ค้นหาแหล่งฝึก..."
+                        className="h-8"
+                        value={mentorSearchQuery}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          setMentorSearchQuery(e.target.value);
+                        }}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                    {filteredMentors.length > 0 ? (
+                      filteredMentors.map((mentor) => (
+                        <SelectItem key={mentor.id} value={mentor.id}>
                           <div>
-                            {student.name} ({student.student_id})
+                            <div>
+                              {mentor.name} ({mentor.location})
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {mentor.contact_name && mentor.contact_name !== "-" ? mentor.contact_name : ""} {mentor.contact_name && mentor.contact_name !== "-" && mentor.contact_phone && mentor.contact_phone !== "-" ? "-" : ""} {mentor.contact_phone && mentor.contact_phone !== "-" ? mentor.contact_phone : ""}
+                            </div>
                           </div>
-                          <div className="text-sm text-gray-500">
-                            {student.company}
-                          </div>
-                        </div>
-                      </SelectItem>
-                    ))}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-4 text-sm text-gray-500 text-center">
+                        ไม่พบข้อมูลแหล่งฝึก
+                      </div>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -875,11 +930,29 @@ export default function SupervisionPage() {
                     <SelectValue placeholder="เลือกอาจารย์นิเทศ" />
                   </SelectTrigger>
                   <SelectContent>
-                    {advisors.map((advisor) => (
-                      <SelectItem key={advisor.id} value={advisor.id}>
-                        {advisor.name}
-                      </SelectItem>
-                    ))}
+                    <div className="px-2 py-1.5 sticky top-0 bg-white border-b z-10">
+                      <Input
+                        placeholder="ค้นหาอาจารย์..."
+                        className="h-8"
+                        value={advisorSearchQuery}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          setAdvisorSearchQuery(e.target.value);
+                        }}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                    {filteredAdvisors.length > 0 ? (
+                      filteredAdvisors.map((advisor) => (
+                        <SelectItem key={advisor.id} value={advisor.id}>
+                          {advisor.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-4 text-sm text-gray-500 text-center">
+                        ไม่พบข้อมูลอาจารย์
+                      </div>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -950,7 +1023,7 @@ export default function SupervisionPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="onsite">
-                      นิเทศ ณ สถานประกอบการ
+                      นิเทศ ณ แหล่งฝึก
                     </SelectItem>
                     <SelectItem value="online">นิเทศออนไลน์</SelectItem>
                   </SelectContent>

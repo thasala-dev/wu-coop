@@ -106,12 +106,12 @@ export default function AddSupervision() {
   // ฟังก์ชั่นสำหรับดึงข้อมูลนักศึกษาที่ลงทะเบียนฝึกงาน
   const fetchRegisteredStudents = async (calendarId: string) => {
     if (!calendarId) return;
-    
+
     try {
       setLoading(true);
       const response = await fetch(`/api/calendar/${calendarId}/info`);
       const data = await response.json();
-      
+
       if (data.success) {
         // นำข้อมูลนักศึกษาที่มีการจับคู่กับบริษัทแล้วมาใช้
         const matchedStudents = data.intern
@@ -125,7 +125,7 @@ export default function AddSupervision() {
               company: company ? company.name : 'ไม่ระบุบริษัท'
             };
           });
-          
+
         setStudents(matchedStudents);
       }
     } catch (error) {
@@ -165,7 +165,7 @@ export default function AddSupervision() {
     fetchCalendars();
     fetchAdvisors();
   }, []);
-  
+
   // เมื่อมีการเลือกปฏิทินใหม่ ให้ดึงข้อมูลนักศึกษาที่ลงทะเบียนในปฏิทินนั้น
   useEffect(() => {
     if (selectedCalendar) {
@@ -177,7 +177,7 @@ export default function AddSupervision() {
     setLoading(true);
     try {
       console.log("ส่งข้อมูล:", values);
-      
+
       const response = await fetch("/api/supervision", {
         method: "POST",
         headers: {
@@ -185,9 +185,9 @@ export default function AddSupervision() {
         },
         body: JSON.stringify(values),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         toast({
           title: "บันทึกข้อมูลสำเร็จ",
@@ -412,7 +412,7 @@ export default function AddSupervision() {
                       {errors.scheduled_date && (
                         <p className="text-sm text-red-600">
                           {getErrorMessage(errors.scheduled_date)}
-                        </p>                      )}
+                        </p>)}
                     </div>
 
                     <div className="sm:col-span-6 space-y-1">
@@ -429,7 +429,7 @@ export default function AddSupervision() {
                           <SelectValue placeholder="เลือกรูปแบบการนิเทศ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="onsite">นิเทศ ณ สถานประกอบการ</SelectItem>
+                          <SelectItem value="onsite">นิเทศ ณ แหล่งฝึก</SelectItem>
                           <SelectItem value="online">นิเทศออนไลน์</SelectItem>
                           <SelectItem value="hybrid">นิเทศแบบผสมผสาน</SelectItem>
                         </SelectContent>

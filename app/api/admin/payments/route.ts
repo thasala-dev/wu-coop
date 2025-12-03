@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 
     if (!company_id) {
       return NextResponse.json(
-        { success: false, message: "กรุณาเลือกสถานประกอบการ" },
+        { success: false, message: "กรุณาเลือกแหล่งฝึก" },
         { status: 400 }
       );
     }

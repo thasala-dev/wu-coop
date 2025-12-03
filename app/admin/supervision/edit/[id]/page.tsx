@@ -225,9 +225,8 @@ export default function EditSupervision() {
         // ตั้งค่าข้อมูลนักศึกษาและอาจารย์ที่เลือกแล้ว
         setSelectedStudent({
           id: supervisionData.regist_intern_id,
-          name: supervisionData.student_name,
-          student_code: supervisionData.student_code,
-          company: supervisionData.company_name,
+          company_name: supervisionData.company_name,
+          company_location: supervisionData.company_location,
         });
 
         setSelectedAdvisor({
@@ -363,17 +362,16 @@ export default function EditSupervision() {
 
                     <div className="sm:col-span-6 space-y-1">
                       <label className="block text-sm font-medium">
-                        นักศึกษา
+                        แหล่งฝึกงาน
                       </label>
                       <div className="w-full p-3 border border-gray-300 rounded-md bg-gray-50">
                         {selectedStudent ? (
                           <div>
                             <div className="font-medium">
-                              {selectedStudent.name} (
-                              {selectedStudent.student_code})
+                              {selectedStudent.company_name}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {selectedStudent.company}
+                              {selectedStudent.company_location}
                             </div>
                           </div>
                         ) : (
@@ -409,8 +407,8 @@ export default function EditSupervision() {
                           {...register("scheduledDate")}
                           value={
                             scheduledDate &&
-                            scheduledDate instanceof Date &&
-                            !isNaN(scheduledDate.getTime())
+                              scheduledDate instanceof Date &&
+                              !isNaN(scheduledDate.getTime())
                               ? format(scheduledDate, "yyyy-MM-dd")
                               : ""
                           }
@@ -429,8 +427,8 @@ export default function EditSupervision() {
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />
                               {scheduledDate &&
-                              scheduledDate instanceof Date &&
-                              !isNaN(scheduledDate.getTime()) ? (
+                                scheduledDate instanceof Date &&
+                                !isNaN(scheduledDate.getTime()) ? (
                                 format(scheduledDate, "d MMMM yyyy", {
                                   locale: th,
                                 })
@@ -536,7 +534,7 @@ export default function EditSupervision() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="onsite">
-                            นิเทศ ณ สถานประกอบการ
+                            นิเทศ ณ แหล่งฝึก
                           </SelectItem>
                           <SelectItem value="online">นิเทศออนไลน์</SelectItem>
                           <SelectItem value="hybrid">
@@ -631,9 +629,9 @@ export default function EditSupervision() {
                           <SelectValue placeholder="เลือกสถานะ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="1">รอดำเนินการ</SelectItem>
-                          <SelectItem value="2">เสร็จสิ้น</SelectItem>
-                          <SelectItem value="3">ยกเลิก</SelectItem>
+                          <SelectItem value="0">รอดำเนินการ</SelectItem>
+                          <SelectItem value="1">เสร็จสิ้น</SelectItem>
+                          <SelectItem value="2">ยกเลิก</SelectItem>
                         </SelectContent>
                       </Select>
                       <input type="hidden" {...register("status")} />

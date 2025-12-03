@@ -12,16 +12,11 @@ export async function GET(request: NextRequest) {
     // สร้าง query พื้นฐาน
     let query = `
       SELECT sup.*, 
-             ri.student_id, ri.calendar_id, ri.company_id,
-             std.fullname AS student_name, std.student_id AS student_code,std.image AS student_image,
-             adv.fullname AS advisor_name,
-
-             com.name AS company_name
+             com.name AS company_name, com.location AS company_location,
+             adv.fullname AS advisor_name
       FROM supervisions sup
-      JOIN regist_intern ri ON sup.regist_intern_id = ri.id
-      JOIN user_student std ON ri.student_id = std.id
+      JOIN user_company com ON sup.regist_intern_id = com.id
       JOIN user_advisor adv ON sup.advisor_id = adv.id
-      LEFT JOIN user_company com ON ri.company_id = com.id
     `;
 
     const whereConditions = [];
@@ -30,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     // เพิ่มเงื่อนไขการค้นหา
     if (calendarId) {
-      whereConditions.push(`ri.calendar_id = $${paramCount++}`);
+      whereConditions.push(`sup.calendar_id = $${paramCount++}`);
       params.push(calendarId);
     }
 
@@ -81,23 +76,23 @@ export async function POST(request: Request) {
     }
 
     // ตรวจสอบว่ามีการนิเทศซ้ำในวันเดียวกันหรือไม่
-    const checkExisting = await sql(
-      `SELECT * FROM supervisions 
-       WHERE regist_intern_id = $1 AND advisor_id = $2 AND scheduled_date = $3`,
-      [body.regist_intern_id, body.advisor_id, body.scheduled_date]
-    );
+    // const checkExisting = await sql(
+    //   `SELECT * FROM supervisions 
+    //    WHERE regist_intern_id = $1 AND advisor_id = $2 AND scheduled_date = $3`,
+    //   [body.regist_intern_id, body.advisor_id, body.scheduled_date]
+    // );
 
-    if (checkExisting.length > 0) {
-      return NextResponse.json(
-        { success: false, message: "มีการนัดนิเทศในวันเดียวกันนี้แล้ว" },
-        { status: 400 }
-      );
-    }
+    // if (checkExisting.length > 0) {
+    //   return NextResponse.json(
+    //     { success: false, message: "มีการนัดนิเทศในวันเดียวกันนี้แล้ว" },
+    //     { status: 400 }
+    //   );
+    // }
     // สร้างข้อมูลการนิเทศใหม่
     const data = await sql(
       `INSERT INTO supervisions 
-       (regist_intern_id, advisor_id, scheduled_date, start_time, end_time, status, visit_type, comments, type) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+       (regist_intern_id, advisor_id, scheduled_date, start_time, end_time, status, visit_type, comments, type, calendar_id) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10) 
        RETURNING *`,
       [
         body.regist_intern_id,
@@ -109,13 +104,14 @@ export async function POST(request: Request) {
         body.visit_type || null,
         body.comments || null,
         body.type || null,
+        body.calendar_id || null,
       ]
     );
 
     return NextResponse.json({
       success: true,
       message: "บันทึกข้อมูลการนิเทศสำเร็จ",
-      data: data[0],
+      // data: data[0],
     });
   } catch (error) {
     console.error("Error creating supervision:", error);

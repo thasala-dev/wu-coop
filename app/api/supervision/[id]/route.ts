@@ -9,24 +9,12 @@ export async function GET(request: NextRequest, { params }: any) {
 
     // ดึงข้อมูลการนิเทศพร้อมข้อมูลที่เกี่ยวข้อง
     const data = await sql(
-      `SELECT 
-        sup.id, sup.regist_intern_id, sup.advisor_id, sup.scheduled_date, 
-        sup.start_time, sup.end_time, sup.visit_type, sup.type, sup.comments, sup.status,
-        sup.created_at, sup.updated_at,
-        ri.id as ri_id, ri.student_id as ri_student_id, ri.calendar_id as ri_calendar_id, 
-        ri.company_id as ri_company_id,
-        std.fullname as student_name, std.student_id as student_code, 
-        std.faculty as student_faculty, std.major as student_major, 
-        std.mobile as student_mobile, std.email as student_email,
-        adv.fullname as advisor_name, adv.mobile as advisor_mobile, 
-        adv.email as advisor_email,
-        com.name as company_name, com.contact_address  as company_address, 
-        com.contact_name, com.contact_phone, com.contact_email
-       FROM supervisions sup
-       JOIN regist_intern ri ON sup.regist_intern_id = ri.id
-       JOIN user_student std ON ri.student_id = std.id
-       JOIN user_advisor adv ON sup.advisor_id = adv.id
-       LEFT JOIN user_company com ON ri.company_id = com.id
+      `SELECT sup.*, 
+             com.name AS company_name, com.location AS company_location,
+             adv.fullname AS advisor_name
+      FROM supervisions sup
+      JOIN user_company com ON sup.regist_intern_id = com.id
+      JOIN user_advisor adv ON sup.advisor_id = adv.id
        WHERE sup.id = $1`,
       [id]
     );
@@ -108,6 +96,10 @@ export async function PUT(request: NextRequest, { params }: any) {
     if (body.comments !== undefined) {
       updateFields.push(`comments = $${paramCount++}`);
       queryParams.push(body.comments);
+    }
+    if (body.calendar_id !== undefined) {
+      updateFields.push(`calendar_id = $${paramCount++}`);
+      queryParams.push(body.calendar_id);
     }
 
     // เพิ่ม updated_at timestamp

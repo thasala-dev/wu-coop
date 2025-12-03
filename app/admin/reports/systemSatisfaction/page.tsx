@@ -159,7 +159,7 @@ export default function CompaniesPage() {
                     รายงานผลการประเมินความพึงพอใจระบบ
                   </CardTitle>
                   <CardDescription>
-                    ข้อมูลความพึงพอใจของสถานประกอบการต่อระบบ
+                    ข้อมูลความพึงพอใจของแหล่งฝึกต่อระบบ
                   </CardDescription>
                 </div>
                 {/* Filters Section */}

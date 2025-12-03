@@ -25,7 +25,7 @@ import { th } from "date-fns/locale";
 // --- Schema การตรวจสอบข้อมูล (Zod) ---
 const formSchema = z.object({
   calendar_id: z.string().min(1, "กรุณาเลือกปีการศึกษา"),
-  company_id: z.string().min(1, "กรุณาเลือกสถานประกอบการ"),
+  company_id: z.string().min(1, "กรุณาเลือกแหล่งฝึก"),
   amount: z
     .string()
     .min(1, "กรุณากรอกจำนวนเงิน")
@@ -332,7 +332,7 @@ export default function Page() {
                           </div>
 
                           <div className="sm:col-span-6">
-                            <label>สถานประกอบการ</label>
+                            <label>แหล่งฝึก</label>
                             <select
                               id="company_id"
                               {...register("company_id")}
@@ -343,7 +343,7 @@ export default function Page() {
                                   : "")
                               }
                             >
-                              <option value="">เลือกสถานประกอบการ</option>
+                              <option value="">เลือกแหล่งฝึก</option>
                               {companies.map((company: any) => (
                                 <option key={company.id} value={company.id}>
                                   {company.name}

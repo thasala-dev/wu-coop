@@ -36,28 +36,28 @@ const reportMenu = [
     href: "/admin/reports/evaluationResult",
     icon: Building,
     color: "bg-green-500",
-    description: "ผลการประเมินนักศึกษาโดยสถานประกอบการ",
+    description: "ผลการประเมินนักศึกษาโดยแหล่งฝึก",
   },
   {
     name: "รายงานผลการนิเทศนักศึกษา",
     href: "/admin/reports/supervisionResult",
     icon: Users,
     color: "bg-yellow-500",
-    description: "ผลการนิเทศนักศึกษาโดยสถานประกอบการ",
+    description: "ผลการนิเทศนักศึกษาโดยแหล่งฝึก",
   },
   {
     name: "รายงานผลการประเมินความพึงพอใจระบบ",
     href: "/admin/reports/systemSatisfaction",
     icon: Star,
     color: "bg-purple-500",
-    description: "ข้อมูลความพึงพอใจของสถานประกอบการต่อระบบ",
+    description: "ข้อมูลความพึงพอใจของแหล่งฝึกต่อระบบ",
   },
   // {
-  //   name: "รายงานผู้ดูแลสถานประกอบการ",
+  //   name: "รายงานผู้ดูแลแหล่งฝึก",
   //   href: "/admin/reports/companySupervisor",
   //   icon: Users,
   //   color: "bg-orange-500",
-  //   description: "รายชื่อและข้อมูลผู้ดูแลจากสถานประกอบการ",
+  //   description: "รายชื่อและข้อมูลผู้ดูแลจากแหล่งฝึก",
   // },
   // {
   //   name: "รายงานผู้ดูแลนักศึกษา",
@@ -157,7 +157,7 @@ export default function AdminReportsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-green-600">
-                        สถานประกอบการ
+                        แหล่งฝึก
                       </p>
                       <p className="text-2xl font-bold text-green-900">
                         {totalCompanies}

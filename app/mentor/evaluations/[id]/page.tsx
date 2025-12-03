@@ -165,7 +165,7 @@ export default function MentorEvaluations() {
                     </div>
                   </div>
 
-                  {/* ข้อมูลติดต่อและสถานประกอบการ */}
+                  {/* ข้อมูลติดต่อและแหล่งฝึก */}
                   <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 text-blue-100">
@@ -266,11 +266,10 @@ export default function MentorEvaluations() {
                                 className="p-1 hover:bg-gray-50 transition-colors"
                               >
                                 <div
-                                  className={`flex flex-col md:flex-row md:items-center justify-between gap-4 border-2 p-2 rounded ${
-                                    evaluation.is_submit
+                                  className={`flex flex-col md:flex-row md:items-center justify-between gap-4 border-2 p-2 rounded ${evaluation.is_submit
                                       ? "border-green-600 bg-green-50"
                                       : "border-yellow-600 bg-yellow-50"
-                                  }`}
+                                    }`}
                                 >
                                   <div className="flex-1">
                                     <div className="flex items-start gap-3">

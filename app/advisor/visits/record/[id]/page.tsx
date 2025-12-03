@@ -141,7 +141,7 @@ export default function RecordVisit() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    {/* <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <UserIcon className="h-5 w-5 text-purple-500" />
                       <div>
                         <span className="text-sm font-medium text-gray-600">
@@ -154,7 +154,7 @@ export default function RecordVisit() {
                           ({data?.student_student_id})
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
