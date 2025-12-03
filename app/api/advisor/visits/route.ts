@@ -12,20 +12,27 @@ export async function GET(request: Request) {
       `SELECT vis.regist_intern_id,
         vis.id, vis.calendar_id, vis.scheduled_date, vis.start_time, vis.end_time,
         vis.visit_type,vis.type, vis.status, vis.comments,
+        cal.id AS calendar_id, cal.name AS calendar_name, cal.year AS calendar_year, cal.semester AS calendar_semester,
         com.id AS company_id, com.name AS company_name, com.location AS company_location,
         com.contact_name AS company_contact_name, com.contact_phone AS company_contact_phone
       FROM supervisions vis
       JOIN user_company com ON vis.regist_intern_id = com.id
       JOIN user_advisor adv ON vis.advisor_id = adv.id
+      Join calendar cal ON vis.calendar_id = cal.id
       WHERE vis.advisor_id = $1
       ORDER BY vis.scheduled_date DESC`,
       [advisorId]
     );
 
+    const visitData = await Promise.all(data.map(async (visit: any) => ({
+      ...visit,
+      student: await getStudent({ calendarId: visit.calendar_id, companyId: visit.company_id }),
+    })));
+
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
-      data: data,
+      data: visitData,
     });
   } catch (error) {
     console.error("Error in GET /api/advisor/visits:", error);
@@ -33,6 +40,24 @@ export async function GET(request: Request) {
       { success: false, message: "เกิดข้อผิดพลาด" },
       { status: 500 }
     );
+  }
+}
+
+const getStudent = async ({ calendarId, companyId }: any) => {
+  try {
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    const data = await sql(
+      `SELECT s.id, s.fullname, s.student_id, s.major, s.mobile, s.image
+      FROM regist_intern ri
+      JOIN user_student s ON ri.student_id = s.id
+      WHERE ri.calendar_id = $1 AND ri.company_id = $2`,
+      [calendarId, companyId]
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Error in getStudent:", error);
+    return [];
   }
 }
 

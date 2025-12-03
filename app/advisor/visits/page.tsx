@@ -71,6 +71,7 @@ import Loading from "@/components/loading";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { supervisionType } from "@/lib/global";
+import CustomAvatar from "@/components/avatar";
 
 // Type definitions
 interface Student {
@@ -543,9 +544,15 @@ export default function AdvisorVisits() {
                 <CardContent>
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 mb-2">
-                        {nextVisit.company_name}
-                      </h3>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {nextVisit.company_name}
+                        </h3>
+                        <div className="text-sm text-gray-900">
+                          {nextVisit.calendar_name} ภาคการศึกษา{" "}
+                          {nextVisit.calendar_semester}/{nextVisit.calendar_year}
+                        </div>
+                      </div>
                       <div className="space-y-1 text-sm text-gray-600">
                         <div className="flex items-center gap-2">
                           <UserIcon className="h-4 w-4" />
@@ -585,6 +592,35 @@ export default function AdvisorVisits() {
                       </Button>
                     </div>
                   </div>
+                  {nextVisit.student && nextVisit.student.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <UserIcon className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm font-medium text-gray-700">
+                          นักศึกษาที่เข้าร่วม:
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {nextVisit.student.map((student: any, index: number) => (
+                          <div className="flex items-center gap-2" key={index}>
+                            <CustomAvatar
+                              id={`student${student.student_id}`}
+                              image={student.image}
+                              size="8"
+                            />
+                            <div>
+                              <div className="truncate">
+                                {student.fullname} ({student.student_id})
+                              </div>
+                              <p className="text-xs text-gray-500">
+                                {student.mobile}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -649,9 +685,15 @@ export default function AdvisorVisits() {
                                   </div>
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-2">
-                                      <h3 className="text-lg font-semibold text-gray-900">
-                                        {visit.company_name}
-                                      </h3>
+                                      <div>
+                                        <h3 className="text-lg font-semibold text-gray-900">
+                                          {visit.company_name}
+                                        </h3>
+                                        <div className="text-sm text-gray-900">
+                                          {visit.calendar_name} ภาคการศึกษา{" "}
+                                          {visit.calendar_semester}/{visit.calendar_year}
+                                        </div>
+                                      </div>
                                       <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
                                         {visit.visit_type === "online"
                                           ? "ออนไลน์"
@@ -735,6 +777,35 @@ export default function AdvisorVisits() {
                                   </div>
                                 </div>
                               </div>
+                              {visit.student && visit.student.length > 0 && (
+                                <div className="mt-4 pt-4 border-t border-gray-200">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <UserIcon className="h-4 w-4 text-gray-500" />
+                                    <span className="text-sm font-medium text-gray-700">
+                                      นักศึกษาที่เข้าร่วม:
+                                    </span>
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {visit.student.map((student: any, index: number) => (
+                                      <div className="flex items-center gap-2" key={index}>
+                                        <CustomAvatar
+                                          id={`student${student.student_id}`}
+                                          image={student.image}
+                                          size="8"
+                                        />
+                                        <div>
+                                          <div className="truncate">
+                                            {student.fullname} ({student.student_id})
+                                          </div>
+                                          <p className="text-xs text-gray-500">
+                                            {student.mobile}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </CardContent>
                           </Card>
                         ))}
@@ -783,9 +854,17 @@ export default function AdvisorVisits() {
                                   </div>
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-2">
-                                      <h3 className="text-lg font-semibold text-gray-900">
-                                        {visit.company_name}
-                                      </h3>
+                                      <div>
+                                        <h3 className="text-lg font-semibold text-gray-900">
+                                          {visit.company_name}
+                                        </h3>
+                                        <div className="text-sm text-gray-900">
+                                          {visit.calendar_name} ภาคการศึกษา{" "}
+                                          {visit.calendar_semester}/{visit.calendar_year}
+                                        </div>
+                                      </div>
+
+
                                       <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">
                                         {visit.visit_type === "online"
                                           ? "ออนไลน์"
@@ -868,6 +947,36 @@ export default function AdvisorVisits() {
                                   </div>
                                 </div>
                               </div>
+
+                              {visit.student && visit.student.length > 0 && (
+                                <div className="mt-4 pt-4 border-t border-gray-200">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <UserIcon className="h-4 w-4 text-gray-500" />
+                                    <span className="text-sm font-medium text-gray-700">
+                                      นักศึกษาที่เข้าร่วม:
+                                    </span>
+                                  </div>
+                                  <div className="flex flex-wrap gap-2">
+                                    {visit.student.map((student: any, index: number) => (
+                                      <div className="flex items-center gap-2" key={index}>
+                                        <CustomAvatar
+                                          id={`student${student.student_id}`}
+                                          image={student.image}
+                                          size="8"
+                                        />
+                                        <div>
+                                          <div className="truncate">
+                                            {student.fullname} ({student.student_id})
+                                          </div>
+                                          <p className="text-xs text-gray-500">
+                                            {student.mobile}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </CardContent>
                           </Card>
                         ))}
