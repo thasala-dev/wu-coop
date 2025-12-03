@@ -44,10 +44,17 @@ export async function GET(request: NextRequest) {
 
     const data = await sql(query, params);
 
+
+    const visitData = await Promise.all(data.map(async (visit: any) => ({
+      ...visit,
+      student: await getStudent({ calendarId: visit.calendar_id, companyId: visit.regist_intern_id }),
+    })));
+
+
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
-      data: data,
+      data: visitData,
     });
   } catch (error) {
     console.error("Error fetching supervisions:", error);
@@ -55,6 +62,24 @@ export async function GET(request: NextRequest) {
       { success: false, message: "เกิดข้อผิดพลาด" },
       { status: 500 }
     );
+  }
+}
+
+const getStudent = async ({ calendarId, companyId }: any) => {
+  try {
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    const data = await sql(
+      `SELECT s.id, s.fullname, s.student_id, s.major, s.mobile, s.image
+      FROM regist_intern ri
+      JOIN user_student s ON ri.student_id = s.id
+      WHERE ri.calendar_id = $1 AND ri.company_id = $2`,
+      [calendarId, companyId]
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Error in getStudent:", error);
+    return [];
   }
 }
 

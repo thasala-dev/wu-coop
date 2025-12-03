@@ -757,6 +757,19 @@ export default function SupervisionPage() {
                                 <p className="text-xs text-gray-500">
                                   {item.company_location}
                                 </p>
+                                <div className="text-xs text-gray-500 mt-1">
+                                  {item.student && item.student.length > 0 ? (
+                                    <div className="flex flex-wrap gap-1">
+                                      {item.student.map((s: any) => (
+                                        <Badge key={s.id} variant="outline" className="text-xs">
+                                          {s.fullname} ({s.student_id})
+                                        </Badge>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <span className="text-gray-400">---ไม่มีนักศึกษา---</span>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           ),
