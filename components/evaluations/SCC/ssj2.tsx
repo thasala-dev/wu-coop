@@ -158,6 +158,13 @@ export default function Page(props: any) {
                   <div>1</div>
                   <div>(ปรับปรุง)</div>
                 </th>
+                <th
+                  className="=p-2 border text-center text-sm"
+                  style={{ width: "8%" }}
+                >
+                  <div>N/A</div>
+                  <div>(ไม่ประเมิน)</div>
+                </th>
               </tr>
             </thead>
 
@@ -286,6 +293,29 @@ export default function Page(props: any) {
                         </RadioGroup>
                       </div>
                     </td>
+                    <td className="p-2 border align-bottom text-sm">
+                      <div className="flex flex-col items-center justify-center h-full">
+                        <RadioGroup
+                          onValueChange={(value) =>
+                            setDataValue(item.label, value)
+                          }
+                          value={data[item.label as keyof typeof data]}
+                          className="flex flex-row items-center gap-8 justify-center w-full"
+                        >
+                          <RadioGroupItem
+                            value="0"
+                            className={
+                              isSubmit && !data[item.label as keyof typeof data]
+                                ? "border-2 border-red-600"
+                                : ""
+                            }
+                            aria-invalid={
+                              isSubmit && !data[item.label as keyof typeof data]
+                            }
+                          />
+                        </RadioGroup>
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               );
@@ -297,17 +327,21 @@ export default function Page(props: any) {
                 </td>
                 <td
                   className="p-2 border align-center text-sm font-bold text-center"
-                  colSpan={5}
+                  colSpan={6}
                 >
                   {toThaiNumber(
                     Number(
                       (
                         (criteriaData.reduce((total, item) => {
                           const value = data[item.label as keyof typeof data];
-                          return total + (value ? parseInt(value, 10) : 0);
+                          const numValue = value ? parseInt(value, 10) : 0;
+                          return total + (numValue > 0 ? numValue : 0);
                         }, 0) *
                           20) /
-                        11
+                        criteriaData.filter((item) => {
+                          const value = data[item.label as keyof typeof data];
+                          return value && parseInt(value, 10) > 0;
+                        }).length
                       ).toFixed(2)
                     )
                   )}

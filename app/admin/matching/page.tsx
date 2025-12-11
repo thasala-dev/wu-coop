@@ -35,7 +35,21 @@ import {
   UserIcon,
   UsersIcon,
   XIcon,
+  ChevronsUpDown,
 } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import Sidebar from "@/components/sidebar";
 import Loading from "@/components/loading";
 import { useEffect, useState } from "react";
@@ -111,6 +125,7 @@ export default function AdminMatching() {
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<string>("placeholder");
   const [capacity, setCapacity] = useState<string>("1");
+  const [companySearchOpen, setCompanySearchOpen] = useState<{[key: string]: boolean}>({});
 
   const filteredStudents = (year: any, major: any) => {
     const data = info.student.filter((student: any) => {
@@ -753,46 +768,99 @@ export default function AdminMatching() {
                           {
                             key: "company_id",
                             content: "แหล่งฝึกที่ต้องการ",
-                            render: (item) => (
-                              <Select
-                                onValueChange={(value) => {
-                                  const companyId = value.replace(
-                                    "company-",
-                                    ""
-                                  );
-                                  setInfo((prev: any) => ({
-                                    ...prev,
-                                    intern: prev.intern.map((intern: any) =>
-                                      intern.id === item.id
-                                        ? { ...intern, company_id: companyId }
-                                        : intern
-                                    ),
-                                  }));
-                                }}
-                                value={
-                                  item.company_id
-                                    ? `company-${item.company_id}`
-                                    : "company-"
-                                }
-                              >
-                                <SelectTrigger className="h-8 w-full">
-                                  <SelectValue placeholder="เลือกแหล่งฝึก" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value={`company-`}>
-                                    เลือกแหล่งฝึก
-                                  </SelectItem>
-                                  {info.company.map((company: any) => (
-                                    <SelectItem
-                                      key={company.id}
-                                      value={`company-${company.company_id}`}
+                            render: (item) => {
+                              const selectedCompanyData = info.company.find(
+                                (c: any) => String(c.company_id) === String(item.company_id)
+                              );
+                              
+                              return (
+                                <Popover
+                                  open={companySearchOpen[item.id] || false}
+                                  onOpenChange={(open) => {
+                                    setCompanySearchOpen((prev) => ({
+                                      ...prev,
+                                      [item.id]: open,
+                                    }));
+                                  }}
+                                >
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      className="h-8 w-full justify-between text-xs"
                                     >
-                                      {company.name} [{company.total} ตำแหน่ง]
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            ),
+                                      {selectedCompanyData
+                                        ? `${selectedCompanyData.name} [${selectedCompanyData.total} ตำแหน่ง]`
+                                        : "เลือกแหล่งฝึก"}
+                                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-[400px] p-0" align="start">
+                                    <Command>
+                                      <CommandInput placeholder="ค้นหาแหล่งฝึก..." />
+                                      <CommandList>
+                                        <CommandEmpty>ไม่พบแหล่งฝึก</CommandEmpty>
+                                        <CommandGroup>
+                                          <CommandItem
+                                            value="clear"
+                                            onSelect={() => {
+                                              setInfo((prev: any) => ({
+                                                ...prev,
+                                                intern: prev.intern.map((intern: any) =>
+                                                  intern.id === item.id
+                                                    ? { ...intern, company_id: null }
+                                                    : intern
+                                                ),
+                                              }));
+                                              setCompanySearchOpen((prev) => ({
+                                                ...prev,
+                                                [item.id]: false,
+                                              }));
+                                            }}
+                                          >
+                                            <span className="text-gray-500 italic">ไม่เลือกแหล่งฝึก</span>
+                                          </CommandItem>
+                                          {info.company.map((company: any) => (
+                                            <CommandItem
+                                              key={company.id}
+                                              value={`${company.name} ${company.company_id}`}
+                                              onSelect={() => {
+                                                setInfo((prev: any) => ({
+                                                  ...prev,
+                                                  intern: prev.intern.map((intern: any) =>
+                                                    intern.id === item.id
+                                                      ? { ...intern, company_id: company.company_id }
+                                                      : intern
+                                                  ),
+                                                }));
+                                                setCompanySearchOpen((prev) => ({
+                                                  ...prev,
+                                                  [item.id]: false,
+                                                }));
+                                              }}
+                                            >
+                                              <CheckIcon
+                                                className={`mr-2 h-4 w-4 ${
+                                                  String(item.company_id) === String(company.company_id)
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                                }`}
+                                              />
+                                              <div className="flex-1">
+                                                <div className="font-medium">{company.name}</div>
+                                                <div className="text-xs text-gray-500">
+                                                  {company.total} ตำแหน่ง
+                                                </div>
+                                              </div>
+                                            </CommandItem>
+                                          ))}
+                                        </CommandGroup>
+                                      </CommandList>
+                                    </Command>
+                                  </PopoverContent>
+                                </Popover>
+                              );
+                            },
                           },
                           {
                             key: "id",

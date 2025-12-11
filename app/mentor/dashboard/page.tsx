@@ -24,9 +24,13 @@ export default function DashboardPage() {
   const [calendars, setCalendars] = useState<any>([]);
   const [students, setStudents] = useState<any>([]);
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
+  const [payments, setPayments] = useState<any>([]);
+  const [loadingPayments, setLoadingPayments] = useState(false);
+  
   useEffect(() => {
     if (isLoading || !user) return;
     fetchData();
+    fetchPayments();
   }, [isLoading, user, calendarSelected]);
 
   async function fetchData() {
@@ -60,6 +64,31 @@ export default function DashboardPage() {
       }
     }
     setLoading(false);
+  }
+
+  async function fetchPayments() {
+    if (!user) return;
+
+    setLoadingPayments(true);
+    try {
+      const response = await fetch("/api/admin/payments?company_id=" + user.id, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const res = await response.json();
+      console.log("Payment Response:", res); // Debug
+      if (res.success) {
+        // API ส่งกลับมาเป็น res.data ไม่ใช่ res.payments
+        setPayments(res.data || []);
+        console.log("Payments set:", res.data); // Debug
+      }
+    } catch (error) {
+      console.error("Failed to fetch payments:", error);
+    } finally {
+      setLoadingPayments(false);
+    }
   }
 
   return (
@@ -113,6 +142,76 @@ export default function DashboardPage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12  transition-transform duration-1000 ease-out"></div>
               </div>
             </Link>
+
+            {/* Payment Notifications Card */}
+            <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="font-semibold tracking-tight text-xl">
+                    แจ้งเตือนค่าตอบแทน
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    รายการค่าตอบแทนที่เพิ่งเข้ามา
+                  </p>
+                </div>
+                <Link href="/mentor/payments">
+                  <Button variant="outline" size="sm">
+                    ดูทั้งหมด
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+              <div className="space-y-3">
+                {loadingPayments ? (
+                  <div className="text-gray-500 text-center py-4">
+                    กำลังโหลด...
+                  </div>
+                ) : payments.length === 0 ? (
+                  <div className="text-gray-500 text-center py-4">
+                    ไม่มีรายการค่าตอบแทนใหม่
+                  </div>
+                ) : (
+                  payments.slice(0, 5).map((payment: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-4 rounded-lg border bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 transition-all"
+                    >
+                      <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full">
+                        <span className="text-2xl">💰</span>
+                      </div>
+                      <div className="flex-grow">
+                        <div className="font-medium text-gray-800">
+                          ค่าตอบแทนผลัดที่ {payment.calendar_name || payment.name || "N/A"}
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          จำนวนเงิน:{" "}
+                          <span className="font-semibold text-green-600">
+                            {payment.amount?.toLocaleString("th-TH") || "0"}{" "}
+                            บาท
+                          </span>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          วันที่ได้รับ:{" "}
+                          {payment.created_at
+                            ? new Date(payment.created_at).toLocaleDateString(
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )
+                            : "N/A"}
+                        </div>
+                      </div>
+                        <Badge className="bg-green-100 text-green-700 border border-green-200 px-3 py-1.5">
+                          ชำระเงินแล้ว ✅
+                        </Badge>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
 
             {calendars.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
