@@ -169,7 +169,7 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
       <Toaster />
       {loading && <Loading />}
 
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <StudentSidebar activePage="activities" />
 

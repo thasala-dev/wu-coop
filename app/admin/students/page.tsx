@@ -359,9 +359,8 @@ export default function AdminStudentsPage() {
     }
     return (
       <Badge
-        className={`${
-          statusMap[status as keyof typeof statusMap].color
-        } flex items-center gap-1 font-normal px-2 py-0.5 h-6 border whitespace-nowrap`}
+        className={`${statusMap[status as keyof typeof statusMap].color
+          } flex items-center gap-1 font-normal px-2 py-0.5 h-6 border whitespace-nowrap`}
       >
         {React.createElement(statusMap[status as keyof typeof statusMap].icon, {
           className: "h-3 w-3",
@@ -373,7 +372,7 @@ export default function AdminStudentsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-2">
+      <div className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="students" userType="admin" />
           {loading && <Loading />}
@@ -464,11 +463,10 @@ export default function AdminStudentsPage() {
                               statusMap[item.status as keyof typeof statusMap]
                                 .icon,
                               {
-                                className: `h-4 w-4 ${
-                                  statusMap[
-                                    item.status as keyof typeof statusMap
-                                  ].color.split(" ")[1]
-                                }`,
+                                className: `h-4 w-4 ${statusMap[
+                                  item.status as keyof typeof statusMap
+                                ].color.split(" ")[1]
+                                  }`,
                               }
                             )}
                             <span className="text-sm font-medium">
@@ -490,11 +488,10 @@ export default function AdminStudentsPage() {
                         <Progress
                           value={item.percentage}
                           className="h-1.5 bg-gray-100"
-                          indicatorClassName={`${
-                            statusMap[
-                              item.status as keyof typeof statusMap
-                            ].color.split(" ")[1]
-                          }`}
+                          indicatorClassName={`${statusMap[
+                            item.status as keyof typeof statusMap
+                          ].color.split(" ")[1]
+                            }`}
                         />
                       </div>
                     ))}

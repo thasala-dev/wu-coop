@@ -125,7 +125,7 @@ export default function AdminMatching() {
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<string>("placeholder");
   const [capacity, setCapacity] = useState<string>("1");
-  const [companySearchOpen, setCompanySearchOpen] = useState<{[key: string]: boolean}>({});
+  const [companySearchOpen, setCompanySearchOpen] = useState<{ [key: string]: boolean }>({});
 
   const filteredStudents = (year: any, major: any) => {
     const data = info.student.filter((student: any) => {
@@ -241,10 +241,8 @@ export default function AdminMatching() {
       const data = await response.json();
       if (response.ok && data.success) {
         await recordLog(
-          `จับคู่นักศึกษา ${
-            info.intern.find((item: any) => item.id === selectedId).fullname
-          } กับแหล่งฝึกงาน ${
-            info.company.find((item: any) => item.company_id == companyId).name
+          `จับคู่นักศึกษา ${info.intern.find((item: any) => item.id === selectedId).fullname
+          } กับแหล่งฝึกงาน ${info.company.find((item: any) => item.company_id == companyId).name
           } สำเร็จ`
         );
         toast({
@@ -267,8 +265,7 @@ export default function AdminMatching() {
       const data = await response.json();
       if (response.ok && data.success) {
         await recordLog(
-          `ยกเลิกจับคู่นักศึกษา ${
-            info.intern.find((item: any) => item.id === selectedId).fullname
+          `ยกเลิกจับคู่นักศึกษา ${info.intern.find((item: any) => item.id === selectedId).fullname
           } กับแหล่งฝึกงาน`
         );
         toast({
@@ -287,8 +284,7 @@ export default function AdminMatching() {
       const data = await response.json();
       if (response.ok && data.success) {
         await recordLog(
-          `นำออกนักศึกษา ${
-            info.intern.find((item: any) => item.id === selectedId).fullname
+          `นำออกนักศึกษา ${info.intern.find((item: any) => item.id === selectedId).fullname
           }`
         );
         toast({
@@ -539,10 +535,8 @@ export default function AdminMatching() {
             successes.push(studentId);
             try {
               await recordLog(
-                `จับคู่นักศึกษา ${
-                  info.intern.find((i: any) => i.id === studentId).fullname
-                } กับแหล่งฝึกงาน ${
-                  selectedCompanyItem?.name || "(ไม่ระบุ)"
+                `จับคู่นักศึกษา ${info.intern.find((i: any) => i.id === studentId).fullname
+                } กับแหล่งฝึกงาน ${selectedCompanyItem?.name || "(ไม่ระบุ)"
                 } สำเร็จ`
               );
             } catch (err) {
@@ -607,7 +601,7 @@ export default function AdminMatching() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="matching" userType="admin" />
           {loading && <Loading />}
@@ -633,11 +627,10 @@ export default function AdminMatching() {
                     pageLength={4}
                     render={(cal: any) => (
                       <Card
-                        className={`cursor-pointer hover:border-blue-300 transition-colors ${
-                          cal.id == calendarSelected
-                            ? "border-blue-500 bg-blue-50"
-                            : ""
-                        }`}
+                        className={`cursor-pointer hover:border-blue-300 transition-colors ${cal.id == calendarSelected
+                          ? "border-blue-500 bg-blue-50"
+                          : ""
+                          }`}
                         onClick={() => {
                           setCalendarSelected(cal.id);
                         }}
@@ -655,24 +648,24 @@ export default function AdminMatching() {
                           <p className="text-sm text-gray-600">
                             {cal.start_date
                               ? new Date(cal.start_date).toLocaleDateString(
-                                  "th-TH",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  }
-                                )
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )
                               : "-"}
                             -
                             {cal.end_date
                               ? new Date(cal.end_date).toLocaleDateString(
-                                  "th-TH",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  }
-                                )
+                                "th-TH",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )
                               : "-"}
                           </p>
                           <div className="flex justify-between mt-2 text-sm">
@@ -772,7 +765,7 @@ export default function AdminMatching() {
                               const selectedCompanyData = info.company.find(
                                 (c: any) => String(c.company_id) === String(item.company_id)
                               );
-                              
+
                               return (
                                 <Popover
                                   open={companySearchOpen[item.id] || false}
@@ -840,11 +833,10 @@ export default function AdminMatching() {
                                               }}
                                             >
                                               <CheckIcon
-                                                className={`mr-2 h-4 w-4 ${
-                                                  String(item.company_id) === String(company.company_id)
-                                                    ? "opacity-100"
-                                                    : "opacity-0"
-                                                }`}
+                                                className={`mr-2 h-4 w-4 ${String(item.company_id) === String(company.company_id)
+                                                  ? "opacity-100"
+                                                  : "opacity-0"
+                                                  }`}
                                               />
                                               <div className="flex-1">
                                                 <div className="font-medium">{company.name}</div>
@@ -1001,8 +993,8 @@ export default function AdminMatching() {
                 {dialogType === "link"
                   ? "ยืนยันการจับคู่นักศึกษา"
                   : dialogType === "unlink"
-                  ? "ยืนยันการยกเลิกจับคู่"
-                  : "ยืนยันการนำนักศึกษาออก"}
+                    ? "ยืนยันการยกเลิกจับคู่"
+                    : "ยืนยันการนำนักศึกษาออก"}
               </span>
             </DialogTitle>
           </DialogHeader>
@@ -1010,8 +1002,8 @@ export default function AdminMatching() {
             {dialogType === "link"
               ? "คุณต้องการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"
               : dialogType === "unlink"
-              ? "คุณต้องการยกเลิกการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"
-              : "คุณต้องการนำนักศึกษาออกจากผลัดฝึกนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้"}
+                ? "คุณต้องการยกเลิกการจับคู่นักศึกษากับแหล่งฝึกงานนี้ใช่หรือไม่?"
+                : "คุณต้องการนำนักศึกษาออกจากผลัดฝึกนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้"}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
@@ -1251,11 +1243,10 @@ export default function AdminMatching() {
                 {groupVisibleStudents.map((item: any) => (
                   <label
                     key={item.id}
-                    className={`flex items-center justify-between p-1 rounded border cursor-pointer ${
-                      groupSelectedStudents.includes(item.id)
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200"
-                    }`}
+                    className={`flex items-center justify-between p-1 rounded border cursor-pointer ${groupSelectedStudents.includes(item.id)
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-200"
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <CustomAvatar
@@ -1301,11 +1292,10 @@ export default function AdminMatching() {
                 {filteredCompanies.map((c: any) => (
                   <label
                     key={c.company_id}
-                    className={`flex items-center justify-between p-1 rounded border cursor-pointer ${
-                      String(groupSelectedCompany) === String(c.company_id)
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200"
-                    }`}
+                    className={`flex items-center justify-between p-1 rounded border cursor-pointer ${String(groupSelectedCompany) === String(c.company_id)
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-200"
+                      }`}
                   >
                     <div>
                       <div className="text-sm">{c.name}</div>

@@ -125,7 +125,7 @@ export default function MentorEvaluations() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="evaluations" userType="admin" />
           {loading && <Loading />}
@@ -304,8 +304,8 @@ export default function MentorEvaluations() {
                               <div className="hidden print:block font-semibold">
                                 {selectedDate
                                   ? format(selectedDate, "d MMMM yyyy", {
-                                      locale: th,
-                                    })
+                                    locale: th,
+                                  })
                                   : "ยังไม่ได้เลือกวันที่"}
                               </div>
                             </div>
@@ -322,9 +322,9 @@ export default function MentorEvaluations() {
                           <Button
                             type="submit"
                             className="px-8 py-2 text-sm"
-                            // onClick={() =>
-                            //   router.push(`/admin/evaluations/${id}`)
-                            // }
+                          // onClick={() =>
+                          //   router.push(`/admin/evaluations/${id}`)
+                          // }
                           >
                             <ArrowLeft className="h-4 w-4" />
                             ย้อนกลับ

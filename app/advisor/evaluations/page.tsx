@@ -214,13 +214,13 @@ export default function EvaluationsPage() {
   const averageScore =
     scores.length > 0
       ? Math.round(
-          scores.reduce((sum, score) => sum + score, 0) / scores.length
-        )
+        scores.reduce((sum, score) => sum + score, 0) / scores.length
+      )
       : 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <AdvisorSidebar activePage="evaluations" />
 

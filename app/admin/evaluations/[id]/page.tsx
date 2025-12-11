@@ -114,7 +114,7 @@ export default function NewEvaluation() {
   }
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="evaluations" userType="admin" />
           {loading && <Loading />}
@@ -239,10 +239,10 @@ export default function NewEvaluation() {
                                   item.group === "CARE"
                                     ? "bg-blue-50 text-blue-700 hover:bg-blue-50"
                                     : item.group === "SCI"
-                                    ? "bg-green-50 text-green-700 hover:bg-green-50"
-                                    : item.group === "SOCIAL_CARE"
-                                    ? "bg-purple-50 text-purple-700 hover:bg-purple-50"
-                                    : "bg-gray-50 text-gray-700 hover:bg-gray-50"
+                                      ? "bg-green-50 text-green-700 hover:bg-green-50"
+                                      : item.group === "SOCIAL_CARE"
+                                        ? "bg-purple-50 text-purple-700 hover:bg-purple-50"
+                                        : "bg-gray-50 text-gray-700 hover:bg-gray-50"
                                 }
                               >
                                 {item.short_name}

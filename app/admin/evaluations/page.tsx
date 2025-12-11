@@ -62,7 +62,7 @@ export default function AdminEvaluations() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="evaluations" userType="admin" />
 
@@ -152,26 +152,24 @@ export default function AdminEvaluations() {
                           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <div className="flex items-start gap-3">
                               <div
-                                className={`flex-shrink-0 h-10 w-10 bg-${
-                                  item.group === "CARE"
-                                    ? "blue"
-                                    : item.group === "SCI"
+                                className={`flex-shrink-0 h-10 w-10 bg-${item.group === "CARE"
+                                  ? "blue"
+                                  : item.group === "SCI"
                                     ? "green"
                                     : item.group === "SOCIAL_CARE"
-                                    ? "purple"
-                                    : "gray"
-                                }-100 rounded-md flex items-center justify-center`}
-                              >
-                                <ClipboardCheckIcon
-                                  className={`h-5 w-5 text-${
-                                    item.group === "CARE"
-                                      ? "blue"
-                                      : item.group === "SCI"
-                                      ? "green"
-                                      : item.group === "SOCIAL_CARE"
                                       ? "purple"
                                       : "gray"
-                                  }-600`}
+                                  }-100 rounded-md flex items-center justify-center`}
+                              >
+                                <ClipboardCheckIcon
+                                  className={`h-5 w-5 text-${item.group === "CARE"
+                                    ? "blue"
+                                    : item.group === "SCI"
+                                      ? "green"
+                                      : item.group === "SOCIAL_CARE"
+                                        ? "purple"
+                                        : "gray"
+                                    }-600`}
                                 />
                               </div>
                               <div>
@@ -183,19 +181,19 @@ export default function AdminEvaluations() {
                                       item.group === "CARE"
                                         ? "bg-blue-50 text-blue-700 hover:bg-blue-50"
                                         : item.group === "SCI"
-                                        ? "bg-green-50 text-green-700 hover:bg-green-50"
-                                        : item.group === "SOCIAL_CARE"
-                                        ? "bg-purple-50 text-purple-700 hover:bg-purple-50"
-                                        : "bg-gray-50 text-gray-700 hover:bg-gray-50"
+                                          ? "bg-green-50 text-green-700 hover:bg-green-50"
+                                          : item.group === "SOCIAL_CARE"
+                                            ? "bg-purple-50 text-purple-700 hover:bg-purple-50"
+                                            : "bg-gray-50 text-gray-700 hover:bg-gray-50"
                                     }
                                   >
                                     {item.group === "CARE"
                                       ? "CARE"
                                       : item.group === "SCI"
-                                      ? "SCI"
-                                      : item.group === "SOCIAL_CARE"
-                                      ? "SOCIAL CARE"
-                                      : "อื่นๆ"}
+                                        ? "SCI"
+                                        : item.group === "SOCIAL_CARE"
+                                          ? "SOCIAL CARE"
+                                          : "อื่นๆ"}
                                   </Badge>
                                 </div>
                                 <p className="text-sm text-gray-500 mt-1">

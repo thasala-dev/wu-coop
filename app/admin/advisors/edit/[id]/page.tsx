@@ -146,7 +146,7 @@ export default function Page() {
   // --- Render UI ---
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-2">
+      <div className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="advisors" userType="admin" />
           {loading && <Loading />}
@@ -201,9 +201,8 @@ export default function Page() {
                           id="fullname"
                           type="text"
                           {...register("fullname")}
-                          className={`w-full p-2 border rounded-md ${
-                            errors.fullname ? "border-red-600 border-2" : ""
-                          }`}
+                          className={`w-full p-2 border rounded-md ${errors.fullname ? "border-red-600 border-2" : ""
+                            }`}
                           placeholder="กรุณากรอกชื่ออาจารย์"
                         />
                         {errors.fullname && (
@@ -219,9 +218,8 @@ export default function Page() {
                           id="email"
                           type="email"
                           {...register("email")}
-                          className={`w-full p-2 border rounded-md ${
-                            errors.email ? "border-red-600 border-2" : ""
-                          }`}
+                          className={`w-full p-2 border rounded-md ${errors.email ? "border-red-600 border-2" : ""
+                            }`}
                           placeholder="กรุณากรอกอีเมล"
                         />
                         {errors.email && (
@@ -237,9 +235,8 @@ export default function Page() {
                           id="mobile"
                           type="text"
                           {...register("mobile")}
-                          className={`w-full p-2 border rounded-md ${
-                            errors.mobile ? "border-red-600 border-2" : ""
-                          }`}
+                          className={`w-full p-2 border rounded-md ${errors.mobile ? "border-red-600 border-2" : ""
+                            }`}
                           placeholder="กรุณากรอกเบอร์โทรศัพท์"
                         />
                         {errors.mobile && (
@@ -261,9 +258,8 @@ export default function Page() {
                           id="username"
                           type="text"
                           {...register("username")}
-                          className={`w-full p-2 border rounded-md ${
-                            errors.username ? "border-red-600 border-2" : ""
-                          }`}
+                          className={`w-full p-2 border rounded-md ${errors.username ? "border-red-600 border-2" : ""
+                            }`}
                           placeholder="กรุณากรอกชื่อผู้ใช้งาน"
                         />
                         {errors.username && (
@@ -280,9 +276,8 @@ export default function Page() {
                           id="password"
                           type="password"
                           {...register("password")}
-                          className={`w-full p-2 border rounded-md ${
-                            errors.password ? "border-red-600 border-2" : ""
-                          }`}
+                          className={`w-full p-2 border rounded-md ${errors.password ? "border-red-600 border-2" : ""
+                            }`}
                           placeholder="กรุณากรอกรหัสผ่าน"
                         />
                         {errors.password && (

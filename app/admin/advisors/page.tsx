@@ -143,7 +143,7 @@ export default function CompaniesPage() {
   };
 
   return (
-    <div className="container mx-auto p-2">
+    <div className="container max-w-full mx-auto p-4">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Sidebar activePage="advisors" userType="admin" />
         {loading && <Loading />}
@@ -186,28 +186,28 @@ export default function CompaniesPage() {
                             role === "all"
                               ? data
                               : data.filter((item: any) => {
-                                  if (role === "active")
-                                    return item.status_id === 1;
-                                  if (role === "inactive")
-                                    return item.status_id === 2;
-                                  if (role === "pending")
-                                    return item.status_id === 0;
-                                  return true;
-                                })
+                                if (role === "active")
+                                  return item.status_id === 1;
+                                if (role === "inactive")
+                                  return item.status_id === 2;
+                                if (role === "pending")
+                                  return item.status_id === 0;
+                                return true;
+                              })
                           );
                         } else {
                           setFilterData(
                             (role === "all"
                               ? data
                               : data.filter((item: any) => {
-                                  if (role === "active")
-                                    return item.status_id === 1;
-                                  if (role === "inactive")
-                                    return item.status_id === 2;
-                                  if (role === "pending")
-                                    return item.status_id === 0;
-                                  return true;
-                                })
+                                if (role === "active")
+                                  return item.status_id === 1;
+                                if (role === "inactive")
+                                  return item.status_id === 2;
+                                if (role === "pending")
+                                  return item.status_id === 0;
+                                return true;
+                              })
                             ).filter((item: any) =>
                               item.fullname
                                 ?.toLowerCase()

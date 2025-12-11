@@ -286,7 +286,7 @@ export default function NewActivity() {
       <Toaster />
       {isLoading && <Loading />}
 
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <StudentSidebar activePage="activities" />
 
@@ -339,11 +339,10 @@ export default function NewActivity() {
                         <Input
                           id="activity-activityDate"
                           type="date"
-                          className={`pl-10 ${
-                            errors.activityDate
-                              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                              : ""
-                          }`}
+                          className={`pl-10 ${errors.activityDate
+                            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                            : ""
+                            }`}
                           value={formData.activityDate}
                           onChange={handleChange}
                         />
@@ -470,11 +469,10 @@ export default function NewActivity() {
                     <Textarea
                       id="activity-description"
                       placeholder="อธิบายรายละเอียดของกิจกรรมที่ทำ"
-                      className={`min-h-[150px] ${
-                        errors.description
-                          ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                          : ""
-                      }`}
+                      className={`min-h-[150px] ${errors.description
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : ""
+                        }`}
                       value={formData.description}
                       onChange={handleChange}
                     />

@@ -50,7 +50,7 @@ export default function AdminCalendar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredEvents, setFilteredEvents] = useState<any>([]);
   const [events, setEvents] = useState<any>([]);
-  type DeleteDialogItem = { id: number; [key: string]: any } | null;
+  type DeleteDialogItem = { id: number;[key: string]: any } | null;
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean;
     type: string;
@@ -342,9 +342,8 @@ export default function AdminCalendar() {
         // Show success message
         alert(
           data.message ||
-            `ลบ${
-              deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
-            }สำเร็จ`
+          `ลบ${deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
+          }สำเร็จ`
         );
 
         // Refresh data
@@ -360,16 +359,14 @@ export default function AdminCalendar() {
       } else {
         alert(
           data.message ||
-            `ไม่สามารถลบ${
-              deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
-            }ได้`
+          `ไม่สามารถลบ${deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
+          }ได้`
         );
       }
     } catch (error) {
       console.error("Error deleting:", error);
       alert(
-        `เกิดข้อผิดพลาดในการลบ${
-          deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
+        `เกิดข้อผิดพลาดในการลบ${deleteDialog.type === "calendar" ? "ผลัดฝึกงาน" : "กิจกรรม"
         }`
       );
     } finally {
@@ -687,7 +684,7 @@ export default function AdminCalendar() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="calendar" userType="admin" />
           {loading && <Loading />}
@@ -727,11 +724,10 @@ export default function AdminCalendar() {
                         pageLength={4}
                         render={(cal: any) => (
                           <Card
-                            className={`cursor-pointer hover:border-blue-300 transition-colors ${
-                              cal.id === calendarSelected
-                                ? "border-blue-500 bg-blue-50"
-                                : ""
-                            }`}
+                            className={`cursor-pointer hover:border-blue-300 transition-colors ${cal.id === calendarSelected
+                              ? "border-blue-500 bg-blue-50"
+                              : ""
+                              }`}
                             onClick={() => {
                               setCalendarSelected(cal.id);
                               selectCalendar(cal.id);
@@ -804,13 +800,13 @@ export default function AdminCalendar() {
                               day: "numeric",
                             })} - 
                               ${new Date(cal.end_date).toLocaleDateString(
-                                "th-TH",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}`;
+                              "th-TH",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )}`;
                           },
                         },
                         {
@@ -1076,9 +1072,8 @@ export default function AdminCalendar() {
                             calendarDays.map((day, index) => (
                               <div
                                 key={`day-${index}`}
-                                className={`min-h-24 border rounded-md p-1 ${
-                                  day.day ? "hover:bg-gray-50" : "bg-gray-50"
-                                }`}
+                                className={`min-h-24 border rounded-md p-1 ${day.day ? "hover:bg-gray-50" : "bg-gray-50"
+                                  }`}
                               >
                                 {day.day && (
                                   <>
@@ -1097,20 +1092,19 @@ export default function AdminCalendar() {
                                               ) => (
                                                 <div
                                                   key={`event-${eventIdx}`}
-                                                  className={`p-1 text-xs rounded truncate flex items-center ${
-                                                    event.category === "สำคัญ"
-                                                      ? "bg-red-100 text-red-800"
-                                                      : event.category ===
-                                                        "กำหนดส่ง"
+                                                  className={`p-1 text-xs rounded truncate flex items-center ${event.category === "สำคัญ"
+                                                    ? "bg-red-100 text-red-800"
+                                                    : event.category ===
+                                                      "กำหนดส่ง"
                                                       ? "bg-blue-100 text-blue-800"
                                                       : event.category ===
                                                         "การนิเทศ"
-                                                      ? "bg-purple-100 text-purple-800"
-                                                      : event.category ===
-                                                        "การนำเสนอ"
-                                                      ? "bg-green-100 text-green-800"
-                                                      : "bg-gray-100 text-gray-800"
-                                                  }`}
+                                                        ? "bg-purple-100 text-purple-800"
+                                                        : event.category ===
+                                                          "การนำเสนอ"
+                                                          ? "bg-green-100 text-green-800"
+                                                          : "bg-gray-100 text-gray-800"
+                                                    }`}
                                                 >
                                                   {renderEventDot(
                                                     event.category
@@ -1154,17 +1148,16 @@ export default function AdminCalendar() {
                             filteredEvents.map((event: any) => (
                               <div key={event.id} className="relative">
                                 <div
-                                  className={`absolute -left-10 mt-1.5 h-4 w-4 rounded-full border-2 border-white ${
-                                    event.category === "สำคัญ"
-                                      ? "bg-red-500"
-                                      : event.category === "กำหนดส่ง"
+                                  className={`absolute -left-10 mt-1.5 h-4 w-4 rounded-full border-2 border-white ${event.category === "สำคัญ"
+                                    ? "bg-red-500"
+                                    : event.category === "กำหนดส่ง"
                                       ? "bg-blue-500"
                                       : event.category === "การนิเทศ"
-                                      ? "bg-purple-500"
-                                      : event.category === "การนำเสนอ"
-                                      ? "bg-green-500"
-                                      : "bg-gray-500"
-                                  }`}
+                                        ? "bg-purple-500"
+                                        : event.category === "การนำเสนอ"
+                                          ? "bg-green-500"
+                                          : "bg-gray-500"
+                                    }`}
                                 ></div>
                                 <div className="mb-1 flex items-center gap-2">
                                   <Badge

@@ -26,7 +26,7 @@ export default function DashboardPage() {
   const [calendarSelected, setCalendarSelected] = useState<any>(null);
   const [payments, setPayments] = useState<any>([]);
   const [loadingPayments, setLoadingPayments] = useState(false);
-  
+
   useEffect(() => {
     if (isLoading || !user) return;
     fetchData();
@@ -93,7 +93,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="dashboard" userType="mentor" />
           {loading && <Loading />}
@@ -194,19 +194,19 @@ export default function DashboardPage() {
                           วันที่ได้รับ:{" "}
                           {payment.created_at
                             ? new Date(payment.created_at).toLocaleDateString(
-                                "th-TH",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                }
-                              )
+                              "th-TH",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            )
                             : "N/A"}
                         </div>
                       </div>
-                        <Badge className="bg-green-100 text-green-700 border border-green-200 px-3 py-1.5">
-                          ชำระเงินแล้ว ✅
-                        </Badge>
+                      <Badge className="bg-green-100 text-green-700 border border-green-200 px-3 py-1.5">
+                        ชำระเงินแล้ว ✅
+                      </Badge>
                     </div>
                   ))
                 )}
@@ -343,10 +343,10 @@ export default function DashboardPage() {
                         (student: any) =>
                           student.total_forms !== student.total_result
                       ).length === 0 && (
-                        <div className="text-gray-500 text-center py-4">
-                          ไม่มีการประเมินที่ต้องทำในผลัดฝึกงานนี้
-                        </div>
-                      )}
+                          <div className="text-gray-500 text-center py-4">
+                            ไม่มีการประเมินที่ต้องทำในผลัดฝึกงานนี้
+                          </div>
+                        )}
                       {students
                         .filter(
                           (student: any) =>

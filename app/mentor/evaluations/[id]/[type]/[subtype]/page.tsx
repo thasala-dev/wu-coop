@@ -170,7 +170,7 @@ export default function MentorEvaluations() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="evaluations" userType="mentor" />
           {loading && <Loading />}
@@ -345,7 +345,7 @@ export default function MentorEvaluations() {
                                       className={cn(
                                         "w-full p-2 justify-start text-left font-normal no-print",
                                         !selectedDate &&
-                                          "text-muted-foreground",
+                                        "text-muted-foreground",
                                         form.formState.errors.evaluation_date
                                           ? "border-red-600 border-2"
                                           : ""
@@ -385,8 +385,8 @@ export default function MentorEvaluations() {
                                 <div className="hidden print:block font-semibold">
                                   {selectedDate
                                     ? format(selectedDate, "d MMMM yyyy", {
-                                        locale: th,
-                                      })
+                                      locale: th,
+                                    })
                                     : "ยังไม่ได้เลือกวันที่"}
                                 </div>
                               </div>

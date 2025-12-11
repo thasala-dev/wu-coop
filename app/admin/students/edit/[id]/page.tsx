@@ -252,7 +252,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-2">
+      <div className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="students" userType="admin" />
           {loading && <Loading />}
@@ -595,9 +595,8 @@ export default function Page() {
                               id="password"
                               type="password"
                               {...register("password")}
-                              className={`w-full p-2 border rounded-md ${
-                                errors.password ? "border-red-600 border-2" : ""
-                              }`}
+                              className={`w-full p-2 border rounded-md ${errors.password ? "border-red-600 border-2" : ""
+                                }`}
                               placeholder="กรุณากรอกรหัสผ่าน"
                             />{" "}
                             {errors.password && (

@@ -122,7 +122,7 @@ export default function VisitDetails() {
   if (!data) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
-        <main className="container mx-auto p-4">
+        <main className="container max-w-full mx-auto p-4">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             <Sidebar userType="advisor" activePage="visits" />
             <div className="md:col-span-4">
@@ -140,7 +140,7 @@ export default function VisitDetails() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
-      <main className="container mx-auto p-4">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar userType="admin" activePage="supervision" />
           <div className="md:col-span-4 space-y-6" id="contentPrint">

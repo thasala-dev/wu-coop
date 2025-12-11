@@ -95,7 +95,7 @@ export default function CompaniesPage() {
   }
 
   return (
-    <div className="container mx-auto p-2">
+    <div className="container max-w-full mx-auto p-4">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Sidebar activePage="logs" userType="admin" />
         {loading && <Loading />}
@@ -385,8 +385,8 @@ export default function CompaniesPage() {
                                   {diffHours < 1
                                     ? "เมื่อไม่กี่นาทีที่แล้ว"
                                     : diffHours === 1
-                                    ? "1 ชั่วโมงที่แล้ว"
-                                    : `${diffHours} ชั่วโมงที่แล้ว`}
+                                      ? "1 ชั่วโมงที่แล้ว"
+                                      : `${diffHours} ชั่วโมงที่แล้ว`}
                                 </div>
                               )}
                             </div>

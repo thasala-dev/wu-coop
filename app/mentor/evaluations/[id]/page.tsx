@@ -106,7 +106,7 @@ export default function MentorEvaluations() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="evaluations" userType="mentor" />
           {loading && <Loading />}
@@ -267,8 +267,8 @@ export default function MentorEvaluations() {
                               >
                                 <div
                                   className={`flex flex-col md:flex-row md:items-center justify-between gap-4 border-2 p-2 rounded ${evaluation.is_submit
-                                      ? "border-green-600 bg-green-50"
-                                      : "border-yellow-600 bg-yellow-50"
+                                    ? "border-green-600 bg-green-50"
+                                    : "border-yellow-600 bg-yellow-50"
                                     }`}
                                 >
                                   <div className="flex-1">

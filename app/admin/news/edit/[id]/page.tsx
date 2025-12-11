@@ -150,7 +150,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-2">
+      <div className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="news" userType="admin" />
           {loading && <Loading />}
@@ -213,11 +213,10 @@ export default function Page() {
                               เนื้อหาประชาสัมพันธ์
                             </label>
                             <div
-                              className={`border rounded-md ${
-                                errors.detail
-                                  ? "border-red-600 border-2"
-                                  : "border-gray-300"
-                              }`}
+                              className={`border rounded-md ${errors.detail
+                                ? "border-red-600 border-2"
+                                : "border-gray-300"
+                                }`}
                             >
                               <MDEditor
                                 value={editorContent}

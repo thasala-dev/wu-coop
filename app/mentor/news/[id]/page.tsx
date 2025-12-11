@@ -52,7 +52,7 @@ export default function NewsDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto p-2">
+        <div className="container max-w-full mx-auto p-4">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Sidebar activePage="news" userType="mentor" />
             <Loading />
@@ -65,7 +65,7 @@ export default function NewsDetailPage() {
   if (!newsData) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto p-2">
+        <div className="container max-w-full mx-auto p-4">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Sidebar activePage="news" userType="mentor" />
             <div className="md:col-span-4">
@@ -91,7 +91,7 @@ export default function NewsDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-2">
+      <div className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <Sidebar activePage="news" userType="mentor" />
 

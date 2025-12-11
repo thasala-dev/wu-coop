@@ -161,7 +161,7 @@ export default function CompaniesPage() {
   };
 
   return (
-    <div className="container mx-auto p-2">
+    <div className="container max-w-full mx-auto p-4">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Sidebar activePage="payments" userType="admin" />
         {loading && <Loading />}

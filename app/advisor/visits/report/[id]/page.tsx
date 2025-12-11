@@ -301,7 +301,7 @@ export default function RecordVisit() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
-      <main className="container mx-auto p-4">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar userType="advisor" activePage="visits" />
           {isLoading && <Loading />}

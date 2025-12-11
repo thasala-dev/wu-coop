@@ -202,10 +202,10 @@ export default function CompaniesPage() {
         item.evaluator || "-",
         item.evaluation_date
           ? new Date(item.evaluation_date).toLocaleDateString("th-TH", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
           : "-",
         item.evaluation_name,
         ...metaData.map((meta: any) =>
@@ -264,16 +264,15 @@ export default function CompaniesPage() {
     XLSX.utils.book_append_sheet(wb, ws, "รายงานผลการประเมิน");
 
     // Generate filename
-    const filename = `รายงานผลการประเมิน_${selectedCalendar?.name}_${
-      selectedEvaluation?.short_name
-    }_${new Date().toLocaleDateString("th-TH").replace(/\//g, "-")}.xlsx`;
+    const filename = `รายงานผลการประเมิน_${selectedCalendar?.name}_${selectedEvaluation?.short_name
+      }_${new Date().toLocaleDateString("th-TH").replace(/\//g, "-")}.xlsx`;
 
     // Save the file
     XLSX.writeFile(wb, filename);
   };
 
   return (
-    <div className="container mx-auto p-2">
+    <div className="container max-w-full mx-auto p-4">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Sidebar activePage="reports" userType="admin" />
         {loading && <Loading />}
@@ -583,12 +582,12 @@ export default function CompaniesPage() {
                                   <td className="p-4 whitespace-nowrap text-sm text-gray-500">
                                     {item.evaluation_date
                                       ? new Date(
-                                          item.evaluation_date
-                                        ).toLocaleDateString("th-TH", {
-                                          year: "numeric",
-                                          month: "short",
-                                          day: "numeric",
-                                        })
+                                        item.evaluation_date
+                                      ).toLocaleDateString("th-TH", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      })
                                       : "-"}
                                   </td>
                                   <td className="p-4 whitespace-nowrap text-sm text-gray-500">

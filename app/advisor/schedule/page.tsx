@@ -565,7 +565,7 @@ export default function StudentSchedulePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="schedule" userType="advisor" />
 
@@ -677,17 +677,17 @@ export default function StudentSchedulePage() {
                                               <div
                                                 key={`event-${eventIdx}`}
                                                 className={`p-1 text-xs rounded truncate  ${event.category === "สำคัญ"
-                                                    ? "bg-red-100 text-red-800"
+                                                  ? "bg-red-100 text-red-800"
+                                                  : event.category ===
+                                                    "กำหนดส่ง"
+                                                    ? "bg-blue-100 text-blue-800"
                                                     : event.category ===
-                                                      "กำหนดส่ง"
-                                                      ? "bg-blue-100 text-blue-800"
+                                                      "การนิเทศ"
+                                                      ? "bg-purple-100 text-purple-800"
                                                       : event.category ===
-                                                        "การนิเทศ"
-                                                        ? "bg-purple-100 text-purple-800"
-                                                        : event.category ===
-                                                          "การนำเสนอ"
-                                                          ? "bg-green-100 text-green-800"
-                                                          : "bg-gray-100 text-gray-800"
+                                                        "การนำเสนอ"
+                                                        ? "bg-green-100 text-green-800"
+                                                        : "bg-gray-100 text-gray-800"
                                                   }`}
                                                 onClick={() =>
                                                   openDialog(event)

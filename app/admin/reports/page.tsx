@@ -106,7 +106,7 @@ export default function AdminReportsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="reports" userType="admin" />
           {loading && <Loading />}

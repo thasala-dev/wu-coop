@@ -201,7 +201,7 @@ export default function StudentActivities() {
       <Toaster />
       {loading && <Loading />}
 
-      <main className="container mx-auto p-2">
+      <main className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Sidebar activePage="activities" userType="student" />
 
@@ -291,9 +291,9 @@ export default function StudentActivities() {
                               <p className="text-sm text-gray-600 mt-2">
                                 {activity.description.length > 200
                                   ? `${activity.description.substring(
-                                      0,
-                                      200
-                                    )}...`
+                                    0,
+                                    200
+                                  )}...`
                                   : activity.description}
                               </p>
                               <div className="flex flex-wrap gap-2 mt-3">

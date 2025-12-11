@@ -92,7 +92,7 @@ export default function AdminStudentDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto p-2">
+        <div className="container max-w-full mx-auto p-4">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Sidebar activePage="students" userType="admin" />
             <Loading />
@@ -105,7 +105,7 @@ export default function AdminStudentDetailPage() {
   if (!student) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto p-2">
+        <div className="container max-w-full mx-auto p-4">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Sidebar activePage="students" userType="admin" />
             <div className="md:col-span-4 text-center py-12">
@@ -119,7 +119,7 @@ export default function AdminStudentDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
-      <div className="container mx-auto p-4">
+      <div className="container max-w-full mx-auto p-4">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <Sidebar activePage="students" userType="admin" />
           {loading && <Loading />}
