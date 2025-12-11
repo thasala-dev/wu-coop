@@ -470,7 +470,7 @@ export default function Page(props: any) {
             <tbody>
               <tr>
                 <td className="p-2 border align-center text-sm font-bold text-center">
-                  รวมคะแนน (คะแนนที่ได้ x 10) /{" "}
+                  รวมคะแนน (คะแนนที่ได้ x 25) /{" "}
                   {toThaiNumber(
                     criteriaData.filter((item) => {
                       const value = data[item.label as keyof typeof data];
@@ -488,11 +488,11 @@ export default function Page(props: any) {
                         (criteriaData.reduce((total, item) => {
                           const value = data[item.label as keyof typeof data];
                           if (value && value !== "N/A") {
-                            return total + parseInt(value, 10);
+                            return total + parseInt(value, 25);
                           }
                           return total;
                         }, 0) *
-                          10) /
+                          25) /
                         (criteriaData.filter((item) => {
                           const value = data[item.label as keyof typeof data];
                           return value !== "N/A" && value !== "";

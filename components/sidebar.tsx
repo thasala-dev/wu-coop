@@ -31,6 +31,7 @@ import {
   Newspaper,
   PillIcon,
   Banknote,
+  AlertCircle,
 } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,6 +102,14 @@ export function Sidebar({
         label: "คู่มือการใช้งาน",
         icon: FileText,
       },
+      {
+        href: "https://forms.gle/afwkdiDS57QSeWhp8",
+        page: "report-issue",
+        label: "แจ้งปัญหา",
+        icon: AlertCircle,
+        external: true,
+      },
+      
     ],
     advisor: [
       {
@@ -138,7 +147,13 @@ export function Sidebar({
         page: "manual",
         label: "คู่มือการใช้งาน",
         icon: FileText,
-      }
+      },      {
+        href: "https://forms.gle/afwkdiDS57QSeWhp8",
+        page: "report-issue",
+        label: "แจ้งปัญหา",
+        icon: AlertCircle,
+        external: true,
+      },
     ],
     mentor: [
       {
@@ -188,7 +203,14 @@ export function Sidebar({
         page: "manual",
         label: "คู่มือการใช้งาน",
         icon: FileText,
-      }
+      },
+      {
+        href: "https://forms.gle/afwkdiDS57QSeWhp8",
+        page: "report-issue",
+        label: "แจ้งปัญหา",
+        icon: AlertCircle,
+        external: true,
+      },
     ],
     admin: [
       {
@@ -280,7 +302,14 @@ export function Sidebar({
         page: "manual",
         label: "คู่มือการใช้งาน",
         icon: FileText,
-      }
+      },
+      {
+        href: "https://forms.gle/afwkdiDS57QSeWhp8",
+        page: "report-issue",
+        label: "แจ้งปัญหา",
+        icon: AlertCircle,
+        external: true,
+      },
 
       // {
       //   label: "ตั้งค่าระบบ",
