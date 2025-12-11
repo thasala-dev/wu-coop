@@ -12,19 +12,19 @@ export async function GET(
   try {
     const fileId = params.id;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
-    const data = await sql(
+
+    const data = await sql.query(
       `SELECT * FROM advisor_visit_files WHERE id = $1`,
       [fileId]
     );
-    
+
     if (data.length === 0) {
       return NextResponse.json(
         { success: false, message: "ไม่พบข้อมูลไฟล์" },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
@@ -47,20 +47,20 @@ export async function DELETE(
   try {
     const fileId = params.id;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
+
     // Get file info
-    const fileInfo = await sql(
+    const fileInfo = await sql.query(
       `SELECT * FROM advisor_visit_files WHERE id = $1`,
       [fileId]
     );
-    
+
     if (fileInfo.length === 0) {
       return NextResponse.json(
         { success: false, message: "ไม่พบข้อมูลไฟล์" },
         { status: 404 }
       );
     }
-    
+
     // Delete the file from storage
     const filePath = path.join(
       process.cwd(),
@@ -69,17 +69,17 @@ export async function DELETE(
       "visits",
       fileInfo[0].filename
     );
-    
+
     if (existsSync(filePath)) {
       await unlink(filePath);
     }
-    
+
     // Delete from database
-    await sql(
+    await sql.query(
       `DELETE FROM advisor_visit_files WHERE id = $1`,
       [fileId]
     );
-    
+
     return NextResponse.json({
       success: true,
       message: "ลบไฟล์สำเร็จ",

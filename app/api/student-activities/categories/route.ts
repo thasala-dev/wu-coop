@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: NextRequest) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT 
         id, 
         name, 
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       FROM activity_categories
       ORDER BY id ASC`
     );
-    
+
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",

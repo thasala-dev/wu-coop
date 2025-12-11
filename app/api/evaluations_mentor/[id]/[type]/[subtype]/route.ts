@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, { params }: any) {
     const { id, type, subtype } = await params;
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT std.fullname, std.student_id, com.name AS company_name,cal.name AS calendar_name, cal.semester, cal.year, cal.start_date, cal.end_date
       FROM regist_intern intern
       join user_student std ON intern.student_id = std.id
@@ -16,12 +16,12 @@ export async function GET(request: NextRequest, { params }: any) {
       [id]
     );
 
-    const formType = await sql(
+    const formType = await sql.query(
       `SELECT * FROM evaluations_form WHERE id = $1 LIMIT 1`,
       [subtype]
     );
 
-    const form = await sql(
+    const form = await sql.query(
       `SELECT * FROM evaluations_result WHERE intern_id = $1 AND type_id = $2 AND form_id = $3 LIMIT 1`,
       [id, type, subtype]
     );
@@ -58,13 +58,13 @@ export async function PUT(request: NextRequest, { params }: any) {
 
     if (result_id && result_id !== "0" && result_id !== "undefined") {
       console.log("do this 2", result_id);
-      await sql(
+      await sql.query(
         `UPDATE evaluations_result SET evaluator = $2, evaluation_date = $3, result = $4 WHERE id = $1 RETURNING *`,
         [result_id, evaluator, evaluation_date, result]
       );
     } else {
       console.log("do this 1");
-      await sql(
+      await sql.query(
         `INSERT INTO evaluations_result (intern_id, type_id, form_id, evaluator, evaluation_date, result) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
         [id, type, subtype, evaluator, evaluation_date, result]
       );

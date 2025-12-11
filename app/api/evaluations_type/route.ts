@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT type.*,
       (SELECT COUNT(*) FROM regist_intern intern WHERE intern.evaluation_type @> ARRAY[type.id]) AS total_regist
       FROM evaluations_type type

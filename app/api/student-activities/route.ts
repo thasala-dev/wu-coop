@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
     const sql = neon(`${process.env.DATABASE_URL}`);
     let calendarId = url.searchParams.get("calendarId");
-    const calendar = await sql(
+    const calendar = await sql.query(
       `SELECT cal.* 
       FROM calendar cal
       INNER JOIN regist_intern reg ON cal.id = reg.calendar_id and reg.student_id = $1
@@ -76,9 +76,8 @@ export async function GET(request: Request) {
 
     if (month && year) {
       query += ` AND EXTRACT(MONTH FROM sa.activity_date) = $${paramCounter} 
-                 AND EXTRACT(YEAR FROM sa.activity_date) = $${
-                   paramCounter + 1
-                 }`;
+                 AND EXTRACT(YEAR FROM sa.activity_date) = $${paramCounter + 1
+        }`;
       params.push(parseInt(month), parseInt(year));
       paramCounter += 2;
     }
@@ -86,7 +85,7 @@ export async function GET(request: Request) {
     // Add order by date, newest first
     query += ` ORDER BY sa.activity_date DESC, sa.created_at DESC`;
 
-    const data = await sql(query, params);
+    const data = await sql.query(query, params);
 
     // Format data for response
     const formattedData = data.map((item: any) => ({
@@ -150,11 +149,11 @@ export async function POST(request: Request) {
       body.tags && Array.isArray(body.tags)
         ? body.tags.join(",")
         : typeof body.tags === "string"
-        ? body.tags
-        : "";
+          ? body.tags
+          : "";
 
     // Insert activity
-    const data = await sql(
+    const data = await sql.query(
       `INSERT INTO student_activities 
        (student_id, title, activity_date, category_id, description, learning, problems, solutions, tags, calendar_id) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)

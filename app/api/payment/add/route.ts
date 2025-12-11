@@ -4,10 +4,10 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const companies = await sql(
+    const companies = await sql.query(
       `SELECT id,name,location from user_company where flag_del = 0`
     );
-    const calendars = await sql(
+    const calendars = await sql.query(
       `SELECT id,name,year,semester from calendar order by start_date DESC`
     );
     return NextResponse.json(

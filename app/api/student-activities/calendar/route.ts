@@ -7,7 +7,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const studentId = url.searchParams.get("studentId");
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const calendar = await sql(
+    const calendar = await sql.query(
       `SELECT cal.* 
       FROM calendar cal
       INNER JOIN regist_intern reg ON cal.id = reg.calendar_id and reg.student_id = $1

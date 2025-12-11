@@ -5,7 +5,7 @@ export async function GET(request: NextRequest, { params }: any) {
   try {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const calendar = await sql(
+    const calendar = await sql.query(
       `SELECT reg.id, cal.name,  cal.start_date, cal.end_date, cal.active_id, cal.year, cal.semester,
       reg.company_id, uc.name AS company_name, uc.image AS company_image, uc.location AS company_location, 
       uc.contact_name AS company_contact_name, uc.contact_email AS company_contact_email,
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: any) {
     );
 
     for (const item of calendar) {
-      const supervision = await sql(
+      const supervision = await sql.query(
         `select vis.scheduled_date,
         vis.start_time, vis.end_time,
         vis.visit_type,

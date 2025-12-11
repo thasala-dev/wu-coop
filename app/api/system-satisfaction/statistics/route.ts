@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       ${whereClause}
     `;
 
-    const overallStats = await sql(overallStatsQuery, queryParams);
+    const overallStats = await sql.query(overallStatsQuery, queryParams);
 
     // สถิติแยกตามคะแนน (1-5) สำหรับแต่ละข้อ
     const scoreDistributionQuery = `
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
       ORDER BY question
     `;
 
-    const scoreDistribution = await sql(scoreDistributionQuery, queryParams);
+    const scoreDistribution = await sql.query(scoreDistributionQuery, queryParams);
 
     // สถิติแยกตามบริษัท (ถ้าไม่ระบุ company_id)
     let companyStats: any[] = [];
@@ -143,7 +143,7 @@ export async function GET(request: NextRequest) {
         ORDER BY overall_average DESC
       `;
 
-      companyStats = await sql(companyStatsQuery, queryParams);
+      companyStats = await sql.query(companyStatsQuery, queryParams);
     }
 
     // ข้อเสนอแนะล่าสุด
@@ -162,7 +162,7 @@ export async function GET(request: NextRequest) {
       LIMIT 10
     `;
 
-    const recentAdvice = await sql(recentAdviceQuery, queryParams);
+    const recentAdvice = await sql.query(recentAdviceQuery, queryParams);
 
     return NextResponse.json({
       success: true,

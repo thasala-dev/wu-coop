@@ -51,7 +51,7 @@ export async function PUT(request: NextRequest, { params }: any) {
     const query = `UPDATE regist_intern SET ${updateFields.join(
       ", "
     )} WHERE id = $1 RETURNING *`;
-    const data = await sql(query, parameters);
+    const data = await sql.query(query, parameters);
 
     return NextResponse.json({
       success: true,
@@ -73,7 +73,7 @@ export async function DELETE(request: NextRequest, { params }: any) {
 
     // Delete the registration completely
     const query = `DELETE FROM regist_intern WHERE id = $1 RETURNING *`;
-    const data = await sql(query, [id]);
+    const data = await sql.query(query, [id]);
 
     if (!data || data.length === 0) {
       return NextResponse.json(

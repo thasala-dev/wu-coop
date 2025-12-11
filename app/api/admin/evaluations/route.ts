@@ -5,7 +5,7 @@ export async function GET(request: NextRequest, { params }: any) {
   try {
     let calendarId = request.nextUrl.searchParams.get("calendarId");
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const calendar = await sql(
+    const calendar = await sql.query(
       `SELECT cal.* 
 
       FROM calendar cal
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: any) {
       );
     }
 
-    const student = await sql(
+    const student = await sql.query(
       `SELECT 
         intern.id, 
         std.fullname,

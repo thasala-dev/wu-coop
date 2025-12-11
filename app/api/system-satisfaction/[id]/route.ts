@@ -37,7 +37,7 @@ export async function GET(
       WHERE s.id = $1
     `;
 
-    const result = await sql(query, [id]);
+    const result = await sql.query(query, [id]);
 
     if (result.length === 0) {
       return NextResponse.json(
@@ -79,7 +79,7 @@ export async function PUT(
 
     // ตรวจสอบว่ามีข้อมูลอยู่หรือไม่
     const existingQuery = `SELECT id FROM system_satisfaction WHERE id = $1`;
-    const existing = await sql(existingQuery, [id]);
+    const existing = await sql.query(existingQuery, [id]);
 
     if (existing.length === 0) {
       return NextResponse.json(
@@ -115,7 +115,7 @@ export async function PUT(
       RETURNING *
     `;
 
-    const result = await sql(updateQuery, [
+    const result = await sql.query(updateQuery, [
       p1,
       p2,
       p3,
@@ -159,7 +159,7 @@ export async function DELETE(
 
     // ตรวจสอบว่ามีข้อมูลอยู่หรือไม่
     const existingQuery = `SELECT id FROM system_satisfaction WHERE id = $1`;
-    const existing = await sql(existingQuery, [id]);
+    const existing = await sql.query(existingQuery, [id]);
 
     if (existing.length === 0) {
       return NextResponse.json(
@@ -169,7 +169,7 @@ export async function DELETE(
     }
 
     const deleteQuery = `DELETE FROM system_satisfaction WHERE id = $1`;
-    await sql(deleteQuery, [id]);
+    await sql.query(deleteQuery, [id]);
 
     return NextResponse.json({
       success: true,

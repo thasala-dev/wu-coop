@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT std.id, std.fullname, std.student_id, std.major, std.std_year, std.image,
        cal.id AS calendar_id, cal.name AS calendar_name, cal.start_date, cal.end_date, cal.semester, cal.year,
        com.name AS company_name, com.location AS company_location,

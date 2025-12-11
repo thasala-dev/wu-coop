@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    const supervision = await sql(
+    const supervision = await sql.query(
       `SELECT sup.scheduled_date,sup.start_time,sup.end_time,
       advisor.fullname AS advisor_name,
       advisor.mobile AS advisor_mobile,

@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql("SELECT * FROM calendar WHERE id = $1", [id]);
+    const data = await sql.query("SELECT * FROM calendar WHERE id = $1", [id]);
 
     if (data.length === 0) {
       return NextResponse.json(
@@ -34,7 +34,7 @@ export async function PUT(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       "UPDATE calendar SET name = $2, semester = $3, year = $4, start_date = $5, end_date = $6, status_id = $7 WHERE id = $1 RETURNING *",
       [
         id,

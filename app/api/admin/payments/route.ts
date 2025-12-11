@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // ดึงข้อมูลการชำระเงิน พร้อมข้อมูลปีการศึกษาและบริษัท
-    const payments = await sql(
+    const payments = await sql.query(
       companyId
         ? `
       SELECT 
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // บันทึกข้อมูลการชำระเงินลงฐานข้อมูล
-    const result = await sql(
+    const result = await sql.query(
       `
       INSERT INTO payments 
       (calendar_id, company_id, amount, detail, payment_date, file_attachment, created_at)
@@ -208,7 +208,7 @@ export async function PUT(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // อัพเดทข้อมูลการชำระเงินในฐานข้อมูล
-    const result = await sql(
+    const result = await sql.query(
       `
       UPDATE payments 
       SET calendar_id = $1, company_id = $2, amount = $3, detail = $4, 
@@ -275,7 +275,7 @@ export async function DELETE(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // ลบข้อมูลการชำระเงินจากฐานข้อมูล
-    const result = await sql(
+    const result = await sql.query(
       `
       DELETE FROM payments 
       WHERE id = $1

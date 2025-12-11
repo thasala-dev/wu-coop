@@ -5,7 +5,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { title, user_id, user_role } = body;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    await sql(
+    await sql.query(
       "INSERT INTO log (title, user_id, user_role) VALUES ($1, $2, $3)",
       [title, user_id, user_role]
     );
@@ -75,7 +75,7 @@ export async function GET(request: Request) {
 
     query += ` ORDER BY log.created_at DESC`;
 
-    const data = await sql(query, params);
+    const data = await sql.query(query, params);
 
     return NextResponse.json({
       success: true,

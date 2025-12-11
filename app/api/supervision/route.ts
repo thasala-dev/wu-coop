@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     // เรียงลำดับตามวันที่นิเทศ
     query += " ORDER BY sup.scheduled_date ASC";
 
-    const data = await sql(query, params);
+    const data = await sql.query(query, params);
 
 
     const visitData = await Promise.all(data.map(async (visit: any) => ({
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
 const getStudent = async ({ calendarId, companyId }: any) => {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT s.id, s.fullname, s.student_id, s.major, s.mobile, s.image
       FROM regist_intern ri
       JOIN user_student s ON ri.student_id = s.id
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
     }
 
     // ตรวจสอบว่ามีการนิเทศซ้ำในวันเดียวกันหรือไม่
-    // const checkExisting = await sql(
+    // const checkExisting = await sql.query(
     //   `SELECT * FROM supervisions 
     //    WHERE regist_intern_id = $1 AND advisor_id = $2 AND scheduled_date = $3`,
     //   [body.regist_intern_id, body.advisor_id, body.scheduled_date]
@@ -114,7 +114,7 @@ export async function POST(request: Request) {
     //   );
     // }
     // สร้างข้อมูลการนิเทศใหม่
-    const data = await sql(
+    const data = await sql.query(
       `INSERT INTO supervisions 
        (regist_intern_id, advisor_id, scheduled_date, start_time, end_time, status, visit_type, comments, type, calendar_id) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10) 

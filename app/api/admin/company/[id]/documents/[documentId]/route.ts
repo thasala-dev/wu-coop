@@ -12,7 +12,7 @@ export async function DELETE(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // ตรวจสอบว่าเอกสารมีอยู่และเป็นของบริษัทนี้
-    const document = await sql(
+    const document = await sql.query(
       `DELETE FROM company_documents WHERE id = $1 RETURNING *`,
       [documentId]
     );

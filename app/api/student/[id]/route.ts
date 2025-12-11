@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT std.*, advisor.fullname AS advisor_name, advisor.email AS advisor_email, advisor.mobile AS advisor_mobile
        FROM user_student std
        LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
@@ -183,7 +183,7 @@ export async function PUT(request: NextRequest) {
     console.log("Update query:", query);
     console.log("Update params:", params);
 
-    const data = await sql(query, params);
+    const data = await sql.query(query, params);
 
     console.log("Update result:", data);
 
@@ -209,7 +209,7 @@ export async function DELETE(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // Soft delete by setting flag_del to 1
-    const result = await sql(
+    const result = await sql.query(
       `UPDATE user_student SET
       flag_del = 1
       WHERE id = $1

@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT e.*, c.name as calendar_name
        FROM events e
        LEFT JOIN calendar c ON e.calendar_id = c.id
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       if (data[0].event_date) {
         data[0].event_date = data[0].event_date.toISOString().split("T")[0];
       }
-      
+
       return NextResponse.json({
         success: true,
         message: "ดำเนินการสำเร็จ",
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `UPDATE events SET 
        title = $2, 
        description = $3, 
@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest) {
         body.statusId || 1,
       ]
     );
-    
+
     return NextResponse.json({
       success: true,
       message: "บันทึกสำเร็จ",
@@ -85,19 +85,19 @@ export async function DELETE(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
+
     // Check if event exists
-    const checkEvent = await sql("SELECT id FROM events WHERE id = $1", [id]);
+    const checkEvent = await sql.query("SELECT id FROM events WHERE id = $1", [id]);
     if (checkEvent.length === 0) {
       return NextResponse.json(
         { success: false, message: "ไม่พบข้อมูลกิจกรรม" },
         { status: 404 }
       );
     }
-    
+
     // Delete the event
-    await sql("DELETE FROM events WHERE id = $1", [id]);
-    
+    await sql.query("DELETE FROM events WHERE id = $1", [id]);
+
     return NextResponse.json({
       success: true,
       message: "ลบกิจกรรมสำเร็จ",

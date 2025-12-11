@@ -11,7 +11,7 @@ export async function GET(
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // Get activity with category information
-    const activityData = await sql(
+    const activityData = await sql.query(
       `SELECT 
         sa.id, 
         sa.student_id, 
@@ -43,7 +43,7 @@ export async function GET(
     }
 
     // Get files for this activity
-    const filesData = await sql(
+    const filesData = await sql.query(
       `SELECT id, filename, original_filename, file_size, file_type, created_at
        FROM activity_files
        WHERE activity_id = $1
@@ -125,11 +125,11 @@ export async function PUT(
       body.tags && Array.isArray(body.tags)
         ? body.tags.join(",")
         : typeof body.tags === "string"
-        ? body.tags
-        : "";
+          ? body.tags
+          : "";
 
     // Update activity
-    const updateResult = await sql(
+    const updateResult = await sql.query(
       `UPDATE student_activities SET 
         title = $1, 
         activity_date = $2, 
@@ -187,10 +187,10 @@ export async function DELETE(
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // First, delete any associated files
-    await sql(`DELETE FROM activity_files WHERE activity_id = $1`, [id]);
+    await sql.query(`DELETE FROM activity_files WHERE activity_id = $1`, [id]);
 
     // Then delete the activity
-    const deleteResult = await sql(
+    const deleteResult = await sql.query(
       `DELETE FROM student_activities WHERE id = $1 RETURNING id`,
       [id]
     );

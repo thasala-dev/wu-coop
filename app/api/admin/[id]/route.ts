@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql("SELECT * FROM user_admin WHERE id = $1", [id]);
+    const data = await sql.query("SELECT * FROM user_admin WHERE id = $1", [id]);
 
     if (data.length === 0) {
       return NextResponse.json(
@@ -61,9 +61,9 @@ export async function PUT(request: NextRequest) {
     const query = `UPDATE user_admin SET ${updateFields.join(
       ", "
     )} WHERE id = $1 RETURNING *`;
-    const data = await sql(query, params);
+    const data = await sql.query(query, params);
 
-    // const data = await sql(
+    // const data = await sql.query(
     //   `UPDATE user_admin SET
     //   fullname = $2,
     //   image = $3,
@@ -92,7 +92,7 @@ export async function DELETE(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // Soft delete by setting flag_del to 1
-    const result = await sql(
+    const result = await sql.query(
       `UPDATE user_admin SET
       flag_del = 1
       WHERE id = $1

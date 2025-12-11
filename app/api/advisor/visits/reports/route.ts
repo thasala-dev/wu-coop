@@ -7,16 +7,16 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const visitId = url.searchParams.get("visitId");
     const studentId = url.searchParams.get("studentId");
-    
+
     if (!visitId && !studentId) {
       return NextResponse.json(
         { success: false, message: "กรุณาระบุรหัสการนิเทศหรือรหัสนักศึกษา" },
         { status: 400 }
       );
     }
-    
+
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
+
     let query = `
       SELECT 
         avr.*,
@@ -34,26 +34,26 @@ export async function GET(request: Request) {
         user_company c ON av.company_id = c.id
       WHERE 1=1
     `;
-    
+
     const params = [];
     let paramIndex = 1;
-    
+
     if (visitId) {
       query += ` AND avr.visit_id = $${paramIndex}`;
       params.push(visitId);
       paramIndex++;
     }
-    
+
     if (studentId) {
       query += ` AND avr.student_id = $${paramIndex}`;
       params.push(studentId);
       paramIndex++;
     }
-    
+
     query += ` ORDER BY av.visit_date DESC`;
-    
-    const data = await sql(query, params);
-    
+
+    const data = await sql.query(query, params);
+
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
@@ -72,32 +72,32 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
+
     if (!body.visitId || !body.studentId || !body.studentPerformance) {
       return NextResponse.json(
         { success: false, message: "กรุณาระบุข้อมูลที่จำเป็น" },
         { status: 400 }
       );
     }
-    
+
     const sql = neon(`${process.env.DATABASE_URL}`);
-    
+
     // Check if a report already exists for this visit and student
-    const existingReport = await sql(
+    const existingReport = await sql.query(
       `SELECT * FROM advisor_visit_reports 
        WHERE visit_id = $1 AND student_id = $2`,
       [body.visitId, body.studentId]
     );
-    
+
     if (existingReport.length > 0) {
       return NextResponse.json(
         { success: false, message: "มีรายงานการนิเทศสำหรับนักศึกษานี้แล้ว" },
         { status: 400 }
       );
     }
-    
+
     // Create new report
-    const data = await sql(
+    const data = await sql.query(
       `INSERT INTO advisor_visit_reports 
         (visit_id, student_id, student_performance, strengths, improvements, 
          recommendations, mentor_feedback, company_feedback) 
@@ -114,15 +114,15 @@ export async function POST(request: Request) {
         body.companyFeedback || null
       ]
     );
-    
+
     // Update the visit status to 'completed' if not already
-    await sql(
+    await sql.query(
       `UPDATE advisor_visits 
        SET status = 'completed', updated_at = NOW()
        WHERE id = $1 AND status != 'completed'`,
       [body.visitId]
     );
-    
+
     return NextResponse.json({
       success: true,
       message: "บันทึกรายงานการนิเทศสำเร็จ",

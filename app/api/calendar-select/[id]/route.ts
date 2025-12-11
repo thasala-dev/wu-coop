@@ -6,12 +6,12 @@ export async function PUT(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    const reset = await sql(
+    const reset = await sql.query(
       "UPDATE calendar SET active_id = 0 WHERE id <> $1 RETURNING *",
       [id]
     );
 
-    const data = await sql(
+    const data = await sql.query(
       "UPDATE calendar SET active_id = 1 WHERE id = $1 RETURNING *",
       [id]
     );

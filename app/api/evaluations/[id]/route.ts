@@ -5,7 +5,7 @@ export async function GET(request: NextRequest, { params }: any) {
   try {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT std.id,
       std.fullname,
       std.nickname,
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest, { params }: any) {
     }
     const studentData = data[0];
 
-    const activities = await sql(
+    const activities = await sql.query(
       `SELECT act.*, cat.name as category_name
       FROM student_activities act
       inner join activity_categories cat on act.category_id = cat.id
@@ -84,14 +84,14 @@ export async function GET(request: NextRequest, { params }: any) {
       [studentData.id, studentData.calendar_id]
     );
 
-    const evaluationsCompleted = await sql(
+    const evaluationsCompleted = await sql.query(
       `select count(*) from evaluations_result where intern_id = $1`,
       [id]
     );
 
     let form = [];
     for (const item of studentData.evaluations) {
-      const data = await sql(
+      const data = await sql.query(
         `SELECT form.name, form.short_name, form.id,
         case when res.id is not null then true else false end as is_submit,
         res.evaluator,res.evaluation_date
@@ -136,7 +136,7 @@ export async function PUT(request: NextRequest, { params }: any) {
     });
 
     // Update evaluations_type
-    const data = await sql(
+    const data = await sql.query(
       `UPDATE evaluations_type SET name = $2, "group" = $3, form = $4, updated_at = $5 WHERE id = $1 RETURNING *`,
       [id, name, group, form, new Date()]
     );

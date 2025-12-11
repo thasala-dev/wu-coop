@@ -4,16 +4,16 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: NextRequest, { params }: any) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const student = await sql(
+    const student = await sql.query(
       `SELECT count(*) from user_student WHERE flag_del = 0`
     );
-    const company = await sql(
+    const company = await sql.query(
       `SELECT count(*) from user_company WHERE flag_del = 0`
     );
-    const advisor = await sql(
+    const advisor = await sql.query(
       `SELECT count(*) from user_advisor WHERE flag_del = 0`
     );
-    const admin = await sql(
+    const admin = await sql.query(
       `SELECT count(*) from user_admin WHERE flag_del = 0`
     );
     return NextResponse.json({

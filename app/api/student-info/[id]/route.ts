@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/").pop();
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT std.*, advisor.fullname AS advisor_name, advisor.email AS advisor_email, advisor.mobile AS advisor_mobile
        FROM user_student std
        LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       [id]
     );
 
-    const intern = await sql(
+    const intern = await sql.query(
       `SELECT reg.position, reg.job_description, 
       cal.name AS calendar_name, cal.start_date, cal.end_date, cal.year, cal.semester,
       com.name AS company_name, com.location AS company_location,
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       [id]
     );
 
-    const supervision = await sql(
+    const supervision = await sql.query(
       `SELECT sup.scheduled_date, sup.start_time,sup.end_time, sup.status, sup.visit_type,
       advisor.fullname AS advisor_name, advisor.email AS advisor_email, advisor.mobile AS advisor_mobile
       FROM supervisions sup

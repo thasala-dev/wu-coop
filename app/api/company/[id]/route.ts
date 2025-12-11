@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.pathname.split("/").pop();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql("SELECT * FROM user_company WHERE id = $1", [id]);
+    const data = await sql.query("SELECT * FROM user_company WHERE id = $1", [id]);
 
     if (data.length === 0) {
       return NextResponse.json(
@@ -143,7 +143,7 @@ export async function PUT(request: NextRequest) {
       ", "
     )} WHERE id = $1 RETURNING *`;
 
-    const data = await sql(query, params);
+    const data = await sql.query(query, params);
 
     return NextResponse.json({
       success: true,
@@ -165,7 +165,7 @@ export async function DELETE(request: NextRequest) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // Soft delete: Set flag_del = 1 instead of removing the record
-    const data = await sql(
+    const data = await sql.query(
       `UPDATE user_company SET flag_del = 1 WHERE id = $1 RETURNING *`,
       [id]
     );

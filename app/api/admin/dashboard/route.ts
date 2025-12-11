@@ -3,7 +3,7 @@ import { neon } from "@neondatabase/serverless";
 
 const getCurrentCalendar = async () => {
   const sql = neon(`${process.env.DATABASE_URL}`);
-  const data = await sql(
+  const data = await sql.query(
     `SELECT id,name,semester,year,start_date,end_date,status_id,active_id,
       (select count(*) from regist_company where calendar_id = calendar.id) as total_regist,
       (select count(*) from regist_intern where calendar_id = calendar.id) as total_intern
@@ -14,7 +14,7 @@ const getCurrentCalendar = async () => {
 
 const getStudentCount = async (calendar_id: number) => {
   const sql = neon(`${process.env.DATABASE_URL}`);
-  const data = await sql(
+  const data = await sql.query(
     `SELECT 
         CASE WHEN company_id IS NULL THEN 1 ELSE 2 END AS group_type,
         COUNT(*) as count
@@ -28,7 +28,7 @@ const getStudentCount = async (calendar_id: number) => {
 
 const getCompanyCount = async (calendar_id: number) => {
   const sql = neon(`${process.env.DATABASE_URL}`);
-  const data = await sql(
+  const data = await sql.query(
     `SELECT company.id, company.name,reg.total,company.image,
      (select count(stu.*) from regist_intern stu where stu.calendar_id = reg.calendar_id AND stu.company_id = company.id) as total_intern
      FROM regist_company reg
@@ -41,7 +41,7 @@ const getCompanyCount = async (calendar_id: number) => {
 
 const getEventCount = async (calendar_id: number) => {
   const sql = neon(`${process.env.DATABASE_URL}`);
-  const data = await sql(
+  const data = await sql.query(
     `SELECT * 
      FROM events
      WHERE calendar_id = $1`,
@@ -53,7 +53,7 @@ const getEventCount = async (calendar_id: number) => {
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT id,name,semester,year,start_date,end_date,status_id,active_id,
       (select count(*) from regist_company where calendar_id = calendar.id) as total_regist,
       (select count(*) from regist_intern where calendar_id = calendar.id) as total_intern

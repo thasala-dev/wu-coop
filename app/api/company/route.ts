@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT company.id,company.name,company.business_type,company.location,company.status_id,company.image,company.contact_name,company.last_login,
       (SELECT total FROM regist_company WHERE calendar_id = cal.id AND company_id = company.id) AS total_regist,
       (SELECT COUNT(*) FROM regist_intern WHERE calendar_id = cal.id AND company_id = company.id) AS total_intern,
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    const check = await sql("SELECT * FROM user_company WHERE username = $1", [
+    const check = await sql.query("SELECT * FROM user_company WHERE username = $1", [
       body.username,
     ]);
     if (check.length > 0) {
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = await sql(
+    const data = await sql.query(
       `INSERT INTO user_company 
       (username, password_hash, name, business_type, location, establish_year, total_employees, joined_year, website, contact_name, contact_position, contact_email, contact_phone, contact_address, detail, image, evaluation_type) 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)

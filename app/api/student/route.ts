@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
     const sql = neon(`${process.env.DATABASE_URL}`);
     if (!calendarId || typeof calendarId !== "string") {
-      const data = await sql(
+      const data = await sql.query(
         `SELECT std.*, advisor.fullname AS advisor_name 
          FROM user_student std
          LEFT JOIN user_advisor advisor ON std.advisor_id = advisor.id
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const data = await sql(
+    const data = await sql.query(
       `SELECT std.id, std.fullname, std.student_id, std.mobile, std.faculty, std.major, std.std_year, std.address, std.gpa, std.image,
       std.advisor_id, std.emergency_contact_name, std.emergency_contact_phone, std.emergency_contact_relation,
       advisor.fullname AS advisor_name,
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    const check = await sql("SELECT * FROM user_student WHERE username = $1", [
+    const check = await sql.query("SELECT * FROM user_student WHERE username = $1", [
       body.username,
     ]);
     if (check.length > 0) {
@@ -175,7 +175,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = await sql(
+    const data = await sql.query(
       `INSERT INTO user_student (${columns.join(", ")}) VALUES (${values.join(
         ", "
       )}) RETURNING *`,

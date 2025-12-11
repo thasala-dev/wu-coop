@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
         ORDER BY sys_form.created_at DESC;`;
     }
 
-    const satisfaction = await sql(satisfactionQuery, queryParams);
+    const satisfaction = await sql.query(satisfactionQuery, queryParams);
 
     return NextResponse.json({
       success: true,
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
       ) RETURNING *
     `;
 
-    const result = await sql(insertQuery, [
+    const result = await sql.query(insertQuery, [
       p1,
       p2,
       p3,

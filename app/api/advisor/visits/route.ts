@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     const advisorId = url.searchParams.get("advisorId");
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT vis.regist_intern_id,
         vis.id, vis.calendar_id, vis.scheduled_date, vis.start_time, vis.end_time,
         vis.visit_type,vis.type, vis.status, vis.comments,
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
 const getStudent = async ({ calendarId, companyId }: any) => {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT s.id, s.fullname, s.student_id, s.major, s.mobile, s.image
       FROM regist_intern ri
       JOIN user_student s ON ri.student_id = s.id
@@ -68,11 +68,11 @@ export async function POST(request: Request) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // Start a transaction
-    await sql("BEGIN");
+    await sql.query("BEGIN");
 
     try {
       // 1. Create the visit record
-      const visitResult = await sql(
+      const visitResult = await sql.query(
         `INSERT INTO advisor_visits 
           (advisor_id, visit_date, visit_time_start, visit_time_end, calendar_id, 
            company_id, visit_type, status, transportation, distance) 
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
 
       // 2. Add students to the visit
       for (const studentId of body.studentIds) {
-        await sql(
+        await sql.query(
           `INSERT INTO advisor_visit_students (visit_id, student_id)
            VALUES ($1, $2)`,
           [visitId, studentId]
@@ -104,10 +104,10 @@ export async function POST(request: Request) {
       }
 
       // 3. Commit the transaction
-      await sql("COMMIT");
+      await sql.query("COMMIT");
 
       // 4. Return the created visit with student details
-      const createdVisit = await sql(
+      const createdVisit = await sql.query(
         `SELECT 
           av.*,
           json_agg(
@@ -149,7 +149,7 @@ export async function POST(request: Request) {
       });
     } catch (error) {
       // If there's an error, roll back the transaction
-      await sql("ROLLBACK");
+      await sql.query("ROLLBACK");
       throw error;
     }
   } catch (error) {

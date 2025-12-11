@@ -32,7 +32,7 @@ export async function GET(
       WHERE id = $1
     `;
 
-    const result = await sql(query, [parseInt(id)]);
+    const result = await sql.query(query, [parseInt(id)]);
 
     if (result.length === 0) {
       return NextResponse.json(
@@ -127,7 +127,7 @@ export async function PUT(
 
     // ตรวจสอบว่าข่าวสารนี้มีอยู่หรือไม่
     const checkQuery = `SELECT id FROM news WHERE id = $1`;
-    const existing = await sql(checkQuery, [parseInt(id)]);
+    const existing = await sql.query(checkQuery, [parseInt(id)]);
 
     if (existing.length === 0) {
       return NextResponse.json(
@@ -151,7 +151,7 @@ export async function PUT(
       RETURNING id, title, detail, status, news_date
     `;
 
-    const result = await sql(updateQuery, [
+    const result = await sql.query(updateQuery, [
       title.trim(),
       detail.trim(),
       parseInt(status),
@@ -199,7 +199,7 @@ export async function DELETE(
 
     // ตรวจสอบว่าข่าวสารนี้มีอยู่หรือไม่
     const checkQuery = `SELECT id, title FROM news WHERE id = $1`;
-    const existing = await sql(checkQuery, [parseInt(id)]);
+    const existing = await sql.query(checkQuery, [parseInt(id)]);
 
     if (existing.length === 0) {
       return NextResponse.json(
@@ -213,7 +213,7 @@ export async function DELETE(
 
     // ลบข่าวสาร
     const deleteQuery = `DELETE FROM news WHERE id = $1`;
-    await sql(deleteQuery, [parseInt(id)]);
+    await sql.query(deleteQuery, [parseInt(id)]);
 
     return NextResponse.json({
       success: true,

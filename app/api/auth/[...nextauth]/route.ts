@@ -27,24 +27,24 @@ const handler = NextAuth({
           const passwordAdmin = process.env.ADMIN_PASSWORD || "admin123";
 
           // ค้นหาผู้ใช้ตาม role
-          let users = [];
+          let users: any = [];
           if (role === "admin") {
-            users = await sql(
+            users = await sql.query(
               "SELECT * FROM user_admin WHERE username = $1 and status_id != 2 and flag_del = 0",
               [username]
             );
           } else if (role === "mentor") {
-            users = await sql(
+            users = await sql.query(
               "SELECT * FROM user_company WHERE username = $1 and status_id != 2 and flag_del = 0",
               [username]
             );
           } else if (role === "advisor") {
-            users = await sql(
+            users = await sql.query(
               "SELECT * FROM user_advisor WHERE username = $1 and status_id != 2 and flag_del = 0",
               [username]
             );
           } else if (role === "student") {
-            users = await sql(
+            users = await sql.query(
               "SELECT * FROM user_student WHERE username = $1 and status_id != 2 and flag_del = 0",
               [username]
             );
@@ -54,7 +54,7 @@ const handler = NextAuth({
             return null;
           }
 
-          const user = users.find((u) => u.username === username);
+          const user = users.find((u: any) => u.username === username);
 
           if (
             !user ||
@@ -64,11 +64,10 @@ const handler = NextAuth({
           }
 
           // บันทึกการเข้าสู่ระบบ
-          await sql(
+          await sql.query(
             "INSERT INTO log (title, user_id, user_role) VALUES ($1, $2, $3)",
             [
-              `${
-                role === "mentor" ? user.name : user.fullname
+              `${role === "mentor" ? user.name : user.fullname
               } ได้เข้าสู่ระบบสำเร็จ`,
               user.id,
               role,
@@ -78,22 +77,22 @@ const handler = NextAuth({
           // อัปเดตเวลาเข้าสู่ระบบล่าสุด
           const lastLogin = new Date().toISOString();
           if (role === "admin") {
-            await sql(
+            await sql.query(
               "UPDATE user_admin SET last_login = $1, status_id = 1 WHERE username = $2",
               [lastLogin, username]
             );
           } else if (role === "mentor") {
-            await sql(
+            await sql.query(
               "UPDATE user_company SET last_login = $1, status_id = 1 WHERE username = $2",
               [lastLogin, username]
             );
           } else if (role === "advisor") {
-            await sql(
+            await sql.query(
               "UPDATE user_advisor SET last_login = $1, status_id = 1 WHERE username = $2",
               [lastLogin, username]
             );
           } else if (role === "student") {
-            await sql(
+            await sql.query(
               "UPDATE user_student SET last_login = $1, status_id = 1 WHERE username = $2",
               [lastLogin, username]
             );
@@ -120,9 +119,9 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       // เพิ่มข้อมูลจาก user เข้าไปใน token
       if (user) {
-        token.user = user;
+        token.user = user as any;
         token.role = user.role;
-        token.id = user.id;
+        token.id = user.id as any;
       }
       return token;
     },

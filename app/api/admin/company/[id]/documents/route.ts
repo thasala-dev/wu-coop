@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const companyId = url.pathname.split("/").slice(-2, -1)[0];
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const documents = await sql(
+    const documents = await sql.query(
       `
       SELECT 
         id,
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    const result = await sql(
+    const result = await sql.query(
       `
       INSERT INTO company_documents (
         company_id, name, description, file_path, file_type, 

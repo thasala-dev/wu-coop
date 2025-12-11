@@ -25,9 +25,8 @@ export async function GET(request: NextRequest) {
 
     // ค้นหาจากชื่อเรื่องหรือรายละเอียด
     if (search.trim() !== "") {
-      whereClause += ` AND (title ILIKE $${paramIndex} OR detail ILIKE $${
-        paramIndex + 1
-      })`;
+      whereClause += ` AND (title ILIKE $${paramIndex} OR detail ILIKE $${paramIndex + 1
+        })`;
       queryParams.push(`%${search}%`, `%${search}%`);
       paramIndex += 2;
     }
@@ -45,7 +44,7 @@ export async function GET(request: NextRequest) {
       ORDER BY news_date DESC
     `;
 
-    const news = await sql(newsQuery, queryParams);
+    const news = await sql.query(newsQuery, queryParams);
 
     return NextResponse.json({
       success: true,
@@ -121,7 +120,7 @@ export async function POST(request: NextRequest) {
       RETURNING title, detail, status, news_date
     `;
 
-    const result = await sql(insertQuery, [
+    const result = await sql.query(insertQuery, [
       title.trim(),
       detail.trim(),
       parseInt(status),

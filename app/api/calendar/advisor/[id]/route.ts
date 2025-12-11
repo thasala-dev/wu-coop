@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
     // Query using student ID to filter events
     // Note: Adjust the join and where clauses according to your database schema
-    const event = await sql(
+    const event = await sql.query(
       `SELECT events.id, events.title, events.description, events.event_date,
       events.location, events.calendar_id, events.type_id, events.status_id,
       calendar.name AS calendar_name, 
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       ORDER BY events.event_date ASC`
     );
 
-    const supervision = await sql(
+    const supervision = await sql.query(
       `SELECT sup.scheduled_date,sup.start_time,sup.end_time,
       advisor.fullname AS advisor_name,
       com.name AS company_name,

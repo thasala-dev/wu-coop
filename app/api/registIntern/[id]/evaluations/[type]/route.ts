@@ -5,7 +5,7 @@ export async function GET(request: NextRequest, { params }: any) {
   try {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const calendar = await sql(`SELECT * FROM regist_intern  WHERE id = $1`, [
+    const calendar = await sql.query(`SELECT * FROM regist_intern  WHERE id = $1`, [
       id,
     ]);
 

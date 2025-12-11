@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT id,name,semester,year,start_date,end_date,status_id,active_id,
       (select count(*) from regist_company where calendar_id = calendar.id) as total_regist,
       (select count(*) from regist_intern where calendar_id = calendar.id) as total_intern
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `INSERT INTO calendar 
       (name, semester, year, start_date, end_date, status_id) 
       VALUES ($1, $2, $3, $4, $5, $6)

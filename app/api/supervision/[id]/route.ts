@@ -8,7 +8,7 @@ export async function GET(request: NextRequest, { params }: any) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // ดึงข้อมูลการนิเทศพร้อมข้อมูลที่เกี่ยวข้อง
-    const data = await sql(
+    const data = await sql.query(
       `SELECT sup.*, 
              com.name AS company_name, com.location AS company_location,
              adv.fullname AS advisor_name
@@ -116,7 +116,7 @@ export async function PUT(request: NextRequest, { params }: any) {
     const query = `UPDATE supervisions SET ${updateFields.join(
       ", "
     )} WHERE id = $1 RETURNING *`;
-    const data = await sql(query, queryParams);
+    const data = await sql.query(query, queryParams);
 
     if (data.length === 0) {
       return NextResponse.json(
@@ -146,7 +146,7 @@ export async function DELETE(request: NextRequest, { params }: any) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // ตรวจสอบว่ามีข้อมูลอยู่หรือไม่
-    const checkData = await sql("SELECT id FROM supervisions WHERE id = $1", [
+    const checkData = await sql.query("SELECT id FROM supervisions WHERE id = $1", [
       id,
     ]);
 
@@ -158,7 +158,7 @@ export async function DELETE(request: NextRequest, { params }: any) {
     }
 
     // ลบข้อมูลการนิเทศ
-    await sql("DELETE FROM supervisions WHERE id = $1", [id]);
+    await sql.query("DELETE FROM supervisions WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,

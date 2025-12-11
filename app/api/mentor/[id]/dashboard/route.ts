@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, { params }: any) {
     const { id } = await params;
     let calendarId = request.nextUrl.searchParams.get("calendarId");
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const calendar = await sql(
+    const calendar = await sql.query(
       `SELECT cal.* ,reg.total,
       (select count(*) from regist_intern where calendar_id = cal.id and company_id = reg.company_id) as total_intern
       FROM calendar cal
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: any) {
       });
     }
 
-    const student = await sql(
+    const student = await sql.query(
       `SELECT * FROM regist_intern where calendar_id = $1 AND company_id = $2`,
       [calendarId, id]
     );

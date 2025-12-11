@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, { params }: any) {
     const { calendarId, formId } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    const data = await sql(
+    const data = await sql.query(
       `select 
           std.fullname, 
           std.student_id, 
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: any) {
       [calendarId, formId]
     );
 
-    // const data = await sql(
+    // const data = await sql.query(
     //   `select evaluator,evaluation_date,result
     //   from evaluations_result
     //   where form_id = $1

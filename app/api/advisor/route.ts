@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT * FROM user_advisor where flag_del = 0 ORDER BY id DESC`
     );
     return NextResponse.json({
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const check = await sql("SELECT * FROM user_advisor WHERE username = $1", [
+    const check = await sql.query("SELECT * FROM user_advisor WHERE username = $1", [
       body.username,
     ]);
     if (check.length > 0) {
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = await sql(
+    const data = await sql.query(
       `INSERT INTO user_advisor 
       (username, password_hash, fullname, email, mobile, image) 
       VALUES ($1, $2, $3, $4, $5, $6)

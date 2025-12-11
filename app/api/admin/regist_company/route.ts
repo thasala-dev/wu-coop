@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function GET(request: Request) {
   try {
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql("SELECT * FROM regist_company");
+    const data = await sql.query("SELECT * FROM regist_company");
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const sql = neon(`${process.env.DATABASE_URL}`);
 
-    const check = await sql(
+    const check = await sql.query(
       "SELECT * FROM regist_company WHERE calendar_id = $1 AND company_id = $2",
       [body.calendarId, body.companyId]
     );
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const data = await sql(
+    const data = await sql.query(
       `INSERT INTO regist_company 
         (calendar_id,company_id,total)
         VALUES ($1, $2, $3)

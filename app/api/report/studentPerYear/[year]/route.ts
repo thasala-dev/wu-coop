@@ -12,12 +12,12 @@ export async function GET(request: NextRequest, { params }: any) {
     }
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const calendar = await sql(
+    const calendar = await sql.query(
       `SELECT cal.id,cal.name,cal.start_date,cal.end_date FROM calendar cal WHERE cal.year = $1 order BY cal.start_date ASC`,
       [year]
     );
 
-    const data = await sql(
+    const data = await sql.query(
       `SELECT 
        std.student_id, 
        std.fullname, 

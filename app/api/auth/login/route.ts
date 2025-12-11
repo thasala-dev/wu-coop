@@ -10,22 +10,22 @@ export async function POST(request: Request) {
     const { username, password, role } = body;
     let users = <any>[];
     if (role === "admin") {
-      users = await sql(
+      users = await sql.query(
         "SELECT * FROM user_admin WHERE username = $1 and status_id != 2",
         [username]
       );
     } else if (role === "mentor") {
-      users = await sql(
+      users = await sql.query(
         "SELECT * FROM user_company WHERE username = $1 and status_id != 2",
         [username]
       );
     } else if (role === "advisor") {
-      users = await sql(
+      users = await sql.query(
         "SELECT * FROM user_advisor WHERE username = $1 and status_id != 2",
         [username]
       );
     } else if (role === "student") {
-      users = await sql(
+      users = await sql.query(
         "SELECT * FROM user_student WHERE username = $1 and status_id != 2",
         [username]
       );
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 
     // Update last login
 
-    await sql(
+    await sql.query(
       "INSERT INTO log (title, user_id, user_role) VALUES ($1, $2, $3)",
       [
         `${role === "mentor" ? user.name : user.fullname} ได้เข้าสู่ระบบสำเร็จ`,
@@ -64,22 +64,22 @@ export async function POST(request: Request) {
 
     const lastLogin = new Date().toISOString();
     if (role === "admin") {
-      await sql(
+      await sql.query(
         "UPDATE user_admin SET last_login = $1, status_id = 1 WHERE username = $2",
         [lastLogin, username]
       );
     } else if (role === "mentor") {
-      await sql(
+      await sql.query(
         "UPDATE user_company SET last_login = $1, status_id = 1 WHERE username = $2",
         [lastLogin, username]
       );
     } else if (role === "advisor") {
-      await sql(
+      await sql.query(
         "UPDATE user_advisor SET last_login = $1, status_id = 1 WHERE username = $2",
         [lastLogin, username]
       );
     } else if (role === "student") {
-      await sql(
+      await sql.query(
         "UPDATE user_student SET last_login = $1, status_id = 1 WHERE username = $2",
         [lastLogin, username]
       );

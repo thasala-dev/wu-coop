@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
             FROM user_company com
             ORDER BY COM.contact_name DESC,com.contact_phone DESC`;
 
-        const datas = await sql(query, []);
+        const datas = await sql.query(query, []);
 
         return NextResponse.json({
             success: true,

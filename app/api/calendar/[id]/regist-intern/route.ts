@@ -15,7 +15,7 @@ export async function POST(request: NextRequest, { params }: any) {
 
     const sql = neon(`${process.env.DATABASE_URL}`);
     for (const studentId of body.student_ids) {
-      await sql(
+      await sql.query(
         `INSERT INTO regist_intern (calendar_id,student_id) VALUES ($1, $2) RETURNING *`,
         [id, studentId]
       );
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, { params }: any) {
   try {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       "SELECT * FROM regist_intern WHERE calendar_id = $1",
       [id]
     );

@@ -5,7 +5,7 @@ export async function GET(request: NextRequest, { params }: any) {
   try {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const intern = await sql(
+    const intern = await sql.query(
       `SELECT intern.id, intern.company_id, student.student_id, student.fullname, student.major, student.gpa, company.name as company_name, intern.register_date, company.evaluation_type,
       et.name as evaluation_name,
       (SELECT count(*) FROM evaluations_result WHERE intern_id = intern.id) as total
@@ -21,14 +21,14 @@ export async function GET(request: NextRequest, { params }: any) {
       [id]
     );
 
-    const company = await sql(
+    const company = await sql.query(
       `SELECT reg.id, reg.company_id, com.name, reg.total, com.evaluation_type
       FROM regist_company reg
       INNER JOIN user_company com ON reg.company_id = com.id
       WHERE reg.calendar_id = $1 and com.flag_del = 0`,
       [id]
     ); // Get students not already in the regist_intern table for this calendar
-    const student = await sql(
+    const student = await sql.query(
       `SELECT us.* 
        FROM user_student us
        LEFT JOIN regist_intern ri ON us.id = ri.student_id AND ri.calendar_id = $1
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, { params }: any) {
     );
 
     // Get companies not already in the regist_company table for this calendar
-    const companyList = await sql(
+    const companyList = await sql.query(
       `SELECT uc.* 
        FROM user_company uc
        LEFT JOIN regist_company rc ON uc.id = rc.company_id AND rc.calendar_id = $1

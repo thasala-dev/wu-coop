@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, { params }: any) {
   try {
     const { id } = await params;
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `SELECT vis.regist_intern_id,
             vis.id,vis.calendar_id, vis.scheduled_date, vis.start_time, vis.end_time,
             vis.visit_type, vis.type, vis.status, vis.result, vis.comments,
@@ -41,7 +41,7 @@ export async function PUT(request: NextRequest, { params }: any) {
     const body = await request.json();
 
     const sql = neon(`${process.env.DATABASE_URL}`);
-    const data = await sql(
+    const data = await sql.query(
       `UPDATE supervisions SET
       result = $2,
       status = 1
@@ -76,29 +76,29 @@ export async function DELETE(
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     // Start a transaction
-    await sql("BEGIN");
+    await sql.query("BEGIN");
 
     try {
       // 1. Delete associated files from database (files should be deleted from storage separately)
-      await sql(`DELETE FROM advisor_visit_files WHERE visit_id = $1`, [
+      await sql.query(`DELETE FROM advisor_visit_files WHERE visit_id = $1`, [
         visitId,
       ]);
 
       // 2. Delete associated reports
-      await sql(`DELETE FROM advisor_visit_reports WHERE visit_id = $1`, [
+      await sql.query(`DELETE FROM advisor_visit_reports WHERE visit_id = $1`, [
         visitId,
       ]);
 
       // 3. Delete associated students
-      await sql(`DELETE FROM advisor_visit_students WHERE visit_id = $1`, [
+      await sql.query(`DELETE FROM advisor_visit_students WHERE visit_id = $1`, [
         visitId,
       ]);
 
       // 4. Delete the visit
-      await sql(`DELETE FROM advisor_visits WHERE id = $1`, [visitId]);
+      await sql.query(`DELETE FROM advisor_visits WHERE id = $1`, [visitId]);
 
       // 5. Commit the transaction
-      await sql("COMMIT");
+      await sql.query("COMMIT");
 
       return NextResponse.json({
         success: true,
@@ -106,7 +106,7 @@ export async function DELETE(
       });
     } catch (error) {
       // If there's an error, roll back the transaction
-      await sql("ROLLBACK");
+      await sql.query("ROLLBACK");
       throw error;
     }
   } catch (error) {
