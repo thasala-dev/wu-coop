@@ -28,7 +28,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, User, Camera, CalendarIcon,Upload } from "lucide-react";
+import { Loader2, Save, User, Camera, CalendarIcon, Upload } from "lucide-react";
 import { callUploadApi, callDeleteApi } from "@/lib/file-api";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -356,7 +356,7 @@ export default function StudentProfile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
-      <main className="container mx-auto p-4 max-w-7xl">
+      <main className="container mx-auto p-4">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <Sidebar activePage="profile" userType="student" />
 
@@ -508,7 +508,7 @@ export default function StudentProfile() {
                                     className={cn(
                                       "w-full justify-start text-left font-normal bg-white/80 border-blue-200 hover:bg-blue-50",
                                       !formData.date_of_birth &&
-                                        "text-muted-foreground"
+                                      "text-muted-foreground"
                                     )}
                                   >
                                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -1057,7 +1057,7 @@ export default function StudentProfile() {
                                 placeholder="เช่น ทุนการศึกษา, ทุนรัฐบาล, ทุนส่วนตัว"
                                 className="bg-white/80 border-purple-200 focus:border-purple-500"
                               />
-                              
+
                             </div>
                             <div className="space-y-2">
                               <label
