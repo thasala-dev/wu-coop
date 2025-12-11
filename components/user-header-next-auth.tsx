@@ -61,9 +61,9 @@ export function UserHeader({
 
   return (
     <header className={`${headerColor} w-full`}>
-      <div className="container mx-auto px-4 py-2">
+      <div className="container max-w-full mx-auto p-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-white">
+          <div className="flex items-center space-x-2 text-white px-4">
             <img src="/logo.svg" alt="Logo" className="h-9 w-9" />
             <h1 className="text-lg font-semibold">{systemName}</h1>
           </div>
@@ -84,7 +84,7 @@ export function UserHeader({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="flex items-center space-x-2 text-white"
+                  className="flex items-center space-x-2 text-white px-4"
                 >
                   <Avatar className="h-7 w-7 border-2 border-white">
                     <AvatarImage src="/placeholder-user.jpg" alt={userName} />
