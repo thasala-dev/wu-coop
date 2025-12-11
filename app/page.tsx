@@ -120,14 +120,6 @@ export default function Home() {
     }
   }
 
-  // แสดง loading ระหว่างตรวจสอบ session
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-emerald-300 to-cyan-200 opacity-90">
-        <Loading />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
