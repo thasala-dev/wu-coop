@@ -140,7 +140,7 @@ export default function Home() {
             <h1 className="text-4xl font-bold mb-2 text-center">ระบบฝึกปฏิบัติงานวิชาชีพเภสัชกรรม</h1>
           </div>
 
-          <Card className="w-full rounded-xl max-w-md shadow-xl bg-white backdrop-blur-md  border-0">
+          <Card className="w-full rounded-xl max-w-md shadow-xl bg-white/60 backdrop-blur-md  border-0">
             <CardHeader className="text-center">
               <CardTitle className="text-xl font-bold text-green-700">
                 เข้าสู่ระบบ
