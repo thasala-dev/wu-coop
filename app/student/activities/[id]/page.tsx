@@ -61,7 +61,7 @@ interface Activity {
   updatedAt: string;
 }
 
-export default function ActivityDetail({ params }: { params: { id: string } }) {
+export default function ActivityDetail({ params }: any) {
   const activityId = params.id;
   const { toast } = useToast();
 
@@ -79,7 +79,7 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
   // Format date
   const formatDate = (
     dateString: string,
-    formatStr: string = "d MMMM yyyy"
+    formatStr: string = "d MMMM yyyy",
   ): string => {
     try {
       const date =
@@ -209,7 +209,7 @@ export default function ActivityDetail({ params }: { params: { id: string } }) {
                           </div>
                           <Badge
                             className={getCategoryBadgeStyle(
-                              activity.category.color
+                              activity.category.color,
                             )}
                           >
                             {activity.category.name}

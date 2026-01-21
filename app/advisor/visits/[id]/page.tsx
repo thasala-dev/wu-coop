@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import AdvisorSidebar from "@/components/advisor-sidebar";
 
-export default function VisitDetails({ params }: { params: { id: string } }) {
+export default function VisitDetails({ params }: any) {
   const visitId = params.id;
 
   // Mock data for the visit
@@ -250,7 +250,7 @@ export default function VisitDetails({ params }: { params: { id: string } }) {
                               <MapPinIcon className="h-3.5 w-3.5 text-gray-500 mt-0.5" />
                               <a
                                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                                  visit.company.address
+                                  visit.company.address,
                                 )}`}
                                 target="_blank"
                                 rel="noopener noreferrer"

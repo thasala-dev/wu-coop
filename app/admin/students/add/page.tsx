@@ -51,10 +51,10 @@ const formSchema = z.object({
 
 const currentYear = new Date().getFullYear() + 543;
 const years = Array.from({ length: currentYear - 2562 + 1 }, (_, i) =>
-  (currentYear - i).toString().slice(-2)
+  (currentYear - i).toString().slice(-2),
 );
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: any) {
   const [loading, setLoading] = useState(false);
   const [advisors, setAdvisors] = useState<any[]>([]);
 

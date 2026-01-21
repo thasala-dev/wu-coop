@@ -6,7 +6,7 @@ const sql = neon(process.env.DATABASE_URL!);
 // GET - ดึงข้อมูลแบบประเมินความพึงพอใจระบบตาม ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const id = parseInt(params.id);
@@ -62,7 +62,7 @@ export async function GET(
 // PUT - แก้ไขข้อมูลแบบประเมินความพึงพอใจระบบ
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const id = parseInt(params.id);
@@ -145,7 +145,7 @@ export async function PUT(
 // DELETE - ลบข้อมูลแบบประเมินความพึงพอใจระบบ
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const id = parseInt(params.id);

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 // PUT /api/notifications/[id] - อัปเดตสถานะการแจ้งเตือน (เช่น อ่านแล้ว)
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const id = params.id;
@@ -40,7 +40,7 @@ export async function PUT(
 // DELETE /api/notifications/[id] - ลบการแจ้งเตือน
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const id = params.id;

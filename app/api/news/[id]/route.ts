@@ -4,10 +4,10 @@ import { neon } from "@neondatabase/serverless";
 // GET - ดึงข่าวสารตาม ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id || isNaN(parseInt(id))) {
       return NextResponse.json(
@@ -65,10 +65,10 @@ export async function GET(
 // PUT - แก้ไขข่าวสาร
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { title, detail, status, news_date } = body;
 
@@ -180,10 +180,10 @@ export async function PUT(
 // DELETE - ลบข่าวสาร
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id || isNaN(parseInt(id))) {
       return NextResponse.json(

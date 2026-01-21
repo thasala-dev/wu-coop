@@ -8,7 +8,7 @@ import { use } from 'react';
 // Define the upload directory
 const UPLOAD_DIR = join(process.cwd(), 'public', 'uploads', 'activities');
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: any) {
   try {
     const activityId = params.id;
 

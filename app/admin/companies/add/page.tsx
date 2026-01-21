@@ -41,7 +41,7 @@ const formSchema = z.object({
   password: z.string().min(1, "กรุณากรอกรหัสผ่าน"),
 });
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: any) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -247,7 +247,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.businessType && (
                               <p className="text-sm text-red-600">
                                 {typeof errors.businessType?.message ===
-                                  "string"
+                                "string"
                                   ? errors.businessType.message
                                   : "กรุณาเลือกประเภทแหล่งฝึก"}
                               </p>
@@ -322,7 +322,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.establishYear && (
                               <p className="text-sm text-red-600">
                                 {typeof errors.establishYear?.message ===
-                                  "string"
+                                "string"
                                   ? errors.establishYear.message
                                   : "กรุณากรอกปีที่ก่อตั้ง"}
                               </p>
@@ -345,7 +345,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.totalEmployees && (
                               <p className="text-sm text-red-600">
                                 {typeof errors.totalEmployees?.message ===
-                                  "string"
+                                "string"
                                   ? errors.totalEmployees.message
                                   : "กรุณากรอกจำนวนพนักงาน"}
                               </p>
@@ -440,7 +440,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.contactPosition && (
                               <p className="text-sm text-red-600">
                                 {typeof errors.contactPosition?.message ===
-                                  "string"
+                                "string"
                                   ? errors.contactPosition.message
                                   : "กรุณากรอกตำแหน่งผู้ประสานงาน"}
                               </p>
@@ -463,7 +463,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.contactEmail && (
                               <p className="text-sm text-red-600">
                                 {typeof errors.contactEmail?.message ===
-                                  "string"
+                                "string"
                                   ? errors.contactEmail.message
                                   : "กรุณากรอกอีเมลผู้ประสานงาน"}
                               </p>
@@ -486,7 +486,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.contactPhone && (
                               <p className="text-sm text-red-600">
                                 {typeof errors.contactPhone?.message ===
-                                  "string"
+                                "string"
                                   ? errors.contactPhone.message
                                   : "กรุณากรอกเบอร์โทรศัพท์ผู้ประสานงาน"}
                               </p>
@@ -509,7 +509,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.contactAddress && (
                               <p className="text-sm text-red-600">
                                 {typeof errors.contactAddress?.message ===
-                                  "string"
+                                "string"
                                   ? errors.contactAddress.message
                                   : "กรุณากรอกที่อยู่ผู้ประสานงาน"}
                               </p>
@@ -537,7 +537,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                     id={`evaluation-${item.id}`}
                                     value={item.id}
                                     checked={watch("evaluationType")?.includes(
-                                      item.id
+                                      item.id,
                                     )}
                                     onChange={(e) => {
                                       const currentValues =
@@ -551,8 +551,8 @@ export default function Page({ params }: { params: { id: string } }) {
                                         setValue(
                                           "evaluationType",
                                           currentValues.filter(
-                                            (id: string) => id !== item.id
-                                          )
+                                            (id: string) => id !== item.id,
+                                          ),
                                         );
                                       }
                                     }}
@@ -573,7 +573,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             {errors.evaluationType && (
                               <p className="text-sm text-red-600 mt-2">
                                 {typeof errors.evaluationType?.message ===
-                                  "string"
+                                "string"
                                   ? errors.evaluationType.message
                                   : "กรุณาเลือกรูปแบบการประเมินอย่างน้อย 1 รูปแบบ"}
                               </p>

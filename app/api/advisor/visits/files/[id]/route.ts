@@ -7,7 +7,7 @@ import { existsSync } from "fs";
 // Get a specific file by ID
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const fileId = params.id;
@@ -42,7 +42,7 @@ export async function GET(
 // Delete a file
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const fileId = params.id;

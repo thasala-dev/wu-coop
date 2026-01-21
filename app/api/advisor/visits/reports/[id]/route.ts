@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 // Get a specific report by ID
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const reportId = params.id;
@@ -55,7 +55,7 @@ export async function GET(
 // Update a report
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const reportId = params.id;
@@ -155,7 +155,7 @@ export async function PUT(
 // Delete a report
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const reportId = params.id;

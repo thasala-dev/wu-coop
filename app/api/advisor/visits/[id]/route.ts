@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, { params }: any) {
 // Update a visit
 export async function PUT(request: NextRequest, { params }: any) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     const sql = neon(`${process.env.DATABASE_URL}`);
@@ -69,7 +69,7 @@ export async function PUT(request: NextRequest, { params }: any) {
 // Delete a visit
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const visitId = params.id;
