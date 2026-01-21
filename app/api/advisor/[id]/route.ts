@@ -93,7 +93,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "ดำเนินการสำเร็จ",
-      data: data,
+      data: data.length > 0 ? data[0] : null,
     });
   } catch (error) {
     return NextResponse.json(
