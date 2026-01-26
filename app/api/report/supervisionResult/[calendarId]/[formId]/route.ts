@@ -7,25 +7,20 @@ export async function GET(request: NextRequest, { params }: any) {
     const sql = neon(`${process.env.DATABASE_URL}`);
 
     const data = await sql.query(
-      `select 
-          std.fullname, 
+      `SELECT std.fullname, 
           std.student_id,
-          comp.name as company_name,
-          sup.scheduled_date,
-          adv.fullname as advisor_name,
-          sup.result
-      from regist_intern intern
-      inner join user_student std 
-          on intern.student_id = std.id
-      inner join user_company comp 
-          on intern.company_id = comp.id
-      inner join supervisions sup
-          on sup.regist_intern_id = intern.id
-          and sup.type = $2
-      inner join user_advisor adv
-          on adv.id = sup.advisor_id
-      where intern.calendar_id = $1
-      order by std.student_id ASC`,
+             com.name as company_name,
+          	 sup.scheduled_date,
+             adv.fullname AS advisor_name,
+             sup.result
+      FROM supervisions sup
+      JOIN user_company com ON sup.regist_intern_id = com.id
+      JOIN user_advisor adv ON sup.advisor_id = adv.id
+      JOIN regist_intern intern on intern.calendar_id = sup.calendar_id 
+      	and intern.company_id = com.id
+      join user_student std on intern.student_id = std.id
+      where sup.calendar_id = $1 and sup.type::int = $2
+      ORDER BY sup.scheduled_date ASC`,
       [calendarId, formId]
     );
 
