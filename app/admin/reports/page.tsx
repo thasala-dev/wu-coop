@@ -43,7 +43,7 @@ const reportMenu = [
     href: "/admin/reports/supervisionResult",
     icon: Users,
     color: "bg-yellow-500",
-    description: "ผลการนิเทศนักศึกษาโดยแหล่งฝึก",
+    description: "ผลการนิเทศนักศึกษาโดยอาจารย์นิเทศ",
   },
   {
     name: "รายงานผลการประเมินความพึงพอใจระบบ",
@@ -80,7 +80,7 @@ export default function AdminReportsPage() {
   const filteredReports = reportMenu.filter(
     (report) =>
       report.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      report.description.toLowerCase().includes(searchQuery.toLowerCase())
+      report.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   useEffect(() => {
@@ -286,9 +286,9 @@ export default function AdminReportsPage() {
                                           __html: item.name.replace(
                                             new RegExp(
                                               `(${searchQuery})`,
-                                              "gi"
+                                              "gi",
                                             ),
-                                            '<mark class="bg-yellow-200 rounded">$1</mark>'
+                                            '<mark class="bg-yellow-200 rounded">$1</mark>',
                                           ),
                                         }}
                                       />
@@ -310,7 +310,7 @@ export default function AdminReportsPage() {
                                 dangerouslySetInnerHTML={{
                                   __html: item.description.replace(
                                     new RegExp(`(${searchQuery})`, "gi"),
-                                    '<mark class="bg-yellow-200 rounded">$1</mark>'
+                                    '<mark class="bg-yellow-200 rounded">$1</mark>',
                                   ),
                                 }}
                               />

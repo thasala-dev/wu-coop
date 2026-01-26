@@ -212,7 +212,7 @@ const SHIFT_PERIODS: string[] = [
 ];
 
 export default function Page(props: any) {
-  const { id, data } = props;
+  const { id, data, report } = props;
   const { toast } = useToast();
   const router = useRouter();
 
@@ -253,7 +253,7 @@ export default function Page(props: any) {
             assessmentForm: {},
             other: {},
           },
-        }
+        },
   );
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
@@ -351,14 +351,14 @@ export default function Page(props: any) {
       handleCheckError("email", form.email),
       handleCheckError(
         "advisors",
-        form.advisors?.some((a) => a?.trim())
+        form.advisors?.some((a) => a?.trim()),
       ),
       handleCheckError("uniCounts.total", form.uniCounts?.total),
       handleCheckError("safetyStayTravel", form.safetyStayTravel),
       handleCheckError("safetyEnv", form.safetyEnv),
       handleCheckError(
         "activitiesDone.overallComment",
-        form.activitiesDone?.overallComment
+        form.activitiesDone?.overallComment,
       ),
       handleCheckError("consentSurvey", form.consentSurvey),
       handleCheckError("consentClientData", form.consentClientData),
@@ -671,7 +671,7 @@ export default function Page(props: any) {
                   onCheckedChange={() =>
                     set(
                       "universities",
-                      toggleArray(form.universities, u as string)
+                      toggleArray(form.universities, u as string),
                     )
                   }
                 />
@@ -1194,7 +1194,7 @@ export default function Page(props: any) {
                     onChange={(e) =>
                       setNested(
                         "clinic.stopSmoking.plannedYear",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   />
@@ -1258,7 +1258,7 @@ export default function Page(props: any) {
                     onChange={(e) =>
                       setNested(
                         "clinic.riskScreen.targets.other",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   />
@@ -1672,31 +1672,32 @@ export default function Page(props: any) {
           </div>
         </section>
       </div>
-
-      <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
-        <Link href="/advisor/visits">
-          <Button variant="outline" className="border-gray-300 text-gray-600">
-            ยกเลิก
+      {!report && (
+        <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
+          <Link href="/advisor/visits">
+            <Button variant="outline" className="border-gray-300 text-gray-600">
+              ยกเลิก
+            </Button>
+          </Link>
+          <Button
+            onClick={submit}
+            disabled={isSaving}
+            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                กำลังส่ง...
+              </>
+            ) : (
+              <>
+                <CheckCircleIcon className="h-4 w-4 mr-2" />
+                บันทึกและส่งรายงาน
+              </>
+            )}
           </Button>
-        </Link>
-        <Button
-          onClick={submit}
-          disabled={isSaving}
-          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              กำลังส่ง...
-            </>
-          ) : (
-            <>
-              <CheckCircleIcon className="h-4 w-4 mr-2" />
-              บันทึกและส่งรายงาน
-            </>
-          )}
-        </Button>
-      </CardFooter>
+        </CardFooter>
+      )}
     </Card>
   );
 }

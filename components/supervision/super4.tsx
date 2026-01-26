@@ -108,7 +108,7 @@ type FormState = {
 };
 
 export default function Page(props: any) {
-  const { id, data } = props;
+  const { id, data, report } = props;
   const router = useRouter();
   const { toast } = useToast();
 
@@ -126,7 +126,7 @@ export default function Page(props: any) {
           supportNeeds: {},
           obstacles: {},
           overall: {},
-        }
+        },
   );
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) =>
@@ -223,36 +223,36 @@ export default function Page(props: any) {
       handleCheckError("summary", form.summary),
       handleCheckError(
         "students",
-        form.students?.some((s) => s?.trim())
+        form.students?.some((s) => s?.trim()),
       ),
       handleCheckError(
         "siteInfo.supervisionResult",
-        form.siteInfo?.supervisionResult
+        form.siteInfo?.supervisionResult,
       ),
       handleCheckError(
         "housing.supervisionResult",
-        form.housing?.supervisionResult
+        form.housing?.supervisionResult,
       ),
       handleCheckError(
         "coordination.supervisionResult",
-        form.coordination?.supervisionResult
+        form.coordination?.supervisionResult,
       ),
       handleCheckError(
         "readiness.supervisionResult",
-        form.readiness?.supervisionResult
+        form.readiness?.supervisionResult,
       ),
       handleCheckError(
         "supportNeeds.supervisionResult",
-        form.supportNeeds?.supervisionResult
+        form.supportNeeds?.supervisionResult,
       ),
       handleCheckError(
         "obstacles.supervisionResult",
-        form.obstacles?.supervisionResult
+        form.obstacles?.supervisionResult,
       ),
       handleCheckError("overall.futurePlan", form.overall?.futurePlan),
       handleCheckError(
         "coordination.contactDetailJudge",
-        form.coordination?.contactDetailJudge
+        form.coordination?.contactDetailJudge,
       ),
       handleCheckError("readiness.workloadFit", form.readiness?.workloadFit),
     ];
@@ -381,8 +381,8 @@ export default function Page(props: any) {
                     setField(
                       "students",
                       (form.students || []).map((s, idx) =>
-                        idx === i ? e.target.value : s
-                      )
+                        idx === i ? e.target.value : s,
+                      ),
                     );
                     if (errors.students) {
                       setErrors((prev) => {
@@ -406,14 +406,17 @@ export default function Page(props: any) {
           <Input
             value={form.responsiblePharmacist || ""}
             onChange={(e) => setField("responsiblePharmacist", e.target.value)}
-            className={errors.responsiblePharmacist ? "border-2 border-red-600" : ""}
+            className={
+              errors.responsiblePharmacist ? "border-2 border-red-600" : ""
+            }
             placeholder="ชื่อเภสัชกร"
           />
           {errors.responsiblePharmacist && (
-            <p className="text-red-600 text-sm mt-1">{errors.responsiblePharmacist}</p>
+            <p className="text-red-600 text-sm mt-1">
+              {errors.responsiblePharmacist}
+            </p>
           )}
         </div>
-        
 
         {/* -------- 2) สรุปผลจากการนิเทศ -------- */}
         <section className="space-y-2">
@@ -582,7 +585,8 @@ export default function Page(props: any) {
           {/* 3.3 */}
           <div className="rounded-md border">
             <div className="p-2 font-medium bg-slate-50">
-              3.3 การประสานงานระหว่างมหาวิทยาลัยกับแหล่งฝึก (ระบุข้อเสนอแนะเกี่ยวกับการติดต่อประสานงาน ระบุรายละเอียด)
+              3.3 การประสานงานระหว่างมหาวิทยาลัยกับแหล่งฝึก
+              (ระบุข้อเสนอแนะเกี่ยวกับการติดต่อประสานงาน ระบุรายละเอียด)
             </div>
             <div className="p-3 grid md:grid-cols-2 gap-2">
               {[
@@ -590,7 +594,9 @@ export default function Page(props: any) {
                 ["needMoreDocs", "ต้องส่งเอกสารเพิ่มเติม"],
                 ["viaMobile", "สะดวกให้ติดต่อผ่านทางโทรศัพท์มือถือ"],
                 ["viaLandlineOrProject", "สะดวกให้ติดต่อผ่านทาง โทรสาร"],
-                ["viaEmailOrSocial","สะดวกให้ติดต่อผ่านทาง e-mail หรือ socialnetwork อื่นๆ",
+                [
+                  "viaEmailOrSocial",
+                  "สะดวกให้ติดต่อผ่านทาง e-mail หรือ socialnetwork อื่นๆ",
                 ],
               ].map(([k, label]) => (
                 <label key={k} className="flex items-center gap-2">
@@ -620,19 +626,21 @@ export default function Page(props: any) {
                   }
                 }}
               >
-                {(["เหมาะสม", "ควรปรับปรุง (ระบุรายละเอียด)"] as const).map((v) => (
-                  <label key={v} className="flex items-center gap-2 text-sm">
-                    <RadioGroupItem
-                      value={v}
-                      className={
-                        errors["coordination.contactDetailJudge"]
-                          ? "border-red-600"
-                          : ""
-                      }
-                    />
-                    <span>{v}</span>
-                  </label>
-                ))}
+                {(["เหมาะสม", "ควรปรับปรุง (ระบุรายละเอียด)"] as const).map(
+                  (v) => (
+                    <label key={v} className="flex items-center gap-2 text-sm">
+                      <RadioGroupItem
+                        value={v}
+                        className={
+                          errors["coordination.contactDetailJudge"]
+                            ? "border-red-600"
+                            : ""
+                        }
+                      />
+                      <span>{v}</span>
+                    </label>
+                  ),
+                )}
               </RadioGroup>
               {errors["coordination.contactDetailJudge"] && (
                 <p className="text-red-600 text-sm mt-1">
@@ -1058,31 +1066,32 @@ export default function Page(props: any) {
           </div>
         </section>
       </div>
-
-      <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
-        <Link href="/advisor/visits">
-          <Button variant="outline" className="border-gray-300 text-gray-600">
-            ยกเลิก
+      {!report && (
+        <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
+          <Link href="/advisor/visits">
+            <Button variant="outline" className="border-gray-300 text-gray-600">
+              ยกเลิก
+            </Button>
+          </Link>
+          <Button
+            onClick={onSubmit}
+            disabled={isSaving}
+            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                กำลังส่ง...
+              </>
+            ) : (
+              <>
+                <CheckCircleIcon className="h-4 w-4 mr-2" />
+                บันทึกและส่งรายงาน
+              </>
+            )}
           </Button>
-        </Link>
-        <Button
-          onClick={onSubmit}
-          disabled={isSaving}
-          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              กำลังส่ง...
-            </>
-          ) : (
-            <>
-              <CheckCircleIcon className="h-4 w-4 mr-2" />
-              บันทึกและส่งรายงาน
-            </>
-          )}
-        </Button>
-      </CardFooter>
+        </CardFooter>
+      )}
     </Card>
   );
 }

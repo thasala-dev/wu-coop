@@ -100,7 +100,7 @@ type FormState = {
 };
 
 export default function Page(props: any) {
-  const { id, data } = props;
+  const { id, data, report } = props;
   const [isSaving, setIsSaving] = useState(false);
   const [form, setForm] = useState<FormState>(
     data
@@ -114,7 +114,7 @@ export default function Page(props: any) {
           needSupport: {},
           issues: {},
           overall: {},
-        }
+        },
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
@@ -224,37 +224,37 @@ export default function Page(props: any) {
       handleCheckError("visitRound", form.visitRound),
       handleCheckError(
         "students",
-        form.students?.some((s) => s?.trim())
+        form.students?.some((s) => s?.trim()),
       ),
       handleCheckError("summary", form.summary),
       handleCheckError("acceptIntern", form.acceptIntern),
       handleCheckError(
         "supervisionResult_section1",
-        form.supervisionResult_section1
+        form.supervisionResult_section1,
       ),
       handleCheckError(
         "supervisionResult_section2",
-        form.supervisionResult_section2
+        form.supervisionResult_section2,
       ),
       handleCheckError(
         "supervisionResult_section3",
-        form.supervisionResult_section3
+        form.supervisionResult_section3,
       ),
       handleCheckError(
         "coord.contactDetailProper",
-        form.coord?.contactDetailProper
+        form.coord?.contactDetailProper,
       ),
       handleCheckError(
         "supervisionResult_section4",
-        form.supervisionResult_section4
+        form.supervisionResult_section4,
       ),
       handleCheckError(
         "supervisionResult_section6",
-        form.supervisionResult_section6
+        form.supervisionResult_section6,
       ),
       handleCheckError(
         "supervisionResult_section7",
-        form.supervisionResult_section7
+        form.supervisionResult_section7,
       ),
       handleCheckError("overall.futurePlan", form.overall?.futurePlan),
     ];
@@ -383,8 +383,8 @@ export default function Page(props: any) {
                     set(
                       "students",
                       (form.students || []).map((s, idx) =>
-                        idx === i ? e.target.value : s
-                      )
+                        idx === i ? e.target.value : s,
+                      ),
                     );
                     if (errors.students) {
                       setErrors((prev) => {
@@ -760,137 +760,137 @@ export default function Page(props: any) {
             </div>
           </div>
 
-            {/* ===== 3.4 ความพร้อม ===== */}
-            <div className="rounded-md border">
+          {/* ===== 3.4 ความพร้อม ===== */}
+          <div className="rounded-md border">
             <div className="p-3 font-medium bg-slate-50">
               3.4 ระบบหรือความพร้อมในการฝึกปฏิบัติงานของแหล่งฝึกและนักศึกษา
             </div>
 
             <div className="p-3 space-y-3">
               <div>
-              <Label className="text-sm">
-                3.4.1 ความพร้อม/ความตั้งใจและการเอาใจใส่ต่อการฝึกงาน
-                <b>
-                <u>ของเภสัชกรประจำแหล่งฝึก</u>
-                </b>
-                (ความเห็นจากนักศึกษาและการประเมินของอาจารย์นิเทศ)
-              </Label>
-              <Input
-                className="mt-2"
-                placeholder="หมายเหตุ"
-                value={form.readiness_site?.workload_note || ""}
-                onChange={(e) =>
-                set("readiness_site", {
-                  ...form.readiness_site!,
-                  workload_note: e.target.value,
-                })
-                }
-              />
-              
-              {/* ผลการติดตาม/นิเทศ ส่วนที่ 3.4.1 */}
-              <div className="space-y-2 pt-2 border-t mt-3">
-                <Label className="text-sm font-medium text-blue-700">
-                ผลการติดตาม/นิเทศ ส่วนที่ 3.4.1 (ระบุรายละเอียด) *
+                <Label className="text-sm">
+                  3.4.1 ความพร้อม/ความตั้งใจและการเอาใจใส่ต่อการฝึกงาน
+                  <b>
+                    <u>ของเภสัชกรประจำแหล่งฝึก</u>
+                  </b>
+                  (ความเห็นจากนักศึกษาและการประเมินของอาจารย์นิเทศ)
                 </Label>
-                <Textarea
-                rows={3}
-                className={
-                  errors.supervisionResult_section4
-                  ? "border-2 border-red-600"
-                  : ""
-                }
-                placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับความพร้อมของเภสัชกรประจำแหล่งฝึก..."
-                value={form.supervisionResult_section4 || ""}
-                onChange={(e) => {
-                  set("supervisionResult_section4", e.target.value);
-                  if (errors.supervisionResult_section4) {
-                  setErrors((prev) => {
-                    const newErrors = { ...prev };
-                    delete newErrors.supervisionResult_section4;
-                    return newErrors;
-                  });
+                <Input
+                  className="mt-2"
+                  placeholder="หมายเหตุ"
+                  value={form.readiness_site?.workload_note || ""}
+                  onChange={(e) =>
+                    set("readiness_site", {
+                      ...form.readiness_site!,
+                      workload_note: e.target.value,
+                    })
                   }
-                }}
                 />
-                {errors.supervisionResult_section4 && (
-                <p className="text-red-600 text-sm mt-1">
-                  {errors.supervisionResult_section4}
-                </p>
-                )}
-              </div>
+
+                {/* ผลการติดตาม/นิเทศ ส่วนที่ 3.4.1 */}
+                <div className="space-y-2 pt-2 border-t mt-3">
+                  <Label className="text-sm font-medium text-blue-700">
+                    ผลการติดตาม/นิเทศ ส่วนที่ 3.4.1 (ระบุรายละเอียด) *
+                  </Label>
+                  <Textarea
+                    rows={3}
+                    className={
+                      errors.supervisionResult_section4
+                        ? "border-2 border-red-600"
+                        : ""
+                    }
+                    placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับความพร้อมของเภสัชกรประจำแหล่งฝึก..."
+                    value={form.supervisionResult_section4 || ""}
+                    onChange={(e) => {
+                      set("supervisionResult_section4", e.target.value);
+                      if (errors.supervisionResult_section4) {
+                        setErrors((prev) => {
+                          const newErrors = { ...prev };
+                          delete newErrors.supervisionResult_section4;
+                          return newErrors;
+                        });
+                      }
+                    }}
+                  />
+                  {errors.supervisionResult_section4 && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.supervisionResult_section4}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div>
-              <Label className="text-sm">3.4.2 ความพร้อมของนักศึกษา</Label>
-              <div className="grid md:grid-cols-2 gap-2 mt-1">
-                {[
-                ["personality", "บุคลิกภาพและความประพฤติ"],
-                ["academic", "ความรู้และการเตรียมตัวก่อนการฝึกงาน"],
-                [
-                  "responsibility",
-                  "ความกระตือรือร้น ความรับผิดชอบและเอาใจใส่",
-                ],
-                ].map(([k, label]) => (
-                <label key={k} className="flex items-center gap-2">
-                  <Checkbox
-                  checked={!!(form.readiness_student as any)?.[k]}
-                  onCheckedChange={(c) =>
+                <Label className="text-sm">3.4.2 ความพร้อมของนักศึกษา</Label>
+                <div className="grid md:grid-cols-2 gap-2 mt-1">
+                  {[
+                    ["personality", "บุคลิกภาพและความประพฤติ"],
+                    ["academic", "ความรู้และการเตรียมตัวก่อนการฝึกงาน"],
+                    [
+                      "responsibility",
+                      "ความกระตือรือร้น ความรับผิดชอบและเอาใจใส่",
+                    ],
+                  ].map(([k, label]) => (
+                    <label key={k} className="flex items-center gap-2">
+                      <Checkbox
+                        checked={!!(form.readiness_student as any)?.[k]}
+                        onCheckedChange={(c) =>
+                          set("readiness_student", {
+                            ...form.readiness_student!,
+                            [k]: !!c,
+                          } as any)
+                        }
+                      />
+                      <span className="text-sm">{label}</span>
+                    </label>
+                  ))}
+                </div>
+                <Input
+                  className="mt-2"
+                  placeholder="อื่น ๆ (ระบุ)"
+                  value={form.readiness_student?.other || ""}
+                  onChange={(e) =>
                     set("readiness_student", {
-                    ...form.readiness_student!,
-                    [k]: !!c,
-                    } as any)
+                      ...form.readiness_student!,
+                      other: e.target.value,
+                    })
                   }
-                  />
-                  <span className="text-sm">{label}</span>
-                </label>
-                ))}
-              </div>
-              <Input
-                className="mt-2"
-                placeholder="อื่น ๆ (ระบุ)"
-                value={form.readiness_student?.other || ""}
-                onChange={(e) =>
-                set("readiness_student", {
-                  ...form.readiness_student!,
-                  other: e.target.value,
-                })
-                }
-              />
-
-              {/* ผลการติดตาม/นิเทศ ส่วนที่ 3.4.2 */}
-              <div className="space-y-2 pt-2 border-t mt-3">
-                <Label className="text-sm font-medium text-blue-700">
-                ผลการติดตาม/นิเทศ ส่วนที่ 3.4.2 (ระบุรายละเอียด) *
-                </Label>
-                <Textarea
-                rows={3}
-                className={
-                  errors.supervisionResult_section4_2
-                  ? "border-2 border-red-600"
-                  : ""
-                }
-                placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับความพร้อมของนักศึกษา..."
-                value={form.supervisionResult_section4_2 || ""}
-                onChange={(e) => {
-                  set("supervisionResult_section4_2", e.target.value);
-                  if (errors.supervisionResult_section4_2) {
-                  setErrors((prev) => {
-                    const newErrors = { ...prev };
-                    delete newErrors.supervisionResult_section4_2;
-                    return newErrors;
-                  });
-                  }
-                }}
                 />
-                {errors.supervisionResult_section4_2 && (
-                <p className="text-red-600 text-sm mt-1">
-                  {errors.supervisionResult_section4_2}
-                </p>
-                )}
-              </div>
+
+                {/* ผลการติดตาม/นิเทศ ส่วนที่ 3.4.2 */}
+                <div className="space-y-2 pt-2 border-t mt-3">
+                  <Label className="text-sm font-medium text-blue-700">
+                    ผลการติดตาม/นิเทศ ส่วนที่ 3.4.2 (ระบุรายละเอียด) *
+                  </Label>
+                  <Textarea
+                    rows={3}
+                    className={
+                      errors.supervisionResult_section4_2
+                        ? "border-2 border-red-600"
+                        : ""
+                    }
+                    placeholder="ระบุผลการติดตาม/นิเทศเกี่ยวกับความพร้อมของนักศึกษา..."
+                    value={form.supervisionResult_section4_2 || ""}
+                    onChange={(e) => {
+                      set("supervisionResult_section4_2", e.target.value);
+                      if (errors.supervisionResult_section4_2) {
+                        setErrors((prev) => {
+                          const newErrors = { ...prev };
+                          delete newErrors.supervisionResult_section4_2;
+                          return newErrors;
+                        });
+                      }
+                    }}
+                  />
+                  {errors.supervisionResult_section4_2 && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.supervisionResult_section4_2}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-            </div>
+          </div>
 
           {/* ===== 3.5 สนับสนุนจากมหาวิทยาลัย ===== */}
           <div className="rounded-md border">
@@ -1189,31 +1189,32 @@ export default function Page(props: any) {
           </div>
         </section>
       </div>
-
-      <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
-        <Link href="/advisor/visits">
-          <Button variant="outline" className="border-gray-300 text-gray-600">
-            ยกเลิก
+      {!report && (
+        <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
+          <Link href="/advisor/visits">
+            <Button variant="outline" className="border-gray-300 text-gray-600">
+              ยกเลิก
+            </Button>
+          </Link>
+          <Button
+            onClick={submit}
+            disabled={isSaving}
+            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                กำลังส่ง...
+              </>
+            ) : (
+              <>
+                <CheckCircleIcon className="h-4 w-4 mr-2" />
+                บันทึกและส่งรายงาน
+              </>
+            )}
           </Button>
-        </Link>
-        <Button
-          onClick={submit}
-          disabled={isSaving}
-          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              กำลังส่ง...
-            </>
-          ) : (
-            <>
-              <CheckCircleIcon className="h-4 w-4 mr-2" />
-              บันทึกและส่งรายงาน
-            </>
-          )}
-        </Button>
-      </CardFooter>
+        </CardFooter>
+      )}
     </Card>
   );
 }

@@ -28,6 +28,12 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
+import Page1 from "@/components/supervision/super1";
+import Page2 from "@/components/supervision/super2";
+import Page3 from "@/components/supervision/super3";
+import Page4 from "@/components/supervision/super4";
+import Page5 from "@/components/supervision/super5";
+
 const formatVisitTime = (date: string) => {
   try {
     const visitDate = new Date(date);
@@ -267,174 +273,19 @@ export default function VisitDetails() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Evaluation Results */}
             {data.result && (
               <>
-                {/* Evaluation Scores Section */}
-                <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 print:bg-white print:border print:border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-blue-900 flex items-center gap-2 print:text-black">
-                      <CheckCircleIcon className="h-5 w-5" />
-                      ผลการประเมินการปฏิบัติงาน
-                    </CardTitle>
-                    <CardDescription className="text-blue-700 print:text-gray-600">
-                      คะแนนการประเมินผลการปฏิบัติงานของนักศึกษาในแต่ละด้าน
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6 print:space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 print:grid-cols-4 print:gap-4">
-                      {evaluationCriteria.map((criteria) => (
-                        <div
-                          key={criteria.id}
-                          className="p-4 rounded-lg border-2 border-gray-200 bg-white print:border print:border-gray-200 print:p-3"
-                        >
-                          <label className="text-sm font-medium mb-3 block text-gray-900">
-                            {criteria.name}
-                          </label>
-                          <div className="flex justify-center">
-                            <div className="text-2xl font-bold text-purple-600 print:text-black">
-                              {data.result.evaluation_scores?.[criteria.id] ||
-                                "-"}
-                              <span className="text-sm font-normal text-gray-500 print:text-gray-600">
-                                /5
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          คะแนนเฉลี่ย
-                        </label>
-                        <div className="text-3xl font-bold text-purple-600 print:text-black">
-                          {data.result.average_score || "-"}
-                          <span className="text-sm font-normal text-gray-500 print:text-gray-600 ml-1">
-                            /5
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          ผลการประเมินโดยรวม
-                        </label>
-                        {data.result.overall_rating ? (
-                          <Badge
-                            className={cn(
-                              "text-lg px-4 py-2",
-                              ratingColors[data.result.overall_rating]
-                            )}
-                          >
-                            {ratingLabels[data.result.overall_rating]}
-                          </Badge>
-                        ) : (
-                          <div className="text-gray-500">-</div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Comments and Feedback Section */}
-                <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 print:bg-white print:border print:border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-green-900 flex items-center gap-2 print:text-black">
-                      <FileTextIcon className="h-5 w-5" />
-                      ความคิดเห็นและข้อเสนอแนะ
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6 print:space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 print:gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          จุดเด่นของนักศึกษา
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[120px] print:border print:border-gray-200 print:p-3">
-                          {data.result.strengths || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          จุดที่ควรปรับปรุง
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[120px] print:border print:border-gray-200 print:p-3">
-                          {data.result.improvements || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          ข้อเสนอแนะเพิ่มเติม
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[120px] print:border print:border-gray-200 print:p-3">
-                          {data.result.recommendations || "-"}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-900">
-                        สรุปผลการนิเทศ
-                      </label>
-                      <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[120px] print:border print:border-gray-200 print:p-3">
-                        {data.result.summary || "-"}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Interview Section */}
-                <Card className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200 print:bg-white print:border print:border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-orange-900 print:text-black">
-                      บันทึกการสัมภาษณ์
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          การสัมภาษณ์นักศึกษา
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[150px] print:border print:border-gray-200 print:p-3">
-                          {data.result.student_interview || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          การสัมภาษณ์แหล่งฝึก
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[150px] print:border print:border-gray-200 print:p-3">
-                          {data.result.mentor_interview || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          สภาพแวดล้อมการทำงาน
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[100px] print:border print:border-gray-200 print:p-3">
-                          {data.result.work_environment || "-"}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-900">
-                          งานที่ได้รับมอบหมาย
-                        </label>
-                        <div className="p-4 bg-white rounded-lg border border-gray-200 min-h-[100px] print:border print:border-gray-200 print:p-3">
-                          {data.result.assigned_tasks || "-"}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                {data?.type == "1" ? (
+                  <Page1 id={id} data={data.result} report={true} />
+                ) : data?.type == "2" ? (
+                  <Page2 id={id} data={data.result} report={true} />
+                ) : data?.type == "3" ? (
+                  <Page3 id={id} data={data.result} report={true} />
+                ) : data?.type == "4" ? (
+                  <Page4 id={id} data={data.result} report={true} />
+                ) : data?.type == "5" ? (
+                  <Page5 id={id} data={data.result} report={true} />
+                ) : null}
               </>
             )}
 

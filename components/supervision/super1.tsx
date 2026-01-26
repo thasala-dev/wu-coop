@@ -86,14 +86,14 @@ export default function Page(props: any) {
     "อีสเทิร์นฯ",
   ] as const;
 
-  const { id, data } = props;
+  const { id, data, report } = props;
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const { toast } = useToast();
   const router = useRouter();
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<Record<string, any>>(
-    data ? data : {}
+    data ? data : {},
   );
 
   const toggleUni = (uni: string, checked: boolean) => {
@@ -118,7 +118,7 @@ export default function Page(props: any) {
   const handleCheckError = (
     field: string,
     value: any,
-    customMessage?: string
+    customMessage?: string,
   ) => {
     if (!value || (Array.isArray(value) && value.length === 0)) {
       setErrors((prev) => ({
@@ -143,7 +143,7 @@ export default function Page(props: any) {
       handleCheckError(
         "fullname",
         formData.fullname,
-        "กรุณากรอกชื่อ-สกุล ผู้ติดต่อ"
+        "กรุณากรอกชื่อ-สกุล ผู้ติดต่อ",
       ),
       handleCheckError("email", formData.email, "กรุณากรอก E-mail"),
       handleCheckError("phone", formData.phone, "กรุณากรอกเบอร์โทรศัพท์"),
@@ -152,52 +152,52 @@ export default function Page(props: any) {
       handleCheckError(
         "uniSelected",
         formData.uniSelected,
-        "กรุณาเลือกมหาวิทยาลัยอย่างน้อย 1 แห่ง"
+        "กรุณาเลือกมหาวิทยาลัยอย่างน้อย 1 แห่ง",
       ),
 
       // ส่วนที่ 3: ความปลอดภัย
       handleCheckError(
         "accommodation",
         formData.accommodation,
-        "กรุณาเลือกประเภทที่พัก"
+        "กรุณาเลือกประเภทที่พัก",
       ),
       handleCheckError(
         "safety_travel",
         formData.safety_travel,
-        "กรุณาประเมินความปลอดภัยของที่พักและการเดินทาง"
+        "กรุณาประเมินความปลอดภัยของที่พักและการเดินทาง",
       ),
       handleCheckError(
         "safety_env",
         formData.safety_env,
-        "กรุณาประเมินความปลอดภัยของสิ่งแวดล้อมโดยรอบ"
+        "กรุณาประเมินความปลอดภัยของสิ่งแวดล้อมโดยรอบ",
       ),
 
       // ส่วนที่ 4: สิ่งสนับสนุนพื้นฐาน
       handleCheckError(
         "support_has",
         formData.support_has,
-        "กรุณาระบุว่ามีคอมพิวเตอร์/อุปกรณ์เกี่ยวข้องหรือไม่"
+        "กรุณาระบุว่ามีคอมพิวเตอร์/อุปกรณ์เกี่ยวข้องหรือไม่",
       ),
 
       // ส่วนที่ 5: ปัญหาและข้อเสนอแนะ
       handleCheckError(
         "issues",
         formData.issues,
-        "กรุณากรอกปัญหาและข้อเสนอแนะเกี่ยวกับงาน/กิจกรรม"
+        "กรุณากรอกปัญหาและข้อเสนอแนะเกี่ยวกับงาน/กิจกรรม",
       ),
 
       // ส่วนที่ 6: ความต้องการการสนับสนุน
       handleCheckError(
         "needsFromFaculty",
         formData.needsFromFaculty,
-        "กรุณากรอกความต้องการการสนับสนุนจากคณะเภสัชศาสตร์"
+        "กรุณากรอกความต้องการการสนับสนุนจากคณะเภสัชศาสตร์",
       ),
 
       // ส่วนที่ 7: การประเมินแหล่งฝึก (ต้องมีการประเมิน)
       handleCheckError(
         "siteEvaluation",
         formData.siteEvaluation_isSuitable || formData.siteEvaluation_other,
-        "กรุณาทำการประเมินแหล่งฝึก"
+        "กรุณาทำการประเมินแหล่งฝึก",
       ),
     ];
 
@@ -572,7 +572,10 @@ export default function Page(props: any) {
 
           <div className="space-y-2">
             <div className="flex flex-wrap gap-4 items-center">
-              <Label className="min-w-36">คอมพิวเตอร์/อุปกรณ์เกี่ยวข้อง  (เช่น อุปกรณ์ wireless, printer ฯลฯ) สำหรับนักศึกษาฝึกงาน</Label>
+              <Label className="min-w-36">
+                คอมพิวเตอร์/อุปกรณ์เกี่ยวข้อง (เช่น อุปกรณ์ wireless, printer
+                ฯลฯ) สำหรับนักศึกษาฝึกงาน
+              </Label>
               <label className="flex items-center gap-2">
                 <RadioGroup
                   className={`flex gap-4 p-2 rounded-md ${
@@ -904,7 +907,8 @@ export default function Page(props: any) {
                       </div>
                       <div className="text-xs space-y-1">
                         <div>
-                          1) รายละเอียดกิจกรรมผู้ป่วยนอก (แตกต่างกันรายคนหรือรวม)
+                          1) รายละเอียดกิจกรรมผู้ป่วยนอก
+                          (แตกต่างกันรายคนหรือรวม)
                         </div>
                         <div className="flex gap-4 ml-4">
                           <label className="flex items-center gap-2">
@@ -1358,17 +1362,17 @@ export default function Page(props: any) {
                     />
                   </td>
                 </tr>
-
               </tbody>
             </table>
           </div>
         </section>
-      
-      {/* ===== ส่วนที่ 5–6 ข้อเสนอแนะ/ความต้องการ ===== */}
+
+        {/* ===== ส่วนที่ 5–6 ข้อเสนอแนะ/ความต้องการ ===== */}
         <section className="space-y-3">
-            <div className="font-medium">
-            กิจกรรมอื่นของโรงพยาบาลที่ยังไม่มีนักศึกษาวลัยลักษณ์ฝึกงาน และมีแนวโน้มเป็นกิจกรรมฝึกงานสำหรับนักศึกษาชั้นปีที่ 6 ได้
-            </div>
+          <div className="font-medium">
+            กิจกรรมอื่นของโรงพยาบาลที่ยังไม่มีนักศึกษาวลัยลักษณ์ฝึกงาน
+            และมีแนวโน้มเป็นกิจกรรมฝึกงานสำหรับนักศึกษาชั้นปีที่ 6 ได้
+          </div>
           <Textarea
             rows={5}
             placeholder=""
@@ -1389,9 +1393,7 @@ export default function Page(props: any) {
             <p className="text-red-600 text-sm mt-1">{errors.other7}</p>
           )}
 
-            <div className="font-medium">
-            คำแนะนำอื่นๆ
-            </div>
+          <div className="font-medium">คำแนะนำอื่นๆ</div>
           <Textarea
             rows={5}
             placeholder="ระบุสิ่งที่ต้องการสนับสนุน…"
@@ -1409,44 +1411,41 @@ export default function Page(props: any) {
             className={errors.other7 ? "border-2 border-red-600" : ""}
           />
           {errors.other7 && (
-            <p className="text-red-600 text-sm mt-1">
-              {errors.other7}
-            </p>
+            <p className="text-red-600 text-sm mt-1">{errors.other7}</p>
           )}
         </section>
       </form>
-
-      
-
-      <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
-        <Link href="/advisor/visits">
-          <Button
-            variant="outline"
-            className="border-gray-300 text-gray-600 hover:bg-gray-100"
-          >
-            ยกเลิก
-          </Button>
-        </Link>
-        <div className="flex gap-3">
-          <Button
-            onClick={handleSubmitReport}
-            disabled={isSaving}
-            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                กำลังส่ง...
-              </>
-            ) : (
-              <>
-                <CheckCircleIcon className="h-4 w-4 mr-2" />
-                บันทึกและส่งรายงาน
-              </>
-            )}
-          </Button>
-        </div>
-      </CardFooter>
+      {!report && (
+        <CardFooter className="flex justify-between bg-gray-50 rounded-b-lg">
+          <Link href="/advisor/visits">
+            <Button
+              variant="outline"
+              className="border-gray-300 text-gray-600 hover:bg-gray-100"
+            >
+              ยกเลิก
+            </Button>
+          </Link>
+          <div className="flex gap-3">
+            <Button
+              onClick={handleSubmitReport}
+              disabled={isSaving}
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  กำลังส่ง...
+                </>
+              ) : (
+                <>
+                  <CheckCircleIcon className="h-4 w-4 mr-2" />
+                  บันทึกและส่งรายงาน
+                </>
+              )}
+            </Button>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }
