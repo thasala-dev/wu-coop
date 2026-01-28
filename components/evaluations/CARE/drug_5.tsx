@@ -536,6 +536,133 @@ export default function Page(props: any) {
           </table>
         </div>
       </div>
+
+      {/* Summary Section */}
+      <div className="sm:col-span-12">
+        <div className="rounded-md bg-blue-50 p-4 border border-blue-200">
+          <h3 className="font-semibold mb-3 text-sm">สรุปคะแนน</h3>
+          <div className="space-y-2">
+            {(() => {
+              // Helper function to calculate section score
+              const calculateSectionScore = (
+                sectionScores: string[],
+                weight: number
+              ) => {
+                const validScores = sectionScores.filter(
+                  (score) => score && score !== "N/A"
+                );
+                const count = validScores.length;
+                if (count === 0) return 0;
+
+                const sum = validScores.reduce(
+                  (total, score) => total + parseInt(score),
+                  0
+                );
+                return (sum * weight) / (5 * count);
+              };
+
+              // Activity 1: p1_1, p1_2, p1_3, p1_4
+              const activity1Scores = [data.p1_1, data.p1_2, data.p1_3, data.p1_4];
+              const activity1Score = calculateSectionScore(activity1Scores, 10);
+
+              // Activity 2: p2_1, p2_2, p2_3, p2_4
+              const activity2Scores = [data.p2_1, data.p2_2, data.p2_3, data.p2_4];
+              const activity2Score = calculateSectionScore(activity2Scores, 10);
+
+              // Activity 3: p3_1, p3_2, p3_3, p3_4
+              const activity3Scores = [data.p3_1, data.p3_2, data.p3_3, data.p3_4];
+              const activity3Score = calculateSectionScore(activity3Scores, 10);
+
+              // Activity 4: p4_1, p4_2, p4_3
+              const activity4Scores = [data.p4_1, data.p4_2, data.p4_3];
+              const activity4Score = calculateSectionScore(activity4Scores, 10);
+
+              // Activity 5: p5_1, p5_2, p5_3, p5_4, p5_5
+              const activity5Scores = [data.p5_1, data.p5_2, data.p5_3, data.p5_4, data.p5_5];
+              const activity5Score = calculateSectionScore(activity5Scores, 10);
+
+              // Activity 6: p6_1, p6_2, p6_3, p6_4
+              const activity6Scores = [data.p6_1, data.p6_2, data.p6_3, data.p6_4];
+              const activity6Score = calculateSectionScore(activity6Scores, 10);
+
+              // Total score - count all non-N/A items
+              const allScores = [
+                data.p1_1, data.p1_2, data.p1_3, data.p1_4,
+                data.p2_1, data.p2_2, data.p2_3, data.p2_4,
+                data.p3_1, data.p3_2, data.p3_3, data.p3_4,
+                data.p4_1, data.p4_2, data.p4_3,
+                data.p5_1, data.p5_2, data.p5_3, data.p5_4, data.p5_5,
+                data.p6_1, data.p6_2, data.p6_3, data.p6_4,
+              ];
+
+              const totalRawScore = allScores.reduce((sum, score) => {
+                if (score && score !== "N/A") {
+                  return sum + parseInt(score);
+                }
+                return sum;
+              }, 0);
+
+              const totalCount = allScores.filter(
+                (score) => score && score !== "N/A"
+              ).length;
+
+              const finalScore = totalCount > 0 ? (totalRawScore * 15) / (5 * totalCount) : 0;
+
+              return (
+                <>
+                  <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                    <div className="flex justify-between items-center">
+                      <span>กิจกรรมที่ 1:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(activity1Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>กิจกรรมที่ 2:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(activity2Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>กิจกรรมที่ 3:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(activity3Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>กิจกรรมที่ 4:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(activity4Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>กิจกรรมที่ 5:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(activity5Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>กิจกรรมที่ 6:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(activity6Score.toFixed(2)))}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="border-t border-blue-300 pt-2 mt-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium">รวมคะแนน (คะแนนที่ได้ × 15) / (5 × จำนวนข้อที่ไม่ใช่ N/A):</span>
+                      <span className="font-bold text-lg text-blue-600">
+                        {toThaiNumber(parseFloat(finalScore.toFixed(2)))}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      </div>
+
       <div className="sm:col-span-12">
         <div className="pt-4 pb-4">
           <h3 className="font-semibold mb-3 text-sm">ข้อเสนอแนะ</h3>

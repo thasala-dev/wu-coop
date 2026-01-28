@@ -533,8 +533,8 @@ export default function Page(props: any) {
                       {data[item.label as keyof typeof data] === ""
                         ? "__"
                         : data[item.label as keyof typeof data] === "N/A"
-                        ? "N/A"
-                        : toThaiNumber(
+                          ? "N/A"
+                          : toThaiNumber(
                             data[item.label as keyof typeof data] * item.point
                           )}
                     </td>
@@ -561,7 +561,7 @@ export default function Page(props: any) {
                                 value={radio.value}
                                 className={
                                   isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? "border-2 border-red-600"
                                     : ""
                                 }
@@ -574,7 +574,7 @@ export default function Page(props: any) {
                                 className={
                                   "text-xs mt-1" +
                                   (isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? " text-red-600"
                                     : "")
                                 }
@@ -613,7 +613,7 @@ export default function Page(props: any) {
                                 value={radio.value}
                                 className={
                                   isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? "border-2 border-red-600"
                                     : ""
                                 }
@@ -626,7 +626,7 @@ export default function Page(props: any) {
                                 className={
                                   "text-xs mt-1" +
                                   (isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? " text-red-600"
                                     : "")
                                 }
@@ -665,7 +665,7 @@ export default function Page(props: any) {
                                 value={radio.value}
                                 className={
                                   isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? "border-2 border-red-600"
                                     : ""
                                 }
@@ -678,7 +678,7 @@ export default function Page(props: any) {
                                 className={
                                   "text-xs mt-1" +
                                   (isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? " text-red-600"
                                     : "")
                                 }
@@ -733,7 +733,7 @@ export default function Page(props: any) {
                                 value={radio.value}
                                 className={
                                   isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? "border-2 border-red-600"
                                     : ""
                                 }
@@ -746,7 +746,7 @@ export default function Page(props: any) {
                                 className={
                                   "text-xs mt-1" +
                                   (isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? " text-red-600"
                                     : "")
                                 }
@@ -781,7 +781,7 @@ export default function Page(props: any) {
                                 value={radio.value}
                                 className={
                                   isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? "border-2 border-red-600"
                                     : ""
                                 }
@@ -794,7 +794,7 @@ export default function Page(props: any) {
                                 className={
                                   "text-xs mt-1" +
                                   (isSubmit &&
-                                  !data[item.label as keyof typeof data]
+                                    !data[item.label as keyof typeof data]
                                     ? " text-red-600"
                                     : "")
                                 }
@@ -830,13 +830,13 @@ export default function Page(props: any) {
                       }
                     });
 
-                    // คำนวณคะแนนเต็ม 5
-                    const finalScore = (totalScore / 150) * 5;
+                    // คำนวณคะแนนเต็ม 7.5
+                    const finalScore = (totalScore / 150) * 7.5;
                     const displayScore = hasNA ? "N/A" : toThaiNumber(parseFloat(finalScore.toFixed(2)));
 
                     return (
                       <>
-                        ปรับให้เป็นคะแนนเต็ม 5 คะแนน =
+                        ปรับให้เป็นคะแนนเต็ม 7.5 คะแนน =
                         <span className="font-mono">
                           ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 150) &times; 5
                         </span>

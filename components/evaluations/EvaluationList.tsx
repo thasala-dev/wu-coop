@@ -12,6 +12,8 @@ import CARE_p7 from "@/components/evaluations/CARE/p7";
 import CARE_p8 from "@/components/evaluations/CARE/p8";
 import CARE_p9 from "@/components/evaluations/CARE/p9";
 import CARE_p10 from "@/components/evaluations/CARE/p10";
+import CARE_p9_dis from "@/components/evaluations/CARE/p9_dis";
+import CARE_p10_dis from "@/components/evaluations/CARE/p10_dis";
 
 import CARE_pm5 from "@/components/evaluations/CARE/pm5";
 import CARE_drug1 from "@/components/evaluations/CARE/drug_1";
@@ -92,9 +94,9 @@ export default function EvaluationList(props: any) {
     return <CARE_ssj2 {...props} />;
   } else if (subtype === "25" || subtype === "53") {
     return <CARE_manager1 {...props} />;
-  }  else if (subtype === "26" || subtype === "54" || subtype === "55") {
+  } else if (subtype === "26" || subtype === "54" || subtype === "55") {
     return <CARE_manager2 {...props} />;
-  }  else if (subtype === "27") {
+  } else if (subtype === "27") {
     return <CARE_manager3 {...props} />;
   } else if (subtype === "28") {
     return <CARE_manager4 {...props} />;
@@ -118,16 +120,20 @@ export default function EvaluationList(props: any) {
     return <SSC_p1 {...props} />;
   } else if (subtype === "38") {
     return <SSC_p2 {...props} />;
-  } else if (subtype === "40" || subtype ==="41") {
+  } else if (subtype === "40" || subtype === "41") {
     return <SSC_p1_1 {...props} />;
   } else if (subtype === "42" || subtype === "43") {
     return <SSC_p2_1 {...props} />;
-  } else if (subtype === "44"){
+  } else if (subtype === "44") {
     return <SSC_p3 {...props} />;
   } else if (subtype === "46") {
     return <SSC_p4 {...props} />;
   } else if (subtype === "48") {
     return <SSC_p5 {...props} />;
+  } else if (subtype === "56" || subtype === "57") {
+    return <CARE_p9_dis {...props} />;
+  } else if (subtype === "58" || subtype === "59") {
+    return <CARE_p10_dis {...props} />;
   }
 
 

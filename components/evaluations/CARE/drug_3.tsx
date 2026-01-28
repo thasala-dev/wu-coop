@@ -427,6 +427,137 @@ export default function Page(props: any) {
           </table>
         </div>
       </div>
+
+      {/* Summary Section */}
+      <div className="sm:col-span-12">
+        <div className="rounded-md bg-blue-50 p-4 border border-blue-200">
+          <h3 className="font-semibold mb-3 text-sm">สรุปคะแนน</h3>
+          <div className="space-y-2">
+            {(() => {
+              // Helper function to calculate section score
+              const calculateSectionScore = (
+                sectionScores: string[],
+                weight: number
+              ) => {
+                const validScores = sectionScores.filter(
+                  (score) => score && score !== "N/A"
+                );
+                const count = validScores.length;
+                if (count === 0) return 0;
+
+                const sum = validScores.reduce(
+                  (total, score) => total + parseInt(score),
+                  0
+                );
+                return (sum * weight) / (5 * count);
+              };
+
+              // Section 1: p1_1, p1_2
+              const section1Scores = [data.p1_1, data.p1_2];
+              const section1Score = calculateSectionScore(section1Scores, 7.5);
+
+              // Section 2: p2_1, p2_2, p2_3, p2_4
+              const section2Scores = [data.p2_1, data.p2_2, data.p2_3, data.p2_4];
+              const section2Score = calculateSectionScore(section2Scores, 50);
+
+              // Section 3: p3
+              const section3Scores = [data.p3];
+              const section3Score = calculateSectionScore(section3Scores, 7.5);
+
+              // Section 4: p4
+              const section4Scores = [data.p4];
+              const section4Score = calculateSectionScore(section4Scores, 7.5);
+
+              // Section 5: p5
+              const section5Scores = [data.p5];
+              const section5Score = calculateSectionScore(section5Scores, 17.5);
+
+              // Section 6: p6
+              const section6Scores = [data.p6];
+              const section6Score = calculateSectionScore(section6Scores, 10);
+
+              // Total score - count all non-N/A items
+              const allScores = [
+                data.p1_1,
+                data.p1_2,
+                data.p2_1,
+                data.p2_2,
+                data.p2_3,
+                data.p2_4,
+                data.p3,
+                data.p4,
+                data.p5,
+                data.p6,
+              ];
+
+              const totalRawScore = allScores.reduce((sum, score) => {
+                if (score && score !== "N/A") {
+                  return sum + parseInt(score);
+                }
+                return sum;
+              }, 0);
+
+              const totalCount = allScores.filter(
+                (score) => score && score !== "N/A"
+              ).length;
+
+              const finalScore = totalCount > 0 ? (totalRawScore * 15) / (5 * totalCount) : 0;
+
+              return (
+                <>
+                  <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                    <div className="flex justify-between items-center">
+                      <span>ส่วนที่ 1:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(section1Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>ส่วนที่ 2:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(section2Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>ส่วนที่ 3:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(section3Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>ส่วนที่ 4:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(section4Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>ส่วนที่ 5:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(section5Score.toFixed(2)))}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>ส่วนที่ 6:</span>
+                      <span className="font-semibold">
+                        {toThaiNumber(parseFloat(section6Score.toFixed(2)))}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="border-t border-blue-300 pt-2 mt-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium">รวมคะแนน (คะแนนที่ได้ × 15) / 100:</span>
+                      <span className="font-bold text-lg text-blue-600">
+                        {toThaiNumber(parseFloat(finalScore.toFixed(2)))}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      </div>
+
       <div className="sm:col-span-12">
         <div className="pt-4 pb-4">
           <h3 className="font-semibold mb-3 text-sm">ข้อเสนอแนะ</h3>
