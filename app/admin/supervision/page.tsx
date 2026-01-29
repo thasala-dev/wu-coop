@@ -830,7 +830,7 @@ export default function SupervisionPage() {
                           key: "actions",
                           content: "จัดการ",
                           sort: false,
-                          width: "100px",
+                          width: "120px",
                           render: (row: any) => {
                             if (row.status === 1) {
                               return (
@@ -851,6 +851,13 @@ export default function SupervisionPage() {
                             }
                             return (
                               <div className="flex justify-end gap-2">
+                                <Link
+                                  href={`/admin/supervision/report/${row.id}`}
+                                >
+                                  <Button variant="outline" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                                    ตัวอย่าง
+                                  </Button>
+                                </Link>
                                 <Link
                                   href={`/admin/supervision/edit/${row.id}`}
                                 >
