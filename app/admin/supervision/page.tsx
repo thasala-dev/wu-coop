@@ -852,7 +852,7 @@ export default function SupervisionPage() {
                             return (
                               <div className="flex justify-end gap-2">
                                 <Link
-                                  href={`/admin/supervision/report/${row.id}`}
+                                  href={`/admin/supervision/sample/${row.id}`}
                                 >
                                   <Button variant="outline" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                                     ตัวอย่าง
