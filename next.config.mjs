@@ -16,7 +16,17 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline'", // Note: 'unsafe-inline' may be needed for Next.js inline scripts
+              "style-src 'self' 'unsafe-inline'", // Needed for styled-components/CSS-in-JS
+              "img-src 'self' data: https: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self'",
+              "frame-ancestors 'self'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
           },
           {
             key: 'X-Frame-Options',
@@ -28,11 +38,15 @@ const nextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin',
           },
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
           },
         ],
       },
