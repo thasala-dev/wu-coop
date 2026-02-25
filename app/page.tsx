@@ -269,36 +269,33 @@ export default function Home() {
                     </div>
 
                     {/* Cloudflare Turnstile */}
-                    <div className="flex flex-col items-center gap-1">
-                      <div className={`w-full rounded-xl overflow-hidden border transition-all duration-300 ${
-                        turnstileToken
-                          ? "border-green-400 bg-green-50/60 shadow-sm shadow-green-200"
-                          : "border-gray-200 bg-white/50"
-                      }`}>
-                        <div className="flex items-center justify-between px-3 py-2">
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            {turnstileToken ? (
-                              <>
-                                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-500 text-white text-[10px]">✓</span>
-                                <span className="text-green-600 font-medium">ยืนยันตัวตนสำเร็จ</span>
-                              </>
-                            ) : (
-                              <>
-                                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-200 text-gray-400 text-[10px]">?</span>
-                                <span>กรุณายืนยันตัวตน</span>
-                              </>
-                            )}
-                          </div>
-                          <Turnstile
-                            key={turnstileKey}
-                            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
-                            onSuccess={(token) => setTurnstileToken(token)}
-                            onExpire={() => setTurnstileToken("")}
-                            onError={() => setTurnstileToken("")}
-                            options={{ theme: "light", language: "th", size: "compact" }}
-                          />
-                        </div>
+                    <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-300 ${
+                      turnstileToken
+                        ? "border-green-400 bg-green-50/70 shadow-sm"
+                        : "border-gray-200 bg-white/50"
+                    }`}>
+                      {turnstileToken ? (
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white text-xs shrink-0">✓</span>
+                      ) : (
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-300 shrink-0">
+                          <span className="w-3 h-3 rounded-full border-2 border-gray-400 border-t-transparent animate-spin" />
+                        </span>
+                      )}
+                      <span className={`text-sm flex-1 ${turnstileToken ? "text-green-700 font-medium" : "text-gray-500"}`}>
+                        {turnstileToken ? "ยืนยันตัวตนสำเร็จแล้ว" : "กำลังตรวจสอบ..."}
+                      </span>
+                      {/* Hidden Turnstile widget */}
+                      <div className="overflow-hidden w-0 h-0">
+                        <Turnstile
+                          key={turnstileKey}
+                          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+                          onSuccess={(token) => setTurnstileToken(token)}
+                          onExpire={() => setTurnstileToken("")}
+                          onError={() => setTurnstileToken("")}
+                          options={{ theme: "light", language: "th", size: "invisible" }}
+                        />
                       </div>
+                      <img src="https://www.cloudflare.com/favicon.ico" alt="Cloudflare" className="w-4 h-4 opacity-40" />
                     </div>
 
                     <Button
