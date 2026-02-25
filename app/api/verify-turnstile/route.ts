@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     if (!token) {
       return NextResponse.json(
         { success: false, message: "ไม่พบ token" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       console.error("TURNSTILE_SECRET_KEY is not set");
       return NextResponse.json(
         { success: false, message: "ไม่ได้ตั้งค่า secret key" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -24,14 +24,19 @@ export async function POST(request: NextRequest) {
     const formData = new FormData();
     formData.append("secret", secretKey);
     formData.append("response", token);
-    formData.append("remoteip", request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "");
+    formData.append(
+      "remoteip",
+      request.headers.get("x-forwarded-for") ||
+        request.headers.get("x-real-ip") ||
+        "",
+    );
 
     const verifyRes = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const data = await verifyRes.json();
@@ -40,15 +45,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true });
     } else {
       return NextResponse.json(
-        { success: false, message: "การยืนยันตัวตนล้มเหลว", errors: data["error-codes"] },
-        { status: 400 }
+        {
+          success: false,
+          message: "การยืนยันตัวตนล้มเหลว",
+          errors: data["error-codes"],
+        },
+        { status: 400 },
       );
     }
   } catch (error) {
     console.error("Turnstile verify error:", error);
     return NextResponse.json(
       { success: false, message: "เกิดข้อผิดพลาด" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
