@@ -27,6 +27,7 @@ import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 import Loading from "@/components/loading";
 import { signIn, useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 const loginSchema = z.object({
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
@@ -39,6 +40,8 @@ export default function Home() {
   const [role, setRole] = useState("student");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
+  const [turnstileKey, setTurnstileKey] = useState<number>(0); // used to reset widget
   const router = useRouter();
   const { toast } = useToast();
   const { data: session, status } = useSession();
@@ -82,9 +85,39 @@ export default function Home() {
 
   async function onSubmit(values: LoginFormData) {
     console.log("Attempting login with NextAuth...");
+
+    if (!turnstileToken) {
+      toast({
+        title: "กรุณายืนยันตัวตน",
+        description: "กรุณาผ่านการตรวจสอบ CAPTCHA ก่อนเข้าสู่ระบบ",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
+      // Verify Turnstile token first
+      const verifyRes = await fetch("/api/verify-turnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      const verifyData = await verifyRes.json();
+
+      if (!verifyData.success) {
+        toast({
+          title: "การยืนยันตัวตนล้มเหลว",
+          description: "กรุณาลองใหม่อีกครั้ง",
+          variant: "destructive",
+        });
+        setTurnstileToken("");
+        setTurnstileKey((k) => k + 1); // reset widget
+        setIsLoading(false);
+        return;
+      }
+
       const result = await signIn("credentials", {
         username: values.username,
         password: values.password,
@@ -99,13 +132,14 @@ export default function Home() {
           description: "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง",
           variant: "destructive",
         });
+        setTurnstileToken("");
+        setTurnstileKey((k) => k + 1); // reset widget after failed login
       } else {
         console.log("Login successful with NextAuth");
         toast({
           title: "เข้าสู่ระบบสำเร็จ",
           variant: "success",
         });
-
         // NextAuth จะโหลด session ใหม่โดยอัตโนมัติ และ useEffect ด้านบนจะทำการ redirect
       }
     } catch (error) {
@@ -115,6 +149,8 @@ export default function Home() {
         description: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
         variant: "destructive",
       });
+      setTurnstileToken("");
+      setTurnstileKey((k) => k + 1);
     } finally {
       setIsLoading(false);
     }
@@ -232,9 +268,42 @@ export default function Home() {
                       )}
                     </div>
 
+                    {/* Cloudflare Turnstile */}
+                    <div className="flex flex-col items-center gap-1">
+                      <div className={`w-full rounded-xl overflow-hidden border transition-all duration-300 ${
+                        turnstileToken
+                          ? "border-green-400 bg-green-50/60 shadow-sm shadow-green-200"
+                          : "border-gray-200 bg-white/50"
+                      }`}>
+                        <div className="flex items-center justify-between px-3 py-2">
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            {turnstileToken ? (
+                              <>
+                                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-500 text-white text-[10px]">✓</span>
+                                <span className="text-green-600 font-medium">ยืนยันตัวตนสำเร็จ</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-200 text-gray-400 text-[10px]">?</span>
+                                <span>กรุณายืนยันตัวตน</span>
+                              </>
+                            )}
+                          </div>
+                          <Turnstile
+                            key={turnstileKey}
+                            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+                            onSuccess={(token) => setTurnstileToken(token)}
+                            onExpire={() => setTurnstileToken("")}
+                            onError={() => setTurnstileToken("")}
+                            options={{ theme: "light", language: "th", size: "compact" }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
                     <Button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={isLoading || !turnstileToken}
                       className={`w-full py-2 rounded-md text-white transition duration-300 ${getButtonClass()}`}
                     >
                       {isLoading ? (
