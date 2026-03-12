@@ -27,7 +27,6 @@ import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 import Loading from "@/components/loading";
 import { signIn, useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
-import { Turnstile } from "@marsidev/react-turnstile";
 
 const loginSchema = z.object({
   username: z.string().min(1, "กรุณากรอกชื่อผู้ใช้งาน"),
@@ -40,12 +39,6 @@ export default function Home() {
   const [role, setRole] = useState("student");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState<string>("");
-  const [turnstileKey, setTurnstileKey] = useState<number>(0); // used to reset widget
-  const isLocalhost =
-    typeof window !== "undefined" &&
-    (window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1");
   const router = useRouter();
   const { toast } = useToast();
   const { data: session, status } = useSession();
@@ -90,47 +83,9 @@ export default function Home() {
   async function onSubmit(values: LoginFormData) {
     console.log("Attempting login with NextAuth...");
 
-    if (!turnstileToken && !isLocalhost) {
-      toast({
-        title: "กรุณายืนยันตัวตน",
-        description: "กรุณาผ่านการตรวจสอบ CAPTCHA ก่อนเข้าสู่ระบบ",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
 
     try {
-      // Verify Turnstile token first (skip on localhost)
-      if (!isLocalhost) {
-        const verifyRes = await fetch("/api/verify-turnstile", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: turnstileToken }),
-        });
-
-        let verifyData: { success: boolean } = { success: false };
-        try {
-          verifyData = await verifyRes.json();
-        } catch {
-          // Response is not JSON (e.g. Vercel challenge page)
-          verifyData = { success: false };
-        }
-
-        if (!verifyData.success) {
-          toast({
-            title: "การยืนยันตัวตนล้มเหลว",
-            description: "กรุณาลองใหม่อีกครั้ง",
-            variant: "destructive",
-          });
-          setTurnstileToken("");
-          setTurnstileKey((k) => k + 1);
-          setIsLoading(false);
-          return;
-        }
-      }
-
       const result = await signIn("credentials", {
         username: values.username,
         password: values.password,
@@ -145,8 +100,6 @@ export default function Home() {
           description: "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง",
           variant: "destructive",
         });
-        setTurnstileToken("");
-        setTurnstileKey((k) => k + 1); // reset widget after failed login
       } else {
         console.log("Login successful with NextAuth");
         toast({
@@ -162,8 +115,6 @@ export default function Home() {
         description: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
         variant: "destructive",
       });
-      setTurnstileToken("");
-      setTurnstileKey((k) => k + 1);
     } finally {
       setIsLoading(false);
     }
@@ -283,24 +234,10 @@ export default function Home() {
                     </div>
 
                     {/* Cloudflare Turnstile - ไม่แสดงบน localhost */}
-                    {!isLocalhost && (
-                      <div className="flex justify-center">
-                        <Turnstile
-                          key={turnstileKey}
-                          siteKey={
-                            process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""
-                          }
-                          onSuccess={(token) => setTurnstileToken(token)}
-                          onExpire={() => setTurnstileToken("")}
-                          onError={() => setTurnstileToken("")}
-                          options={{ theme: "light", language: "th" }}
-                        />
-                      </div>
-                    )}
 
                     <Button
                       type="submit"
-                      disabled={isLoading || (!turnstileToken && !isLocalhost)}
+                      disabled={isLoading}
                       className={`w-full py-2 rounded-md text-white transition duration-300 ${getButtonClass()}`}
                     >
                       {isLoading ? (
