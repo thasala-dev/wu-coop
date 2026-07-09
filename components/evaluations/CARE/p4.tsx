@@ -613,15 +613,15 @@ export default function Page(props: any) {
                       }
                     });
 
-                    // คำนวณคะแนนเต็ม 5
-                    const finalScore = (totalScore / 100) * 5;
+                    // คำนวณคะแนนเต็ม 10
+                    const finalScore = (totalScore / 100) * 10;
                     const displayScore = hasNA ? "N/A" : toThaiNumber(parseFloat(finalScore.toFixed(2)));
 
                     return (
                       <>
-                        ปรับให้เป็นคะแนนเต็ม 5 คะแนน =
+                        ปรับให้เป็นคะแนนเต็ม 10 คะแนน =
                         <span className="font-mono">
-                          ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 100) &times; 5
+                          ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 100) &times; 10
                         </span>
                         &nbsp;= <span className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
                       </>

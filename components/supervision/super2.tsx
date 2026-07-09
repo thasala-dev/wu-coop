@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 type FormState = {
   // 1) ข้อมูลทั่วไปของนักศึกษาและแหล่งฝึก
   siteName?: string;
+  practicePharmacist?: string;
   informedBrief?: boolean; // “เคล้า/ได้รับชี้แจง…”
   visitDate?: string; // วันที่นิเทศ
   visitRound?: string; // ครั้งที่
@@ -297,7 +298,7 @@ export default function Page(props: any) {
     <Card className="bg-white border-0 shadow-lg hover:shadow-xl transition-all">
       <div className="p-4 space-y-8">
         <h1 className="text-xl font-semibold">
-          แบบนิเทศงานการฝึกปฏิบัติงานเชิงวิชาชีพ (เภสัชกรรมปฐมภูมิ) )
+          แบบนิเทศงานการฝึกปฏิบัติงานเชิงวิชาชีพ (เภสัชกรรมปฐมภูมิ) 
         </h1>
 
         {/* ===== 1. ข้อมูลทั่วไป ===== */}
@@ -369,6 +370,15 @@ export default function Page(props: any) {
                 <p className="text-red-600 text-sm mt-1">{errors.visitRound}</p>
               )}
             </div>
+          </div>
+
+          <div className="space-y-1">
+            <Label>เภสัชผู้รับผิดชอบการฝึกปฏิบัติงาน</Label>
+            <Input
+              value={form.practicePharmacist || ""}
+              onChange={(e) => set("practicePharmacist", e.target.value)}
+              placeholder="ชื่อ-สกุล เภสัชผู้รับผิดชอบ"
+            />
           </div>
 
           <div>

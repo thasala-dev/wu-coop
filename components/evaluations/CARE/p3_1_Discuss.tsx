@@ -830,13 +830,13 @@ export default function Page(props: any) {
                       }
                     });
 
-                    // คำนวณคะแนนเต็ม 7.5
-                    const finalScore = (totalScore / 150) * 7.5;
+                    // คำนวณคะแนนเต็ม 10
+                    const finalScore = (totalScore / 150) * 5;
                     const displayScore = hasNA ? "N/A" : toThaiNumber(parseFloat(finalScore.toFixed(2)));
 
                     return (
                       <>
-                        ปรับให้เป็นคะแนนเต็ม 7.5 คะแนน =
+                        ปรับให้เป็นคะแนนเต็ม 5 คะแนน =
                         <span className="font-mono">
                           ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 150) &times; 5
                         </span>

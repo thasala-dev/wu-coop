@@ -681,6 +681,9 @@ export default function Page(props: any) {
               <>
                 <span className="text-sm">เดือนละ</span>
                 <Input
+                  type="number"
+                  min={0}
+                  step={1}
                   className="w-36"
                   placeholder="จำนวนบาท"
                   value={formData.housing_fee_amt || ""}
@@ -716,6 +719,9 @@ export default function Page(props: any) {
             {formData.allowance_has === "มี" && (
               <>
                 <Input
+                  type="number"
+                  min={0}
+                  step={1}
                   className="w-36"
                   placeholder="จำนวนบาท"
                   value={formData.allowance_amt || ""}
@@ -724,14 +730,17 @@ export default function Page(props: any) {
                   }
                 />
                 <span className="text-sm">บาท/</span>
-                <Input
-                  className="w-28"
-                  placeholder="ต่อวัน/เดือน"
-                  value={formData.allowance_per || ""}
+                <select
+                  className="w-36 border rounded px-2 py-1 text-sm"
+                  value={formData.allowance_per || "วัน"}
                   onChange={(e) =>
                     setFormData({ ...formData, allowance_per: e.target.value })
                   }
-                />
+                >
+                  <option value="วัน">วัน</option>
+                  <option value="เดือน">เดือน</option>
+                  <option value="ครั้ง">ครั้ง</option>
+                </select>
               </>
             )}
           </div>
@@ -1089,7 +1098,7 @@ export default function Page(props: any) {
             <div>
               <div className="text-sm mb-1">
                 3.2.2
-                กิจกรรมการฝึกงานที่กาหนดในคู่มือการฝึกปฏิบัติงานสอดคล้องกับการฝึกปฏิบัติจริงหรือไม่
+                กิจกรรมการฝึกงานที่กำหนดในคู่มือการฝึกปฏิบัติงานสอดคล้องกับการฝึกปฏิบัติจริงหรือไม่
               </div>
               <div className="flex flex-wrap gap-4">
                 {[
@@ -1274,17 +1283,105 @@ export default function Page(props: any) {
               />
             </div>
 
-            {/* 3.4 ความคิดเห็นของอาจารย์นิเทศ */}
+            {/* 3.4 ความคิดเห็นของอาจารย์นิเทศ (สองส่วน: ประเมิน และ ความเหมาะสมของแหล่งฝึก) */}
             <div className="space-y-3 pt-4">
-              <div className="font-medium">ความคิดเห็นของอาจารย์นิเทศ</div>
-              <Textarea
-                rows={6}
-                placeholder="กรุณากรอกความคิดเห็นของอาจารย์นิเทศ..."
-                value={formData.advisor_comment || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, advisor_comment: e.target.value })
-                }
-              />
+              <div className="font-medium">ส่วนที่ 4: ความคิดเห็นของอาจารย์นิเทศ</div>
+
+              {/* ส่วนที่ 4.1 ผลการประเมินแหล่งฝึก */}
+              <div>
+                <div className="text-sm font-medium mb-2">ผลการประเมินแหล่งฝึก</div>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { v: "good", t: "เป็นแหล่งฝึกที่ดี" },
+                    { v: "acceptable", t: "เป็นแหล่งฝึกที่พอใช้" },
+                    { v: "needs_development", t: "เป็นแหล่งฝึกที่ควรมีการพัฒนาก่อนส่งนักศึกษา" },
+                  ].map(({ v, t }) => (
+                    <label key={v} className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="eval_assessment"
+                        className="h-4 w-4"
+                        checked={formData.eval_assessment === v}
+                        onChange={() => setFormData({ ...formData, eval_assessment: v })}
+                      />
+                      <span className="text-sm">{t}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* ส่วนที่ 4.2 ความเหมาะสมของแหล่งฝึก (เลือกได้หลายข้อ) */}
+              <div>
+                <div className="text-sm font-medium mb-2">ความเหมาะสมของแหล่งฝึก (เลือกได้หลายข้อ)</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {[
+                    { key: "area_overall", label: "ภาพรวมการปฏิบัติงาน" },
+                    { key: "area_rnd", label: "การวิจัยและพัฒนา" },
+                    { key: "area_production", label: "การผลิต" },
+                    { key: "area_registration", label: "การขึ้นทะเบียน" },
+                    { key: "area_qc", label: "การควบคุมคุณภาพ/การประกันคุณภาพ" },
+                    { key: "area_consumer", label: "การคุ้มครองผู้บริโภค" },
+                  ].map(({ key, label }) => (
+                    <label key={key} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4"
+                        checked={Boolean(formData.eval_areas?.[key])}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            eval_areas: {
+                              ...(formData.eval_areas || {}),
+                              [key]: e.target.checked,
+                            },
+                          })
+                        }
+                      />
+                      <span className="text-sm">{label}</span>
+                    </label>
+                  ))}
+
+                  {/* Other option with text */}
+                  <div className="col-span-1 sm:col-span-2 flex flex-col">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4"
+                        checked={Boolean(formData.eval_areas?.area_other)}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            eval_areas: {
+                              ...(formData.eval_areas || {}),
+                              area_other: e.target.checked,
+                            },
+                          })
+                        }
+                      />
+                      <span className="text-sm">อื่น ๆ ระบุ</span>
+                    </label>
+                    {formData.eval_areas?.area_other && (
+                      <Input
+                        className="mt-2 w-full"
+                        placeholder="ระบุอื่น ๆ"
+                        value={formData.eval_areas_other || ""}
+                        onChange={(e) => setFormData({ ...formData, eval_areas_other: e.target.value })}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* ข้อเสนอแนะปิดท้าย */}
+              <div>
+                <div className="text-sm font-medium mb-2">ข้อเสนอแนะปิดท้าย</div>
+                <Textarea
+                  rows={4}
+                  placeholder="เขียนข้อเสนอแนะเพิ่มเติม..."
+                  value={formData.eval_final_note || ""}
+                  onChange={(e) => setFormData({ ...formData, eval_final_note: e.target.value })}
+                />
+              </div>
             </div>
           </div>
         </div>

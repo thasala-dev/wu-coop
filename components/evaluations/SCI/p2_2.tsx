@@ -35,7 +35,7 @@ const dosageLabels = [
 const activityLabels = [
   { label: "ไม่มีการฝึก", value: "0" },
   { label: "1-2 กิจกรรม", value: "1" },
-  { label: ">2 กิจกรรม", value: ">2" },
+  { label: ">3 กิจกรรม", value: ">3" },
 ];
 
 const workLabels = [

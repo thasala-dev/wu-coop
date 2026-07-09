@@ -1050,7 +1050,7 @@ export default function Page(props: any) {
                   className="p-2 border align-center text-sm font-bold text-center bg-slate-100"
                   colSpan={4}
                 >
-                  รวมคะแนนเฉลี่ยทั้งหมด
+                  คะแนนรวม (จุดมุ่งหมาย 1-4)*5 คะแนน
                 </td>
                 <td className="p-2 border align-center text-sm font-bold text-center bg-slate-100">
                   {(() => {

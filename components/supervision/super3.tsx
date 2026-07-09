@@ -53,6 +53,10 @@ type FormState = {
   advisors?: string[];
 
   // 3) ข้อมูลการฝึกในปัจจุบัน
+  trainingStudentCount?: string;
+  trainingInstitutionCount?: string;
+  trainingTotalStudents?: string;
+  trainingAcademicYear?: string;
   uniCounts?: { total?: string; male?: string; female?: string };
   universities?: string[];
   universitiesOther?: string;
@@ -662,6 +666,42 @@ export default function Page(props: any) {
         <section className="space-y-3">
           <div className="font-medium">
             3) ข้อมูลการฝึกที่เกี่ยวกับแหล่งฝึกในปัจจุบัน
+          </div>
+          <div className="grid md:grid-cols-4 gap-2">
+            <div className="space-y-1">
+              <Label>นิสิต/นักศึกษา</Label>
+              <Input
+                placeholder="จำนวน"
+                value={form.trainingStudentCount || ""}
+                onChange={(e) => set("trainingStudentCount", e.target.value)}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>สถาบันที่เข้ารับการฝึกงาน</Label>
+              <Input
+                placeholder="จำนวนสถาบัน"
+                value={form.trainingInstitutionCount || ""}
+                onChange={(e) =>
+                  set("trainingInstitutionCount", e.target.value)
+                }
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>รวมนิสิต/นักศึกษาฝึกงาน</Label>
+              <Input
+                placeholder="จำนวนรวม"
+                value={form.trainingTotalStudents || ""}
+                onChange={(e) => set("trainingTotalStudents", e.target.value)}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>ในปีการศึกษา</Label>
+              <Input
+                placeholder="ปีการศึกษา"
+                value={form.trainingAcademicYear || ""}
+                onChange={(e) => set("trainingAcademicYear", e.target.value)}
+              />
+            </div>
           </div>
           <div className="grid md:grid-cols-3 gap-2">
             {UNIVERSITIES.map((u) => (

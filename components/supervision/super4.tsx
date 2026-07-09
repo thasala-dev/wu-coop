@@ -700,34 +700,7 @@ export default function Page(props: any) {
                   ความตั้งใจและการเอาใจใส่ต่อการฝึกปฏิบัติงานของเภสัชกรประจำแหล่งฝึก
                   (ความคิดเห็นจากนักศึกษาและการประเมินของอาจารย์) *
                 </Label>
-                <RadioGroup
-                  className="flex gap-6 mt-1"
-                  value={form.readiness?.workloadFit || ""}
-                  onValueChange={(v) => {
-                    setDeep("readiness.workloadFit", v as Level);
-                    if (errors["readiness.workloadFit"]) {
-                      setErrors((prev) => {
-                        const newErrors = { ...prev };
-                        delete newErrors["readiness.workloadFit"];
-                        return newErrors;
-                      });
-                    }
-                  }}
-                >
-                  {(["มาก", "ปานกลาง", "น้อย"] as const).map((v) => (
-                    <label key={v} className="flex items-center gap-2 text-sm">
-                      <RadioGroupItem
-                        value={v}
-                        className={
-                          errors["readiness.workloadFit"]
-                            ? "border-red-600"
-                            : ""
-                        }
-                      />
-                      <span>{v}</span>
-                    </label>
-                  ))}
-                </RadioGroup>
+             
                 {errors["readiness.workloadFit"] && (
                   <p className="text-red-600 text-sm mt-1">
                     {errors["readiness.workloadFit"]}
@@ -735,7 +708,7 @@ export default function Page(props: any) {
                 )}
                 <Input
                   className="mt-2"
-                  placeholder="หมายเหตุ"
+                  placeholder="แสดงความคิดเห็นในช่องผลการติดตาม/นิเทศ"
                   value={form.readiness?.workloadNote || ""}
                   onChange={(e) =>
                     setDeep("readiness.workloadNote", e.target.value)

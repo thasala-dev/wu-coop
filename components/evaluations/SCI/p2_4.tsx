@@ -526,7 +526,7 @@ export default function Page(props: any) {
               </td>
             </tr>
             <tr>
-              <td className="pl-4 text-sm">ด้านควบคุมคุณภาพ</td>
+              <td className="pl-4 text-sm">ด้านการขึ้นทะเบียน</td>
               <td className="flex flex-row items-center gap-2 w-full">
                 <input
                   type="number"
@@ -1253,7 +1253,7 @@ export default function Page(props: any) {
                   className="p-2 border align-center text-sm font-bold text-center bg-slate-100"
                   colSpan={4}
                 >
-                  รวมคะแนนเฉลี่ยทั้งหมด
+                  คะแนนรวม (จุดมุ่งหมาย 1-5)*5 คะแนน
                 </td>
                 <td className="p-2 border align-center text-sm font-bold text-center bg-slate-100">
                   {(() => {

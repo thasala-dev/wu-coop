@@ -898,47 +898,59 @@ export default function Page(props: any) {
                 </tr>
               </thead>
               <tbody>
-                {/* กิจกรรมบริการยาผู้ป่วยนอก Ambulatory */}
+                {/* กิจกรรมการฝึก Ambulatory */}
                 <tr className="border-b">
                   <td className="p-3 border-r align-top">
                     <div className="space-y-2">
                       <div className="font-medium">
-                        กิจกรรมบริการยาผู้ป่วยนอก Ambulatory
+                        กิจกรรมการฝึก Ambulatory
                       </div>
                       <div className="text-xs space-y-1">
                         <div>
-                          1) รายละเอียดกิจกรรมผู้ป่วยนอก
-                          (แตกต่างกันรายคนหรือรวม)
+                          ประกอบด้วยคลินิก
+                          (เฉพาะที่เภสัชเข้าไปมีส่วนร่วม)
                         </div>
-                        <div className="flex gap-4 ml-4">
+                        <RadioGroup
+                          value={formData.ambulatory_clinic_has || ""}
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              ambulatory_clinic_has: value,
+                            })
+                          }
+                          className="flex gap-4 ml-4"
+                        >
                           <label className="flex items-center gap-2">
-                            <Checkbox
-                              checked={!!formData.ambulatory_individual}
-                              onCheckedChange={(c) =>
-                                setFormData({
-                                  ...formData,
-                                  ambulatory_individual: !!c,
-                                })
-                              }
+                            <RadioGroupItem
+                              value="ไม่มี"
+                              id="ambulatory-clinic-none"
                             />
-                            <span>รายบุคคล</span>
+                            <span>ไม่มี</span>
                           </label>
                           <label className="flex items-center gap-2">
-                            <Checkbox
-                              checked={!!formData.ambulatory_group}
-                              onCheckedChange={(c) =>
-                                setFormData({
-                                  ...formData,
-                                  ambulatory_group: !!c,
-                                })
-                              }
+                            <RadioGroupItem
+                              value="มี"
+                              id="ambulatory-clinic-has"
                             />
-                            <span>รายกลุ่ม</span>
+                            <span>มี ได้แก่</span>
                           </label>
+                        </RadioGroup>
+                        <div className="space-y-1 mt-2">
+                          <Input
+                            placeholder="1."
+                            value={formData.ambulatory_detail_1 || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                ambulatory_detail_1: e.target.value,
+                              })
+                            }
+                            className="text-xs"
+                          />
                         </div>
                         <div className="space-y-1 mt-2">
                           <Input
-                            placeholder="2. "
+                            placeholder="2."
                             value={formData.ambulatory_detail_2 || ""}
                             onChange={(e) =>
                               setFormData({
@@ -977,7 +989,7 @@ export default function Page(props: any) {
                         </div>
                         <div className="space-y-1">
                           <Input
-                            placeholder="5. "
+                            placeholder="5."
                             value={formData.ambulatory_detail_5 || ""}
                             onChange={(e) =>
                               setFormData({
@@ -1021,109 +1033,95 @@ export default function Page(props: any) {
                   </td>
                 </tr>
 
-                {/* กิจกรรมบริการยา Medicine/Acute Care */}
+                {/* กิจกรรมการฝึก Medicine/Acute Care */}
                 <tr className="border-b">
                   <td className="p-3 border-r align-top">
                     <div className="space-y-2">
                       <div className="font-medium">
-                        กิจกรรมบริการยา Medicine/Acute Care
+                        กิจกรรมการฝึก Medicine/Acute Care
                       </div>
                       <div className="text-xs space-y-1">
-                        <div>รูปแบบบริการจำหน่าย/นำจ่ายยาที่มี</div>
+                        <div>มีหมอเฉพาะทางในสาขาต่าง ๆ</div>
                         <div className="space-y-1 ml-4">
                           <label className="flex items-center gap-2">
                             <Checkbox
-                              checked={!!formData.medicine_unit_dose}
+                              checked={!!formData.medicine_specialist_none}
                               onCheckedChange={(c) =>
                                 setFormData({
                                   ...formData,
-                                  medicine_unit_dose: !!c,
+                                  medicine_specialist_none: !!c,
                                 })
                               }
                             />
-                            <span>ยาแบบหน่วยรวม (unit dose)</span>
+                            <span>ไม่มี</span>
                           </label>
                           <label className="flex items-center gap-2">
                             <Checkbox
-                              checked={!!formData.medicine_ward_stock}
+                              checked={!!formData.medicine_specialist_cardiology}
                               onCheckedChange={(c) =>
                                 setFormData({
                                   ...formData,
-                                  medicine_ward_stock: !!c,
+                                  medicine_specialist_cardiology: !!c,
                                 })
                               }
                             />
-                            <span>ยาแบบระบบ ward stock</span>
+                            <span>อายุรกรรมโรคหัวใจ</span>
                           </label>
                           <label className="flex items-center gap-2">
                             <Checkbox
-                              checked={!!formData.medicine_individual_order}
+                              checked={!!formData.medicine_specialist_nephrology}
                               onCheckedChange={(c) =>
                                 setFormData({
                                   ...formData,
-                                  medicine_individual_order: !!c,
+                                  medicine_specialist_nephrology: !!c,
                                 })
                               }
                             />
-                            <span>ยาแบบสั่งรายบุคคล</span>
+                            <span>อายุรกรรมโรคไต</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <Checkbox
+                              checked={
+                                !!formData.medicine_specialist_infectious
+                              }
+                              onCheckedChange={(c) =>
+                                setFormData({
+                                  ...formData,
+                                  medicine_specialist_infectious: !!c,
+                                })
+                              }
+                            />
+                            <span>อายุรกรรมโรคติดเชื้อ</span>
                           </label>
                           <div className="flex items-center gap-2">
                             <Checkbox
-                              checked={!!formData.medicine_other}
+                              checked={
+                                !!formData.medicine_specialist_other_checked ||
+                                !!formData.medicine_specialist_other
+                              }
                               onCheckedChange={(c) => {
                                 if (!c) {
                                   setFormData({
                                     ...formData,
-                                    medicine_other: "",
-                                    medicine_other_checked: false,
+                                    medicine_specialist_other: "",
+                                    medicine_specialist_other_checked: false,
                                   });
                                 } else {
                                   setFormData({
                                     ...formData,
-                                    medicine_other_checked: true,
+                                    medicine_specialist_other_checked: true,
                                   });
                                 }
                               }}
                             />
                             <Input
-                              placeholder="อื่นๆ ระบุ"
-                              value={formData.medicine_other || ""}
+                              placeholder="อื่น ๆ โปรดระบุ"
+                              value={formData.medicine_specialist_other || ""}
                               onChange={(e) =>
                                 setFormData({
                                   ...formData,
-                                  medicine_other: e.target.value,
-                                  medicine_other_checked: true,
-                                })
-                              }
-                              className="text-xs flex-1"
-                            />
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Checkbox
-                              checked={!!formData.medicine_other_2}
-                              onCheckedChange={(c) => {
-                                if (!c) {
-                                  setFormData({
-                                    ...formData,
-                                    medicine_other_2: "",
-                                    medicine_other_2_checked: false,
-                                  });
-                                } else {
-                                  setFormData({
-                                    ...formData,
-                                    medicine_other_2_checked: true,
-                                  });
-                                }
-                              }}
-                            />
-                            <Input
-                              placeholder="อื่นๆ ระบุ"
-                              value={formData.medicine_other_2 || ""}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  medicine_other_2: e.target.value,
-                                  medicine_other_2_checked: true,
+                                  medicine_specialist_other: e.target.value,
+                                  medicine_specialist_other_checked: true,
                                 })
                               }
                               className="text-xs flex-1"
@@ -1228,12 +1226,12 @@ export default function Page(props: any) {
                   </td>
                 </tr>
 
-                {/* กิจกรรมบริการยัน Patient Safety */}
+                {/* กิจกรรมการฝึกPatient Safety (การจัดการด้านยา) */}
                 <tr className="border-b">
                   <td className="p-3 border-r align-top">
                     <div className="space-y-2">
                       <div className="font-medium">
-                        กิจกรรมบริการยัน Patient Safety (การจัดการความปลอดภัย)
+                        กิจกรรมการฝึก Patient Safety (การจัดการด้านยา)
                       </div>
                     </div>
                   </td>
