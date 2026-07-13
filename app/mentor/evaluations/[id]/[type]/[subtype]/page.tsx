@@ -61,7 +61,7 @@ export default function MentorEvaluations() {
   };
 
   const FormEvaluation = (props: any) => {
-    return <EvaluationList {...props} subtype={subtype} />;
+    return <EvaluationList {...props} subtype={subtype} type={type} />;
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -82,7 +82,7 @@ export default function MentorEvaluations() {
     setLoading(true);
     console.log("Fetching data for MedAmbu evaluation...", id, subtype);
     const response = await fetch(
-      `/api/evaluations_mentor/${id}/${type}/${subtype}`
+      `/api/evaluations_mentor/${id}/${type}/${subtype}`,
     );
     if (!response.ok) {
       toast({
@@ -105,14 +105,14 @@ export default function MentorEvaluations() {
         parsedStartDate = parse(
           data.form.evaluation_date,
           "yyyy-MM-dd",
-          new Date()
+          new Date(),
         );
       }
       setSelectedDate(parsedStartDate);
 
       form.setValue(
         "evaluation_date",
-        data.form?.evaluation_date || format(new Date(), "yyyy-MM-dd")
+        data.form?.evaluation_date || format(new Date(), "yyyy-MM-dd"),
       );
       form.setValue("result", data.form?.result || null);
     }
@@ -139,7 +139,7 @@ export default function MentorEvaluations() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }
+        },
       );
       const data = await response.json();
       if (response.ok && data.success) {
@@ -270,7 +270,7 @@ export default function MentorEvaluations() {
                                 "d MMMM yyyy",
                                 {
                                   locale: th,
-                                }
+                                },
                               )}{" "}
                               -{" "}
                               {format(
@@ -278,7 +278,7 @@ export default function MentorEvaluations() {
                                 "d MMMM yyyy",
                                 {
                                   locale: th,
-                                }
+                                },
                               )}
                             </div>
                           ) : null}
@@ -319,7 +319,7 @@ export default function MentorEvaluations() {
                               {form.formState.errors.evaluator && (
                                 <p className="text-xs text-red-600 no-print">
                                   {getErrorMessage(
-                                    form.formState.errors.evaluator
+                                    form.formState.errors.evaluator,
                                   )}
                                 </p>
                               )}
@@ -345,10 +345,10 @@ export default function MentorEvaluations() {
                                       className={cn(
                                         "w-full p-2 justify-start text-left font-normal no-print",
                                         !selectedDate &&
-                                        "text-muted-foreground",
+                                          "text-muted-foreground",
                                         form.formState.errors.evaluation_date
                                           ? "border-red-600 border-2"
-                                          : ""
+                                          : "",
                                       )}
                                     >
                                       <Calendar className="mr-2 h-4 w-4" />
@@ -372,7 +372,7 @@ export default function MentorEvaluations() {
                                         if (date) {
                                           form.setValue(
                                             "evaluation_date",
-                                            format(date, "yyyy-MM-dd")
+                                            format(date, "yyyy-MM-dd"),
                                           );
                                         }
                                       }}
@@ -385,15 +385,15 @@ export default function MentorEvaluations() {
                                 <div className="hidden print:block font-semibold">
                                   {selectedDate
                                     ? format(selectedDate, "d MMMM yyyy", {
-                                      locale: th,
-                                    })
+                                        locale: th,
+                                      })
                                     : "ยังไม่ได้เลือกวันที่"}
                                 </div>
                               </div>
                               {form.formState.errors.evaluation_date && (
                                 <p className="text-xs text-red-600 no-print">
                                   {getErrorMessage(
-                                    form.formState.errors.evaluation_date
+                                    form.formState.errors.evaluation_date,
                                   )}
                                 </p>
                               )}
