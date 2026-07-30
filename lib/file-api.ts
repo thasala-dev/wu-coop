@@ -26,6 +26,8 @@ export interface DeleteResponse {
 export interface ListResponse {
   files: BlobFile[];
   success: boolean;
+  cursor?: string;
+  hasMore?: boolean;
   error?: string;
 }
 
@@ -91,14 +93,21 @@ export async function callUploadApi(
  * @param url URL ของไฟล์ที่ต้องการลบ
  */
 export async function callDeleteApi(url: string): Promise<DeleteResponse> {
-  const response = await fetch(
-    `/api/files/deleteFiles?url=${encodeURIComponent(url)}`,
-    {
-      method: "DELETE",
-    }
-  );
-
-  return response.json();
+  try {
+    const response = await fetch(
+      `/api/files/deleteFiles?url=${encodeURIComponent(url)}`,
+      {
+        method: "DELETE",
+      }
+    );
+    return response.json();
+  } catch (error: any) {
+    return {
+      success: false,
+      message: "Delete failed",
+      error: error.message || "Unknown error",
+    };
+  }
 }
 
 /**
@@ -110,18 +119,20 @@ export async function callDeleteApi(url: string): Promise<DeleteResponse> {
 export async function callListApi(
   prefix: string = "",
   limit: number = 100,
-  skipCache: boolean = false
+  skipCache: boolean = false,
+  cursor?: string
 ): Promise<ListResponse> {
-  // ใช้ SWR pattern: stale-while-revalidate
-  const url = `/api/files/list?prefix=${encodeURIComponent(
-    prefix
-  )}&limit=${limit}${skipCache ? "&skipCache=true" : ""}`;
+  const params = new URLSearchParams({
+    prefix,
+    limit: String(limit),
+  });
+  if (skipCache) params.set("skipCache", "true");
+  if (cursor) params.set("cursor", cursor);
 
-  // ตั้งค่าให้ใช้ cache ที่กำหนดโดย server
-  const response = await fetch(url, {
+  const response = await fetch(`/api/files/list?${params.toString()}`, {
     method: "GET",
     cache: skipCache ? "no-store" : "default",
-    next: { revalidate: skipCache ? 0 : 300 }, // 5 นาที (สำหรับ Next.js App Router)
+    next: { revalidate: skipCache ? 0 : 300 },
   });
 
   return response.json();

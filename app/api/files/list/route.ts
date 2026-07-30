@@ -1,73 +1,46 @@
 import { list } from "@vercel/blob";
 import { NextResponse } from "next/server";
-import {
-  getCacheItem,
-  setCacheItem,
-  createListCacheKey,
-} from "@/lib/blob-cache";
+import { requireSession } from "@/lib/auth-server";
 
-// Cache time in seconds for client-side (in Response headers)
-const CLIENT_CACHE_MAX_AGE = 300; // 5 minutes
+// พึ่ง HTTP Cache-Control ให้ browser/CDN cache แทน in-memory cache
+const CACHE_CONTROL = "public, max-age=60, stale-while-revalidate=300";
 
 export async function GET(request: Request) {
   try {
+    const session = await requireSession(request);
+    if (session instanceof NextResponse) return session;
+
     const { searchParams } = new URL(request.url);
-    const prefix = searchParams.get("prefix") || "";
-    const limit = Number(searchParams.get("limit") || "100");
-    const skipCache = searchParams.get("skipCache") === "true";
+    const prefix = (searchParams.get("prefix") || "").replace(/\.\./g, "");
+    const rawLimit = Number(searchParams.get("limit") || "100");
+    const limit = Math.min(
+      Math.max(Number.isFinite(rawLimit) ? rawLimit : 100, 1),
+      1000
+    );
+    const cursor = searchParams.get("cursor") || undefined;
 
-    // สร้าง cache key
-    const cacheKey = createListCacheKey(prefix, limit);
-
-    // ลองดึงข้อมูลจาก cache ก่อน (ถ้าไม่ได้ระบุ skipCache)
-    let files;
-    if (!skipCache) {
-      const cachedData = getCacheItem(cacheKey);
-      if (cachedData) {
-        // ส่ง response พร้อมบอกว่าเป็น cached data
-        return NextResponse.json(
-          {
-            success: true,
-            files: cachedData.files,
-            cached: true,
-          },
-          {
-            headers: {
-              "Cache-Control": `public, max-age=${CLIENT_CACHE_MAX_AGE}`,
-            },
-          }
-        );
-      }
-    }
-
-    // ถ้าไม่มี cache หรือระบุ skipCache ก็ดึงข้อมูลจาก Vercel Blob
     const blobs = await list({
       prefix,
       limit,
+      cursor,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
-
-    // เก็บข้อมูลลง cache
-    setCacheItem(cacheKey, { files: blobs.blobs });
 
     return NextResponse.json(
       {
         success: true,
         files: blobs.blobs,
-        cached: false,
+        cursor: blobs.cursor,
+        hasMore: blobs.hasMore,
       },
       {
-        headers: {
-          "Cache-Control": `public, max-age=${CLIENT_CACHE_MAX_AGE}`,
-        },
+        headers: { "Cache-Control": CACHE_CONTROL },
       }
     );
   } catch (error: any) {
+    console.error("[/api/files/list] error:", error);
     return NextResponse.json(
-      {
-        success: false,
-        message: `Failed to list files: ${error.message}`,
-      },
+      { success: false, message: "Failed to list files." },
       { status: 500 }
     );
   }

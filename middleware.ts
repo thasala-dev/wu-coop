@@ -15,6 +15,7 @@ export async function middleware(request: NextRequest) {
   if (
     currentPath.startsWith("/_next") ||
     currentPath.startsWith("/api/auth") || // ให้เข้าถึง NextAuth API routes ได้
+    currentPath.startsWith("/api/files") || // file API routes จัดการ auth เอง (return JSON 401 แทน redirect)
     currentPath.includes(".") ||
     currentPath === "/favicon.ico" ||
     publicRoutes.some((route) => currentPath === route)

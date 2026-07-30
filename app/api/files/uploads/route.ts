@@ -1,16 +1,42 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
-import { invalidateCacheByPrefix } from "@/lib/blob-cache";
+import { requireSession } from "@/lib/auth-server";
 
-// ขนาดไฟล์สูงสุดที่อนุญาตให้อัปโหลดได้ (2MB)
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const ALLOWED_MIME = new Set([
+  "image/jpeg",
+  "image/png",
+  "application/pdf",
+]);
+
+function sanitizePath(p: string): string {
+  return p
+    .replace(/\.\./g, "")
+    .replace(/[^\w\-/]/g, "")
+    .replace(/\/+/g, "/")
+    .replace(/^\/|\/$/g, "")
+    .slice(0, 200);
+}
+
+function sanitizeFilename(name: string): string {
+  const dot = name.lastIndexOf(".");
+  const rawBase = dot > 0 ? name.slice(0, dot) : name;
+  const rawExt = dot > 0 ? name.slice(dot).toLowerCase() : "";
+  const base =
+    rawBase.replace(/[^\w\-]/g, "_").slice(0, 100) || "file";
+  const ext = rawExt.replace(/[^\w.]/g, "").slice(0, 10);
+  return base + ext;
+}
 
 export async function POST(request: Request) {
   try {
-    // รับไฟล์จาก form-data
+    const session = await requireSession(request);
+    if (session instanceof NextResponse) return session;
+
     const formData = await request.formData();
     const file = formData.get("file");
-    const customPath = formData.get("path")?.toString() || "";
+    const rawPath = formData.get("path")?.toString() || "";
+
     if (!file || !(file instanceof Blob)) {
       return NextResponse.json(
         { message: "No file uploaded.", success: false },
@@ -18,7 +44,16 @@ export async function POST(request: Request) {
       );
     }
 
-    // ตรวจสอบขนาดไฟล์ (การป้องกันเพิ่มเติม แม้ client จะควรตรวจสอบก่อนส่งมาแล้ว)
+    if (!ALLOWED_MIME.has(file.type)) {
+      return NextResponse.json(
+        {
+          message: "Invalid file type. Only JPEG, PNG, and PDF are allowed.",
+          success: false,
+        },
+        { status: 400 }
+      );
+    }
+
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         {
@@ -32,19 +67,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // สร้างชื่อไฟล์พร้อม path
-    const originalFilename = (file as File).name || "untitled";
-    const fileName = customPath
-      ? `${customPath}/${Date.now()}-${originalFilename}`
-      : `${Date.now()}-${originalFilename}`;
-    // อัปโหลดไฟล์ไปยัง Vercel Blob
-    const blob = await put(fileName, file as Blob, {
+    const safePath = sanitizePath(rawPath);
+    const safeFilename = sanitizeFilename(
+      (file as File).name || "untitled"
+    );
+    const fullPath = safePath ? `${safePath}/${safeFilename}` : safeFilename;
+
+    const blob = await put(fullPath, file as Blob, {
       access: "public",
+      addRandomSuffix: true,
+      contentType: file.type,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
-
-    // ล้าง cache list files ที่เกี่ยวข้อง
-    invalidateCacheByPrefix("blob:list:" + (customPath || ""));
 
     return NextResponse.json({
       message: "File uploaded successfully!",
@@ -52,10 +86,10 @@ export async function POST(request: Request) {
       success: true,
     });
   } catch (error: any) {
+    console.error("[/api/files/uploads] error:", error);
     return NextResponse.json(
       {
         message: "Error processing file upload.",
-        error: error.message,
         success: false,
       },
       { status: 500 }
