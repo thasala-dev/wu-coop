@@ -14,6 +14,16 @@ import CARE_p9 from "@/components/evaluations/CARE/p9";
 import CARE_p10 from "@/components/evaluations/CARE/p10";
 import CARE_p9_dis from "@/components/evaluations/CARE/p9_dis";
 import CARE_p10_dis from "@/components/evaluations/CARE/p10_dis";
+//Nephrology
+import CARE_Nephrology_p0 from "@/components/evaluations/CARE/n_p0";
+import CARE_Nephrology_p1 from "@/components/evaluations/CARE/n_p1";
+import CARE_Nephrology_p2 from "@/components/evaluations/CARE/n_p2_1";
+import CARE_Nephrology_p3_1 from "@/components/evaluations/CARE/n_p3_1";
+import CARE_Nephrology_p3_2 from "@/components/evaluations/CARE/n_p3_2";
+import CARE_Nephrology_p3_3 from "@/components/evaluations/CARE/n_p3_3";
+import CARE_Nephrology_p4 from "@/components/evaluations/CARE/n_p4";
+import CARE_Nephrology_p5 from "@/components/evaluations/CARE/n_p5";
+
 
 import CARE_pm5 from "@/components/evaluations/CARE/pm5";
 import CARE_drug1 from "@/components/evaluations/CARE/drug_1";
@@ -134,6 +144,24 @@ export default function EvaluationList(props: any) {
     return <CARE_p9_dis {...props} />;
   } else if (subtype === "58" || subtype === "59") {
     return <CARE_p10_dis {...props} />;
+  } else if (subtype === "68") {
+    return <CARE_Nephrology_p0 {...props} />;
+  } else if (subtype === "60") {
+    return <CARE_Nephrology_p1 {...props} />;
+  } else if (subtype === "61") {
+    return <CARE_Nephrology_p2 {...props} />;
+  } else if (subtype === "62") {
+    return <CARE_Nephrology_p2 {...props} />;
+  } else if (subtype === "63") {
+    return <CARE_Nephrology_p3_1 {...props} />;
+  } else if (subtype === "64" || subtype === "69" ) {
+    return <CARE_Nephrology_p3_2 {...props} />;
+  } else if (subtype === "65") {
+    return <CARE_Nephrology_p3_3 {...props} />;
+  } else if (subtype === "66") {
+    return <CARE_Nephrology_p4 {...props} />;
+  } else if (subtype === "67") {
+    return <CARE_Nephrology_p5 {...props} />;
   }
 
 
