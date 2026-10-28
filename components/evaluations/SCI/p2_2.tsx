@@ -144,12 +144,66 @@ export default function Page(props: any) {
     setFormValidated(handleCheckValid());
   }, [isSubmit, isClick]);
 
+  const itemScore = (key: string) => {
+    const values = data as Record<string, any>;
+    return values[`${key}_select`] && values[`${key}_score`]
+      ? Number(values[`${key}_score`])
+      : null;
+  };
+
+  // คะแนนรวม (จุดมุ่งหมาย 1-5) = ค่าเฉลี่ยคะแนนของทุกข้อที่ประเมิน × 5 (รวมข้อ 5. อื่นๆ)
+  const itemScores = [
+    "p1_1",
+    "p1_2",
+    "p2_1",
+    "p2_2",
+    "p2_3",
+    "p2_4",
+    "p2_5",
+    "p2_6",
+    "p2_7",
+    "p3_1",
+    "p3_2",
+    "p3_3",
+    "p3_4",
+    "p3_5",
+    "p3_6",
+    "p4_1",
+    "p4_2",
+  ]
+    .map(itemScore)
+    .concat(data.p5_score ? Number(data.p5_score) : null)
+    .filter((s): s is number => s !== null);
+  const totalScore =
+    itemScores.length > 0
+      ? (
+          (itemScores.reduce((sum, s) => sum + s, 0) / itemScores.length) *
+          5
+        ).toFixed(2)
+      : "";
+
+  useEffect(() => {
+    parentForm.setValue("result.total_score_1_5", totalScore);
+  }, [totalScore]);
+
   const setDataValue = (key: string, value: string) => {
     setData((prev) => ({
       ...prev,
       [key]: value,
     }));
     parentForm.setValue(`result.${key}`, value);
+
+    // เลือกคะแนนแล้วติ๊กวัตถุประสงค์ข้อนั้นให้อัตโนมัติ เพื่อให้นับในคะแนนเฉลี่ย
+    const findSelectLabel = checkboxScoreValidation.find((item) => {
+      return item.score === key;
+    });
+    if (findSelectLabel && value) {
+      setData((prev) => ({
+        ...prev,
+        [findSelectLabel.select]: true,
+      }));
+      parentForm.setValue(`result.${findSelectLabel.select}`, true);
+    }
   };
 
   const setCheckboxValue = (key: string, checked: boolean) => {
@@ -254,7 +308,7 @@ export default function Page(props: any) {
           return true;
         }
         return false;
-      }
+      },
     );
 
     if (hasEmptyField || hasInvalidCheckboxScore) {
@@ -939,7 +993,8 @@ export default function Page(props: any) {
                       className="mt-1"
                     />
                     <span>
-                      ทราบข้อกําหนดและกฎระเบียบเกี่ยวกับการขออนุญาตผลิต เช่น การขออนุญาตสถานที่ผลิต การส่งรายงานการผลิต
+                      เข้าใจลักษณะฝังโครงสร้างองค์กร
+                      ทราบบทบาทหน้าที่และความรับผิดชอบของบุคคลากรฝ่ายผลิตเภสัชกรผู้ควบคุมการผลิตและเข้าใจความเชื่อมโยงระหว่างฝ่ายผลิตกับฝ่ายอื่นที่เกี่ยวข้อง
                     </span>
                   </div>
                 </td>
@@ -1185,9 +1240,8 @@ export default function Page(props: any) {
                       className="mt-1"
                     />
                     <span>
-                      เข้าใจลักษณะผังโครงสร้างองค์กร ทราบ บทบาทหน้าที่
-                      และความรับผิดชอบของบุคลากรฝ่ายผลิต เภสัชผู้ควบคุมการผลิต
-                      และเข้าใจความเชื่อมโยงระหว่างฝ่ายผลิตกับฝ่ายอื่นที่เกี่ยวข้อง
+                      ทราบข้อกําหนดและกฎระเบียบเกี่ยวกับการขออนุญาตผลิต เช่น
+                      การขออนุญาตสถานที่ผลิต การส่งรายงานการผลิต
                     </span>
                   </div>
                 </td>
@@ -1331,73 +1385,10 @@ export default function Page(props: any) {
                   className="p-2 border align-center text-sm font-bold text-center bg-slate-100"
                   colSpan={4}
                 >
-                  รวมคะแนนเฉลี่ยทั้งหมด
+                  คะแนนรวม (จุดมุ่งหมาย 1-5)*5 คะแนน
                 </td>
                 <td className="p-2 border align-center text-sm font-bold text-center bg-slate-100">
-                  {(() => {
-                    const allScores = [
-                      data.p1_1_select && data.p1_1_score
-                        ? Number(data.p1_1_score)
-                        : null,
-                      data.p1_2_select && data.p1_2_score
-                        ? Number(data.p1_2_score)
-                        : null,
-                      data.p2_1_select && data.p2_1_score
-                        ? Number(data.p2_1_score)
-                        : null,
-                      data.p2_2_select && data.p2_2_score
-                        ? Number(data.p2_2_score)
-                        : null,
-                      data.p2_3_select && data.p2_3_score
-                        ? Number(data.p2_3_score)
-                        : null,
-                      data.p2_4_select && data.p2_4_score
-                        ? Number(data.p2_4_score)
-                        : null,
-                      data.p2_5_select && data.p2_5_score
-                        ? Number(data.p2_5_score)
-                        : null,
-                      data.p2_6_select && data.p2_6_score
-                        ? Number(data.p2_6_score)
-                        : null,
-                      data.p2_7_select && data.p2_7_score
-                        ? Number(data.p2_7_score)
-                        : null,
-                      data.p3_1_select && data.p3_1_score
-                        ? Number(data.p3_1_score)
-                        : null,
-                      data.p3_2_select && data.p3_2_score
-                        ? Number(data.p3_2_score)
-                        : null,
-                      data.p3_3_select && data.p3_3_score
-                        ? Number(data.p3_3_score)
-                        : null,
-                      data.p3_4_select && data.p3_4_score
-                        ? Number(data.p3_4_score)
-                        : null,
-                      data.p3_5_select && data.p3_5_score
-                        ? Number(data.p3_5_score)
-                        : null,
-                      data.p3_6_select && data.p3_6_score
-                        ? Number(data.p3_6_score)
-                        : null,
-                      data.p4_1_select && data.p4_1_score
-                        ? Number(data.p4_1_score)
-                        : null,
-                      data.p4_2_select && data.p4_2_score
-                        ? Number(data.p4_2_score)
-                        : null,
-                      data.p5_score ? Number(data.p5_score) : null,
-                    ].filter((s) => s !== null);
-
-                    if (allScores.length === 0) return "-";
-
-                    const avg = (
-                      allScores.reduce((sum, s) => sum + (s || 0), 0) /
-                      allScores.length
-                    ).toFixed(2);
-                    return toThaiNumber(Number(avg));
-                  })()}
+                  {totalScore || "-"}
                 </td>
                 <td className="p-2 border align-center text-sm bg-slate-100"></td>
               </tr>
