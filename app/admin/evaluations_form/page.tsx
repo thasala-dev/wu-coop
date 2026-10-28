@@ -26,6 +26,11 @@ import {
   Loader2 as LoaderIcon,
   Plus as PlusIcon,
 } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import Sidebar from "@/components/sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useRef, useState } from "react";
@@ -44,16 +49,12 @@ const groupColors: Record<string, string> = {
 
 const defaultColor = "bg-gray-50 text-gray-700 hover:bg-gray-50";
 
-// จำนวนกลุ่มแบบประเมินที่แสดงก่อนกด "ดูทั้งหมด"
-const MATCHED_PREVIEW_COUNT = 3;
-
 export default function AdminEvaluationsForm() {
   const [loading, setLoading] = useState(true);
   const [formList, setFormList] = useState<any[]>([]);
   const [typeList, setTypeList] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
-  const [expandedIds, setExpandedIds] = useState<Set<any>>(new Set());
   const [dragId, setDragId] = useState<any>(null);
   const [overId, setOverId] = useState<any>(null);
   const [savingOrder, setSavingOrder] = useState(false);
@@ -194,18 +195,6 @@ export default function AdminEvaluationsForm() {
       (item: any) => item.id === targetId,
     );
     moveItem(sourceId, toIndex);
-  };
-
-  const toggleExpanded = (id: any) => {
-    setExpandedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
   };
 
   const openEdit = (item: any) => {
@@ -413,12 +402,6 @@ export default function AdminEvaluationsForm() {
                   <div className="divide-y">
                     {filteredForms.map((item: any, index: number) => {
                       const matchedTypes = getMatchedTypes(item.id);
-                      const expanded = expandedIds.has(item.id);
-                      const shownTypes = expanded
-                        ? matchedTypes
-                        : matchedTypes.slice(0, MATCHED_PREVIEW_COUNT);
-                      const hiddenCount =
-                        matchedTypes.length - MATCHED_PREVIEW_COUNT;
 
                       return (
                         <div
@@ -436,7 +419,7 @@ export default function AdminEvaluationsForm() {
                             handleDrop(item.id);
                           }}
                           className={
-                            "flex items-start gap-3 p-3 transition-colors " +
+                            "flex items-center gap-2 px-3 py-1.5 transition-colors " +
                             (dragId === item.id ? "opacity-40 " : "") +
                             (overId === item.id && dragId !== item.id
                               ? "bg-blue-50 ring-2 ring-inset ring-blue-400"
@@ -462,89 +445,93 @@ export default function AdminEvaluationsForm() {
                                 : "ล้างคำค้นหาก่อนเรียงลำดับ"
                             }
                             className={
-                              "flex flex-col items-center pt-0.5 shrink-0 " +
+                              "shrink-0 " +
                               (canReorder
                                 ? "cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-700"
                                 : "cursor-not-allowed text-gray-200")
                             }
                           >
-                            <GripVerticalIcon className="h-5 w-5" />
+                            <GripVerticalIcon className="h-4 w-4" />
                           </div>
 
-                          <div className="w-8 shrink-0 pt-0.5 text-sm text-gray-400 text-right tabular-nums">
+                          <div className="w-7 shrink-0 text-xs text-gray-400 text-right tabular-nums">
                             {formList.findIndex(
                               (form: any) => form.id === item.id,
                             ) + 1}
                           </div>
 
-                          <div className="flex-1 min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <Badge
-                                variant="outline"
-                                className={
-                                  groupColors[item.group] || defaultColor
-                                }
-                              >
-                                {item.short_name}
-                              </Badge>
-                              <Link
-                                href={`/admin/evaluations_form/${item.id}`}
-                                className="text-sm font-medium text-gray-900 hover:text-blue-700 hover:underline"
-                              >
-                                {item.name}
-                              </Link>
-                              <span className="text-xs text-gray-400">
-                                #{item.id}
-                              </span>
-                            </div>
+                          <Badge
+                            variant="outline"
+                            className={
+                              "shrink-0 " +
+                              (groupColors[item.group] || defaultColor)
+                            }
+                          >
+                            {item.short_name}
+                          </Badge>
 
-                            <div className="flex flex-wrap items-center gap-1.5 mt-1.5 text-xs">
-                              {matchedTypes.length === 0 ? (
-                                <span className="text-amber-600">
-                                  ยังไม่ถูกใช้ในกลุ่มแบบประเมินใด
-                                </span>
-                              ) : (
-                                <>
-                                  <span className="text-gray-500">ใช้ใน:</span>
-                                  {shownTypes.map((type: any) => (
+                          <Link
+                            href={`/admin/evaluations_form/${item.id}`}
+                            title={`${item.name} (#${item.id})`}
+                            className="flex-1 min-w-0 truncate text-sm text-gray-900 hover:text-blue-700 hover:underline"
+                          >
+                            {item.name}
+                            <span className="ml-1.5 text-xs text-gray-400">
+                              #{item.id}
+                            </span>
+                          </Link>
+
+                          {matchedTypes.length === 0 ? (
+                            <span className="shrink-0 text-xs text-amber-600 hidden sm:inline">
+                              ยังไม่ถูกใช้
+                            </span>
+                          ) : (
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <button
+                                  type="button"
+                                  title="ดูกลุ่มแบบประเมินที่ใช้แบบฟอร์มนี้"
+                                  className="shrink-0 hidden sm:inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 hover:bg-gray-200"
+                                >
+                                  ใช้ใน {matchedTypes.length} กลุ่ม
+                                </button>
+                              </PopoverTrigger>
+                              <PopoverContent align="end" className="w-80 p-2">
+                                <p className="px-1 pb-1 text-xs text-gray-500">
+                                  กลุ่มแบบประเมินที่ใช้แบบฟอร์มนี้
+                                </p>
+                                <div className="flex flex-col">
+                                  {matchedTypes.map((type: any) => (
                                     <Link
                                       key={type.id}
                                       href={`/admin/evaluations/${type.id}`}
-                                      title="แก้ไขกลุ่มแบบประเมินนี้"
+                                      className="flex items-center gap-2 rounded px-1 py-1 text-sm hover:bg-gray-100"
                                     >
                                       <Badge
                                         variant="outline"
                                         className={
-                                          "font-normal hover:underline " +
+                                          "shrink-0 font-normal " +
                                           (groupColors[type.group] ||
                                             defaultColor)
                                         }
                                       >
-                                        {type.name}
+                                        {groupLabels[type.group] || type.group}
                                       </Badge>
+                                      <span className="truncate">
+                                        {type.name}
+                                      </span>
                                     </Link>
                                   ))}
-                                  {hiddenCount > 0 && (
-                                    <button
-                                      type="button"
-                                      onClick={() => toggleExpanded(item.id)}
-                                      className="text-blue-600 hover:underline"
-                                    >
-                                      {expanded
-                                        ? "ย่อ"
-                                        : `+${hiddenCount} กลุ่ม`}
-                                    </button>
-                                  )}
-                                </>
-                              )}
-                            </div>
-                          </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          )}
 
-                          <div className="flex items-center gap-1 shrink-0">
+                          <div className="flex items-center shrink-0">
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-7 w-7"
                               disabled={!canReorder || index === 0}
                               onClick={() => moveItem(item.id, index - 1)}
                               title="เลื่อนขึ้น"
@@ -555,7 +542,7 @@ export default function AdminEvaluationsForm() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-7 w-7"
                               disabled={
                                 !canReorder ||
                                 index === filteredForms.length - 1
@@ -567,25 +554,22 @@ export default function AdminEvaluationsForm() {
                               <ArrowDownIcon className="h-4 w-4" />
                             </Button>
                             <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-8 ml-1"
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-blue-600"
                               onClick={() => openEdit(item)}
+                              title="แก้ไข"
+                              aria-label="แก้ไข"
                             >
-                              <PencilIcon className="h-3.5 w-3.5 md:mr-1" />
-                              <span className="hidden md:inline">แก้ไข</span>
+                              <PencilIcon className="h-4 w-4" />
                             </Button>
-                            <Link href={`/admin/evaluations_form/${item.id}`}>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8"
-                              >
-                                <EyeIcon className="h-3.5 w-3.5 md:mr-1" />
-                                <span className="hidden md:inline">
-                                  ดูตัวอย่าง
-                                </span>
-                              </Button>
+                            <Link
+                              href={`/admin/evaluations_form/${item.id}`}
+                              title="ดูตัวอย่าง"
+                              aria-label="ดูตัวอย่าง"
+                              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-yellow-600 hover:bg-gray-100"
+                            >
+                              <EyeIcon className="h-4 w-4" />
                             </Link>
                           </div>
                         </div>
