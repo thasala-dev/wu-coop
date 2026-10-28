@@ -274,6 +274,12 @@ export function Sidebar({
         page: "evaluations-follow-up",
       },
       {
+        label: "แบบฟอร์มการประเมิน",
+        href: "/admin/evaluations_form",
+        icon: ClipboardIcon,
+        page: "evaluations_form",
+      },
+      {
         label: "รายงาน",
         href: "/admin/reports",
         icon: BarChart,
