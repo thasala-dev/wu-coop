@@ -6,6 +6,7 @@ import CARE_p2_2_PT from "@/components/evaluations/CARE/p2_2_PT";
 import CARE_p3_1_Discuss from "@/components/evaluations/CARE/p3_1_Discuss";
 import CARE_p3_2_FormalCase from "@/components/evaluations/CARE/p3_2_FormalCase";
 import CARE_p3_2_FormalCaseADR from "@/components/evaluations/CARE/p3_2_FormalCaseADR";
+import CARE_p3_2_FormalCaseOncology from "@/components/evaluations/CARE/p3_2_FormalCaseOncology";
 
 import CARE_p3_3 from "@/components/evaluations/CARE/p3_3";
 import CARE_p4 from "@/components/evaluations/CARE/p4";
@@ -74,6 +75,8 @@ export default function EvaluationList(props: any) {
     return <CARE_p3_2_FormalCase {...props} />;
   } else if (subtype === "70" || subtype === "71") {
     return <CARE_p3_2_FormalCaseADR {...props} />;
+  } else if (subtype === "72" || subtype === "73") {
+    return <CARE_p3_2_FormalCaseOncology {...props} />;
   } else if (subtype === "8") {
     return <CARE_p3_3 {...props} />;
   } else if (subtype === "9") {
