@@ -4,6 +4,9 @@ import CARE_p1 from "@/components/evaluations/CARE/p1";
 import CARE_p2_1_HCT from "@/components/evaluations/CARE/p2_1_HCT";
 import CARE_p2_2_PT from "@/components/evaluations/CARE/p2_2_PT";
 import CARE_p3_1_Discuss from "@/components/evaluations/CARE/p3_1_Discuss";
+import CARE_p3_2_FormalCase from "@/components/evaluations/CARE/p3_2_FormalCase";
+import CARE_p3_2_FormalCaseADR from "@/components/evaluations/CARE/p3_2_FormalCaseADR";
+
 import CARE_p3_3 from "@/components/evaluations/CARE/p3_3";
 import CARE_p4 from "@/components/evaluations/CARE/p4";
 import CARE_p5 from "@/components/evaluations/CARE/p5";
@@ -23,7 +26,6 @@ import CARE_Nephrology_p3_2 from "@/components/evaluations/CARE/n_p3_2";
 import CARE_Nephrology_p3_3 from "@/components/evaluations/CARE/n_p3_3";
 import CARE_Nephrology_p4 from "@/components/evaluations/CARE/n_p4";
 import CARE_Nephrology_p5 from "@/components/evaluations/CARE/n_p5";
-
 
 import CARE_pm5 from "@/components/evaluations/CARE/pm5";
 import CARE_drug1 from "@/components/evaluations/CARE/drug_1";
@@ -57,8 +59,6 @@ import SSC_p3 from "@/components/evaluations/SCC/p3";
 import SSC_p4 from "@/components/evaluations/SCC/p4";
 import SSC_p5 from "@/components/evaluations/SCC/p5";
 
-
-
 export default function EvaluationList(props: any) {
   const { subtype } = props;
   console.log("Rendering CARE_p1 for subtype:", subtype);
@@ -68,8 +68,12 @@ export default function EvaluationList(props: any) {
     return <CARE_p2_1_HCT {...props} />;
   } else if (subtype === "4") {
     return <CARE_p2_2_PT {...props} />;
-  } else if (subtype === "5" || subtype === "6" || subtype === "7") {
+  } else if (subtype === "5") {
     return <CARE_p3_1_Discuss {...props} />;
+  } else if (subtype === "6" || subtype === "7") {
+    return <CARE_p3_2_FormalCase {...props} />;
+  } else if (subtype === "70" || subtype === "71") {
+    return <CARE_p3_2_FormalCaseADR {...props} />;
   } else if (subtype === "8") {
     return <CARE_p3_3 {...props} />;
   } else if (subtype === "9") {
@@ -154,7 +158,7 @@ export default function EvaluationList(props: any) {
     return <CARE_Nephrology_p2 {...props} />;
   } else if (subtype === "63") {
     return <CARE_Nephrology_p3_1 {...props} />;
-  } else if (subtype === "64" || subtype === "69" ) {
+  } else if (subtype === "64" || subtype === "69") {
     return <CARE_Nephrology_p3_2 {...props} />;
   } else if (subtype === "65") {
     return <CARE_Nephrology_p3_3 {...props} />;
@@ -163,8 +167,6 @@ export default function EvaluationList(props: any) {
   } else if (subtype === "67") {
     return <CARE_Nephrology_p5 {...props} />;
   }
-
-
 
   return <Empty {...props} />;
 }
