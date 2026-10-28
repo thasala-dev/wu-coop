@@ -11,7 +11,9 @@ export default function AdminLayout({
   return (
     <AuthGuard requiredRole="admin">
       <div>
-        <Navbar userType="admin" />
+        <div className="print:hidden">
+          <Navbar userType="admin" />
+        </div>
         {children}
       </div>
     </AuthGuard>

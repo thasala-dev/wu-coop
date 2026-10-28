@@ -39,6 +39,14 @@ const reportMenu = [
     description: "ผลการประเมินนักศึกษาโดยแหล่งฝึก",
   },
   {
+    name: "รายงานการประเมินรายบุคคล",
+    href: "/admin/reports/studentEvaluation",
+    icon: GraduationCap,
+    color: "bg-indigo-500",
+    description:
+      "สถานะการประเมินของนักศึกษาแต่ละคน และพิมพ์รายงานตามแบบฟอร์มที่กรอก",
+  },
+  {
     name: "รายงานผลการนิเทศนักศึกษา",
     href: "/admin/reports/supervisionResult",
     icon: Users,
