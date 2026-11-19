@@ -220,11 +220,26 @@ export default function Page(props: any) {
           : total,
       0,
     );
+    // คะแนนเต็ม = 10 × ผลรวมน้ำหนัก โดยตัดข้อที่เลือก N/A ออก (เต็ม 150 เมื่อไม่มี N/A)
+    const maxScore = selected.reduce(
+      (total, item) => (item.value === "N/A" ? total : total + 10 * item.weight),
+      0,
+    );
+    const answeredCount = selected.filter(({ value }) => Boolean(value)).length;
+    const allNA = selected.every(({ value }) => value === "N/A");
+    const scaledScore =
+      answeredCount > 0 && maxScore > 0
+        ? (weightedScore / maxScore) * 10
+        : null;
     return {
       complete,
       hasNA,
+      allNA,
+      answeredCount,
       weightedScore,
-      finalScore: complete && !hasNA ? (weightedScore / 150) * 10 : null,
+      maxScore,
+      scaledScore,
+      finalScore: complete ? scaledScore : null,
     };
   }, [data]);
 
@@ -233,16 +248,15 @@ export default function Page(props: any) {
   }, [data, isClick, isSubmit, setFormValidated]);
 
   useEffect(() => {
-    const weightedScore = scoreResult.complete
-      ? scoreResult.hasNA
+    const weightedScore = !scoreResult.complete
+      ? ""
+      : scoreResult.allNA
         ? "N/A"
-        : String(scoreResult.weightedScore)
-      : "";
-    const finalScore =
-      scoreResult.finalScore === null
-        ? scoreResult.complete && scoreResult.hasNA
-          ? "N/A"
-          : ""
+        : String(scoreResult.weightedScore);
+    const finalScore = !scoreResult.complete
+      ? ""
+      : scoreResult.finalScore === null
+        ? "N/A"
         : scoreResult.finalScore.toFixed(2);
     parentForm.setValue("result.weightedScore", weightedScore);
     parentForm.setValue("result.finalScore", finalScore);
@@ -400,32 +414,42 @@ export default function Page(props: any) {
                   </Fragment>
                 );
               })}
-              <tr>
+              <tr className="bg-slate-100">
                 <td
                   className="border p-3 text-center text-sm font-semibold"
                   colSpan={6}
                 >
                   คะแนนที่ประเมินได้{" "}
-                  {scoreResult.complete
-                    ? scoreResult.hasNA
-                      ? "N/A"
-                      : scoreResult.weightedScore
-                    : "_____"}{" "}
-                  คะแนน
-                  <br />
-                  ปรับให้เป็นคะแนนเต็ม ๑๐ คะแนน = (
-                  {scoreResult.complete && !scoreResult.hasNA
-                    ? scoreResult.weightedScore
-                    : "_____"}{" "}
-                  ÷ ๑๕๐) × ๑๐ ={" "}
                   <span className="font-bold">
-                    {scoreResult.finalScore === null
-                      ? scoreResult.complete && scoreResult.hasNA
-                        ? "N/A"
-                        : "_____"
-                      : scoreResult.finalScore.toFixed(2)}
+                    {scoreResult.answeredCount > 0
+                      ? scoreResult.weightedScore
+                      : "_____"}
                   </span>{" "}
                   คะแนน
+                  <span className="ml-2 text-xs font-normal text-slate-600">
+                    (ประเมินแล้ว {scoreResult.answeredCount}/
+                    {criteriaData.length} ข้อ)
+                  </span>
+                  <br />
+                  คะแนนเต็ม ๑๐ คะแนน = (
+                  {scoreResult.answeredCount > 0
+                    ? scoreResult.weightedScore
+                    : "_____"}{" "}
+                  ÷ {scoreResult.hasNA ? scoreResult.maxScore : "๑๕๐"}) × ๑๐ ={" "}
+                  <span className="font-bold">
+                    {scoreResult.scaledScore !== null
+                      ? scoreResult.scaledScore.toFixed(2)
+                      : scoreResult.allNA
+                        ? "N/A"
+                        : "_____"}
+                  </span>{" "}
+                  คะแนน
+                  {scoreResult.hasNA && (
+                    <span className="block text-xs font-normal text-slate-600">
+                      ตัดข้อที่เลือก N/A ออกจากคะแนนเต็ม (คะแนนเต็มคงเหลือ{" "}
+                      {scoreResult.maxScore} จาก ๑๕๐)
+                    </span>
+                  )}
                 </td>
               </tr>
             </tbody>
