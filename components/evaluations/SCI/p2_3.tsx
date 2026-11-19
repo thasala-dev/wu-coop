@@ -740,7 +740,7 @@ export default function Page(props: any) {
               >
                 คะแนนรวม (จุดมุ่งหมาย 1–5) × 5 คะแนน
               </td>
-              <td className="p-2 border align-top text-sm font-bold text-center">
+              <td data-summary-score data-summary-score-unit="/ 125" className="p-2 border align-top text-sm font-bold text-center">
                 {toThaiNumber(
                   Number(
                     (

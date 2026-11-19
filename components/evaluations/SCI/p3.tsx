@@ -376,7 +376,7 @@ export default function Page(props: any) {
                   (คะแนนส่วนที่ 3 x 2) + (คะแนนส่วนที่ 4 x 1) + (คะแนนส่วนที่ 5
                   x 5) + (คะแนนส่วนที่ 6 x 1) + (คะแนนส่วนที่ 7 x 3)
                 </td>
-                <td
+                <td data-summary-score data-summary-score-unit="/ 100"
                   className="p-2 border align-center text-sm font-bold text-center"
                   colSpan={5}
                 >

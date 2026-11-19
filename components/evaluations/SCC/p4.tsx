@@ -457,7 +457,7 @@ export default function Page(props: any) {
                     }).reduce((total, score) => total + score, 0)
                   )}
                 </td>
-                <td className="p-2 border align-center text-sm font-bold text-center">
+                <td data-summary-score data-summary-score-unit="คะแนน" className="p-2 border align-center text-sm font-bold text-center">
                   {toThaiNumber(
                     Array.from({ length: 20 }, (_, i) => {
                       const score = data[

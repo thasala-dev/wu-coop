@@ -211,7 +211,7 @@ export default function Page(props: any) {
                 <td className="p-2 border align-top text-md text-center">
                   คะแนนรวม 100 คะแนน
                 </td>
-                <td className="p-2 border align-top text-md text-center font-bold">
+                <td data-summary-score data-summary-score-unit="/ 100" className="p-2 border align-top text-md text-center font-bold">
                   {Number(data.p1) + Number(data.p2) + Number(data.p3)}
                 </td>
               </tr>

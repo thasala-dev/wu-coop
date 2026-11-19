@@ -369,7 +369,7 @@ export default function Page(props: any) {
                     const finalScoreRounded = Math.round(finalScore * 100) / 100;
                     return (
                       <>
-                        รวมคะแนน ({toThaiNumber(total)} x ๑๕) / {toThaiNumber(maxScore)} = {toThaiNumber(finalScoreRounded)} คะแนน
+                        รวมคะแนน ({toThaiNumber(total)} x ๑๕) / {toThaiNumber(maxScore)} = <span data-summary-score data-summary-score-unit="/ 15">{toThaiNumber(finalScoreRounded)}</span> คะแนน
                       </>
                     );
                   })()}

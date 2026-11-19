@@ -124,6 +124,7 @@ export default function AdminMatching() {
   const [groupCompanySearch, setGroupCompanySearch] = useState<string>("");
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<string>("placeholder");
+  const [companyImportPickerOpen, setCompanyImportPickerOpen] = useState(false);
   const [capacity, setCapacity] = useState<string>("1");
   const [companySearchOpen, setCompanySearchOpen] = useState<{ [key: string]: boolean }>({});
 
@@ -1164,22 +1165,75 @@ export default function AdminMatching() {
               กรุณาเลือกแหล่งฝึกและกำหนดจำนวนรับเพื่อนำเข้าไปยังผลัดฝึกงานนี้
             </p>
             <div className="grid grid-cols-1 gap-4">
-              <Select
-                onValueChange={(value) => setSelectedCompany(value)}
-                value={selectedCompany}
-              >
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder="เลือกแหล่งฝึก" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="placeholder">เลือกแหล่งฝึก</SelectItem>
-                  {info.companyList.map((company: any) => (
-                    <SelectItem key={company.id} value={company.id}>
-                      {company.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div>
+                <Label>แหล่งฝึก</Label>
+                <Popover
+                  open={companyImportPickerOpen}
+                  onOpenChange={setCompanyImportPickerOpen}
+                  modal
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={companyImportPickerOpen}
+                      className="h-10 w-full justify-between font-normal"
+                    >
+                      <span className="truncate">
+                        {info.companyList.find(
+                          (c: any) => String(c.id) === String(selectedCompany)
+                        )?.name ?? (
+                          <span className="text-muted-foreground">
+                            เลือกแหล่งฝึก
+                          </span>
+                        )}
+                      </span>
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] p-0"
+                    align="start"
+                  >
+                    <Command>
+                      <CommandInput placeholder="พิมพ์ชื่อแหล่งฝึกเพื่อค้นหา..." />
+                      <CommandList className="max-h-[300px]">
+                        <CommandEmpty>ไม่พบแหล่งฝึก</CommandEmpty>
+                        <CommandGroup>
+                          {info.companyList.map((company: any) => {
+                            const location = company.location || company.province;
+                            return (
+                              <CommandItem
+                                key={company.id}
+                                value={`${company.name ?? ""} ${location ?? ""} ${company.id}`}
+                                onSelect={() => {
+                                  setSelectedCompany(company.id);
+                                  setCompanyImportPickerOpen(false);
+                                }}
+                              >
+                                <CheckIcon
+                                  className={`mr-2 h-4 w-4 shrink-0 ${String(selectedCompany) === String(company.id)
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                    }`}
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <div className="truncate">{company.name}</div>
+                                  {location && (
+                                    <div className="truncate text-xs text-gray-500">
+                                      {location}
+                                    </div>
+                                  )}
+                                </div>
+                              </CommandItem>
+                            );
+                          })}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <div>
                 <Label>จำนวนรับนักศึกษา</Label>
                 <Input

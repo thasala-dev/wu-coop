@@ -839,7 +839,7 @@ export default function Page(props: any) {
                         <span className="font-mono">
                           ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 150) &times; 5
                         </span>
-                        &nbsp;= <span className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
+                        &nbsp;= <span data-summary-score data-summary-score-unit="/ 5" className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
                       </>
                     );
                   })()}

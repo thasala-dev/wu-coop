@@ -9,7 +9,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight, Users, CheckCircle, TrendingUp } from "lucide-react";
+import {
+  ChevronRight,
+  Users,
+  CheckCircle,
+  TrendingUp,
+  FileText,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -157,6 +163,13 @@ export default function MentorEvaluations() {
                       ))}
                     </SelectContent>
                   </Select>
+                  <Button asChild variant="outline">
+                    <Link
+                      href={`/admin/evaluations-follow-up/summary${calendarSelected ? `?calendarId=${encodeURIComponent(calendarSelected)}` : ""}`}
+                    >
+                      สรุปคะแนนทุกคน
+                    </Link>
+                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
@@ -320,6 +333,28 @@ export default function MentorEvaluations() {
                             </>
                           );
                         },
+                      },
+                      {
+                        key: "view",
+                        content: "แบบประเมิน",
+                        width: "120px",
+                        render: (row: any) =>
+                          Number(row.total_result) > 0 ? (
+                            // เปิดหน้ารวมแบบประเมินที่ทำแล้วของนักศึกษาคนนี้ เรียงต่อกันในหน้าเดียว
+                            <Button asChild size="sm" variant="outline">
+                              <Link
+                                href={`/admin/reports/studentEvaluation/${row.id}`}
+                                target="_blank"
+                              >
+                                <FileText className="h-4 w-4 mr-1" />
+                                ดูแบบประเมิน
+                              </Link>
+                            </Button>
+                          ) : (
+                            <span className="text-xs text-gray-400">
+                              ยังไม่มีผลประเมิน
+                            </span>
+                          ),
                       },
                     ]}
                     data={data.student || []}

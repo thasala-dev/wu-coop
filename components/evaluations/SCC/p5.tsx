@@ -422,15 +422,9 @@ export default function Page(props: any) {
             <tbody>
               <tr>
                 <td className="p-2 border align-center text-sm font-bold text-center">
-                  รวมคะแนน /{" "}
-                  {toThaiNumber(
-                    criteriaData.filter((item) => {
-                      const value = data[item.label as keyof typeof data];
-                      return !item.head && value !== "N/A" && value !== "";
-                    }).length * 5
-                  )}
+                  รวมคะแนน
                 </td>
-                <td
+                <td data-summary-score data-summary-score-unit="คะแนน"
                   className="p-2 border align-center text-sm font-bold text-center"
                   colSpan={6}
                 >

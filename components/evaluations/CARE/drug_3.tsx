@@ -549,7 +549,7 @@ export default function Page(props: any) {
                   <div className="border-t border-blue-300 pt-2 mt-2">
                     <div className="flex justify-between items-center text-sm">
                       <span className="font-medium">รวมคะแนน (คะแนนที่ได้ × 15) / 100:</span>
-                      <span className="font-bold text-lg text-blue-600">
+                      <span data-summary-score data-summary-score-unit="/ 15" className="font-bold text-lg text-blue-600">
                         {toThaiNumber(parseFloat(finalScore.toFixed(2)))}
                       </span>
                     </div>

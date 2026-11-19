@@ -144,6 +144,62 @@ const DOCUMENT_STYLE = `
   .report-doc [role="combobox"] svg { display: none; }
 `;
 
+const formSectionId = (item: any) => `eval-${item.type_id}-${item.form_id}`;
+
+// อ่านคะแนนสรุปที่แบบฟอร์มแสดงอยู่ (องค์ประกอบที่มี data-summary-score)
+// จากฉบับที่แสดงในหน้านี้ ถ้าไม่มีคะแนนให้แสดงสถานะ "ประเมินแล้ว" แทน
+function SummaryScoreCell({ item }: { item: any }) {
+  const [score, setScore] = useState<{ value: string; unit: string } | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const section = document.getElementById(formSectionId(item));
+    if (!section) return;
+
+    const read = () => {
+      const el = section.querySelector<HTMLElement>("[data-summary-score]");
+      const value = el?.textContent?.trim() || "";
+      // ค่าว่าง ขีด หรือขีดล่าง แปลว่าแบบฟอร์มยังคำนวณคะแนนไม่ได้
+      const hasValue = value !== "" && !/^[-_\s]+$/.test(value);
+      const next = hasValue
+        ? { value, unit: el?.dataset.summaryScoreUnit || "" }
+        : null;
+      setScore((current) =>
+        current?.value === next?.value && current?.unit === next?.unit
+          ? current
+          : next,
+      );
+    };
+
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(section, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+    return () => observer.disconnect();
+  }, [item]);
+
+  if (score) {
+    return (
+      <span className="font-semibold whitespace-nowrap">
+        {score.value}
+        {score.unit && (
+          <span className="ml-1 font-normal text-gray-500">{score.unit}</span>
+        )}
+      </span>
+    );
+  }
+
+  return (
+    <Badge variant="outline" className="bg-green-50 text-green-700">
+      ประเมินแล้ว
+    </Badge>
+  );
+}
+
 // แสดงแบบฟอร์มพร้อมคำตอบที่บันทึกไว้ (อ่านอย่างเดียว)
 function FilledForm({
   item,
@@ -186,7 +242,8 @@ export default function StudentEvaluationReport() {
   const [error, setError] = useState("");
   const [showPending, setShowPending] = useState(false);
   const [orientation, setOrientation] = useState<Orientation>("portrait");
-  const [documentStyle, setDocumentStyle] = useState(true);
+  // ค่าเริ่มต้น: แสดงแบบฟอร์มเดิม (กดเปลี่ยนเป็นแบบเอกสารได้ที่แถบเครื่องมือ)
+  const [documentStyle, setDocumentStyle] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -389,7 +446,7 @@ export default function StudentEvaluationReport() {
                 <th className="border p-2 text-left">แบบประเมิน</th>
                 <th className="border p-2 text-left">ผู้ประเมิน</th>
                 <th className="border p-2 text-left">วันที่ประเมิน</th>
-                <th className="border p-2 text-left">สถานะ</th>
+                <th className="border p-2 text-left">คะแนน / สถานะ</th>
               </tr>
             </thead>
             <tbody>
@@ -410,12 +467,7 @@ export default function StudentEvaluationReport() {
                   </td>
                   <td className="border p-2">
                     {item.result_id ? (
-                      <Badge
-                        variant="outline"
-                        className="bg-green-50 text-green-700"
-                      >
-                        ประเมินแล้ว
-                      </Badge>
+                      <SummaryScoreCell item={item} />
                     ) : (
                       <Badge
                         variant="outline"
@@ -433,7 +485,11 @@ export default function StudentEvaluationReport() {
 
         {/* แบบฟอร์มแต่ละฉบับ เริ่มหน้าใหม่ทุกฉบับ */}
         {printedForms.map((item: any) => (
-          <section key={`${item.type_id}-${item.form_id}`} className="a4-page">
+          <section
+            key={`${item.type_id}-${item.form_id}`}
+            id={formSectionId(item)}
+            className="a4-page"
+          >
             <div className="flex justify-between items-start gap-4 border-b pb-3 mb-6">
               <div>
                 <h2 className="font-bold">{item.name}</h2>

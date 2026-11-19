@@ -8,6 +8,15 @@ import CARE_p3_2_FormalCase from "@/components/evaluations/CARE/p3_2_FormalCase"
 import CARE_p3_2_FormalCaseADR from "@/components/evaluations/CARE/p3_2_FormalCaseADR";
 import CARE_p3_2_FormalCaseOncology from "@/components/evaluations/CARE/p3_2_FormalCaseOncology";
 import CARE_p3_2_FormalCasePsychiatric from "@/components/evaluations/CARE/p3_2_FormalCasePsychiatric";
+// Infectious Diseases (โรคติดเชื้อ)
+import CARE_ID_p1 from "@/components/evaluations/CARE/infectious/id_p1";
+import CARE_ID_p2_1_HCT from "@/components/evaluations/CARE/infectious/id_p2_1_HCT";
+import CARE_ID_p2_2_PT from "@/components/evaluations/CARE/infectious/id_p2_2_PT";
+import CARE_ID_p3_1_Discuss from "@/components/evaluations/CARE/infectious/id_p3_1_Discuss";
+import CARE_ID_p3_2_FormalCase from "@/components/evaluations/CARE/infectious/id_p3_2_FormalCase";
+import CARE_ID_p3_3 from "@/components/evaluations/CARE/infectious/id_p3_3";
+import CARE_ID_p4 from "@/components/evaluations/CARE/infectious/id_p4";
+import CARE_ID_p5 from "@/components/evaluations/CARE/infectious/id_p5";
 
 import CARE_p3_3 from "@/components/evaluations/CARE/p3_3";
 import CARE_p4 from "@/components/evaluations/CARE/p4";
@@ -80,6 +89,23 @@ export default function EvaluationList(props: any) {
     return <CARE_p3_2_FormalCaseOncology {...props} />;
   } else if (subtype === "74" || subtype === "75") {
     return <CARE_p3_2_FormalCasePsychiatric {...props} />;
+    // Infectious Diseases (โรคติดเชื้อ) ชุดประเมิน id 32
+  } else if (subtype === "76") {
+    return <CARE_ID_p1 {...props} />;
+  } else if (subtype === "77") {
+    return <CARE_ID_p2_1_HCT {...props} />;
+  } else if (subtype === "78") {
+    return <CARE_ID_p2_2_PT {...props} />;
+  } else if (subtype === "79") {
+    return <CARE_ID_p3_1_Discuss {...props} />;
+  } else if (subtype === "80" || subtype === "81") {
+    return <CARE_ID_p3_2_FormalCase {...props} />;
+  } else if (subtype === "82") {
+    return <CARE_ID_p3_3 {...props} />;
+  } else if (subtype === "83") {
+    return <CARE_ID_p4 {...props} />;
+  } else if (subtype === "84") {
+    return <CARE_ID_p5 {...props} />;
   } else if (subtype === "8") {
     return <CARE_p3_3 {...props} />;
   } else if (subtype === "9") {

@@ -478,7 +478,7 @@ export default function Page(props: any) {
                     }).length * 5
                   )}
                 </td>
-                <td
+                <td data-summary-score data-summary-score-unit="/ 25"
                   className="p-2 border align-center text-sm font-bold text-center"
                   colSpan={6}
                 >

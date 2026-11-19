@@ -408,7 +408,7 @@ export default function Page(props: any) {
                 <td className="p-2 border align-center text-sm font-bold text-center">
                   เปอร์เซ็นต์ของคะแนนพฤติกรรมที่ได้ ( คะแนนรวมทั้งหมด * 2 )
                 </td>
-                <td
+                <td data-summary-score data-summary-score-unit="%"
                   className="p-2 border align-center text-sm font-bold text-center"
                   colSpan={5}
                 >

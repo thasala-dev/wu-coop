@@ -436,7 +436,7 @@ export default function Page(props: any) {
                     ? scoreResult.weightedScore
                     : "_____"}{" "}
                   ÷ {scoreResult.hasNA ? scoreResult.maxScore : "๑๕๐"}) × ๑๐ ={" "}
-                  <span className="font-bold">
+                  <span data-summary-score data-summary-score-unit="/ 10" className="font-bold">
                     {scoreResult.scaledScore !== null
                       ? scoreResult.scaledScore.toFixed(2)
                       : scoreResult.allNA

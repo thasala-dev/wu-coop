@@ -2141,6 +2141,10 @@ export default function Page(props: any) {
                   readOnly
                   className="p-1 border rounded-md text-sm w-full text-center bg-gray-50"
                 />
+                {/* ค่าเดียวกับช่องด้านบน ให้หน้ารายงานอ่านคะแนนสรุปได้ */}
+                <span hidden data-summary-score data-summary-score-unit="/ 100">
+                  {data.total_score_1_5 || ""}
+                </span>
               </td>
             </tr>
           </table>

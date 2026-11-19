@@ -767,7 +767,7 @@ export default function Page(props: any) {
                         <span className="font-mono">
                           ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 100) &times; 60
                         </span>
-                        &nbsp;= <span className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
+                        &nbsp;= <span data-summary-score data-summary-score-unit="/ 60" className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
                       </>
                     );
                   })()}

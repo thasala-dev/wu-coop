@@ -1113,7 +1113,7 @@ export default function Page(props: any) {
                   <span className="font-mono">
                     (คะแนนที่ประเมินได้ &divide; 250) &times; 40
                   </span>
-                  &nbsp;= ______ คะแนน
+                  &nbsp;= <span data-summary-score data-summary-score-unit="/ 40">______</span> คะแนน
                 </td>
               </tr>
             </tbody>

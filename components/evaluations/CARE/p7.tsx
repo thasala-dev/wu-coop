@@ -915,7 +915,7 @@ export default function Page(props: any) {
                         <span className="font-mono">
                           ({totalScore > 0 ? toThaiNumber(totalScore) : "__"} &divide; 200) &times; 20
                         </span>
-                        &nbsp;= <span className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
+                        &nbsp;= <span data-summary-score data-summary-score-unit="/ 20" className="font-bold">{totalScore > 0 ? displayScore : "______"}</span> คะแนน
                       </>
                     );
                   })()}

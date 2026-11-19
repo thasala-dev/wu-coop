@@ -526,7 +526,7 @@ export default function Page(props: any) {
                     ? scoreResult.weightedScore
                     : "_____"}{" "}
                   ÷ ๕๐) × ๑๐ ={" "}
-                  <span className="font-bold">
+                  <span data-summary-score data-summary-score-unit="/ 10" className="font-bold">
                     {scoreResult.finalScore === null
                       ? scoreResult.complete && scoreResult.hasNA
                         ? "N/A"

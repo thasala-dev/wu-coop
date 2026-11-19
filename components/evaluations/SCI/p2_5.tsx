@@ -983,7 +983,7 @@ export default function Page(props: any) {
                 >
                   คะแนนรวม (จุดมุ่งหมาย 1–4) × 5 คะแนน
                 </td>
-                <td
+                <td data-summary-score data-summary-score-unit="/ 100"
                   className="p-2 border align-top text-sm font-bold text-center"
                   colSpan={2}
                 >

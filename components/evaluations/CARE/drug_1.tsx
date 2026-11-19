@@ -430,7 +430,7 @@ export default function Page(props: any) {
                 <td className="p-2 border align-center text-sm font-bold text-center">
                   รวมคะแนน (คะแนนที่ได้ x 10) / 75
                 </td>
-                <td
+                <td data-summary-score data-summary-score-unit="/ 10"
                   className="p-2 border align-center text-sm font-bold text-center"
                   colSpan={5}
                 >

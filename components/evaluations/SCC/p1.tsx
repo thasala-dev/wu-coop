@@ -393,7 +393,7 @@ export default function Page(props: any) {
                   colSpan={5}
                   className="p-2 border text-center text-sm font-semibold"
                 >
-                  {toThaiNumber(parseFloat(percentage.toString()))}%
+                  <span data-summary-score data-summary-score-unit="%">{toThaiNumber(parseFloat(percentage.toString()))}</span>%
                 </td>
               </tr>
             </tbody>

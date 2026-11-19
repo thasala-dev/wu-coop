@@ -478,37 +478,26 @@ export default function Page(props: any) {
             <tbody>
               <tr>
                 <td className="p-2 border align-center text-sm font-bold text-center">
-                  รวมคะแนน (คะแนนที่ได้ x 10) /{" "}
-                  {toThaiNumber(
-                    criteriaData.filter((item) => {
-                      const value = data[item.label as keyof typeof data];
-                      return value !== "N/A" && value !== "";
-                    }).length * 5
-                  )}
+                  รวมคะแนน
                 </td>
-                <td
+                <td data-summary-score data-summary-score-unit="/ 10"
                   className="p-2 border align-center text-sm font-bold text-center"
                   colSpan={6}
                 >
-                  {toThaiNumber(
-                    Number(
-                      (
-                        (criteriaData.reduce((total, item) => {
-                          const value = data[item.label as keyof typeof data];
-                          if (value && value !== "N/A") {
-                            return total + parseInt(value, 10);
-                          }
-                          return total;
-                        }, 0) *
-                          10) /
-                        (criteriaData.filter((item) => {
-                          const value = data[item.label as keyof typeof data];
-                          return value !== "N/A" && value !== "";
-                        }).length *
-                          5)
-                      ).toFixed(2)
-                    )
-                  )}
+                  {(() => {
+                    // นับเฉพาะข้อที่ให้คะแนนแล้ว (ไม่รวม N/A และข้อที่ยังไม่ได้เลือก)
+                    const scored = criteriaData
+                      .map((item) => data[item.label as keyof typeof data])
+                      .filter((value) => value && value !== "N/A");
+                    if (scored.length === 0) return "-";
+                    const total = scored.reduce(
+                      (sum, value) => sum + parseInt(String(value), 10),
+                      0
+                    );
+                    return toThaiNumber(
+                      Number(((total * 10) / (scored.length * 5)).toFixed(2))
+                    );
+                  })()}
                 </td>
               </tr>
             </tbody>
