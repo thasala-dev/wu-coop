@@ -291,6 +291,35 @@ export default function CompaniesPage() {
                         },
                       },
                       {
+                        key: "seen_at",
+                        content: "สถานะแหล่งฝึก",
+                        className: "text-center",
+                        render: (row: any) => {
+                          if (!row.seen_at) {
+                            return (
+                              <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-100">
+                                ยังไม่เห็น
+                              </Badge>
+                            );
+                          }
+                          const seen = new Date(row.seen_at).toLocaleString(
+                            "th-TH",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          );
+                          return (
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-100 whitespace-nowrap">
+                              แหล่งฝึกเห็นแล้ว · {seen}
+                            </Badge>
+                          );
+                        },
+                      },
+                      {
                         key: "actions",
                         content: "จัดการ",
                         sort: false,

@@ -70,6 +70,12 @@ export default function PaymentsPage() {
       const res = await response.json();
       if (res.success) {
         setData(res.data || []);
+        // บันทึกว่าแหล่งฝึกเห็นรายการชำระเงินแล้ว (ไม่กระทบการแสดงผลหากไม่สำเร็จ)
+        if ((res.data || []).some((p: any) => !p.seen_at)) {
+          fetch("/api/mentor/payments/seen", { method: "POST" }).catch(
+            (err) => console.error("Error marking payments as seen:", err)
+          );
+        }
       }
     } catch (error) {
       console.error("Error fetching payments:", error);
