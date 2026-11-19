@@ -218,3 +218,9 @@ export const supervisionType = [
     name: "เภสัชกรรมอุตสาหการ",
   },
 ];
+
+// ชื่อหัวข้อช่องกรอกชื่อผู้ประเมินในแบบประเมิน (บางแบบฟอร์มใช้ชื่อเฉพาะ)
+export const evaluatorLabel = (formId?: string | number) =>
+  ["37", "38"].includes(String(formId))
+    ? "ชื่อเภสัชกรผู้ดูแลการฝึกงาน"
+    : "ชื่ออาจารย์ประจำแหล่งฝึก";

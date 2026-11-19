@@ -143,6 +143,64 @@ export default function Page(props: any) {
       </div>
 
       <div className="sm:col-span-12">
+        <div className="rounded-md bg-blue-50 p-4 border border-blue-200 text-sm">
+          <p className="font-bold text-center">
+            แนวทางการประเมินความประพฤติและทัศนคติของนักศึกษาการฝึกปฏิบัติงานวิชาชีพด้านเภสัชกรรมการตลาด
+          </p>
+          <p className="font-bold text-center mb-3">สำหรับอาจารย์ประจำแหล่งฝึก</p>
+          <p className="mb-3 indent-8 leading-7">
+            การประเมินนักศึกษาโดยอาจารย์ประจำแหล่งฝึก
+            สามารถทำได้จากการสังเกตพฤติกรรม การสอบถาม การอภิปราย
+            รวมไปถึงผลของการปฏิบัติงาน โดยมีแนวทางของการให้คะแนนดังนี้
+          </p>
+          <table className="w-full text-xs sm:text-sm">
+            <tbody>
+              {[
+                {
+                  score: "5",
+                  level: "ดีมาก",
+                  text: "นักศึกษามีพฤติกรรมที่เหมาะสม มีความพร้อม ความเสียสละ กระตือรือร้น รวมถึงทัศนคติที่ดีต่อการฝึกปฏิบัติงาน พร้อมทั้งสามารถอภิปรายและให้ข้อเสนอแนะที่เป็นประโยชน์ได้อย่างเหมาะสม",
+                },
+                {
+                  score: "4",
+                  level: "ดี",
+                  text: "นักศึกษามีพฤติกรรมที่เหมาะสม มีความพร้อม ความเสียสละ กระตือรือร้น รวมถึงทัศนคติที่ดีต่อการฝึกปฏิบัติงาน สามารถปฏิบัติงานได้ด้วยตนเอง แต่ต้องได้รับคำแนะนำเพียงเล็กน้อย",
+                },
+                {
+                  score: "3",
+                  level: "ปานกลาง",
+                  text: "นักศึกษามีพฤติกรรมอยู่ในเกณฑ์พอใช้ สามารถปฏิบัติงานได้ด้วยตนเอง แต่ต้องได้รับคำแนะนำเป็นส่วนใหญ่",
+                },
+                {
+                  score: "2",
+                  level: "ปรับปรุง",
+                  text: "นักศึกษามีพฤติกรรมที่ไม่เหมาะสมบางประการ เกิดความผิดพลาดบ่อยครั้ง สามารถปฏิบัติงานได้ แต่ต้องได้รับการดูแลอย่างใกล้ชิด",
+                },
+                {
+                  score: "1",
+                  level: "ไม่ผ่าน",
+                  text: "นักศึกษามีพฤติกรรมที่ไม่เหมาะสมบางประการ เกิดความผิดพลาดบ่อยครั้ง และไม่ปรับปรุงตามคำแนะนำของอาจารย์แหล่งฝึก",
+                },
+              ].map((row, index, rows) => (
+                <tr
+                  key={row.score}
+                  className={index < rows.length - 1 ? "border-b" : ""}
+                >
+                  <td className="p-2 align-top w-10 font-semibold">
+                    {row.score}
+                  </td>
+                  <td className="p-2 align-top w-20 font-semibold">
+                    {row.level}
+                  </td>
+                  <td className="p-2">{row.text}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="sm:col-span-12">
         <div className="border rounded-md">
           <table className="w-full border-collapse">
             <thead>
@@ -329,7 +387,7 @@ export default function Page(props: any) {
               </tr>
               <tr className="bg-slate-50">
                 <td className="p-2 border font-bold text-sm">
-                  เปอร์เซ็นต์ของคะแนนพฤติกรรม
+                  เปอร์เซ็นต์ของคะแนนพฤติกรรมที่ได้ (คะแนนรวมทั้งหมด × 2)
                 </td>
                 <td
                   colSpan={5}

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Loading from "@/components/loading";
 import EvaluationList from "@/components/evaluations/EvaluationList";
+import { evaluatorLabel } from "@/lib/global";
 import { Printer, RectangleHorizontal, RectangleVertical } from "lucide-react";
 
 type Orientation = "portrait" | "landscape";
@@ -453,7 +454,7 @@ export default function StudentEvaluationReport() {
                 <div className="grid grid-cols-2 gap-4 mt-6 text-sm break-inside-avoid">
                   <div>
                     <span className="text-gray-500">
-                      ชื่ออาจารย์ประจำแหล่งฝึก:{" "}
+                      {evaluatorLabel(item.form_id)}:{" "}
                     </span>
                     <span className="font-semibold">{item.evaluator}</span>
                   </div>

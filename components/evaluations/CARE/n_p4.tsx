@@ -120,7 +120,8 @@ export default function Page(props: any) {
       complete,
       hasNA,
       weightedScore,
-      finalScore: complete && !hasNA ? (weightedScore / 100) * 10 : null,
+      // รวมคะแนน = (คะแนนที่ได้ × 5) ÷ 20
+      finalScore: complete && !hasNA ? (weightedScore * 5) / 20 : null,
     };
   }, [data]);
 
@@ -308,11 +309,11 @@ export default function Page(props: any) {
                     : "_____"}{" "}
                   คะแนน
                   <br />
-                  ปรับให้เป็นคะแนนเต็ม ๑๐ คะแนน = (
+                  รวมคะแนน = (
                   {scoreResult.complete && !scoreResult.hasNA
                     ? scoreResult.weightedScore
                     : "_____"}{" "}
-                  ÷ ๑๐๐) × ๑๐ ={" "}
+                  × ๕) ÷ ๒๐ ={" "}
                   <span className="font-bold">
                     {scoreResult.finalScore === null
                       ? scoreResult.complete && scoreResult.hasNA

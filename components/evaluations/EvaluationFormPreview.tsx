@@ -30,6 +30,7 @@ import { Form } from "@/components/ui/form";
 
 // import forms
 import EvaluationList from "@/components/evaluations/EvaluationList";
+import { evaluatorLabel } from "@/lib/global";
 
 interface EvaluationFormPreviewProps {
   id: string;
@@ -232,7 +233,7 @@ export default function EvaluationFormPreview({
                         <div className="evaluator-section grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-12">
                           <div className="sm:col-span-6">
                             <label className="block text-sm font-medium mb-2">
-                              ชื่ออาจารย์ประจำแหล่งฝึก
+                              {evaluatorLabel(subtype)}
                             </label>
                             <input
                               id="evaluator"
@@ -244,7 +245,7 @@ export default function EvaluationFormPreview({
                                   ? "border-red-600 border-2"
                                   : "")
                               }
-                              placeholder="ชื่ออาจารย์ประจำแหล่งฝึก"
+                              placeholder={evaluatorLabel(subtype)}
                             />
                             {form.formState.errors.evaluator && (
                               <p className="text-xs text-red-600 no-print">
